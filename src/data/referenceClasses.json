@@ -1,0 +1,2054 @@
+[
+  {
+    "id": "1a-ma",
+    "className": "一甲 普通話",
+    "students": [
+      {
+        "id": "1a-ma-1",
+        "rollNo": 1,
+        "name": "陳承睿",
+        "points": 0,
+        "posPoints": 0,
+        "negPoints": 0,
+        "pokemonId": 1,
+        "history": []
+      },
+      {
+        "id": "1a-ma-2",
+        "rollNo": 2,
+        "name": "鄭竣謙",
+        "points": 0,
+        "posPoints": 0,
+        "negPoints": 0,
+        "pokemonId": 4,
+        "history": []
+      },
+      {
+        "id": "1a-ma-3",
+        "rollNo": 3,
+        "name": "鄭景文",
+        "points": 0,
+        "posPoints": 0,
+        "negPoints": 0,
+        "pokemonId": 7,
+        "history": []
+      },
+      {
+        "id": "1a-ma-4",
+        "rollNo": 4,
+        "name": "張志恆",
+        "points": 0,
+        "posPoints": 0,
+        "negPoints": 0,
+        "pokemonId": 10,
+        "history": []
+      },
+      {
+        "id": "1a-ma-5",
+        "rollNo": 5,
+        "name": "鍾樂謙",
+        "points": 0,
+        "posPoints": 0,
+        "negPoints": 0,
+        "pokemonId": 13,
+        "history": []
+      },
+      {
+        "id": "1a-ma-6",
+        "rollNo": 6,
+        "name": "馮靖雯",
+        "points": 0,
+        "posPoints": 0,
+        "negPoints": 0,
+        "pokemonId": 16,
+        "history": []
+      },
+      {
+        "id": "1a-ma-7",
+        "rollNo": 7,
+        "name": "關穎怡",
+        "points": 0,
+        "posPoints": 0,
+        "negPoints": 0,
+        "pokemonId": 19,
+        "history": []
+      },
+      {
+        "id": "1a-ma-8",
+        "rollNo": 8,
+        "name": "何奕新",
+        "points": 0,
+        "posPoints": 0,
+        "negPoints": 0,
+        "pokemonId": 25,
+        "history": []
+      },
+      {
+        "id": "1a-ma-9",
+        "rollNo": 9,
+        "name": "何初杺",
+        "points": 0,
+        "posPoints": 0,
+        "negPoints": 0,
+        "pokemonId": 27,
+        "history": []
+      },
+      {
+        "id": "1a-ma-10",
+        "rollNo": 10,
+        "name": "何昊謙",
+        "points": 0,
+        "posPoints": 0,
+        "negPoints": 0,
+        "pokemonId": 35,
+        "history": []
+      },
+      {
+        "id": "1a-ma-11",
+        "rollNo": 11,
+        "name": "許穎昕",
+        "points": 0,
+        "posPoints": 0,
+        "negPoints": 0,
+        "pokemonId": 37,
+        "history": []
+      },
+      {
+        "id": "1a-ma-12",
+        "rollNo": 12,
+        "name": "洪志誠",
+        "points": 0,
+        "posPoints": 0,
+        "negPoints": 0,
+        "pokemonId": 39,
+        "history": []
+      },
+      {
+        "id": "1a-ma-13",
+        "rollNo": 13,
+        "name": "黎志晴",
+        "points": 0,
+        "posPoints": 0,
+        "negPoints": 0,
+        "pokemonId": 41,
+        "history": []
+      },
+      {
+        "id": "1a-ma-14",
+        "rollNo": 14,
+        "name": "林翠兒",
+        "points": 0,
+        "posPoints": 0,
+        "negPoints": 0,
+        "pokemonId": 43,
+        "history": []
+      },
+      {
+        "id": "1a-ma-15",
+        "rollNo": 15,
+        "name": "劉卓弘",
+        "points": 0,
+        "posPoints": 0,
+        "negPoints": 0,
+        "pokemonId": 46,
+        "history": []
+      },
+      {
+        "id": "1a-ma-16",
+        "rollNo": 16,
+        "name": "劉敬瑜",
+        "points": 0,
+        "posPoints": 0,
+        "negPoints": 0,
+        "pokemonId": 50,
+        "history": []
+      },
+      {
+        "id": "1a-ma-17",
+        "rollNo": 17,
+        "name": "李籽洛",
+        "points": 0,
+        "posPoints": 0,
+        "negPoints": 0,
+        "pokemonId": 52,
+        "history": []
+      },
+      {
+        "id": "1a-ma-18",
+        "rollNo": 18,
+        "name": "李嘉佑",
+        "points": 0,
+        "posPoints": 0,
+        "negPoints": 0,
+        "pokemonId": 54,
+        "history": []
+      },
+      {
+        "id": "1a-ma-19",
+        "rollNo": 19,
+        "name": "陸蘊芯",
+        "points": 0,
+        "posPoints": 0,
+        "negPoints": 0,
+        "pokemonId": 56,
+        "history": []
+      },
+      {
+        "id": "1a-ma-20",
+        "rollNo": 20,
+        "name": "莫芷瑜",
+        "points": 0,
+        "posPoints": 0,
+        "negPoints": 0,
+        "pokemonId": 58,
+        "history": []
+      },
+      {
+        "id": "1a-ma-21",
+        "rollNo": 21,
+        "name": "吳耀謙",
+        "points": 0,
+        "posPoints": 0,
+        "negPoints": 0,
+        "pokemonId": 60,
+        "history": []
+      },
+      {
+        "id": "1a-ma-22",
+        "rollNo": 22,
+        "name": "施梁恩",
+        "points": 0,
+        "posPoints": 0,
+        "negPoints": 0,
+        "pokemonId": 63,
+        "history": []
+      },
+      {
+        "id": "1a-ma-23",
+        "rollNo": 23,
+        "name": "冼柏宇",
+        "points": 0,
+        "posPoints": 0,
+        "negPoints": 0,
+        "pokemonId": 66,
+        "history": []
+      },
+      {
+        "id": "1a-ma-24",
+        "rollNo": 24,
+        "name": "鄧政麒",
+        "points": 0,
+        "posPoints": 0,
+        "negPoints": 0,
+        "pokemonId": 69,
+        "history": []
+      },
+      {
+        "id": "1a-ma-25",
+        "rollNo": 25,
+        "name": "溫梓恆",
+        "points": 0,
+        "posPoints": 0,
+        "negPoints": 0,
+        "pokemonId": 72,
+        "history": []
+      },
+      {
+        "id": "1a-ma-26",
+        "rollNo": 26,
+        "name": "黃佩瑜",
+        "points": 0,
+        "posPoints": 0,
+        "negPoints": 0,
+        "pokemonId": 74,
+        "history": []
+      },
+      {
+        "id": "1a-ma-27",
+        "rollNo": 27,
+        "name": "許國邦",
+        "points": 0,
+        "posPoints": 0,
+        "negPoints": 0,
+        "pokemonId": 77,
+        "history": []
+      },
+      {
+        "id": "1a-ma-28",
+        "rollNo": 28,
+        "name": "鍾斯盈",
+        "points": 0,
+        "posPoints": 0,
+        "negPoints": 0,
+        "pokemonId": 81,
+        "history": []
+      },
+      {
+        "id": "1a-ma-29",
+        "rollNo": 29,
+        "name": "周海諾",
+        "points": 0,
+        "posPoints": 0,
+        "negPoints": 0,
+        "pokemonId": 84,
+        "history": []
+      }
+    ]
+  },
+  {
+    "id": "2a-ma",
+    "className": "二甲 普通話",
+    "students": [
+      {
+        "id": "2a-ma-1",
+        "rollNo": 1,
+        "name": "歐陽浩俊",
+        "points": 0,
+        "posPoints": 0,
+        "negPoints": 0,
+        "pokemonId": 1,
+        "history": []
+      },
+      {
+        "id": "2a-ma-2",
+        "rollNo": 2,
+        "name": "歐家輝",
+        "points": 0,
+        "posPoints": 0,
+        "negPoints": 0,
+        "pokemonId": 4,
+        "history": []
+      },
+      {
+        "id": "2a-ma-3",
+        "rollNo": 3,
+        "name": "陳浩銘",
+        "points": 0,
+        "posPoints": 0,
+        "negPoints": 0,
+        "pokemonId": 7,
+        "history": []
+      },
+      {
+        "id": "2a-ma-4",
+        "rollNo": 4,
+        "name": "鄒柏豪",
+        "points": 0,
+        "posPoints": 0,
+        "negPoints": 0,
+        "pokemonId": 10,
+        "history": []
+      },
+      {
+        "id": "2a-ma-5",
+        "rollNo": 5,
+        "name": "鄒柏宇",
+        "points": 0,
+        "posPoints": 0,
+        "negPoints": 0,
+        "pokemonId": 13,
+        "history": []
+      },
+      {
+        "id": "2a-ma-6",
+        "rollNo": 6,
+        "name": "陳中濠",
+        "points": 0,
+        "posPoints": 0,
+        "negPoints": 0,
+        "pokemonId": 16,
+        "history": []
+      },
+      {
+        "id": "2a-ma-7",
+        "rollNo": 7,
+        "name": "陳浩楊",
+        "points": 0,
+        "posPoints": 0,
+        "negPoints": 0,
+        "pokemonId": 19,
+        "history": []
+      },
+      {
+        "id": "2a-ma-8",
+        "rollNo": 8,
+        "name": "蔡樂瀅",
+        "points": 0,
+        "posPoints": 0,
+        "negPoints": 0,
+        "pokemonId": 25,
+        "history": []
+      },
+      {
+        "id": "2a-ma-9",
+        "rollNo": 9,
+        "name": "郭俊遠",
+        "points": 0,
+        "posPoints": 0,
+        "negPoints": 0,
+        "pokemonId": 27,
+        "history": []
+      },
+      {
+        "id": "2a-ma-10",
+        "rollNo": 10,
+        "name": "何芷瀅",
+        "points": 0,
+        "posPoints": 0,
+        "negPoints": 0,
+        "pokemonId": 35,
+        "history": []
+      },
+      {
+        "id": "2a-ma-11",
+        "rollNo": 11,
+        "name": "何昊龍",
+        "points": 0,
+        "posPoints": 0,
+        "negPoints": 0,
+        "pokemonId": 37,
+        "history": []
+      },
+      {
+        "id": "2a-ma-12",
+        "rollNo": 12,
+        "name": "邱俐雅",
+        "points": 0,
+        "posPoints": 0,
+        "negPoints": 0,
+        "pokemonId": 39,
+        "history": []
+      },
+      {
+        "id": "2a-ma-13",
+        "rollNo": 13,
+        "name": "古曉晨",
+        "points": 0,
+        "posPoints": 0,
+        "negPoints": 0,
+        "pokemonId": 41,
+        "history": []
+      },
+      {
+        "id": "2a-ma-14",
+        "rollNo": 14,
+        "name": "關南忠",
+        "points": 0,
+        "posPoints": 0,
+        "negPoints": 0,
+        "pokemonId": 43,
+        "history": []
+      },
+      {
+        "id": "2a-ma-15",
+        "rollNo": 15,
+        "name": "林以徐",
+        "points": 0,
+        "posPoints": 0,
+        "negPoints": 0,
+        "pokemonId": 46,
+        "history": []
+      },
+      {
+        "id": "2a-ma-16",
+        "rollNo": 16,
+        "name": "李林澤",
+        "points": 0,
+        "posPoints": 0,
+        "negPoints": 0,
+        "pokemonId": 50,
+        "history": []
+      },
+      {
+        "id": "2a-ma-17",
+        "rollNo": 17,
+        "name": "李絡瑤",
+        "points": 0,
+        "posPoints": 0,
+        "negPoints": 0,
+        "pokemonId": 52,
+        "history": []
+      },
+      {
+        "id": "2a-ma-18",
+        "rollNo": 18,
+        "name": "李栩彤",
+        "points": 0,
+        "posPoints": 0,
+        "negPoints": 0,
+        "pokemonId": 54,
+        "history": []
+      },
+      {
+        "id": "2a-ma-19",
+        "rollNo": 19,
+        "name": "梁康恩",
+        "points": 0,
+        "posPoints": 0,
+        "negPoints": 0,
+        "pokemonId": 56,
+        "history": []
+      },
+      {
+        "id": "2a-ma-20",
+        "rollNo": 20,
+        "name": "梁景兆",
+        "points": 0,
+        "posPoints": 0,
+        "negPoints": 0,
+        "pokemonId": 58,
+        "history": []
+      },
+      {
+        "id": "2a-ma-21",
+        "rollNo": 21,
+        "name": "梁心穎",
+        "points": 0,
+        "posPoints": 0,
+        "negPoints": 0,
+        "pokemonId": 60,
+        "history": []
+      },
+      {
+        "id": "2a-ma-22",
+        "rollNo": 22,
+        "name": "劉曉燁",
+        "points": 0,
+        "posPoints": 0,
+        "negPoints": 0,
+        "pokemonId": 63,
+        "history": []
+      },
+      {
+        "id": "2a-ma-23",
+        "rollNo": 23,
+        "name": "羅梓峻",
+        "points": 0,
+        "posPoints": 0,
+        "negPoints": 0,
+        "pokemonId": 66,
+        "history": []
+      },
+      {
+        "id": "2a-ma-24",
+        "rollNo": 24,
+        "name": "吳耀燊",
+        "points": 0,
+        "posPoints": 0,
+        "negPoints": 0,
+        "pokemonId": 69,
+        "history": []
+      },
+      {
+        "id": "2a-ma-25",
+        "rollNo": 25,
+        "name": "鄧耀軒",
+        "points": 0,
+        "posPoints": 0,
+        "negPoints": 0,
+        "pokemonId": 72,
+        "history": []
+      },
+      {
+        "id": "2a-ma-26",
+        "rollNo": 26,
+        "name": "溫雨晴",
+        "points": 0,
+        "posPoints": 0,
+        "negPoints": 0,
+        "pokemonId": 74,
+        "history": []
+      },
+      {
+        "id": "2a-ma-27",
+        "rollNo": 27,
+        "name": "鍾芷瑜",
+        "points": 0,
+        "posPoints": 0,
+        "negPoints": 0,
+        "pokemonId": 77,
+        "history": []
+      }
+    ]
+  },
+  {
+    "id": "3a-ma",
+    "className": "三甲 普通話",
+    "students": [
+      {
+        "id": "3a-ma-1",
+        "rollNo": 1,
+        "name": "陳彥奕",
+        "points": 0,
+        "posPoints": 0,
+        "negPoints": 0,
+        "pokemonId": 1,
+        "history": []
+      },
+      {
+        "id": "3a-ma-2",
+        "rollNo": 2,
+        "name": "陳建熙",
+        "points": 0,
+        "posPoints": 0,
+        "negPoints": 0,
+        "pokemonId": 4,
+        "history": []
+      },
+      {
+        "id": "3a-ma-3",
+        "rollNo": 3,
+        "name": "陳雅瑩",
+        "points": 0,
+        "posPoints": 0,
+        "negPoints": 0,
+        "pokemonId": 7,
+        "history": []
+      },
+      {
+        "id": "3a-ma-4",
+        "rollNo": 4,
+        "name": "周詩穎",
+        "points": 0,
+        "posPoints": 0,
+        "negPoints": 0,
+        "pokemonId": 10,
+        "history": []
+      },
+      {
+        "id": "3a-ma-5",
+        "rollNo": 5,
+        "name": "程柏睿",
+        "points": 0,
+        "posPoints": 0,
+        "negPoints": 0,
+        "pokemonId": 13,
+        "history": []
+      },
+      {
+        "id": "3a-ma-6",
+        "rollNo": 6,
+        "name": "崔世和",
+        "points": 0,
+        "posPoints": 0,
+        "negPoints": 0,
+        "pokemonId": 16,
+        "history": []
+      },
+      {
+        "id": "3a-ma-7",
+        "rollNo": 7,
+        "name": "傅玥儀",
+        "points": 0,
+        "posPoints": 0,
+        "negPoints": 0,
+        "pokemonId": 19,
+        "history": []
+      },
+      {
+        "id": "3a-ma-8",
+        "rollNo": 8,
+        "name": "傅玥恩",
+        "points": 0,
+        "posPoints": 0,
+        "negPoints": 0,
+        "pokemonId": 25,
+        "history": []
+      },
+      {
+        "id": "3a-ma-9",
+        "rollNo": 9,
+        "name": "韓子鋒",
+        "points": 0,
+        "posPoints": 0,
+        "negPoints": 0,
+        "pokemonId": 27,
+        "history": []
+      },
+      {
+        "id": "3a-ma-10",
+        "rollNo": 10,
+        "name": "何楊茵",
+        "points": 0,
+        "posPoints": 0,
+        "negPoints": 0,
+        "pokemonId": 35,
+        "history": []
+      },
+      {
+        "id": "3a-ma-11",
+        "rollNo": 11,
+        "name": "黃詩彤",
+        "points": 0,
+        "posPoints": 0,
+        "negPoints": 0,
+        "pokemonId": 37,
+        "history": []
+      },
+      {
+        "id": "3a-ma-12",
+        "rollNo": 12,
+        "name": "葉瀟",
+        "points": 0,
+        "posPoints": 0,
+        "negPoints": 0,
+        "pokemonId": 39,
+        "history": []
+      },
+      {
+        "id": "3a-ma-13",
+        "rollNo": 13,
+        "name": "古浩然",
+        "points": 0,
+        "posPoints": 0,
+        "negPoints": 0,
+        "pokemonId": 41,
+        "history": []
+      },
+      {
+        "id": "3a-ma-14",
+        "rollNo": 14,
+        "name": "關南正",
+        "points": 0,
+        "posPoints": 0,
+        "negPoints": 0,
+        "pokemonId": 43,
+        "history": []
+      },
+      {
+        "id": "3a-ma-15",
+        "rollNo": 15,
+        "name": "黎志銓",
+        "points": 0,
+        "posPoints": 0,
+        "negPoints": 0,
+        "pokemonId": 46,
+        "history": []
+      },
+      {
+        "id": "3a-ma-16",
+        "rollNo": 16,
+        "name": "黎志銘",
+        "points": 0,
+        "posPoints": 0,
+        "negPoints": 0,
+        "pokemonId": 50,
+        "history": []
+      },
+      {
+        "id": "3a-ma-17",
+        "rollNo": 17,
+        "name": "林文浩",
+        "points": 0,
+        "posPoints": 0,
+        "negPoints": 0,
+        "pokemonId": 52,
+        "history": []
+      },
+      {
+        "id": "3a-ma-18",
+        "rollNo": 18,
+        "name": "劉浩揚",
+        "points": 0,
+        "posPoints": 0,
+        "negPoints": 0,
+        "pokemonId": 54,
+        "history": []
+      },
+      {
+        "id": "3a-ma-19",
+        "rollNo": 19,
+        "name": "李大妍",
+        "points": 0,
+        "posPoints": 0,
+        "negPoints": 0,
+        "pokemonId": 56,
+        "history": []
+      },
+      {
+        "id": "3a-ma-20",
+        "rollNo": 20,
+        "name": "梁旻洛",
+        "points": 0,
+        "posPoints": 0,
+        "negPoints": 0,
+        "pokemonId": 58,
+        "history": []
+      },
+      {
+        "id": "3a-ma-21",
+        "rollNo": 21,
+        "name": "李俊軒",
+        "points": 0,
+        "posPoints": 0,
+        "negPoints": 0,
+        "pokemonId": 60,
+        "history": []
+      },
+      {
+        "id": "3a-ma-22",
+        "rollNo": 22,
+        "name": "李俊廷",
+        "points": 0,
+        "posPoints": 0,
+        "negPoints": 0,
+        "pokemonId": 63,
+        "history": []
+      },
+      {
+        "id": "3a-ma-23",
+        "rollNo": 23,
+        "name": "林俊熙",
+        "points": 0,
+        "posPoints": 0,
+        "negPoints": 0,
+        "pokemonId": 66,
+        "history": []
+      },
+      {
+        "id": "3a-ma-24",
+        "rollNo": 24,
+        "name": "廖智匡",
+        "points": 0,
+        "posPoints": 0,
+        "negPoints": 0,
+        "pokemonId": 69,
+        "history": []
+      },
+      {
+        "id": "3a-ma-25",
+        "rollNo": 25,
+        "name": "廖智丞",
+        "points": 0,
+        "posPoints": 0,
+        "negPoints": 0,
+        "pokemonId": 72,
+        "history": []
+      },
+      {
+        "id": "3a-ma-26",
+        "rollNo": 26,
+        "name": "羅睿鴻",
+        "points": 0,
+        "posPoints": 0,
+        "negPoints": 0,
+        "pokemonId": 74,
+        "history": []
+      },
+      {
+        "id": "3a-ma-27",
+        "rollNo": 27,
+        "name": "盧玥璇",
+        "points": 0,
+        "posPoints": 0,
+        "negPoints": 0,
+        "pokemonId": 77,
+        "history": []
+      },
+      {
+        "id": "3a-ma-28",
+        "rollNo": 28,
+        "name": "彭穎愉",
+        "points": 0,
+        "posPoints": 0,
+        "negPoints": 0,
+        "pokemonId": 81,
+        "history": []
+      },
+      {
+        "id": "3a-ma-29",
+        "rollNo": 29,
+        "name": "司徒俊軒",
+        "points": 0,
+        "posPoints": 0,
+        "negPoints": 0,
+        "pokemonId": 84,
+        "history": []
+      },
+      {
+        "id": "3a-ma-30",
+        "rollNo": 30,
+        "name": "鄧竣麒",
+        "points": 0,
+        "posPoints": 0,
+        "negPoints": 0,
+        "pokemonId": 86,
+        "history": []
+      },
+      {
+        "id": "3a-ma-31",
+        "rollNo": 31,
+        "name": "阮嘉敏",
+        "points": 0,
+        "posPoints": 0,
+        "negPoints": 0,
+        "pokemonId": 90,
+        "history": []
+      },
+      {
+        "id": "3a-ma-32",
+        "rollNo": 32,
+        "name": "袁偉樂",
+        "points": 0,
+        "posPoints": 0,
+        "negPoints": 0,
+        "pokemonId": 92,
+        "history": []
+      },
+      {
+        "id": "3a-ma-33",
+        "rollNo": 33,
+        "name": "溫泫玥",
+        "points": 0,
+        "posPoints": 0,
+        "negPoints": 0,
+        "pokemonId": 95,
+        "history": []
+      },
+      {
+        "id": "3a-ma-34",
+        "rollNo": 34,
+        "name": "王敏澳",
+        "points": 0,
+        "posPoints": 0,
+        "negPoints": 0,
+        "pokemonId": 98,
+        "history": []
+      },
+      {
+        "id": "3a-ma-35",
+        "rollNo": 35,
+        "name": "黃樂橋",
+        "points": 0,
+        "posPoints": 0,
+        "negPoints": 0,
+        "pokemonId": 100,
+        "history": []
+      },
+      {
+        "id": "3a-ma-36",
+        "rollNo": 36,
+        "name": "王源",
+        "points": 0,
+        "posPoints": 0,
+        "negPoints": 0,
+        "pokemonId": 102,
+        "history": []
+      }
+    ]
+  },
+  {
+    "id": "4b-en",
+    "className": "四乙 英文",
+    "students": [
+      {
+        "id": "4b-en-1",
+        "rollNo": 1,
+        "name": "歐梓晴",
+        "points": 0,
+        "posPoints": 0,
+        "negPoints": 0,
+        "pokemonId": 1,
+        "history": []
+      },
+      {
+        "id": "4b-en-2",
+        "rollNo": 2,
+        "name": "陳芷柔",
+        "points": 0,
+        "posPoints": 0,
+        "negPoints": 0,
+        "pokemonId": 4,
+        "history": []
+      },
+      {
+        "id": "4b-en-3",
+        "rollNo": 3,
+        "name": "陳雅馨",
+        "points": 0,
+        "posPoints": 0,
+        "negPoints": 0,
+        "pokemonId": 7,
+        "history": []
+      },
+      {
+        "id": "4b-en-4",
+        "rollNo": 4,
+        "name": "鄭穎彤",
+        "points": 0,
+        "posPoints": 0,
+        "negPoints": 0,
+        "pokemonId": 10,
+        "history": []
+      },
+      {
+        "id": "4b-en-5",
+        "rollNo": 5,
+        "name": "趙家良",
+        "points": 0,
+        "posPoints": 0,
+        "negPoints": 0,
+        "pokemonId": 13,
+        "history": []
+      },
+      {
+        "id": "4b-en-6",
+        "rollNo": 6,
+        "name": "高宇皓",
+        "points": 0,
+        "posPoints": 0,
+        "negPoints": 0,
+        "pokemonId": 16,
+        "history": []
+      },
+      {
+        "id": "4b-en-7",
+        "rollNo": 7,
+        "name": "何金霏",
+        "points": 0,
+        "posPoints": 0,
+        "negPoints": 0,
+        "pokemonId": 19,
+        "history": []
+      },
+      {
+        "id": "4b-en-8",
+        "rollNo": 8,
+        "name": "何冠奇",
+        "points": 0,
+        "posPoints": 0,
+        "negPoints": 0,
+        "pokemonId": 25,
+        "history": []
+      },
+      {
+        "id": "4b-en-9",
+        "rollNo": 9,
+        "name": "黃欣彤",
+        "points": 0,
+        "posPoints": 0,
+        "negPoints": 0,
+        "pokemonId": 27,
+        "history": []
+      },
+      {
+        "id": "4b-en-10",
+        "rollNo": 10,
+        "name": "黎芷楹",
+        "points": 0,
+        "posPoints": 0,
+        "negPoints": 0,
+        "pokemonId": 35,
+        "history": []
+      },
+      {
+        "id": "4b-en-11",
+        "rollNo": 11,
+        "name": "黎子滔",
+        "points": 0,
+        "posPoints": 0,
+        "negPoints": 0,
+        "pokemonId": 37,
+        "history": []
+      },
+      {
+        "id": "4b-en-12",
+        "rollNo": 12,
+        "name": "林子洋",
+        "points": 0,
+        "posPoints": 0,
+        "negPoints": 0,
+        "pokemonId": 39,
+        "history": []
+      },
+      {
+        "id": "4b-en-13",
+        "rollNo": 13,
+        "name": "林曉棟",
+        "points": 0,
+        "posPoints": 0,
+        "negPoints": 0,
+        "pokemonId": 41,
+        "history": []
+      },
+      {
+        "id": "4b-en-14",
+        "rollNo": 14,
+        "name": "劉綽嵐",
+        "points": 0,
+        "posPoints": 0,
+        "negPoints": 0,
+        "pokemonId": 43,
+        "history": []
+      },
+      {
+        "id": "4b-en-15",
+        "rollNo": 15,
+        "name": "雷翊權",
+        "points": 0,
+        "posPoints": 0,
+        "negPoints": 0,
+        "pokemonId": 46,
+        "history": []
+      },
+      {
+        "id": "4b-en-16",
+        "rollNo": 16,
+        "name": "李栩軒",
+        "points": 0,
+        "posPoints": 0,
+        "negPoints": 0,
+        "pokemonId": 50,
+        "history": []
+      },
+      {
+        "id": "4b-en-17",
+        "rollNo": 17,
+        "name": "梁子泓",
+        "points": 0,
+        "posPoints": 0,
+        "negPoints": 0,
+        "pokemonId": 52,
+        "history": []
+      },
+      {
+        "id": "4b-en-18",
+        "rollNo": 18,
+        "name": "梁鎬軒",
+        "points": 0,
+        "posPoints": 0,
+        "negPoints": 0,
+        "pokemonId": 54,
+        "history": []
+      },
+      {
+        "id": "4b-en-19",
+        "rollNo": 19,
+        "name": "梁皓宸",
+        "points": 0,
+        "posPoints": 0,
+        "negPoints": 0,
+        "pokemonId": 56,
+        "history": []
+      },
+      {
+        "id": "4b-en-20",
+        "rollNo": 20,
+        "name": "梁依晴",
+        "points": 0,
+        "posPoints": 0,
+        "negPoints": 0,
+        "pokemonId": 58,
+        "history": []
+      },
+      {
+        "id": "4b-en-21",
+        "rollNo": 21,
+        "name": "李子辰",
+        "points": 0,
+        "posPoints": 0,
+        "negPoints": 0,
+        "pokemonId": 60,
+        "history": []
+      },
+      {
+        "id": "22",
+        "rollNo": 22,
+        "name": "梁凱晴",
+        "points": 0,
+        "posPoints": 0,
+        "negPoints": 0,
+        "pokemonId": 63,
+        "history": []
+      },
+      {
+        "id": "4b-en-23",
+        "rollNo": 23,
+        "name": "駱峻霆",
+        "points": 0,
+        "posPoints": 0,
+        "negPoints": 0,
+        "pokemonId": 66,
+        "history": []
+      },
+      {
+        "id": "4b-en-24",
+        "rollNo": 24,
+        "name": "陸宗耀",
+        "points": 0,
+        "posPoints": 0,
+        "negPoints": 0,
+        "pokemonId": 69,
+        "history": []
+      },
+      {
+        "id": "4b-en-25",
+        "rollNo": 25,
+        "name": "吳綺琳",
+        "points": 0,
+        "posPoints": 0,
+        "negPoints": 0,
+        "pokemonId": 72,
+        "history": []
+      },
+      {
+        "id": "4b-en-26",
+        "rollNo": 26,
+        "name": "阮聖茗",
+        "points": 0,
+        "posPoints": 0,
+        "negPoints": 0,
+        "pokemonId": 74,
+        "history": []
+      },
+      {
+        "id": "4b-en-27",
+        "rollNo": 27,
+        "name": "丁子皓",
+        "points": 0,
+        "posPoints": 0,
+        "negPoints": 0,
+        "pokemonId": 77,
+        "history": []
+      },
+      {
+        "id": "4b-en-28",
+        "rollNo": 28,
+        "name": "杜沛珊",
+        "points": 0,
+        "posPoints": 0,
+        "negPoints": 0,
+        "pokemonId": 81,
+        "history": []
+      },
+      {
+        "id": "4b-en-29",
+        "rollNo": 29,
+        "name": "黃梓浚",
+        "points": 0,
+        "posPoints": 0,
+        "negPoints": 0,
+        "pokemonId": 84,
+        "history": []
+      },
+      {
+        "id": "4b-en-30",
+        "rollNo": 30,
+        "name": "黃妃兒",
+        "points": 0,
+        "posPoints": 0,
+        "negPoints": 0,
+        "pokemonId": 86,
+        "history": []
+      },
+      {
+        "id": "4b-en-31",
+        "rollNo": 31,
+        "name": "黃���均",
+        "points": 0,
+        "posPoints": 0,
+        "negPoints": 0,
+        "pokemonId": 90,
+        "history": []
+      },
+      {
+        "id": "4b-en-32",
+        "rollNo": 32,
+        "name": "許君豪",
+        "points": 0,
+        "posPoints": 0,
+        "negPoints": 0,
+        "pokemonId": 92,
+        "history": []
+      },
+      {
+        "id": "4b-en-33",
+        "rollNo": 33,
+        "name": "周海嵐",
+        "points": 0,
+        "posPoints": 0,
+        "negPoints": 0,
+        "pokemonId": 95,
+        "history": []
+      },
+      {
+        "id": "4b-en-34",
+        "rollNo": 34,
+        "name": "朱麗媛",
+        "points": 0,
+        "posPoints": 0,
+        "negPoints": 0,
+        "pokemonId": 98,
+        "history": []
+      }
+    ]
+  },
+  {
+    "id": "5a-en-ma",
+    "className": "五甲 英文+普通話",
+    "students": [
+      {
+        "id": "5a-en-ma-1",
+        "rollNo": 1,
+        "name": "陳希宇",
+        "points": 0,
+        "posPoints": 0,
+        "negPoints": 0,
+        "pokemonId": 1,
+        "history": []
+      },
+      {
+        "id": "5a-en-ma-2",
+        "rollNo": 2,
+        "name": "陳曉雯",
+        "points": 0,
+        "posPoints": 0,
+        "negPoints": 0,
+        "pokemonId": 4,
+        "history": []
+      },
+      {
+        "id": "5a-en-ma-3",
+        "rollNo": 3,
+        "name": "陳沁儀",
+        "points": 0,
+        "posPoints": 0,
+        "negPoints": 0,
+        "pokemonId": 7,
+        "history": []
+      },
+      {
+        "id": "5a-en-ma-4",
+        "rollNo": 4,
+        "name": "陳梓晴",
+        "points": 0,
+        "posPoints": 0,
+        "negPoints": 0,
+        "pokemonId": 10,
+        "history": []
+      },
+      {
+        "id": "5a-en-ma-5",
+        "rollNo": 5,
+        "name": "陳品臻",
+        "points": 0,
+        "posPoints": 0,
+        "negPoints": 0,
+        "pokemonId": 13,
+        "history": []
+      },
+      {
+        "id": "5a-en-ma-6",
+        "rollNo": 6,
+        "name": "蔣沁妍",
+        "points": 0,
+        "posPoints": 0,
+        "negPoints": 0,
+        "pokemonId": 16,
+        "history": []
+      },
+      {
+        "id": "5a-en-ma-7",
+        "rollNo": 7,
+        "name": "胡栩豪",
+        "points": 0,
+        "posPoints": 0,
+        "negPoints": 0,
+        "pokemonId": 19,
+        "history": []
+      },
+      {
+        "id": "5a-en-ma-8",
+        "rollNo": 8,
+        "name": "李凱聰",
+        "points": 0,
+        "posPoints": 0,
+        "negPoints": 0,
+        "pokemonId": 25,
+        "history": []
+      },
+      {
+        "id": "5a-en-ma-9",
+        "rollNo": 9,
+        "name": "李天恩",
+        "points": 0,
+        "posPoints": 0,
+        "negPoints": 0,
+        "pokemonId": 27,
+        "history": []
+      },
+      {
+        "id": "5a-en-ma-10",
+        "rollNo": 10,
+        "name": "林書宇",
+        "points": 0,
+        "posPoints": 0,
+        "negPoints": 0,
+        "pokemonId": 35,
+        "history": []
+      },
+      {
+        "id": "5a-en-ma-11",
+        "rollNo": 11,
+        "name": "龍紀潼",
+        "points": 0,
+        "posPoints": 0,
+        "negPoints": 0,
+        "pokemonId": 37,
+        "history": []
+      },
+      {
+        "id": "5a-en-ma-12",
+        "rollNo": 12,
+        "name": "盧俊俐",
+        "points": 0,
+        "posPoints": 0,
+        "negPoints": 0,
+        "pokemonId": 39,
+        "history": []
+      },
+      {
+        "id": "5a-en-ma-13",
+        "rollNo": 13,
+        "name": "陸皆橋",
+        "points": 0,
+        "posPoints": 0,
+        "negPoints": 0,
+        "pokemonId": 41,
+        "history": []
+      },
+      {
+        "id": "5a-en-ma-14",
+        "rollNo": 14,
+        "name": "麥嘉俐",
+        "points": 0,
+        "posPoints": 0,
+        "negPoints": 0,
+        "pokemonId": 43,
+        "history": []
+      },
+      {
+        "id": "5a-en-ma-15",
+        "rollNo": 15,
+        "name": "莫芷晴",
+        "points": 0,
+        "posPoints": 0,
+        "negPoints": 0,
+        "pokemonId": 46,
+        "history": []
+      },
+      {
+        "id": "5a-en-ma-16",
+        "rollNo": 16,
+        "name": "吳子軒",
+        "points": 0,
+        "posPoints": 0,
+        "negPoints": 0,
+        "pokemonId": 50,
+        "history": []
+      },
+      {
+        "id": "5a-en-ma-17",
+        "rollNo": 17,
+        "name": "吳佑瀧",
+        "points": 0,
+        "posPoints": 0,
+        "negPoints": 0,
+        "pokemonId": 52,
+        "history": []
+      },
+      {
+        "id": "5a-en-ma-18",
+        "rollNo": 18,
+        "name": "潘思涵",
+        "points": 0,
+        "posPoints": 0,
+        "negPoints": 0,
+        "pokemonId": 54,
+        "history": []
+      },
+      {
+        "id": "5a-en-ma-19",
+        "rollNo": 19,
+        "name": "施子棋",
+        "points": 0,
+        "posPoints": 0,
+        "negPoints": 0,
+        "pokemonId": 56,
+        "history": []
+      },
+      {
+        "id": "5a-en-ma-20",
+        "rollNo": 20,
+        "name": "蕭珈睿",
+        "points": 0,
+        "posPoints": 0,
+        "negPoints": 0,
+        "pokemonId": 58,
+        "history": []
+      },
+      {
+        "id": "5a-en-ma-21",
+        "rollNo": 21,
+        "name": "余樂恆",
+        "points": 0,
+        "posPoints": 0,
+        "negPoints": 0,
+        "pokemonId": 60,
+        "history": []
+      },
+      {
+        "id": "5a-en-ma-22",
+        "rollNo": 22,
+        "name": "王美琳",
+        "points": 0,
+        "posPoints": 0,
+        "negPoints": 0,
+        "pokemonId": 63,
+        "history": []
+      },
+      {
+        "id": "5a-en-ma-23",
+        "rollNo": 23,
+        "name": "張家偉",
+        "points": 0,
+        "posPoints": 0,
+        "negPoints": 0,
+        "pokemonId": 66,
+        "history": []
+      },
+      {
+        "id": "5a-en-ma-24",
+        "rollNo": 24,
+        "name": "鍾倬民",
+        "points": 0,
+        "posPoints": 0,
+        "negPoints": 0,
+        "pokemonId": 69,
+        "history": []
+      },
+      {
+        "id": "5a-en-ma-25",
+        "rollNo": 25,
+        "name": "鍾倬承",
+        "points": 0,
+        "posPoints": 0,
+        "negPoints": 0,
+        "pokemonId": 72,
+        "history": []
+      }
+    ]
+  },
+  {
+    "id": "5b-ma",
+    "className": "五乙 普通話",
+    "students": [
+      {
+        "id": "5b-ma-1",
+        "rollNo": 1,
+        "name": "周嗣博",
+        "points": 0,
+        "posPoints": 0,
+        "negPoints": 0,
+        "pokemonId": 1,
+        "history": []
+      },
+      {
+        "id": "5b-ma-2",
+        "rollNo": 2,
+        "name": "鄭翊翔",
+        "points": 0,
+        "posPoints": 0,
+        "negPoints": 0,
+        "pokemonId": 4,
+        "history": []
+      },
+      {
+        "id": "5b-ma-3",
+        "rollNo": 3,
+        "name": "陳浩",
+        "points": 0,
+        "posPoints": 0,
+        "negPoints": 0,
+        "pokemonId": 7,
+        "history": []
+      },
+      {
+        "id": "5b-ma-4",
+        "rollNo": 4,
+        "name": "崔世君",
+        "points": 0,
+        "posPoints": 0,
+        "negPoints": 0,
+        "pokemonId": 10,
+        "history": []
+      },
+      {
+        "id": "5b-ma-5",
+        "rollNo": 5,
+        "name": "馮華靖",
+        "points": 0,
+        "posPoints": 0,
+        "negPoints": 0,
+        "pokemonId": 13,
+        "history": []
+      },
+      {
+        "id": "5b-ma-6",
+        "rollNo": 6,
+        "name": "甘子賢",
+        "points": 0,
+        "posPoints": 0,
+        "negPoints": 0,
+        "pokemonId": 16,
+        "history": []
+      },
+      {
+        "id": "5b-ma-7",
+        "rollNo": 7,
+        "name": "康安娜",
+        "points": 0,
+        "posPoints": 0,
+        "negPoints": 0,
+        "pokemonId": 19,
+        "history": []
+      },
+      {
+        "id": "5b-ma-8",
+        "rollNo": 8,
+        "name": "謝欣晏",
+        "points": 0,
+        "posPoints": 0,
+        "negPoints": 0,
+        "pokemonId": 25,
+        "history": []
+      },
+      {
+        "id": "5b-ma-9",
+        "rollNo": 9,
+        "name": "黃楚堯",
+        "points": 0,
+        "posPoints": 0,
+        "negPoints": 0,
+        "pokemonId": 27,
+        "history": []
+      },
+      {
+        "id": "5b-ma-10",
+        "rollNo": 10,
+        "name": "瑩瑩",
+        "points": 0,
+        "posPoints": 0,
+        "negPoints": 0,
+        "pokemonId": 35,
+        "history": []
+      },
+      {
+        "id": "5b-ma-11",
+        "rollNo": 11,
+        "name": "容毓俊",
+        "points": 0,
+        "posPoints": 0,
+        "negPoints": 0,
+        "pokemonId": 37,
+        "history": []
+      },
+      {
+        "id": "5b-ma-12",
+        "rollNo": 12,
+        "name": "古柏謙",
+        "points": 0,
+        "posPoints": 0,
+        "negPoints": 0,
+        "pokemonId": 39,
+        "history": []
+      },
+      {
+        "id": "5b-ma-13",
+        "rollNo": 13,
+        "name": "古穎旋",
+        "points": 0,
+        "posPoints": 0,
+        "negPoints": 0,
+        "pokemonId": 41,
+        "history": []
+      },
+      {
+        "id": "5b-ma-14",
+        "rollNo": 14,
+        "name": "郭沛軒",
+        "points": 0,
+        "posPoints": 0,
+        "negPoints": 0,
+        "pokemonId": 43,
+        "history": []
+      },
+      {
+        "id": "5b-ma-15",
+        "rollNo": 15,
+        "name": "林晉毅",
+        "points": 0,
+        "posPoints": 0,
+        "negPoints": 0,
+        "pokemonId": 46,
+        "history": []
+      },
+      {
+        "id": "5b-ma-16",
+        "rollNo": 16,
+        "name": "羅杏美",
+        "points": 0,
+        "posPoints": 0,
+        "negPoints": 0,
+        "pokemonId": 50,
+        "history": []
+      },
+      {
+        "id": "5b-ma-17",
+        "rollNo": 17,
+        "name": "陸靜瑩",
+        "points": 0,
+        "posPoints": 0,
+        "negPoints": 0,
+        "pokemonId": 52,
+        "history": []
+      },
+      {
+        "id": "5b-ma-18",
+        "rollNo": 18,
+        "name": "盧梓欣",
+        "points": 0,
+        "posPoints": 0,
+        "negPoints": 0,
+        "pokemonId": 54,
+        "history": []
+      },
+      {
+        "id": "5b-ma-19",
+        "rollNo": 19,
+        "name": "盧梓杰",
+        "points": 0,
+        "posPoints": 0,
+        "negPoints": 0,
+        "pokemonId": 56,
+        "history": []
+      },
+      {
+        "id": "5b-ma-20",
+        "rollNo": 20,
+        "name": "牟智杰",
+        "points": 0,
+        "posPoints": 0,
+        "negPoints": 0,
+        "pokemonId": 58,
+        "history": []
+      },
+      {
+        "id": "5b-ma-21",
+        "rollNo": 21,
+        "name": "吳穎詩",
+        "points": 0,
+        "posPoints": 0,
+        "negPoints": 0,
+        "pokemonId": 60,
+        "history": []
+      },
+      {
+        "id": "5b-ma-22",
+        "rollNo": 22,
+        "name": "歐陽健豐",
+        "points": 0,
+        "posPoints": 0,
+        "negPoints": 0,
+        "pokemonId": 63,
+        "history": []
+      },
+      {
+        "id": "5b-ma-23",
+        "rollNo": 23,
+        "name": "秦多多",
+        "points": 0,
+        "posPoints": 0,
+        "negPoints": 0,
+        "pokemonId": 66,
+        "history": []
+      },
+      {
+        "id": "5b-ma-24",
+        "rollNo": 24,
+        "name": "邱佳茵",
+        "points": 0,
+        "posPoints": 0,
+        "negPoints": 0,
+        "pokemonId": 69,
+        "history": []
+      },
+      {
+        "id": "5b-ma-25",
+        "rollNo": 25,
+        "name": "湯景鵬",
+        "points": 0,
+        "posPoints": 0,
+        "negPoints": 0,
+        "pokemonId": 72,
+        "history": []
+      }
+    ]
+  },
+  {
+    "id": "5c-ma",
+    "className": "五丙 普通話",
+    "students": [
+      {
+        "id": "5c-ma-1",
+        "rollNo": 1,
+        "name": "陳信豪",
+        "points": 0,
+        "posPoints": 0,
+        "negPoints": 0,
+        "pokemonId": 1,
+        "history": []
+      },
+      {
+        "id": "5c-ma-2",
+        "rollNo": 2,
+        "name": "曾子朗",
+        "points": 0,
+        "posPoints": 0,
+        "negPoints": 0,
+        "pokemonId": 4,
+        "history": []
+      },
+      {
+        "id": "5c-ma-3",
+        "rollNo": 3,
+        "name": "周詩蕎",
+        "points": 0,
+        "posPoints": 0,
+        "negPoints": 0,
+        "pokemonId": 7,
+        "history": []
+      },
+      {
+        "id": "5c-ma-4",
+        "rollNo": 4,
+        "name": "鄭瑩瑩",
+        "points": 0,
+        "posPoints": 0,
+        "negPoints": 0,
+        "pokemonId": 10,
+        "history": []
+      },
+      {
+        "id": "5c-ma-5",
+        "rollNo": 5,
+        "name": "章穎妍",
+        "points": 0,
+        "posPoints": 0,
+        "negPoints": 0,
+        "pokemonId": 13,
+        "history": []
+      },
+      {
+        "id": "5c-ma-6",
+        "rollNo": 6,
+        "name": "崔世平",
+        "points": 0,
+        "posPoints": 0,
+        "negPoints": 0,
+        "pokemonId": 16,
+        "history": []
+      },
+      {
+        "id": "5c-ma-7",
+        "rollNo": 7,
+        "name": "許芝霖",
+        "points": 0,
+        "posPoints": 0,
+        "negPoints": 0,
+        "pokemonId": 19,
+        "history": []
+      },
+      {
+        "id": "5c-ma-8",
+        "rollNo": 8,
+        "name": "黃璐媛",
+        "points": 0,
+        "posPoints": 0,
+        "negPoints": 0,
+        "pokemonId": 25,
+        "history": []
+      },
+      {
+        "id": "5c-ma-9",
+        "rollNo": 9,
+        "name": "黃詩皓",
+        "points": 0,
+        "posPoints": 0,
+        "negPoints": 0,
+        "pokemonId": 27,
+        "history": []
+      },
+      {
+        "id": "5c-ma-10",
+        "rollNo": 10,
+        "name": "嚴穎兒",
+        "points": 0,
+        "posPoints": 0,
+        "negPoints": 0,
+        "pokemonId": 35,
+        "history": []
+      },
+      {
+        "id": "5c-ma-11",
+        "rollNo": 11,
+        "name": "郭梓晴",
+        "points": 0,
+        "posPoints": 0,
+        "negPoints": 0,
+        "pokemonId": 37,
+        "history": []
+      },
+      {
+        "id": "5c-ma-12",
+        "rollNo": 12,
+        "name": "林雅妍",
+        "points": 0,
+        "posPoints": 0,
+        "negPoints": 0,
+        "pokemonId": 39,
+        "history": []
+      },
+      {
+        "id": "5c-ma-13",
+        "rollNo": 13,
+        "name": "林寶堅",
+        "points": 0,
+        "posPoints": 0,
+        "negPoints": 0,
+        "pokemonId": 41,
+        "history": []
+      },
+      {
+        "id": "5c-ma-14",
+        "rollNo": 14,
+        "name": "李卓謙",
+        "points": 0,
+        "posPoints": 0,
+        "negPoints": 0,
+        "pokemonId": 43,
+        "history": []
+      },
+      {
+        "id": "5c-ma-15",
+        "rollNo": 15,
+        "name": "李可欣",
+        "points": 0,
+        "posPoints": 0,
+        "negPoints": 0,
+        "pokemonId": 46,
+        "history": []
+      },
+      {
+        "id": "5c-ma-16",
+        "rollNo": 16,
+        "name": "梁語穎",
+        "points": 0,
+        "posPoints": 0,
+        "negPoints": 0,
+        "pokemonId": 50,
+        "history": []
+      },
+      {
+        "id": "5c-ma-17",
+        "rollNo": 17,
+        "name": "李綺珺",
+        "points": 0,
+        "posPoints": 0,
+        "negPoints": 0,
+        "pokemonId": 52,
+        "history": []
+      },
+      {
+        "id": "5c-ma-18",
+        "rollNo": 18,
+        "name": "梁景竣",
+        "points": 0,
+        "posPoints": 0,
+        "negPoints": 0,
+        "pokemonId": 54,
+        "history": []
+      },
+      {
+        "id": "5c-ma-19",
+        "rollNo": 19,
+        "name": "陸洺希",
+        "points": 0,
+        "posPoints": 0,
+        "negPoints": 0,
+        "pokemonId": 56,
+        "history": []
+      },
+      {
+        "id": "5c-ma-20",
+        "rollNo": 20,
+        "name": "盧航俊",
+        "points": 0,
+        "posPoints": 0,
+        "negPoints": 0,
+        "pokemonId": 58,
+        "history": []
+      },
+      {
+        "id": "5c-ma-21",
+        "rollNo": 21,
+        "name": "馬超芸",
+        "points": 0,
+        "posPoints": 0,
+        "negPoints": 0,
+        "pokemonId": 60,
+        "history": []
+      },
+      {
+        "id": "5c-ma-22",
+        "rollNo": 22,
+        "name": "王鍶涵",
+        "points": 0,
+        "posPoints": 0,
+        "negPoints": 0,
+        "pokemonId": 63,
+        "history": []
+      },
+      {
+        "id": "5c-ma-23",
+        "rollNo": 23,
+        "name": "黃一進",
+        "points": 0,
+        "posPoints": 0,
+        "negPoints": 0,
+        "pokemonId": 66,
+        "history": []
+      },
+      {
+        "id": "5c-ma-24",
+        "rollNo": 24,
+        "name": "張浩澤",
+        "points": 0,
+        "posPoints": 0,
+        "negPoints": 0,
+        "pokemonId": 69,
+        "history": []
+      },
+      {
+        "id": "5c-ma-25",
+        "rollNo": 25,
+        "name": "趙慕辰",
+        "points": 0,
+        "posPoints": 0,
+        "negPoints": 0,
+        "pokemonId": 72,
+        "history": []
+      }
+    ]
+  }
+]

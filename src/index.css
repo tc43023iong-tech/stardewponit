@@ -1,0 +1,244 @@
+@import "tailwindcss";
+
+@layer base {
+  body {
+    font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  }
+}
+
+.font-pixel {
+  font-family: 'Press Start 2P', monospace;
+}
+
+/* Stardew Valley Wooden & Golden Box Shadows & Borders */
+.pixel-wood-box {
+  background-color: #f7e6c4;
+  border: 4px solid #5a3818;
+  box-shadow: 
+    inset -4px -4px 0px 0px #b88b4a,
+    inset 4px 4px 0px 0px #fff2d6,
+    0px 6px 0px 0px #2a1508;
+  position: relative;
+}
+
+.pixel-wood-dark {
+  background-color: #6a4422;
+  border: 4px solid #361f0d;
+  box-shadow: 
+    inset -3px -3px 0px 0px #4d2e13,
+    inset 3px 3px 0px 0px #946133,
+    0px 4px 0px 0px #1e0f05;
+}
+
+.pixel-parchment {
+  background-color: #faeed1;
+  border: 3px solid #7c4f24;
+  box-shadow: 
+    inset 2px 2px 0px 0px #fffdf7,
+    inset -2px -2px 0px 0px #d6ba89,
+    0 4px 6px -1px rgba(0, 0, 0, 0.2);
+}
+
+.pixel-btn-gold {
+  background-color: #fabc3f;
+  color: #4a2800;
+  border: 3px solid #633300;
+  box-shadow: 
+    inset -3px -3px 0px 0px #c28410,
+    inset 3px 3px 0px 0px #ffebb3,
+    0px 4px 0px 0px #381a00;
+  transition: all 0.08s ease;
+}
+
+.pixel-btn-gold:hover {
+  background-color: #ffd066;
+  transform: translateY(-2px);
+  box-shadow: 
+    inset -3px -3px 0px 0px #c28410,
+    inset 3px 3px 0px 0px #ffebb3,
+    0px 6px 0px 0px #381a00;
+}
+
+.pixel-btn-gold:active {
+  transform: translateY(3px);
+  box-shadow: 
+    inset -2px -2px 0px 0px #c28410,
+    inset 2px 2px 0px 0px #ffebb3,
+    0px 1px 0px 0px #381a00;
+}
+
+.pixel-btn-blue {
+  background-color: #4ea8de;
+  color: #03203c;
+  border: 3px solid #003049;
+  box-shadow: 
+    inset -3px -3px 0px 0px #2176ae,
+    inset 3px 3px 0px 0px #a2d2ff,
+    0px 4px 0px 0px #011627;
+  transition: all 0.08s ease;
+}
+
+.pixel-btn-blue:hover {
+  background-color: #64b5f6;
+  transform: translateY(-2px);
+  box-shadow: 
+    inset -3px -3px 0px 0px #2176ae,
+    inset 3px 3px 0px 0px #a2d2ff,
+    0px 6px 0px 0px #011627;
+}
+
+.pixel-btn-blue:active {
+  transform: translateY(3px);
+  box-shadow: 
+    inset -2px -2px 0px 0px #2176ae,
+    inset 2px 2px 0px 0px #a2d2ff,
+    0px 1px 0px 0px #011627;
+}
+
+.pixel-btn-green {
+  background-color: #70b05b;
+  color: #173b0f;
+  border: 3px solid #285416;
+  box-shadow: 
+    inset -3px -3px 0px 0px #4d8c38,
+    inset 3px 3px 0px 0px #a8dc95,
+    0px 4px 0px 0px #152d0b;
+  transition: all 0.08s ease;
+}
+
+.pixel-btn-green:hover {
+  background-color: #84c76d;
+  transform: translateY(-2px);
+  box-shadow: 
+    inset -3px -3px 0px 0px #4d8c38,
+    inset 3px 3px 0px 0px #a8dc95,
+    0px 6px 0px 0px #152d0b;
+}
+
+.pixel-btn-green:active {
+  transform: translateY(3px);
+  box-shadow: 
+    inset -2px -2px 0px 0px #4d8c38,
+    inset 2px 2px 0px 0px #a8dc95,
+    0px 1px 0px 0px #152d0b;
+}
+
+/* Subtle leaf float animation */
+@keyframes leafFloat {
+  0% {
+    transform: translate(0, -10px) rotate(0deg);
+    opacity: 0;
+  }
+  20% {
+    opacity: 0.8;
+  }
+  80% {
+    opacity: 0.8;
+  }
+  100% {
+    transform: translate(120px, 100vh) rotate(360deg);
+    opacity: 0;
+  }
+}
+
+.falling-leaf {
+  position: fixed;
+  pointer-events: none;
+  animation: leafFloat linear infinite;
+  z-index: 40;
+}
+
+/* Stardew Cozy Pastoral Animations */
+@keyframes cloudDriftSlow {
+  0% {
+    transform: translateX(-120%);
+  }
+  100% {
+    transform: translateX(240%);
+  }
+}
+
+@keyframes cloudDriftMed {
+  0% {
+    transform: translateX(-140%);
+  }
+  100% {
+    transform: translateX(220%);
+  }
+}
+
+@keyframes plantWindSway {
+  0% {
+    transform: rotate(-3.5deg) skewX(-2deg);
+  }
+  50% {
+    transform: rotate(4.5deg) skewX(3deg);
+  }
+  100% {
+    transform: rotate(-3.5deg) skewX(-2deg);
+  }
+}
+
+@keyframes chimneySmokePuff {
+  0% {
+    transform: translateY(0px) scale(0.7);
+    opacity: 0.8;
+  }
+  50% {
+    transform: translateY(-16px) scale(1.1);
+    opacity: 0.5;
+  }
+  100% {
+    transform: translateY(-34px) scale(1.6);
+    opacity: 0;
+  }
+}
+
+@keyframes waterGleam {
+  0%, 100% {
+    opacity: 0.4;
+    transform: scaleX(0.9);
+  }
+  50% {
+    opacity: 0.9;
+    transform: scaleX(1.1);
+  }
+}
+
+.animate-plant-sway {
+  transform-origin: bottom center;
+  animation: plantWindSway 3.2s ease-in-out infinite;
+}
+
+.animate-cloud-slow {
+  animation: cloudDriftSlow 42s linear infinite;
+}
+
+.animate-cloud-med {
+  animation: cloudDriftMed 28s linear infinite;
+}
+
+.animate-smoke {
+  animation: chimneySmokePuff 2.8s ease-out infinite;
+}
+
+.animate-water-gleam {
+  animation: waterGleam 2.4s ease-in-out infinite;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: #4a2f13;
+}
+::-webkit-scrollbar-thumb {
+  background: #ab7942;
+  border: 2px solid #331c07;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #c99355;
+}

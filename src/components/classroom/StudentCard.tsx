@@ -1,0 +1,287 @@
+import React, { useState } from 'react';
+import { Student } from '../../types/classroom';
+import { getCropGrowth, getFarmTier } from '../../data/classroomData';
+import { AvatarRenderer } from './AvatarRenderer';
+import { PixelSprite } from '../common/PixelSprite';
+import { soundManager } from '../../utils/sound';
+import { Check, Star, Sparkles } from 'lucide-react';
+
+interface StudentCardProps {
+  student: Student;
+  isSelected: boolean;
+  onToggleSelect: (studentId: string) => void;
+  onQuickAdd: (student: Student, delta: number) => void;
+  onOpenPointsModal: (student: Student) => void;
+  onChangeAvatar: (student: Student) => void;
+  onOpenFarmDetail?: (student: Student) => void;
+}
+
+export const StudentCard: React.FC<StudentCardProps> = ({
+  student,
+  isSelected,
+  onToggleSelect,
+  onOpenPointsModal,
+  onChangeAvatar,
+  onOpenFarmDetail,
+}) => {
+  const cropInfo = getCropGrowth(student.points);
+  const farmTier = getFarmTier(student.points);
+
+  // Determine mini farm animal sprite based on points
+  const getCardMiniAnimal = () => {
+    if (student.points >= 1000) return 'golden_chicken';
+    if (student.points >= 750) return 'blue_chicken';
+    if (student.points >= 500) return 'pig';
+    if (student.points >= 300) return 'cow';
+    if (student.points >= 150) return 'duck';
+    if (student.points >= 50) return 'chicken';
+    return null;
+  };
+
+  // Determine mini farm crop sprite based on points
+  const getCardMiniCrop = () => {
+    if (student.points >= 1000) return 'trophy';
+    if (student.points >= 500) return 'melon';
+    if (student.points >= 300) return 'melon';
+    if (student.points >= 50) return 'sunflower';
+    return null;
+  };
+
+  const miniAnimal = getCardMiniAnimal();
+  const miniCrop = getCardMiniCrop();
+
+  return (
+    <div
+      onClick={() => onOpenPointsModal(student)}
+      className={`group relative rounded-xl transition-all cursor-pointer flex flex-col justify-between select-none overflow-hidden hover:-translate-y-1 hover:shadow-xl border-4 ${
+        isSelected
+          ? 'border-[#fabc3f] ring-4 ring-[#fabc3f] shadow-lg'
+          : student.points >= 1000
+          ? 'border-[#eab308] ring-2 ring-amber-300 shadow-md'
+          : 'border-[#5a3818] shadow-md'
+      }`}
+      style={{
+        minHeight: '235px',
+      }}
+    >
+      {/* Dynamic Farm Landscape Background */}
+      <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
+        {/* Sky layer */}
+        <div
+          className="absolute inset-x-0 top-0 h-28 transition-colors duration-500"
+          style={{
+            background:
+              student.points >= 1000
+                ? 'linear-gradient(to bottom, #fde047 0%, #fed7aa 60%, #86efac 100%)'
+                : student.points >= 750
+                ? 'linear-gradient(to bottom, #fdba74 0%, #fef08a 60%, #86efac 100%)'
+                : student.points >= 500
+                ? 'linear-gradient(to bottom, #d8b4fe 0%, #fed7aa 60%, #a7f3d0 100%)'
+                : student.points >= 300
+                ? 'linear-gradient(to bottom, #93c5fd 0%, #bae6fd 60%, #bbf7d0 100%)'
+                : student.points >= 150
+                ? 'linear-gradient(to bottom, #bae6fd 0%, #e0f2fe 60%, #bbf7d0 100%)'
+                : student.points >= 50
+                ? 'linear-gradient(to bottom, #fef9c3 0%, #e2e8f0 60%, #d9f99d 100%)'
+                : 'linear-gradient(to bottom, #e7e5e4 0%, #f5f5f4 60%, #d6d3d1 100%)',
+          }}
+        />
+
+        {/* Distant Mountains & Trees Pixel Silhouette */}
+        <svg
+          className="absolute top-10 inset-x-0 w-full h-12 opacity-35"
+          preserveAspectRatio="none"
+          viewBox="0 0 200 40"
+        >
+          <polygon points="0,40 30,15 60,40 100,10 140,40 170,18 200,40" fill="#2d6a4f" />
+          <polygon points="20,40 45,22 70,40 120,18 160,40 185,25 200,40" fill="#1b4332" />
+        </svg>
+
+        {/* Ground Soil & Pasture Layer */}
+        <div
+          className="absolute inset-x-0 bottom-0 h-32 transition-colors duration-500"
+          style={{
+            backgroundColor:
+              student.points >= 1000
+                ? '#15803d'
+                : student.points >= 750
+                ? '#166534'
+                : student.points >= 500
+                ? '#15803d'
+                : student.points >= 300
+                ? '#16a34a'
+                : student.points >= 150
+                ? '#22c55e'
+                : student.points >= 50
+                ? '#4ade80'
+                : '#78350f',
+          }}
+        >
+          <div
+            className="w-full h-full opacity-30"
+            style={{
+              backgroundImage:
+                student.points >= 50
+                  ? 'radial-gradient(#14532d 15%, transparent 16%), radial-gradient(#166534 15%, transparent 16%)'
+                  : 'repeating-linear-gradient(0deg, #451a03 0px, #451a03 4px, #78350f 4px, #78350f 12px)',
+              backgroundSize: '16px 16px',
+            }}
+          />
+        </div>
+
+        {/* Mini Farm Scenery Elements on Card */}
+        <div className="absolute bottom-2 right-2 flex items-end gap-1.5 opacity-85 group-hover:scale-105 transition-transform">
+          {miniCrop && (
+            <div className="drop-shadow-md">
+              <PixelSprite name={miniCrop} size={28} />
+            </div>
+          )}
+          {miniAnimal && (
+            <div className="drop-shadow-md">
+              <PixelSprite name={miniAnimal} size={28} animate={student.points >= 150} />
+            </div>
+          )}
+        </div>
+
+        {/* 1000分 Rainbow Star Sparkles */}
+        {student.points >= 1000 && (
+          <div className="absolute top-2 right-10 text-sm animate-bounce">
+            ✨
+          </div>
+        )}
+      </div>
+
+      {/* Semi-transparent Frosted Card Content Container */}
+      <div className="relative z-10 p-3.5 flex flex-col justify-between h-full bg-[#faeed1]/93 backdrop-blur-xs border-b border-[#c4a675]/80">
+        {/* Card Header: Roll No ONLY & Checkbox (Farm name removed per user request) */}
+        <div className="flex items-center justify-between gap-1 mb-2">
+          <div className="flex items-center gap-1.5">
+            <span className="font-pixel text-xs bg-[#6a4422] text-[#ffebb3] px-2 py-0.5 rounded-sm border border-[#3b1f0b] shadow-xs">
+              #{student.rollNo}
+            </span>
+          </div>
+
+          {/* Selection Checkbox */}
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              soundManager.playClick();
+              onToggleSelect(student.id);
+            }}
+            className={`w-5 h-5 rounded border flex items-center justify-center transition-colors cursor-pointer ${
+              isSelected
+                ? 'bg-[#fabc3f] border-[#8b5a2b] text-[#4a2800]'
+                : 'bg-[#faeed1] border-[#a3794b] hover:bg-[#ffeec2]'
+            }`}
+            title={isSelected ? '取消勾選' : '勾選以進行批次評分'}
+          >
+            {isSelected && <Check className="w-3.5 h-3.5 stroke-[3]" />}
+          </button>
+        </div>
+
+        {/* Student Body: Large Prominent Avatar (Click to change avatar directly) */}
+        <div className="flex items-center gap-3.5 my-1.5">
+          {/* Large Avatar with direct click to change */}
+          <div
+            onClick={(e) => {
+              e.stopPropagation();
+              soundManager.playClick();
+              onChangeAvatar(student);
+            }}
+            className="relative shrink-0 group/avatar cursor-pointer"
+            title="點擊此處立即更換星露谷頭像 🎨"
+          >
+            <div className="relative p-1 rounded-2xl bg-[#fdfbf7] border-3 border-[#8b5a2b] shadow-md hover:border-[#ffd700] hover:ring-2 hover:ring-[#fabc3f] transition-all transform group-hover/avatar:scale-105">
+              <AvatarRenderer avatar={student.avatar} name={student.name} size={68} />
+              {/* Subtle hover icon */}
+              <div className="absolute inset-0 bg-black/20 rounded-xl opacity-0 group-hover/avatar:opacity-100 flex items-center justify-center transition-opacity text-white text-xs font-bold font-pixel">
+                更換
+              </div>
+            </div>
+          </div>
+
+          {/* Name & Stage info */}
+          <div className="flex-1 min-w-0">
+            <h4 className="font-extrabold text-base sm:text-lg text-[#3d240d] truncate">
+              {student.name}
+            </h4>
+            {/* Crop Growth Stage Badge */}
+            <div className="flex items-center gap-1 mt-1">
+              <span
+                className={`text-[11px] font-extrabold px-2 py-0.5 rounded border flex items-center gap-1 whitespace-nowrap shadow-xs ${cropInfo.badgeBg}`}
+              >
+                <span>{cropInfo.icon}</span>
+                <span className="truncate">{cropInfo.label}</span>
+              </span>
+            </div>
+          </div>
+        </div>
+
+        {/* Score Bar with 1000分 Farm Progress Indicator */}
+        <div className="bg-[#ede0c2]/90 border border-[#c4a675] rounded p-2 my-1 flex flex-col gap-1 shadow-inner">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-1">
+              <PixelSprite name="coin_gold" size={16} />
+              <span className="font-pixel text-xs text-[#5a3818] font-bold">
+                {student.points} 分
+              </span>
+            </div>
+            <div className="text-[11px] font-bold flex items-center gap-1">
+              <span className="text-[#16a34a]">+{student.posPoints}</span>
+              <span className="text-stone-400">/</span>
+              <span className="text-[#dc2626]">-{Math.abs(student.negPoints)}</span>
+            </div>
+          </div>
+
+          {/* Progress bar to 1000分 */}
+          <div className="w-full bg-[#d6ba89] h-2 rounded-full overflow-hidden border border-[#b88b4a]">
+            <div
+              className={`h-full transition-all duration-500 ${
+                student.points >= 1000
+                  ? 'bg-gradient-to-r from-amber-400 to-yellow-300 animate-pulse'
+                  : 'bg-[#16a34a]'
+              }`}
+              style={{
+                width: `${Math.min(100, Math.max(2, (Math.max(0, student.points) / 1000) * 100))}%`,
+              }}
+            />
+          </div>
+        </div>
+
+        {/* Bottom Actions: "⭐ 評定表現" button & "🏡 參觀農場" button */}
+        <div className="pt-2 border-t border-[#dfcca4]/80 flex items-center gap-2">
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              soundManager.playClick();
+              onOpenPointsModal(student);
+            }}
+            className="pixel-btn-gold flex-1 py-2 px-2 text-xs font-bold rounded-lg flex items-center justify-center gap-1 cursor-pointer shadow-md active:scale-95 transition-all"
+            title="開啟課堂加扣分評定"
+          >
+            <Star className="w-3.5 h-3.5 fill-[#633300]" />
+            <span>評分</span>
+          </button>
+
+          {onOpenFarmDetail && (
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                soundManager.playCorrect();
+                onOpenFarmDetail(student);
+              }}
+              className="pixel-btn-green py-2 px-2.5 text-xs font-bold rounded-lg flex items-center justify-center gap-1 cursor-pointer shadow-md active:scale-95 transition-all text-white"
+              title="走進該同學的專屬農場，觀賞漫步動物與植物"
+            >
+              <span>🏡</span>
+              <span>農場</span>
+            </button>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+};

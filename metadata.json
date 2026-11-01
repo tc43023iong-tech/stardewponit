@@ -1,0 +1,8 @@
+{
+  "name": "Remix Stardew Valley English Adventure – Primary 5",
+  "description": "星露谷風格課堂加減分管理系統，支援多班級學生管理、正負分即時評定、課堂計時器、幸運抽籤轉盤、小組競賽與榮譽排行榜。",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
