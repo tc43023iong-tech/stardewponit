@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Student } from '../../types/classroom';
 import { getCropGrowth, getFarmTier } from '../../data/classroomData';
 import { STUDENT_CARD_BACKGROUND_OPTIONS } from '../../data/classroomThemes';
@@ -68,7 +68,7 @@ export const StudentCard: React.FC<StudentCardProps> = ({
     ? 'linear-gradient(to bottom, #bae6fd 0%, #e0f2fe 60%, #bbf7d0 100%)'
     : student.points >= 50
     ? 'linear-gradient(to bottom, #fef9c3 0%, #e2e8f0 60%, #d9f99d 100%)'
-    : 'linear-gradient(to bottom, #e7e5e4 0%, #f5f5f4 60%, #d6d3d1 100%)';
+    : 'linear-gradient(to bottom, #bae6fd 0%, #e0f2fe 60%, #bbf7d0 100%)';
 
   const groundBg = isCustomBgActive && customBg
     ? customBg.groundBg
@@ -84,7 +84,7 @@ export const StudentCard: React.FC<StudentCardProps> = ({
     ? '#22c55e'
     : student.points >= 50
     ? '#4ade80'
-    : '#78350f';
+    : '#15803d';
 
   const groundPattern = isCustomBgActive && customBg
     ? customBg.groundPattern
@@ -92,14 +92,10 @@ export const StudentCard: React.FC<StudentCardProps> = ({
     ? 'radial-gradient(#14532d 15%, transparent 16%), radial-gradient(#166534 15%, transparent 16%)'
     : 'repeating-linear-gradient(0deg, #451a03 0px, #451a03 4px, #78350f 4px, #78350f 12px)';
 
-  const cardParchmentBg = isCustomBgActive && customBg
-    ? customBg.cardParchmentTint
-    : 'bg-[#faeed1]/93';
-
   return (
     <div
       onClick={() => onOpenPointsModal(student)}
-      className={`group relative rounded-xl transition-all cursor-pointer flex flex-col justify-between select-none overflow-hidden hover:-translate-y-1 hover:shadow-xl border-4 ${
+      className={`group relative rounded-xl transition-all cursor-pointer flex flex-col justify-between select-none overflow-hidden hover:-translate-y-1 hover:shadow-2xl border-4 ${
         isSelected
           ? 'border-[#fabc3f] ring-4 ring-[#fabc3f] shadow-lg'
           : isCustomBgActive && customBg
@@ -109,14 +105,14 @@ export const StudentCard: React.FC<StudentCardProps> = ({
           : 'border-[#5a3818] shadow-md'
       }`}
       style={{
-        minHeight: '235px',
+        minHeight: '265px',
       }}
     >
-      {/* Dynamic Farm Landscape Background */}
+      {/* Dynamic Farm Landscape Background (Sky, Mountains, Soil, Farm Elements) */}
       <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
-        {/* Sky layer */}
+        {/* Sky layer (Top 58%) */}
         <div
-          className="absolute inset-x-0 top-0 h-28 transition-colors duration-500"
+          className="absolute inset-x-0 top-0 h-[58%] transition-colors duration-500"
           style={{
             background: skyGradient,
           }}
@@ -124,7 +120,7 @@ export const StudentCard: React.FC<StudentCardProps> = ({
 
         {/* Distant Mountains & Trees Pixel Silhouette */}
         <svg
-          className="absolute top-10 inset-x-0 w-full h-12 opacity-35"
+          className="absolute top-[22%] inset-x-0 w-full h-12 opacity-40"
           preserveAspectRatio="none"
           viewBox="0 0 200 40"
         >
@@ -132,15 +128,15 @@ export const StudentCard: React.FC<StudentCardProps> = ({
           <polygon points="20,40 45,22 70,40 120,18 160,40 185,25 200,40" fill="#1b4332" />
         </svg>
 
-        {/* Ground Soil & Pasture Layer */}
+        {/* Ground Soil & Pasture Layer (Bottom 48%) */}
         <div
-          className="absolute inset-x-0 bottom-0 h-32 transition-colors duration-500"
+          className="absolute inset-x-0 bottom-0 h-[48%] transition-colors duration-500"
           style={{
             backgroundColor: groundBg,
           }}
         >
           <div
-            className="w-full h-full opacity-30"
+            className="w-full h-full opacity-35"
             style={{
               backgroundImage: groundPattern,
               backgroundSize: '16px 16px',
@@ -148,32 +144,7 @@ export const StudentCard: React.FC<StudentCardProps> = ({
           />
         </div>
 
-        {/* Mini Farm Scenery Elements on Card */}
-        <div className="absolute bottom-2 right-2 flex items-end gap-1.5 opacity-85 group-hover:scale-105 transition-transform">
-          {student.cardBackground === 'desert_oasis' ? (
-            <span className="text-2xl drop-shadow select-none">🌵</span>
-          ) : student.cardBackground === 'volcano_caldera' ? (
-            <span className="text-2xl drop-shadow select-none">🌋</span>
-          ) : student.cardBackground === 'mushroom_cave' ? (
-            <span className="text-2xl drop-shadow select-none">🍄</span>
-          ) : student.cardBackground === 'moonlight_jellies' ? (
-            <span className="text-2xl drop-shadow select-none animate-pulse">🪼</span>
-          ) : student.cardBackground === 'junimo_orchard' ? (
-            <span className="text-2xl drop-shadow select-none">🍏</span>
-          ) : null}
-          {miniCrop && (
-            <div className="drop-shadow-md">
-              <PixelSprite name={miniCrop} size={28} />
-            </div>
-          )}
-          {miniAnimal && (
-            <div className="drop-shadow-md">
-              <PixelSprite name={miniAnimal} size={28} animate={student.points >= 150} />
-            </div>
-          )}
-        </div>
-
-        {/* 1000分 Rainbow Star Sparkles */}
+        {/* 1000分 Rainbow Sparkles */}
         {student.points >= 1000 && (
           <div className="absolute top-2 right-10 text-sm animate-bounce">
             ✨
@@ -181,20 +152,20 @@ export const StudentCard: React.FC<StudentCardProps> = ({
         )}
       </div>
 
-      {/* Semi-transparent Frosted Card Content Container */}
-      <div className={`relative z-10 p-3.5 flex flex-col justify-between h-full ${cardParchmentBg} backdrop-blur-xs border-b border-[#c4a675]/80`}>
-        {/* Card Header: Roll No & Theme badge & Checkbox */}
-        <div className="flex items-center justify-between gap-1 mb-2">
+      {/* 1. UPPER SCENIC CANVAS (Fully Transparent - exposes sky, mountains, avatar, and roaming stickers) */}
+      <div className="relative z-10 p-2.5 flex flex-col justify-between h-[135px]">
+        {/* Top Header: Roll No & Custom Theme Badge & Selection Checkbox */}
+        <div className="flex items-center justify-between gap-1">
           <div className="flex items-center gap-1.5">
-            <span className="font-pixel text-xs bg-[#6a4422] text-[#ffebb3] px-2 py-0.5 rounded-sm border border-[#3b1f0b] shadow-xs">
+            <span className="font-pixel text-[11px] bg-[#6a4422]/95 text-[#ffebb3] px-2 py-0.5 rounded-sm border border-[#3b1f0b] shadow-md backdrop-blur-xs">
               #{student.rollNo}
             </span>
             {isCustomBgActive && customBg && (
               <span
-                className="text-[10px] font-bold text-amber-900 bg-amber-100/90 px-1.5 py-0.5 rounded border border-amber-300 flex items-center gap-0.5"
+                className="text-[10px] font-bold text-amber-900 bg-amber-100/95 px-1.5 py-0.5 rounded border border-amber-400 flex items-center gap-0.5 shadow-xs backdrop-blur-xs"
                 title={`自訂卡片背景：${customBg.name}`}
               >
-                {customBg.icon}
+                {customBg.icon} {customBg.name.split(' ')[1] || ''}
               </span>
             )}
           </div>
@@ -207,10 +178,10 @@ export const StudentCard: React.FC<StudentCardProps> = ({
               soundManager.playClick();
               onToggleSelect(student.id);
             }}
-            className={`w-5 h-5 rounded border flex items-center justify-center transition-colors cursor-pointer ${
+            className={`w-5 h-5 rounded border-2 flex items-center justify-center transition-colors cursor-pointer shadow-md ${
               isSelected
                 ? 'bg-[#fabc3f] border-[#8b5a2b] text-[#4a2800]'
-                : 'bg-[#faeed1] border-[#a3794b] hover:bg-[#ffeec2]'
+                : 'bg-[#faeed1]/95 border-[#a3794b] hover:bg-[#ffeec2]'
             }`}
             title={isSelected ? '取消勾選' : '勾選以進行批次評分'}
           >
@@ -218,9 +189,9 @@ export const StudentCard: React.FC<StudentCardProps> = ({
           </button>
         </div>
 
-        {/* Student Body: Large Prominent Avatar (Click to change avatar directly) */}
-        <div className="flex items-center gap-3.5 my-1.5">
-          {/* Large Avatar with direct click to change */}
+        {/* Stage Area: Avatar Character standing right on the farm landscape with farm props */}
+        <div className="flex items-end justify-between px-1 -mb-1">
+          {/* Avatar with click-to-change action */}
           <div
             onClick={(e) => {
               e.stopPropagation();
@@ -228,40 +199,67 @@ export const StudentCard: React.FC<StudentCardProps> = ({
               onChangeAvatar(student);
             }}
             className="relative shrink-0 group/avatar cursor-pointer"
-            title="點擊此處立即更換星露谷頭像 🎨"
+            title="點擊此處立即更換星露谷頭像與卡片背景 🎨"
           >
-            <div className="relative p-1 rounded-2xl bg-[#fdfbf7] border-3 border-[#8b5a2b] shadow-md hover:border-[#ffd700] hover:ring-2 hover:ring-[#fabc3f] transition-all transform group-hover/avatar:scale-105">
-              <AvatarRenderer avatar={student.avatar} name={student.name} size={68} />
-              {/* Subtle hover icon */}
-              <div className="absolute inset-0 bg-black/20 rounded-xl opacity-0 group-hover/avatar:opacity-100 flex items-center justify-center transition-opacity text-white text-xs font-bold font-pixel">
+            <div className="relative p-1 rounded-2xl bg-white/85 border-3 border-[#8b5a2b] shadow-lg hover:border-[#ffd700] hover:ring-2 hover:ring-[#fabc3f] transition-all transform group-hover/avatar:scale-105 backdrop-blur-xs">
+              <AvatarRenderer avatar={student.avatar} name={student.name} size={62} />
+              {/* Subtle hover overlay */}
+              <div className="absolute inset-0 bg-black/25 rounded-xl opacity-0 group-hover/avatar:opacity-100 flex items-center justify-center transition-opacity text-white text-[10px] font-bold font-pixel">
                 更換
               </div>
             </div>
           </div>
 
-          {/* Name & Stage info */}
-          <div className="flex-1 min-w-0">
-            <h4 className="font-extrabold text-base sm:text-lg text-[#3d240d] truncate">
-              {student.name}
-            </h4>
-            {/* Crop Growth Stage Badge */}
-            <div className="flex items-center gap-1 mt-1">
-              <span
-                className={`text-[11px] font-extrabold px-2 py-0.5 rounded border flex items-center gap-1 whitespace-nowrap shadow-xs ${cropInfo.badgeBg}`}
-              >
-                <span>{cropInfo.icon}</span>
-                <span className="truncate">{cropInfo.label}</span>
-              </span>
-            </div>
+          {/* Mini Farm Scenery Props on the field (Cactus, Volcano, Mushroom, Jellies, Crops, Animals) */}
+          <div className="flex items-end gap-1.5 pb-1 opacity-90 group-hover:scale-105 transition-transform">
+            {student.cardBackground === 'desert_oasis' ? (
+              <span className="text-2xl drop-shadow select-none" title="沙漠仙人掌">🌵</span>
+            ) : student.cardBackground === 'volcano_caldera' ? (
+              <span className="text-2xl drop-shadow select-none" title="火山溶岩">🌋</span>
+            ) : student.cardBackground === 'mushroom_cave' ? (
+              <span className="text-2xl drop-shadow select-none animate-pulse" title="發光真菌洞穴">🍄</span>
+            ) : student.cardBackground === 'moonlight_jellies' ? (
+              <span className="text-2xl drop-shadow select-none animate-pulse" title="月光水母">🪼</span>
+            ) : student.cardBackground === 'junimo_orchard' ? (
+              <span className="text-2xl drop-shadow select-none" title="祝尼魔果園">🍏</span>
+            ) : null}
+
+            {miniCrop && (
+              <div className="drop-shadow-md">
+                <PixelSprite name={miniCrop} size={28} />
+              </div>
+            )}
+            {miniAnimal && (
+              <div className="drop-shadow-md">
+                <PixelSprite name={miniAnimal} size={28} animate={student.points >= 150} />
+              </div>
+            )}
           </div>
         </div>
+      </div>
 
-        {/* Score Bar with 1000分 Farm Progress Indicator */}
-        <div className="bg-[#ede0c2]/90 border border-[#c4a675] rounded p-2 my-1 flex flex-col gap-1 shadow-inner">
+      {/* 2. LOWER PARCHMENT DOCK (Stardew Valley Ledger Board - Crisp, Readable & Wooden Framed) */}
+      <div className="relative z-10 p-2.5 bg-[#faeed1]/94 backdrop-blur-xs border-t-2 border-[#8b5a2b] shadow-[0_-2px_8px_rgba(0,0,0,0.1)] flex flex-col justify-between gap-1.5">
+        {/* Student Name & Crop Badge Row */}
+        <div className="flex items-center justify-between gap-2">
+          <h4 className="font-extrabold text-sm sm:text-base text-[#3d240d] truncate">
+            {student.name}
+          </h4>
+          {/* Crop Growth Stage Badge */}
+          <span
+            className={`text-[10px] font-extrabold px-1.5 py-0.5 rounded border flex items-center gap-1 whitespace-nowrap shadow-xs ${cropInfo.badgeBg}`}
+          >
+            <span>{cropInfo.icon}</span>
+            <span className="truncate">{cropInfo.label}</span>
+          </span>
+        </div>
+
+        {/* Score Bar with Gold Coin & 1000分 Farm Progress */}
+        <div className="bg-[#ede0c2]/95 border border-[#c4a675] rounded p-1.5 flex flex-col gap-1 shadow-inner">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-1">
-              <PixelSprite name="coin_gold" size={16} />
-              <span className="font-pixel text-xs text-[#5a3818] font-bold">
+              <PixelSprite name="coin_gold" size={15} />
+              <span className="font-pixel text-[11px] text-[#5a3818] font-bold">
                 {student.points} 分
               </span>
             </div>
@@ -287,8 +285,8 @@ export const StudentCard: React.FC<StudentCardProps> = ({
           </div>
         </div>
 
-        {/* Bottom Actions: "⭐ 評定表現" button & "🏡 參觀農場" button */}
-        <div className="pt-2 border-t border-[#dfcca4]/80 flex items-center gap-2">
+        {/* Bottom Actions: "⭐ 評分", "🎨 風格", "🏡 農場" */}
+        <div className="pt-1.5 border-t border-[#dfcca4]/80 flex items-center gap-2">
           <button
             type="button"
             onClick={(e) => {
@@ -296,7 +294,7 @@ export const StudentCard: React.FC<StudentCardProps> = ({
               soundManager.playClick();
               onOpenPointsModal(student);
             }}
-            className="pixel-btn-gold flex-1 py-2 px-2 text-xs font-bold rounded-lg flex items-center justify-center gap-1 cursor-pointer shadow-md active:scale-95 transition-all"
+            className="pixel-btn-gold flex-1 py-1.5 px-2 text-xs font-bold rounded-lg flex items-center justify-center gap-1 cursor-pointer shadow-md active:scale-95 transition-all"
             title="開啟課堂加扣分評定"
           >
             <Star className="w-3.5 h-3.5 fill-[#633300]" />
@@ -310,7 +308,7 @@ export const StudentCard: React.FC<StudentCardProps> = ({
               soundManager.playClick();
               onChangeAvatar(student);
             }}
-            className="p-2 bg-[#faeed1] hover:bg-[#ffeec2] border-2 border-[#8b5a2b] text-[#5a3818] rounded-lg flex items-center justify-center cursor-pointer shadow-sm active:scale-95 transition-all shrink-0"
+            className="p-1.5 bg-[#faeed1] hover:bg-[#ffeec2] border-2 border-[#8b5a2b] text-[#5a3818] rounded-lg flex items-center justify-center cursor-pointer shadow-sm active:scale-95 transition-all shrink-0"
             title="更換頭像與卡片背景風格 🎨"
           >
             <Palette className="w-3.5 h-3.5" />
@@ -324,7 +322,7 @@ export const StudentCard: React.FC<StudentCardProps> = ({
                 soundManager.playCorrect();
                 onOpenFarmDetail(student);
               }}
-              className="pixel-btn-green py-2 px-2.5 text-xs font-bold rounded-lg flex items-center justify-center gap-1 cursor-pointer shadow-md active:scale-95 transition-all text-white"
+              className="pixel-btn-green py-1.5 px-2 text-xs font-bold rounded-lg flex items-center justify-center gap-1 cursor-pointer shadow-md active:scale-95 transition-all text-white"
               title="走進該同學的專屬農場，觀賞漫步動物與植物"
             >
               <span>🏡</span>

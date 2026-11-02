@@ -21,6 +21,7 @@ import { TimerModal } from './components/classroom/TimerModal';
 import { RandomPickerModal } from './components/classroom/RandomPickerModal';
 import { PointsFeedbackModal, PointsFeedbackData } from './components/classroom/PointsFeedbackModal';
 import { AvatarPickerModal } from './components/classroom/AvatarPickerModal';
+import { ScenicPageBackdrop } from './components/classroom/ScenicPageBackdrop';
 import { AmbientEffects } from './components/common/AmbientEffects';
 import { PixelSprite } from './components/common/PixelSprite';
 
@@ -454,28 +455,9 @@ export default function App() {
   };
 
   return (
-    <div className={`min-h-screen bg-gradient-to-b ${activePageTheme.bgGradient} text-[#2b2b2b] flex flex-col font-sans relative selection:bg-[#fabc3f] selection:text-[#4a2800] transition-colors duration-700`}>
-      {/* Background Decorative Farm Texture Patterns */}
-      <div
-        className="fixed inset-0 pointer-events-none opacity-25 z-0"
-        style={{
-          backgroundImage:
-            activePageTheme.patternType === 'grass'
-              ? 'radial-gradient(#15803d 15%, transparent 16%), radial-gradient(#166534 15%, transparent 16%)'
-              : activePageTheme.patternType === 'sunflower'
-              ? 'radial-gradient(#ca8a04 18%, transparent 19%)'
-              : activePageTheme.patternType === 'autumn'
-              ? 'radial-gradient(#c2410c 18%, transparent 19%)'
-              : activePageTheme.patternType === 'snow'
-              ? 'radial-gradient(#bae6fd 12%, transparent 14%)'
-              : activePageTheme.patternType === 'magic'
-              ? 'radial-gradient(#a855f7 16%, transparent 18%)'
-              : 'repeating-linear-gradient(0deg, #451a03 0px, #451a03 3px, #78350f 3px, #78350f 12px)',
-          backgroundSize: '24px 24px',
-        }}
-      />
-      {/* Soft warm sunbeam / vignette overlay */}
-      <div className="fixed inset-0 pointer-events-none bg-radial from-transparent via-black/10 to-black/40 z-0" />
+    <div className="min-h-screen text-[#2b2b2b] flex flex-col font-sans relative selection:bg-[#fabc3f] selection:text-[#4a2800]">
+      {/* Dynamic Stardew Valley Panoramic Scenic Backdrop (Sky, Sun/Moon, Clouds, Mountain Silhouettes, Horizon Fence & Pasture) */}
+      <ScenicPageBackdrop theme={activePageTheme} />
 
       {/* Hidden File Input for CSV Import */}
       <input
