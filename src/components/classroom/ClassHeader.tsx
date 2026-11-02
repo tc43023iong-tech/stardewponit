@@ -76,7 +76,7 @@ export const ClassHeader: React.FC<ClassHeaderProps> = ({
           <div className="flex items-center gap-2 bg-[#6b421d] px-2.5 py-1.5 border-2 border-[#8b5a2b] shadow-inner">
             <PixelSprite name="sunflower" size={24} />
             <span className="font-pixel text-xs sm:text-sm text-[#ffebb3] tracking-wide whitespace-nowrap">
-              星露谷課堂
+              容老師的課堂
             </span>
           </div>
 

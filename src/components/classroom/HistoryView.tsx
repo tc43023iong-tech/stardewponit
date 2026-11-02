@@ -21,12 +21,16 @@ export const HistoryView: React.FC<HistoryViewProps> = ({
   const allHistory = useMemo(() => {
     const list: PointHistoryItem[] = [];
     students.forEach((s) => {
-      s.history?.forEach((h) => {
-        list.push(h);
+      (s.history || []).forEach((h, hIdx) => {
+        const safeId = h.id || `hist_${s.id}_${h.timestamp || 0}_${hIdx}`;
+        list.push({
+          ...h,
+          id: safeId,
+        });
       });
     });
     // Sort descending by timestamp
-    return list.sort((a, b) => b.timestamp - a.timestamp);
+    return list.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
   }, [students]);
 
   const filteredHistory = useMemo(() => {
@@ -34,8 +38,8 @@ export const HistoryView: React.FC<HistoryViewProps> = ({
     const q = searchQuery.toLowerCase();
     return allHistory.filter(
       (h) =>
-        h.studentName.toLowerCase().includes(q) ||
-        h.reason.toLowerCase().includes(q) ||
+        (h.studentName && h.studentName.toLowerCase().includes(q)) ||
+        (h.reason && h.reason.toLowerCase().includes(q)) ||
         (h.reasonEn && h.reasonEn.toLowerCase().includes(q))
     );
   }, [allHistory, searchQuery]);
@@ -98,54 +102,60 @@ export const HistoryView: React.FC<HistoryViewProps> = ({
           </div>
         ) : (
           <div className="divide-y divide-[#dfcca4]/60">
-            {filteredHistory.map((item) => (
-              <div
-                key={item.id}
-                className="py-3 flex flex-wrap items-center justify-between gap-3 hover:bg-[#fff9ea] px-2 rounded transition-colors"
-              >
-                <div className="flex items-center gap-3">
-                  <span className="text-2xl shrink-0">{item.icon || (item.delta > 0 ? '🌟' : '⚠️')}</span>
-                  <div>
-                    <div className="flex items-center gap-2">
-                      <span className="font-bold text-sm text-[#3d240d]">
-                        {item.studentName}
-                      </span>
-                      <span
-                        className={`font-pixel text-xs font-bold px-2 py-0.5 rounded border ${
-                          item.delta > 0
-                            ? 'bg-[#dcfce7] text-[#15803d] border-[#86efac]'
-                            : 'bg-[#fee2e2] text-[#b91c1c] border-[#fca5a5]'
-                        }`}
-                      >
-                        {item.delta > 0 ? `+${item.delta}` : item.delta} G
-                      </span>
+            {filteredHistory.map((item, index) => {
+              const uniqueKey = item.id
+                ? `${item.id}_${item.studentId}_${index}`
+                : `hist_${item.studentId}_${item.timestamp}_${index}`;
+              return (
+                <div
+                  key={uniqueKey}
+                  className="py-3 flex flex-wrap items-center justify-between gap-3 hover:bg-[#fff9ea] px-2 rounded transition-colors"
+                >
+                  <div className="flex items-center gap-3">
+                    <span className="text-2xl shrink-0">{item.icon || (item.delta > 0 ? '🌟' : '⚠️')}</span>
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <span className="font-bold text-sm text-[#3d240d]">
+                          {item.studentName}
+                        </span>
+                        <span
+                          className={`font-pixel text-xs font-bold px-2 py-0.5 rounded border ${
+                            item.delta > 0
+                              ? 'bg-[#dcfce7] text-[#15803d] border-[#86efac]'
+                              : 'bg-[#fee2e2] text-[#b91c1c] border-[#fca5a5]'
+                          }`}
+                        >
+                          {item.delta > 0 ? `+${item.delta}` : item.delta} 分
+                        </span>
+                      </div>
+                      <div className="text-xs text-stone-600 font-bold mt-0.5">
+                        {item.reason}
+                      </div>
+                      {item.reasonEn && (
+                        <div className="text-[10px] text-stone-400">{item.reasonEn}</div>
+                      )}
                     </div>
-                    <div className="text-xs text-stone-600 font-bold mt-0.5">
-                      {item.reason}
-                    </div>
-                    {item.reasonEn && (
-                      <div className="text-[10px] text-stone-400">{item.reasonEn}</div>
-                    )}
+                  </div>
+
+                  <div className="flex items-center gap-3 text-right">
+                    <span className="text-[11px] font-mono text-stone-500">
+                      {formatTime(item.timestamp)}
+                    </span>
+                    <button
+                      onClick={() => handleUndo(item)}
+                      className="px-2.5 py-1 text-xs font-bold text-[#b45309] hover:bg-[#ffeec2] border border-[#d6ba89] rounded flex items-center gap-1 cursor-pointer active:scale-95 transition-all"
+                      title="撤銷本筆加減分"
+                    >
+                      <Undo2 className="w-3.5 h-3.5" /> 撤銷
+                    </button>
                   </div>
                 </div>
-
-                <div className="flex items-center gap-3 text-right">
-                  <span className="text-[11px] font-mono text-stone-500">
-                    {formatTime(item.timestamp)}
-                  </span>
-                  <button
-                    onClick={() => handleUndo(item)}
-                    className="px-2.5 py-1 text-xs font-bold text-[#b45309] hover:bg-[#ffeec2] border border-[#d6ba89] rounded flex items-center gap-1 cursor-pointer active:scale-95 transition-all"
-                    title="撤銷本筆加減分"
-                  >
-                    <Undo2 className="w-3.5 h-3.5" /> 撤銷
-                  </button>
-                </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         )}
       </div>
     </div>
   );
 };
+

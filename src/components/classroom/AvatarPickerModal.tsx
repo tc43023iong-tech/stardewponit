@@ -17,7 +17,7 @@ export const AvatarPickerModal: React.FC<AvatarPickerModalProps> = ({
   onSaveAvatar,
 }) => {
   const [selectedAvatar, setSelectedAvatar] = useState<string>(student.avatar || 'sdv_white_chicken');
-  const [stardewSubFilter, setStardewSubFilter] = useState<'all' | 'animals' | 'villagers' | 'monsters' | 'treasures'>('all');
+  const [stardewSubFilter, setStardewSubFilter] = useState<'all' | 'animals' | 'villagers' | 'treasures'>('all');
   const [searchQuery, setSearchQuery] = useState<string>('');
 
   const handlePick = (avatarValue: string) => {
@@ -65,7 +65,7 @@ export const AvatarPickerModal: React.FC<AvatarPickerModalProps> = ({
                 更換星露谷伙伴頭像：{student.name} (#{student.rollNo})
               </h3>
               <p className="text-[10px] text-[#fed7aa]">
-                純星露谷主題 · 提供 100+ 款農場咕咕雞、小鴨、松露萌豬、鵜鶘鎮村民與珍奇寶物！
+                純星露谷主題 · 提供 70+ 款農場咕咕雞、小鴨、松露萌豬、鵜鶘鎮村民與珍奇寶物！
               </p>
             </div>
           </div>
@@ -115,7 +115,6 @@ export const AvatarPickerModal: React.FC<AvatarPickerModalProps> = ({
               { id: 'all', label: `全部 (${STARDEW_AVATARS.length})` },
               { id: 'animals', label: '🌾 農場動物 (15+種)' },
               { id: 'villagers', label: '🏡 小鎮村民 (40+位)' },
-              { id: 'monsters', label: '👾 精靈與怪物' },
               { id: 'treasures', label: '💎 傳奇珍寶與神魚' },
             ].map((sub) => (
               <button

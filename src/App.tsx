@@ -497,7 +497,7 @@ export default function App() {
         <div className="flex items-center gap-2">
           <PixelSprite name="sunflower" size={16} />
           <span className="font-pixel text-[11px] text-[#ffebb3]">
-            星露谷課堂加減分系統 (Stardew Valley Class Points Manager)
+            容老師的課堂 (Stardew Valley Class Points Manager)
           </span>
         </div>
         <span className="text-stone-400">·</span>

@@ -49,13 +49,13 @@ export const NEGATIVE_PRESETS: PointPreset[] = [
 export interface StardewAvatarItem {
   id: string;
   name: string;
-  category: 'villagers' | 'animals' | 'monsters' | 'treasures';
+  category: 'villagers' | 'animals' | 'treasures';
   url?: string;
   sprite?: string;
   role?: string;
 }
 
-// 110+ Stardew Valley Avatars (Companions, Villagers, Animals, Monsters & Treasures)
+// 70+ Pure Stardew Valley Avatars (Companions, Animals, Villagers & Treasures - No Monsters/Items requested to be removed)
 export const STARDEW_AVATARS: StardewAvatarItem[] = [
   // --- 1. 農場動物與核心寵物 (Farm Animals & Pets) ---
   { id: 'sdv_white_chicken', name: '純白小母雞 (White Chicken)', category: 'animals', url: 'https://stardewvalleywiki.com/mediawiki/images/en/2/22/White_Chicken.png', sprite: 'chicken', role: '農場咕咕雞' },
@@ -77,7 +77,7 @@ export const STARDEW_AVATARS: StardewAvatarItem[] = [
   { id: 'sdv_dog', name: '忠實柴犬 (Dog)', category: 'animals', url: 'https://stardewvalleywiki.com/mediawiki/images/en/9/99/Dog.gif', sprite: 'dog', role: '看門搖尾巴' },
   { id: 'sdv_turtle', name: '海濱烏龜 (Turtle)', category: 'animals', url: 'https://stardewvalleywiki.com/mediawiki/images/en/e/e9/Turtle.png', sprite: 'rabbit', role: '長壽守護' },
   { id: 'sdv_crow', name: '頑皮烏鴉 (Crow)', category: 'animals', url: 'https://stardewvalleywiki.com/mediawiki/images/en/f/fa/Crow.png', sprite: 'chicken', role: '稻草人死對頭' },
-  { id: 'sdv_butterfly', name: '彩色彩蝶 (Butterfly)', category: 'animals', url: 'https://stardewvalleywiki.com/mediawiki/images/en/6/6c/ButterflyAnimated.gif', sprite: 'junimo', role: '花間起舞' },
+  { id: 'sdv_butterfly', name: '彩色彩蝶 (Butterfly)', category: 'animals', url: 'https://stardewvalleywiki.com/mediawiki/images/en/6/6c/ButterflyAnimated.gif', sprite: 'chicken', role: '花間起舞' },
 
   // --- 2. 鵜鶘鎮村民與居民 (Pelican Town Villagers) ---
   { id: 'sdv_abigail', name: '阿比蓋爾 (Abigail)', category: 'villagers', url: 'https://stardewvalleywiki.com/mediawiki/images/en/8/88/Abigail.png', role: '紫髮冒險少女' },
@@ -127,82 +127,54 @@ export const STARDEW_AVATARS: StardewAvatarItem[] = [
   { id: 'sdv_fizz', name: '特使菲茲 (Fizz)', category: 'villagers', url: 'https://stardewvalleywiki.com/mediawiki/images/en/a/a3/Fizz_00.png', role: '齊先生高級特工' },
   { id: 'sdv_mayor_portrait', name: '劉易斯鎮長 (Lewis)', category: 'villagers', url: 'https://stardewvalleywiki.com/mediawiki/images/en/2/2b/Lewis.png', role: '鵜鶘鎮長老官' },
 
-  // --- 3. 森林精靈與地底怪物 (Sprites & Monsters) ---
-  { id: 'junimo', name: '祝尼魔 (Junimo)', category: 'monsters', sprite: 'junimo', role: '森林守護神' },
-  { id: 'sdv_dust_sprite', name: '灰塵精靈 (Dust Sprite)', category: 'monsters', url: 'https://stardewvalleywiki.com/mediawiki/images/en/9/9a/Dust_Sprite.png', sprite: 'junimo', role: '礦洞煤炭萌球' },
-  { id: 'sdv_green_slime', name: '綠色史萊姆 (Green Slime)', category: 'monsters', url: 'https://stardewvalleywiki.com/mediawiki/images/en/6/63/Green_Slime.png', sprite: 'junimo', role: 'Q彈果凍怪' },
-  { id: 'sdv_purple_slime', name: '紫色史萊姆 (Purple Slime)', category: 'monsters', url: 'https://stardewvalleywiki.com/mediawiki/images/en/a/a6/Purple_Slime.png', sprite: 'junimo', role: '掉落銥礦石' },
-  { id: 'sdv_tiger_slime', name: '虎紋史萊姆 (Tiger Slime)', category: 'monsters', url: 'https://stardewvalleywiki.com/mediawiki/images/en/4/47/Tiger_Slime.png', sprite: 'junimo', role: '薑島稀有怪物' },
-  { id: 'sdv_shadow_brute', name: '暗影狂徒 (Shadow Brute)', category: 'monsters', url: 'https://stardewvalleywiki.com/mediawiki/images/en/1/18/Shadow_Brute.png', sprite: 'player1', role: '深淵武士' },
-  { id: 'sdv_shadow_shaman', name: '暗影薩滿 (Shadow Shaman)', category: 'monsters', url: 'https://stardewvalleywiki.com/mediawiki/images/en/8/87/Shadow_Shaman.png', sprite: 'player1', role: '暗影施法者' },
-  { id: 'sdv_pepper_rex', name: '噴火霸王龍 (Pepper Rex)', category: 'monsters', url: 'https://stardewvalleywiki.com/mediawiki/images/en/b/b3/Pepper_Rex.png', sprite: 'dinosaur', role: '史前噴火恐龍' },
-  { id: 'sdv_skeleton', name: '骷髏士兵 (Skeleton)', category: 'monsters', url: 'https://stardewvalleywiki.com/mediawiki/images/en/2/29/Skeleton.png', sprite: 'player2', role: '骨頭兵' },
-  { id: 'sdv_rock_crab', name: '岩石偽裝蟹 (Rock Crab)', category: 'monsters', url: 'https://stardewvalleywiki.com/mediawiki/images/en/d/d4/Rock_Crab.png', sprite: 'rabbit', role: '假石頭真螃蟹' },
-  { id: 'sdv_lava_crab', name: '熔岩蟹 (Lava Crab)', category: 'monsters', url: 'https://stardewvalleywiki.com/mediawiki/images/en/9/91/Lava_Crab.png', sprite: 'rabbit', role: '火山熔岩巨蟹' },
-  { id: 'sdv_squid_kid', name: '魷魚小子 (Squid Kid)', category: 'monsters', url: 'https://stardewvalleywiki.com/mediawiki/images/en/a/a5/Squid_Kid.png', sprite: 'junimo', role: '吐火球章魚' },
-  { id: 'sdv_serpent', name: '綠翼飛龍蛇 (Serpent)', category: 'monsters', url: 'https://stardewvalleywiki.com/mediawiki/images/en/9/9c/Serpent.png', sprite: 'junimo', role: '骷髏洞穴死敵' },
-  { id: 'sdv_iridium_bat', name: '銥晶大蝙蝠 (Iridium Bat)', category: 'monsters', url: 'https://stardewvalleywiki.com/mediawiki/images/en/a/ae/Iridium_Bat.png', sprite: 'chicken', role: '紫色吸血蝙蝠' },
-  { id: 'sdv_magma_sprite', name: '岩漿火精靈 (Magma Sprite)', category: 'monsters', url: 'https://stardewvalleywiki.com/mediawiki/images/en/5/53/Magma_Sprite.png', sprite: 'junimo', role: '薑島火山精靈' },
-  { id: 'sdv_magma_sparker', name: '岩漿火花 (Magma Sparker)', category: 'monsters', url: 'https://stardewvalleywiki.com/mediawiki/images/en/8/8e/Magma_Sparker.png', sprite: 'junimo', role: '高溫火球精靈' },
-  { id: 'sdv_false_magma_cap', name: '擬態火菇怪 (False Magma Cap)', category: 'monsters', url: 'https://stardewvalleywiki.com/mediawiki/images/en/0/02/False_Magma_Cap.png', sprite: 'melon', role: '偽裝火蘑菇' },
-  { id: 'sdv_spider', name: '礦穴魔蛛 (Spider)', category: 'monsters', url: 'https://stardewvalleywiki.com/mediawiki/images/en/2/23/Spider.png', sprite: 'rabbit', role: '八腳跳躍蜘蛛' },
-  { id: 'forest_nymph', name: '森林仙子 (Forest Nymph)', category: 'monsters', sprite: 'forest_nymph', role: '治癒仙子' },
-  { id: 'scarecrow', name: '守護稻草人 (Scarecrow)', category: 'monsters', sprite: 'scarecrow', role: '田園守衛' },
-
-  // --- 4. 傳奇神魚與水族 (Legendary Fish & Aquatic) ---
-  { id: 'sdv_legend_fish', name: '春日傳奇魚王 (Legend)', category: 'treasures', url: 'https://stardewvalleywiki.com/mediawiki/images/en/1/10/Legend.png', sprite: 'trophy', role: '雨天山林湖之王' },
-  { id: 'sdv_crimsonfish', name: '夏日緋紅魚 (Crimsonfish)', category: 'treasures', url: 'https://stardewvalleywiki.com/mediawiki/images/en/d/dc/Crimsonfish.png', sprite: 'trophy', role: '東碼頭海中巨怪' },
-  { id: 'sdv_angler', name: '秋日鮟鱇魚 (Angler)', category: 'treasures', url: 'https://stardewvalleywiki.com/mediawiki/images/en/b/bf/Angler.png', sprite: 'trophy', role: '木橋小瀑布之王' },
-  { id: 'sdv_glacierfish', name: '冬日冰川魚 (Glacierfish)', category: 'treasures', url: 'https://stardewvalleywiki.com/mediawiki/images/en/f/fd/Glacierfish.png', sprite: 'trophy', role: '箭頭島極寒霸主' },
-  { id: 'sdv_mutant_carp', name: '變種巨鯉魚 (Mutant Carp)', category: 'treasures', url: 'https://stardewvalleywiki.com/mediawiki/images/en/c/cb/Mutant_Carp.png', sprite: 'trophy', role: '下水道綠光魚' },
-  { id: 'sdv_lava_eel', name: '熔岩鰻魚 (Lava Eel)', category: 'treasures', url: 'https://stardewvalleywiki.com/mediawiki/images/en/1/12/Lava_Eel.png', sprite: 'trophy', role: '礦坑100層紅光鰻' },
-  { id: 'sdv_void_salmon', name: '虛空鮭魚 (Void Salmon)', category: 'treasures', url: 'https://stardewvalleywiki.com/mediawiki/images/en/e/e0/Void_Salmon.png', sprite: 'trophy', role: '女巫沼澤神秘鮭魚' },
-  { id: 'sdv_midnight_carp', name: '午夜鯉魚 (Midnight Carp)', category: 'treasures', url: 'https://stardewvalleywiki.com/mediawiki/images/en/3/33/Midnight_Carp.png', sprite: 'trophy', role: '深夜湖泊發光鯉' },
+  // --- 3. 傳奇神魚與水族 (Legendary Fish & Aquatic) ---
+  { id: 'sdv_legend_fish', name: '春日傳奇魚王 (Legend)', category: 'treasures', url: 'https://stardewvalleywiki.com/mediawiki/images/en/1/10/Legend.png', sprite: 'chicken', role: '雨天山林湖之王' },
+  { id: 'sdv_crimsonfish', name: '夏日緋紅魚 (Crimsonfish)', category: 'treasures', url: 'https://stardewvalleywiki.com/mediawiki/images/en/d/dc/Crimsonfish.png', sprite: 'chicken', role: '東碼頭海中巨怪' },
+  { id: 'sdv_angler', name: '秋日鮟鱇魚 (Angler)', category: 'treasures', url: 'https://stardewvalleywiki.com/mediawiki/images/en/b/bf/Angler.png', sprite: 'chicken', role: '木橋小瀑布之王' },
+  { id: 'sdv_glacierfish', name: '冬日冰川魚 (Glacierfish)', category: 'treasures', url: 'https://stardewvalleywiki.com/mediawiki/images/en/f/fd/Glacierfish.png', sprite: 'chicken', role: '箭頭島極寒霸主' },
+  { id: 'sdv_mutant_carp', name: '變種巨鯉魚 (Mutant Carp)', category: 'treasures', url: 'https://stardewvalleywiki.com/mediawiki/images/en/c/cb/Mutant_Carp.png', sprite: 'chicken', role: '下水道綠光魚' },
+  { id: 'sdv_lava_eel', name: '熔岩鰻魚 (Lava Eel)', category: 'treasures', url: 'https://stardewvalleywiki.com/mediawiki/images/en/1/12/Lava_Eel.png', sprite: 'chicken', role: '礦坑100層紅光鰻' },
+  { id: 'sdv_void_salmon', name: '虛空鮭魚 (Void Salmon)', category: 'treasures', url: 'https://stardewvalleywiki.com/mediawiki/images/en/e/e0/Void_Salmon.png', sprite: 'chicken', role: '女巫沼澤神秘鮭魚' },
+  { id: 'sdv_midnight_carp', name: '午夜鯉魚 (Midnight Carp)', category: 'treasures', url: 'https://stardewvalleywiki.com/mediawiki/images/en/3/33/Midnight_Carp.png', sprite: 'chicken', role: '深夜湖泊發光鯉' },
   { id: 'sdv_blobfish', name: '水滴魚 (Blobfish)', category: 'treasures', url: 'https://stardewvalleywiki.com/mediawiki/images/en/7/7f/Blobfish.png', sprite: 'rabbit', role: '深海夜市呆萌魚' },
-  { id: 'sdv_spook_fish', name: '幽靈魚 (Spook Fish)', category: 'treasures', url: 'https://stardewvalleywiki.com/mediawiki/images/en/8/8c/Spook_Fish.png', sprite: 'trophy', role: '深海潛水艇發光怪' },
-  { id: 'sdv_stingray', name: '刺魟魚 (Stingray)', category: 'treasures', url: 'https://stardewvalleywiki.com/mediawiki/images/en/3/3a/Stingray.png', sprite: 'trophy', role: '海盜洞穴珍稀魟' },
-  { id: 'sdv_octopus', name: '巨型章魚 (Octopus)', category: 'treasures', url: 'https://stardewvalleywiki.com/mediawiki/images/en/5/5a/Octopus.png', sprite: 'trophy', role: '難度100超難釣章魚' },
-  { id: 'sdv_rainbow_trout', name: '彩虹鱒魚 (Rainbow Trout)', category: 'treasures', url: 'https://stardewvalleywiki.com/mediawiki/images/en/1/14/Rainbow_Trout.png', sprite: 'trophy', role: '有機率產出五彩碎片' },
-  { id: 'sdv_sturgeon', name: '傳奇鱘魚 (Sturgeon)', category: 'treasures', url: 'https://stardewvalleywiki.com/mediawiki/images/en/4/42/Sturgeon.png', sprite: 'trophy', role: '魚子醬珍貴魚種' },
-  { id: 'sdv_lobster', name: '鮮紅龍蝦 (Lobster)', category: 'treasures', url: 'https://stardewvalleywiki.com/mediawiki/images/en/9/9f/Lobster.png', sprite: 'melon', role: '蟹籠頂級美味' },
+  { id: 'sdv_spook_fish', name: '幽靈魚 (Spook Fish)', category: 'treasures', url: 'https://stardewvalleywiki.com/mediawiki/images/en/8/8c/Spook_Fish.png', sprite: 'chicken', role: '深海潛水艇發光怪' },
+  { id: 'sdv_stingray', name: '刺魟魚 (Stingray)', category: 'treasures', url: 'https://stardewvalleywiki.com/mediawiki/images/en/3/3a/Stingray.png', sprite: 'chicken', role: '海盜洞穴珍稀魟' },
+  { id: 'sdv_octopus', name: '巨型章魚 (Octopus)', category: 'treasures', url: 'https://stardewvalleywiki.com/mediawiki/images/en/5/5a/Octopus.png', sprite: 'chicken', role: '難度100超難釣章魚' },
+  { id: 'sdv_rainbow_trout', name: '彩虹鱒魚 (Rainbow Trout)', category: 'treasures', url: 'https://stardewvalleywiki.com/mediawiki/images/en/1/14/Rainbow_Trout.png', sprite: 'chicken', role: '有機率產出五彩碎片' },
+  { id: 'sdv_sturgeon', name: '傳奇鱘魚 (Sturgeon)', category: 'treasures', url: 'https://stardewvalleywiki.com/mediawiki/images/en/4/42/Sturgeon.png', sprite: 'chicken', role: '魚子醬珍貴魚種' },
+  { id: 'sdv_lobster', name: '鮮紅龍蝦 (Lobster)', category: 'treasures', url: 'https://stardewvalleywiki.com/mediawiki/images/en/9/9f/Lobster.png', sprite: 'chicken', role: '蟹籠頂級美味' },
   { id: 'sdv_crab', name: '海濱螃蟹 (Crab)', category: 'treasures', url: 'https://stardewvalleywiki.com/mediawiki/images/en/6/63/Crab.png', sprite: 'rabbit', role: '製作美味蟹餅' },
 
-  // --- 5. 傳奇珍寶、作物與魔法神器 (Treasures, Crops & Artifacts) ---
+  // --- 4. 傳奇珍寶、作物與魔法神器 (Treasures, Crops & Artifacts) ---
   { id: 'sdv_stardrop', name: '星之果實 (Stardrop)', category: 'treasures', url: 'https://stardewvalleywiki.com/mediawiki/images/en/a/a5/Stardrop.png', sprite: 'star_full', role: '最大體力增加' },
   { id: 'sdv_prismatic_shard', name: '五彩碎片 (Prismatic Shard)', category: 'treasures', url: 'https://stardewvalleywiki.com/mediawiki/images/en/5/56/Prismatic_Shard.png', sprite: 'gem_diamond', role: '彩虹耀眼神石' },
-  { id: 'sdv_golden_pumpkin', name: '百萬黃金南瓜 (Golden Pumpkin)', category: 'treasures', url: 'https://stardewvalleywiki.com/mediawiki/images/en/9/94/Golden_Pumpkin.png', sprite: 'trophy', role: '萬靈節迷宮終極大獎' },
+  { id: 'sdv_golden_pumpkin', name: '百萬黃金南瓜 (Golden Pumpkin)', category: 'treasures', url: 'https://stardewvalleywiki.com/mediawiki/images/en/9/94/Golden_Pumpkin.png', sprite: 'coin_gold', role: '萬靈節迷宮終極大獎' },
   { id: 'sdv_pearl', name: '深海夜市珍珠 (Pearl)', category: 'treasures', url: 'https://stardewvalleywiki.com/mediawiki/images/en/f/f4/Pearl.png', sprite: 'gem_diamond', role: '美人魚的餽贈' },
   { id: 'sdv_rabbits_foot', name: '好運兔子的腳 (Rabbit\'s Foot)', category: 'treasures', url: 'https://stardewvalleywiki.com/mediawiki/images/en/c/ca/Rabbit%27s_Foot.png', sprite: 'rabbit', role: '全鎮最愛好運禮物' },
-  { id: 'sdv_truffle', name: '極品黑松露 (Truffle)', category: 'treasures', url: 'https://stardewvalleywiki.com/mediawiki/images/en/f/f2/Truffle.png', sprite: 'melon', role: '美味松露油' },
-  { id: 'sdv_ancient_fruit', name: '遠古水果 (Ancient Fruit)', category: 'treasures', url: 'https://stardewvalleywiki.com/mediawiki/images/en/0/01/Ancient_Fruit.png', sprite: 'melon', role: '上古傳奇瓊漿' },
+  { id: 'sdv_truffle', name: '極品黑松露 (Truffle)', category: 'treasures', url: 'https://stardewvalleywiki.com/mediawiki/images/en/f/f2/Truffle.png', sprite: 'pig', role: '美味松露油' },
+  { id: 'sdv_ancient_fruit', name: '遠古水果 (Ancient Fruit)', category: 'treasures', url: 'https://stardewvalleywiki.com/mediawiki/images/en/0/01/Ancient_Fruit.png', sprite: 'sunflower', role: '上古傳奇瓊漿' },
   { id: 'sdv_starfruit', name: '奢華楊桃 (Starfruit)', category: 'treasures', url: 'https://stardewvalleywiki.com/mediawiki/images/en/d/db/Starfruit.png', sprite: 'star_full', role: '頂級釀酒首選' },
-  { id: 'sdv_sweet_gem_berry', name: '寶石甜莓 (Sweet Gem Berry)', category: 'treasures', url: 'https://stardewvalleywiki.com/mediawiki/images/en/8/88/Sweet_Gem_Berry.png', sprite: 'melon', role: '老老坎諾利最愛' },
-  { id: 'sdv_strawberry', name: '甜美草莓 (Strawberry)', category: 'treasures', url: 'https://stardewvalleywiki.com/mediawiki/images/en/6/6d/Strawberry.png', sprite: 'melon', role: '復活節最熱門作物' },
-  { id: 'sdv_pumpkin', name: '秋季巨型南瓜 (Pumpkin)', category: 'treasures', url: 'https://stardewvalleywiki.com/mediawiki/images/en/6/64/Pumpkin.png', sprite: 'melon', role: '農場巨大作物' },
+  { id: 'sdv_sweet_gem_berry', name: '寶石甜莓 (Sweet Gem Berry)', category: 'treasures', url: 'https://stardewvalleywiki.com/mediawiki/images/en/8/88/Sweet_Gem_Berry.png', sprite: 'sunflower', role: '老老坎諾利最愛' },
+  { id: 'sdv_strawberry', name: '甜美草莓 (Strawberry)', category: 'treasures', url: 'https://stardewvalleywiki.com/mediawiki/images/en/6/6d/Strawberry.png', sprite: 'sunflower', role: '復活節最熱門作物' },
+  { id: 'sdv_pumpkin', name: '秋季巨型南瓜 (Pumpkin)', category: 'treasures', url: 'https://stardewvalleywiki.com/mediawiki/images/en/6/64/Pumpkin.png', sprite: 'sunflower', role: '農場巨大作物' },
   { id: 'sdv_hot_pepper', name: '火紅辣椒 (Hot Pepper)', category: 'treasures', url: 'https://stardewvalleywiki.com/mediawiki/images/en/f/f1/Hot_Pepper.png', sprite: 'sunflower', role: '鎮長最愛熱辣蔬菜' },
-  { id: 'sdv_blueberry', name: '飽滿藍莓 (Blueberry)', category: 'treasures', url: 'https://stardewvalleywiki.com/mediawiki/images/en/9/9e/Blueberry.png', sprite: 'melon', role: '夏日連續豐收之王' },
-  { id: 'sdv_cauliflower', name: '巨大甘藍花 (Cauliflower)', category: 'treasures', url: 'https://stardewvalleywiki.com/mediawiki/images/en/a/aa/Cauliflower.png', sprite: 'melon', role: '春日巨大農產' },
+  { id: 'sdv_blueberry', name: '飽滿藍莓 (Blueberry)', category: 'treasures', url: 'https://stardewvalleywiki.com/mediawiki/images/en/9/9e/Blueberry.png', sprite: 'sunflower', role: '夏日連續豐收之王' },
+  { id: 'sdv_cauliflower', name: '巨大甘藍花 (Cauliflower)', category: 'treasures', url: 'https://stardewvalleywiki.com/mediawiki/images/en/a/aa/Cauliflower.png', sprite: 'sunflower', role: '春日巨大農產' },
   { id: 'sdv_fairy_rose', name: '仙女玫瑰 (Fairy Rose)', category: 'treasures', url: 'https://stardewvalleywiki.com/mediawiki/images/en/5/5c/Fairy_Rose.png', sprite: 'sunflower', role: '釀出仙女蜂蜜' },
   { id: 'sdv_blue_jazz', name: '藍爵士花 (Blue Jazz)', category: 'treasures', url: 'https://stardewvalleywiki.com/mediawiki/images/en/2/2f/Blue_Jazz.png', sprite: 'sunflower', role: '幸運午餐原料' },
-  { id: 'sdv_golden_egg', name: '黃金巨蛋 (Golden Egg)', category: 'treasures', url: 'https://stardewvalleywiki.com/mediawiki/images/en/4/42/Golden_Egg.png', sprite: 'trophy', role: '金雞孵化之源' },
   { id: 'sdv_void_egg', name: '虛空之蛋 (Void Egg)', category: 'treasures', url: 'https://stardewvalleywiki.com/mediawiki/images/en/5/58/Void_Egg.png', sprite: 'gem_diamond', role: '女巫午夜飛過' },
   { id: 'sdv_dino_egg', name: '恐龍巨蛋 (Dinosaur Egg)', category: 'treasures', url: 'https://stardewvalleywiki.com/mediawiki/images/en/a/a1/Dinosaur_Egg.png', sprite: 'dinosaur', role: '孵出史前小龍' },
-  { id: 'sdv_ostrich_egg', name: '鴕鳥大蛋 (Ostrich Egg)', category: 'treasures', url: 'https://stardewvalleywiki.com/mediawiki/images/en/4/41/Ostrich_Egg.png', sprite: 'chicken', role: '一次出產10顆美乃滋' },
   { id: 'sdv_iridium_bar', name: '純銥金錠 (Iridium Bar)', category: 'treasures', url: 'https://stardewvalleywiki.com/mediawiki/images/en/f/f3/Iridium_Bar.png', sprite: 'gem_diamond', role: '極品工具升級' },
   { id: 'sdv_gold_bar', name: '黃金金錠 (Gold Bar)', category: 'treasures', url: 'https://stardewvalleywiki.com/mediawiki/images/en/4/4e/Gold_Bar.png', sprite: 'coin_gold', role: '閃亮農具鑄造' },
   { id: 'sdv_galaxy_sword', name: '銀河之劍 (Galaxy Sword)', category: 'treasures', url: 'https://stardewvalleywiki.com/mediawiki/images/en/3/30/Galaxy_Sword.png', sprite: 'gem_diamond', role: '沙漠三石柱召喚神兵' },
   { id: 'sdv_infinity_blade', name: '無限之刃 (Infinity Blade)', category: 'treasures', url: 'https://stardewvalleywiki.com/mediawiki/images/en/e/eb/Infinity_Blade.png', sprite: 'gem_diamond', role: '火山鍛造終極神劍' },
-  { id: 'sdv_return_scepter', name: '回歸權杖 (Return Scepter)', category: 'treasures', url: 'https://stardewvalleywiki.com/mediawiki/images/en/3/38/Return_Scepter.png', sprite: 'trophy', role: '瞬間傳送回農舍門口' },
-  { id: 'sdv_horse_flute', name: '召喚馬笛 (Horse Flute)', category: 'treasures', url: 'https://stardewvalleywiki.com/mediawiki/images/en/1/13/Horse_Flute.png', sprite: 'trophy', role: '吹響即刻召喚愛馬' },
+  { id: 'sdv_return_scepter', name: '回歸權杖 (Return Scepter)', category: 'treasures', url: 'https://stardewvalleywiki.com/mediawiki/images/en/3/38/Return_Scepter.png', sprite: 'coin_gold', role: '瞬間傳送回農舍門口' },
+  { id: 'sdv_horse_flute', name: '召喚馬笛 (Horse Flute)', category: 'treasures', url: 'https://stardewvalleywiki.com/mediawiki/images/en/1/13/Horse_Flute.png', sprite: 'coin_gold', role: '吹響即刻召喚愛馬' },
   { id: 'sdv_magic_candy', name: '魔法搖滾糖 (Magic Rock Candy)', category: 'treasures', url: 'https://stardewvalleywiki.com/mediawiki/images/en/2/2f/Magic_Rock_Candy.png', sprite: 'star_full', role: '全屬性頂級狂暴增益' },
-  { id: 'sdv_lucky_lunch', name: '幸運午餐 (Lucky Lunch)', category: 'treasures', url: 'https://stardewvalleywiki.com/mediawiki/images/en/5/5d/Lucky_Lunch.png', sprite: 'trophy', role: '運氣大增爆金光' },
-  { id: 'sdv_pink_cake', name: '夢幻粉紅蛋糕 (Pink Cake)', category: 'treasures', url: 'https://stardewvalleywiki.com/mediawiki/images/en/3/32/Pink_Cake.png', sprite: 'trophy', role: '哈維與海莉的最愛甜點' },
-  { id: 'sdv_spicy_eel', name: '香辣烤鰻魚 (Spicy Eel)', category: 'treasures', url: 'https://stardewvalleywiki.com/mediawiki/images/en/f/f2/Spicy_Eel.png', sprite: 'trophy', role: '下礦跑速＋運氣神料理' },
-  { id: 'sdv_auto_petter', name: '自動撫摸機 (Auto-Petter)', category: 'treasures', url: 'https://stardewvalleywiki.com/mediawiki/images/en/8/87/Auto-Petter.png', sprite: 'trophy', role: '全自動摸摸動物心情極佳' },
-  { id: 'sdv_junimo_chest', name: '祝尼魔跨維箱 (Junimo Chest)', category: 'treasures', url: 'https://stardewvalleywiki.com/mediawiki/images/en/0/07/Junimo_Chest.png', sprite: 'trophy', role: '異空間相連共享寶箱' },
+  { id: 'sdv_lucky_lunch', name: '幸運午餐 (Lucky Lunch)', category: 'treasures', url: 'https://stardewvalleywiki.com/mediawiki/images/en/5/5d/Lucky_Lunch.png', sprite: 'coin_gold', role: '運氣大增爆金光' },
+  { id: 'sdv_pink_cake', name: '夢幻粉紅蛋糕 (Pink Cake)', category: 'treasures', url: 'https://stardewvalleywiki.com/mediawiki/images/en/3/32/Pink_Cake.png', sprite: 'coin_gold', role: '哈維與海莉的最愛甜點' },
+  { id: 'sdv_spicy_eel', name: '香辣烤鰻魚 (Spicy Eel)', category: 'treasures', url: 'https://stardewvalleywiki.com/mediawiki/images/en/f/f2/Spicy_Eel.png', sprite: 'coin_gold', role: '下礦跑速＋運氣神料理' },
   { id: 'sunflower', name: '盛開向日葵 (Sunflower)', category: 'treasures', sprite: 'sunflower', role: '夏日燦爛陽光' },
-  { id: 'melon', name: '金黃甜瓜 (Melon)', category: 'treasures', sprite: 'melon', role: '夏日巨大農產' },
-  { id: 'trophy', name: '星露谷榮譽金盃 (Trophy)', category: 'treasures', sprite: 'trophy', role: '滿級冠軍金盃' },
 ];
 
 export const POKEMON_AVATARS: any[] = []; // Removed per user request
@@ -385,6 +357,19 @@ export function getCropGrowth(points: number): {
   }
 }
 
+export interface FarmExpansionInfo {
+  level: number;
+  levelTitle: string;
+  minPoints: number;
+  nextPoints: number | null;
+  fenceType: 'simple_wood' | 'hardwood' | 'ranch_rail' | 'wrought_iron' | 'iridium_fence' | 'golden_fence' | 'celestial_barrier';
+  fenceName: string;
+  waterTroughType: 'wooden_trough' | 'stone_basin' | 'copper_auto_trough' | 'marble_fountain' | 'iridium_crystal_fountain' | 'golden_fountain' | 'celestial_spring';
+  waterTroughName: string;
+  decorations: string[];
+  expansionSummary: string;
+}
+
 export interface FarmTierInfo {
   tierNumber: number;
   tierName: string;
@@ -396,9 +381,10 @@ export interface FarmTierInfo {
   unlockedAnimals: string[];
   maxCapacity: number;
   featureDescription: string;
+  expansion: FarmExpansionInfo;
 }
 
-// 0 to 1000 分 Farm Tier System
+// 0 to 1000 分 Farm Tier System with Farm Expansion (圍欄、水槽、裝飾物件自動升級)
 export function getFarmTier(points: number): FarmTierInfo {
   const clampedPoints = Math.max(0, points);
 
@@ -414,6 +400,18 @@ export function getFarmTier(points: number): FarmTierInfo {
       unlockedAnimals: ['極品黃金雞', '忠心駿馬', '草原鴕鳥', '遠古恐龍', '虛空幽靈雞', '夢幻藍雞', '松露萌豬', '蓬鬆綿羊', '山羊', '黃金棕牛', '純潔白牛', '幸運雪兔', '綠頭野鴨', '棕羽母雞', '純白小母雞'],
       maxCapacity: 100,
       featureDescription: '達成1000分巔峰成就！15種真實農場動物全滿載，動植物大狂歡！',
+      expansion: {
+        level: 7,
+        levelTitle: 'Lv.MAX 星露傳奇天宮',
+        minPoints: 1000,
+        nextPoints: null,
+        fenceType: 'celestial_barrier',
+        fenceName: '星露傳奇結界護欄 (極致銥晶流光)',
+        waterTroughType: 'celestial_spring',
+        waterTroughName: '萬物生息·星露女神神泉 (彩虹湧泉)',
+        decorations: ['星露榮譽金盃', '黃金時鐘', '純金女神雕像', '七彩祥雲', '銥金自動撫摸機'],
+        expansionSummary: '終極農場擴建完工！全自動神泉灌溉，傳奇結界護佑，滿分金盃閃耀！',
+      },
     };
   } else if (clampedPoints >= 750) {
     return {
@@ -427,6 +425,18 @@ export function getFarmTier(points: number): FarmTierInfo {
       unlockedAnimals: ['遠古恐龍', '虛空幽靈雞', '夢幻藍雞', '松露萌豬', '蓬鬆綿羊', '山羊', '黃金棕牛', '純潔白牛', '幸運雪兔', '綠頭野鴨', '棕羽母雞', '純白小母雞'],
       maxCapacity: 80,
       featureDescription: '擁有遠古恐龍與虛空雞，田地碩大肥沃，金黃燦爛！',
+      expansion: {
+        level: 6,
+        levelTitle: 'Lv.6 皇家金輝莊園擴建',
+        minPoints: 750,
+        nextPoints: 1000,
+        fenceType: 'golden_fence',
+        fenceName: '皇家黃金帝國護欄 (金雕鏤空)',
+        waterTroughType: 'golden_fountain',
+        waterTroughName: '皇家黃金天鵝噴泉 (金色活水)',
+        decorations: ['黃金迎賓大門', '星輝路燈', '古典繁花拱門', '紅木野餐長椅'],
+        expansionSummary: '奢華莊園擴建！黃金護欄與天鵝噴泉落成，金碧輝煌！',
+      },
     };
   } else if (clampedPoints >= 500) {
     return {
@@ -440,6 +450,18 @@ export function getFarmTier(points: number): FarmTierInfo {
       unlockedAnimals: ['松露萌豬', '蓬鬆綿羊', '山羊', '黃金棕牛', '純潔白牛', '幸運雪兔', '綠頭野鴨', '棕羽母雞', '純白小母雞'],
       maxCapacity: 60,
       featureDescription: '松露萌豬歡喜拱松露，綿羊與乳牛在草地上悠閒吃草！',
+      expansion: {
+        level: 5,
+        levelTitle: 'Lv.5 秘境林地附魔擴建',
+        minPoints: 500,
+        nextPoints: 750,
+        fenceType: 'iridium_fence',
+        fenceName: '附魔紫晶強化護欄 (夜間微光)',
+        waterTroughType: 'iridium_crystal_fountain',
+        waterTroughName: '銥金晶石多層湧泉 (甘醇泉水)',
+        decorations: ['祝尼魔小木亭', '紫晶路燈', '魔法水晶花壇', '石板大道'],
+        expansionSummary: '林地秘境擴建！鋪設銥金護欄與晶石水池，動物心情大好！',
+      },
     };
   } else if (clampedPoints >= 300) {
     return {
@@ -453,6 +475,18 @@ export function getFarmTier(points: number): FarmTierInfo {
       unlockedAnimals: ['山羊', '黃金棕牛', '純潔白牛', '幸運雪兔', '綠頭野鴨', '棕羽母雞', '純白小母雞'],
       maxCapacity: 45,
       featureDescription: '白牛與棕牛漫步草地，南瓜碩大飽滿，農莊生機勃勃！',
+      expansion: {
+        level: 4,
+        levelTitle: 'Lv.4 鐵藝果園莊園擴建',
+        minPoints: 300,
+        nextPoints: 500,
+        fenceType: 'wrought_iron',
+        fenceName: '鍛鐵精工雕花護欄 (堅固防風)',
+        waterTroughType: 'marble_fountain',
+        waterTroughName: '漢白玉雙層噴泉水槽 (清泉激盪)',
+        decorations: ['甘泉水井', '復古風向雞', '鵝卵石休閒小徑', '遮陽花架'],
+        expansionSummary: '莊園全面擴建！升級為鍛鐵雕花欄杆與雙層大理石噴泉！',
+      },
     };
   } else if (clampedPoints >= 150) {
     return {
@@ -466,6 +500,18 @@ export function getFarmTier(points: number): FarmTierInfo {
       unlockedAnimals: ['幸運雪兔', '綠頭野鴨', '棕羽母雞', '純白小母雞'],
       maxCapacity: 30,
       featureDescription: '建造了雞舍與水塘，小雞、野鴨與白兔歡樂奔跑！',
+      expansion: {
+        level: 3,
+        levelTitle: 'Lv.3 白木牧場設施擴建',
+        minPoints: 150,
+        nextPoints: 300,
+        fenceType: 'ranch_rail',
+        fenceName: '鄉村白漆牧場木柵欄 (開闊牧區)',
+        waterTroughType: 'copper_auto_trough',
+        waterTroughName: '純銅自動閥門水槽 (恆定注水)',
+        decorations: ['木棧觀景台', '清涼水塘石階', '稻草人立柱', '木箱花圃'],
+        expansionSummary: '牧場初具規模！增設白木欄杆與純銅自動補水槽！',
+      },
     };
   } else if (clampedPoints >= 50) {
     return {
@@ -479,6 +525,18 @@ export function getFarmTier(points: number): FarmTierInfo {
       unlockedAnimals: ['純白小母雞'],
       maxCapacity: 15,
       featureDescription: '向日葵綻放笑臉，純白小母雞圍繞在草地上啄米！',
+      expansion: {
+        level: 2,
+        levelTitle: 'Lv.2 硬木圍欄田園擴建',
+        minPoints: 50,
+        nextPoints: 150,
+        fenceType: 'hardwood',
+        fenceName: '堅固硬木圍欄 (十字榫卯)',
+        waterTroughType: 'stone_basin',
+        waterTroughName: '青石雕鑿防漏水槽 (蓄存甘露)',
+        decorations: ['守護稻草人', '農用木推車', '石板小徑'],
+        expansionSummary: '田園圍欄升級！鋪設堅固硬木柵欄與防漏青石水槽！',
+      },
     };
   } else {
     return {
@@ -492,6 +550,18 @@ export function getFarmTier(points: number): FarmTierInfo {
       unlockedAnimals: ['純白小母雞 (農場咕咕雞)'],
       maxCapacity: 5,
       featureDescription: '剛耕耘的肥沃土壤，純白小雞正在尋覓種子！',
+      expansion: {
+        level: 1,
+        levelTitle: 'Lv.1 原木初建起步期',
+        minPoints: 0,
+        nextPoints: 50,
+        fenceType: 'simple_wood',
+        fenceName: '粗鋸原木木樁圍欄 (樸實天然)',
+        waterTroughType: 'wooden_trough',
+        waterTroughName: '杉木手工釘製水槽 (清冽井水)',
+        decorations: ['乾草捆', '木質小水桶'],
+        expansionSummary: '開拓起步！以粗原木木樁圈定牧區，杉木小水槽供動物飲用。',
+      },
     };
   }
 }
