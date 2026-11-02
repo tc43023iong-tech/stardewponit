@@ -150,6 +150,17 @@ export const StudentCard: React.FC<StudentCardProps> = ({
 
         {/* Mini Farm Scenery Elements on Card */}
         <div className="absolute bottom-2 right-2 flex items-end gap-1.5 opacity-85 group-hover:scale-105 transition-transform">
+          {student.cardBackground === 'desert_oasis' ? (
+            <span className="text-2xl drop-shadow select-none">🌵</span>
+          ) : student.cardBackground === 'volcano_caldera' ? (
+            <span className="text-2xl drop-shadow select-none">🌋</span>
+          ) : student.cardBackground === 'mushroom_cave' ? (
+            <span className="text-2xl drop-shadow select-none">🍄</span>
+          ) : student.cardBackground === 'moonlight_jellies' ? (
+            <span className="text-2xl drop-shadow select-none animate-pulse">🪼</span>
+          ) : student.cardBackground === 'junimo_orchard' ? (
+            <span className="text-2xl drop-shadow select-none">🍏</span>
+          ) : null}
           {miniCrop && (
             <div className="drop-shadow-md">
               <PixelSprite name={miniCrop} size={28} />
