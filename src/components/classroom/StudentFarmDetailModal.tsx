@@ -3,6 +3,7 @@ import { Student } from '../../types/classroom';
 import { getFarmTier, getCropGrowth, LIVE_FARM_ANIMALS_ROSTER, LiveFarmAnimalBlueprint } from '../../data/classroomData';
 import { AvatarRenderer } from './AvatarRenderer';
 import { PixelSprite } from '../common/PixelSprite';
+import { FarmAnimalSprite } from './FarmAnimalSprite';
 import { soundManager } from '../../utils/sound';
 import { X, Plus, Star, Sparkles, CheckCircle2, Lock, Volume2, Maximize2, Minimize2, Hammer, Droplets, Shield, Award } from 'lucide-react';
 
@@ -866,18 +867,18 @@ export const StudentFarmDetailModal: React.FC<StudentFarmDetailModalProps> = ({
                         <span className="text-[8px] text-[#fed7aa]">{anim.subtitle}</span>
                       </div>
 
-                      {/* Animated Sprite / Image Facing Direction - Seamless natural roaming without any white box */}
+                      {/* Animated Sprite / Image Facing Direction - 100% Vector Pixel Sprite with NO white box */}
                       <div
-                        className="transition-transform duration-200 hover:scale-125 flex items-center justify-center filter drop-shadow-sm"
+                        className="transition-transform duration-200 hover:scale-125 flex items-center justify-center filter drop-shadow-sm select-none"
                         style={{
                           transform: `scaleX(${anim.direction})`,
                         }}
                       >
-                        <AvatarRenderer avatar={anim.url || anim.id} name={anim.name} size={48} bare />
+                        <FarmAnimalSprite animalId={anim.id} size={50} />
                       </div>
 
                       {/* Natural gentle shadow on green pasture under animal */}
-                      <div className="w-8 h-2 bg-emerald-950/30 rounded-full blur-[0.5px] -mt-1 pointer-events-none" />
+                      <div className="w-8 h-2 bg-emerald-950/25 rounded-full blur-[0.5px] -mt-1 pointer-events-none" />
                     </div>
                   ))}
 

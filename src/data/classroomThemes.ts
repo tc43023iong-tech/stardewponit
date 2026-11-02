@@ -1,0 +1,209 @@
+export interface PageTheme {
+  id: string;
+  name: string;
+  icon: string;
+  description: string;
+  bgGradient: string;
+  patternType: 'grass' | 'sunflower' | 'autumn' | 'snow' | 'wood' | 'magic';
+  accentBorder: string;
+  badgeBg: string;
+}
+
+export const CLASSROOM_PAGE_THEMES: PageTheme[] = [
+  {
+    id: 'spring_farm',
+    name: '🌱 春日青翠農莊',
+    icon: '🌱',
+    description: '春回大地！生機盎然的綠野草坪與溫暖原木柵欄，充滿朝氣與希望。',
+    bgGradient: 'from-[#1e3a1f] via-[#2d522e] to-[#1b351c]',
+    patternType: 'grass',
+    accentBorder: '#86efac',
+    badgeBg: 'bg-emerald-900/60 text-emerald-200 border-emerald-600',
+  },
+  {
+    id: 'summer_sunflower',
+    name: '🌻 烈陽盛夏花海',
+    icon: '🌻',
+    description: '金燦陽光普照！繁花盛開的向日葵田與藍天微風，熱情奔放。',
+    bgGradient: 'from-[#3a2e12] via-[#5c4412] to-[#2e230c]',
+    patternType: 'sunflower',
+    accentBorder: '#facc15',
+    badgeBg: 'bg-amber-900/60 text-amber-200 border-amber-600',
+  },
+  {
+    id: 'autumn_amber',
+    name: '🍁 溫馨楓葉秋收',
+    icon: '🍁',
+    description: '秋日大豐收！萬靈節南瓜田與飄零金紅楓葉，暖意融融。',
+    bgGradient: 'from-[#3b1d0c] via-[#5c2b12] to-[#2e1508]',
+    patternType: 'autumn',
+    accentBorder: '#fb923c',
+    badgeBg: 'bg-orange-900/60 text-orange-200 border-orange-600',
+  },
+  {
+    id: 'winter_frost',
+    name: '❄️ 星露冬雪晴空',
+    icon: '❄️',
+    description: '寧靜銀白世界！白雪覆蓋的松林農莊與澄澈冬日天空，沉穩專注。',
+    bgGradient: 'from-[#0f2336] via-[#1a3d5c] to-[#0d1e30]',
+    patternType: 'snow',
+    accentBorder: '#7dd3fc',
+    badgeBg: 'bg-sky-900/60 text-sky-200 border-sky-600',
+  },
+  {
+    id: 'secret_woods',
+    name: '🌲 秘密森林秘境',
+    icon: '🌲',
+    description: '深邃幽靜林地！古樹苔蘚、祝尼魔古老遺跡與神秘螢光，幽雅靜謐。',
+    bgGradient: 'from-[#11241f] via-[#173e34] to-[#0c1c17]',
+    patternType: 'magic',
+    accentBorder: '#34d399',
+    badgeBg: 'bg-teal-900/60 text-teal-200 border-teal-600',
+  },
+  {
+    id: 'cozy_homestead',
+    name: '🪵 經典星露原木',
+    icon: '🪵',
+    description: '經典農舍原木！老杉木地板與暖黃爐火，純樸厚實的星露谷農莊氛圍。',
+    bgGradient: 'from-[#3b2311] via-[#543219] to-[#29170a]',
+    patternType: 'wood',
+    accentBorder: '#ca8a04',
+    badgeBg: 'bg-amber-900/60 text-amber-200 border-amber-700',
+  },
+];
+
+export interface CardBackgroundOption {
+  id: string;
+  name: string;
+  icon: string;
+  summary: string;
+  skyGradient: string;
+  groundBg: string;
+  groundPattern: string;
+  borderColor: string;
+  cardParchmentTint: string;
+}
+
+export const STUDENT_CARD_BACKGROUND_OPTIONS: CardBackgroundOption[] = [
+  {
+    id: 'auto',
+    name: '🌾 隨積分自動升級 (0~1000分田園)',
+    icon: '🌾',
+    summary: '依照學生累計分數動態變換：由原木開拓、嫩苗、向日葵花田成長至滿級黃金莊園！',
+    skyGradient: 'linear-gradient(to bottom, #bae6fd 0%, #e0f2fe 60%, #bbf7d0 100%)',
+    groundBg: '#22c55e',
+    groundPattern: 'radial-gradient(#14532d 15%, transparent 16%)',
+    borderColor: 'border-[#5a3818]',
+    cardParchmentTint: 'bg-[#faeed1]/93',
+  },
+  {
+    id: 'spring',
+    name: '🌸 仙女初春花園',
+    icon: '🌸',
+    summary: '滿園初綻仙女玫瑰與粉櫻微風，充滿生機活力與溫柔。',
+    skyGradient: 'linear-gradient(to bottom, #fbcfe8 0%, #fce7f3 50%, #bbf7d0 100%)',
+    groundBg: '#15803d',
+    groundPattern: 'radial-gradient(#166534 16%, transparent 17%)',
+    borderColor: 'border-[#ec4899]',
+    cardParchmentTint: 'bg-[#fff1f2]/95',
+  },
+  {
+    id: 'summer',
+    name: '🌻 盛夏向日葵田',
+    icon: '🌻',
+    summary: '金色燦爛烈日，一望無際的金黃向日葵田與青翠沃土。',
+    skyGradient: 'linear-gradient(to bottom, #fde047 0%, #fef08a 50%, #86efac 100%)',
+    groundBg: '#16a34a',
+    groundPattern: 'radial-gradient(#14532d 18%, transparent 19%)',
+    borderColor: 'border-[#eab308]',
+    cardParchmentTint: 'bg-[#fefce8]/95',
+  },
+  {
+    id: 'autumn',
+    name: '🍁 金秋南瓜莊園',
+    icon: '🍁',
+    summary: '楓紅似火的萬靈節秋季，飽滿金色南瓜與暖橘林木。',
+    skyGradient: 'linear-gradient(to bottom, #fdba74 0%, #fed7aa 50%, #86efac 100%)',
+    groundBg: '#92400e',
+    groundPattern: 'repeating-linear-gradient(0deg, #78350f 0px, #78350f 4px, #92400e 4px, #92400e 12px)',
+    borderColor: 'border-[#ea580c]',
+    cardParchmentTint: 'bg-[#fff7ed]/95',
+  },
+  {
+    id: 'winter',
+    name: '❄️ 星露暖陽冬雪',
+    icon: '❄️',
+    summary: '銀白純淨的積雪草地，晶瑩剔透的藍白冰晶微光。',
+    skyGradient: 'linear-gradient(to bottom, #bae6fd 0%, #e0f2fe 50%, #f1f5f9 100%)',
+    groundBg: '#e2e8f0',
+    groundPattern: 'radial-gradient(#cbd5e1 15%, transparent 16%)',
+    borderColor: 'border-[#0284c7]',
+    cardParchmentTint: 'bg-[#f0f9ff]/95',
+  },
+  {
+    id: 'iridium',
+    name: '🔮 銥金紫晶秘境',
+    icon: '🔮',
+    summary: '骷髏洞穴深處與薑島火山的銥晶微光，神秘魔幻。',
+    skyGradient: 'linear-gradient(to bottom, #c084fc 0%, #e9d5ff 50%, #a7f3d0 100%)',
+    groundBg: '#581c87',
+    groundPattern: 'radial-gradient(#6b21a8 18%, transparent 19%)',
+    borderColor: 'border-[#a855f7]',
+    cardParchmentTint: 'bg-[#faf5ff]/95',
+  },
+  {
+    id: 'golden',
+    name: '👑 皇家金輝宮殿',
+    icon: '👑',
+    summary: '百分之百極致傳奇榮譽！純金時鐘與閃耀金盃輝映。',
+    skyGradient: 'linear-gradient(to bottom, #fde047 0%, #fef9c3 40%, #fed7aa 100%)',
+    groundBg: '#ca8a04',
+    groundPattern: 'radial-gradient(#a16207 18%, transparent 19%)',
+    borderColor: 'border-[#ca8a04]',
+    cardParchmentTint: 'bg-[#fefce8]/95',
+  },
+  {
+    id: 'forest',
+    name: '🌲 秘密森林苔蘚',
+    icon: '🌲',
+    summary: '千年古木與長青苔蘚，祝尼魔小精靈跳躍的幽靜林地。',
+    skyGradient: 'linear-gradient(to bottom, #6ee7b7 0%, #a7f3d0 50%, #065f46 100%)',
+    groundBg: '#064e3b',
+    groundPattern: 'radial-gradient(#022c22 18%, transparent 19%)',
+    borderColor: 'border-[#059669]',
+    cardParchmentTint: 'bg-[#f0fdf4]/95',
+  },
+  {
+    id: 'ocean',
+    name: '🌊 鵜鶘海濱夕陽',
+    icon: '🌊',
+    summary: '威利海釣碼頭與金黃落日，溫柔拍岸的湛藍浪花。',
+    skyGradient: 'linear-gradient(to bottom, #f472b6 0%, #fed7aa 40%, #38bdf8 100%)',
+    groundBg: '#0284c7',
+    groundPattern: 'radial-gradient(#0369a1 18%, transparent 19%)',
+    borderColor: 'border-[#0284c7]',
+    cardParchmentTint: 'bg-[#f0fdfa]/95',
+  },
+  {
+    id: 'cabin',
+    name: '🪵 溫馨農舍原木',
+    icon: '🪵',
+    summary: '傳統硬木手工工藝，溫暖壁爐火光與鄉村木質紋理。',
+    skyGradient: 'linear-gradient(to bottom, #d6ba89 0%, #faeed1 50%, #a16207 100%)',
+    groundBg: '#78350f',
+    groundPattern: 'repeating-linear-gradient(0deg, #451a03 0px, #451a03 3px, #78350f 3px, #78350f 10px)',
+    borderColor: 'border-[#854d0e]',
+    cardParchmentTint: 'bg-[#fef9c3]/95',
+  },
+  {
+    id: 'galaxy',
+    name: '🌌 銀河星空漫步',
+    icon: '🌌',
+    summary: '沙漠三石柱召喚神兵的五彩星夜，浩瀚深藍與璀璨繁星。',
+    skyGradient: 'linear-gradient(to bottom, #1e1b4b 0%, #312e81 40%, #064e3b 100%)',
+    groundBg: '#0f172a',
+    groundPattern: 'radial-gradient(#38bdf8 10%, transparent 12%)',
+    borderColor: 'border-[#6366f1]',
+    cardParchmentTint: 'bg-[#f8fafc]/95',
+  },
+];

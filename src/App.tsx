@@ -6,6 +6,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { ClassroomClass, Student, ViewTab, PointHistoryItem } from './types/classroom';
 import { INITIAL_CLASSES, getCropGrowth } from './data/classroomData';
+import { CLASSROOM_PAGE_THEMES } from './data/classroomThemes';
 import { soundManager } from './utils/sound';
 
 // Components
@@ -276,8 +277,37 @@ export default function App() {
     }
   };
 
-  // Save updated avatar
-  const handleSaveAvatar = (studentId: string, avatarUrlOrSprite: string) => {
+  // Page Theme State (stored in localStorage)
+  const [pageThemeId, setPageThemeId] = useState<string>(() => {
+    return localStorage.getItem('stardew_classroom_theme') || 'spring_farm';
+  });
+
+  const activePageTheme = CLASSROOM_PAGE_THEMES.find((t) => t.id === pageThemeId) || CLASSROOM_PAGE_THEMES[0];
+
+  const handleSelectPageTheme = (themeId: string) => {
+    soundManager.playClick();
+    setPageThemeId(themeId);
+    localStorage.setItem('stardew_classroom_theme', themeId);
+  };
+
+  const handleBatchSetCardBackground = (cardBg: string) => {
+    soundManager.playVictory();
+    setClasses((prevClasses) =>
+      prevClasses.map((cls) => {
+        if (cls.id !== currentClassId) return cls;
+        return {
+          ...cls,
+          students: cls.students.map((st) => ({
+            ...st,
+            cardBackground: cardBg,
+          })),
+        };
+      })
+    );
+  };
+
+  // Save updated avatar and optional card background
+  const handleSaveAvatar = (studentId: string, avatarUrlOrSprite: string, cardBackground?: string) => {
     setClasses((prevClasses) =>
       prevClasses.map((cls) => {
         if (cls.id !== currentClassId) return cls;
@@ -288,6 +318,7 @@ export default function App() {
             return {
               ...st,
               avatar: avatarUrlOrSprite,
+              ...(cardBackground !== undefined ? { cardBackground } : {}),
             };
           }),
         };
@@ -423,7 +454,29 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-[#243625] text-[#2b2b2b] flex flex-col font-sans relative selection:bg-[#fabc3f] selection:text-[#4a2800]">
+    <div className={`min-h-screen bg-gradient-to-b ${activePageTheme.bgGradient} text-[#2b2b2b] flex flex-col font-sans relative selection:bg-[#fabc3f] selection:text-[#4a2800] transition-colors duration-700`}>
+      {/* Background Decorative Farm Texture Patterns */}
+      <div
+        className="fixed inset-0 pointer-events-none opacity-25 z-0"
+        style={{
+          backgroundImage:
+            activePageTheme.patternType === 'grass'
+              ? 'radial-gradient(#15803d 15%, transparent 16%), radial-gradient(#166534 15%, transparent 16%)'
+              : activePageTheme.patternType === 'sunflower'
+              ? 'radial-gradient(#ca8a04 18%, transparent 19%)'
+              : activePageTheme.patternType === 'autumn'
+              ? 'radial-gradient(#c2410c 18%, transparent 19%)'
+              : activePageTheme.patternType === 'snow'
+              ? 'radial-gradient(#bae6fd 12%, transparent 14%)'
+              : activePageTheme.patternType === 'magic'
+              ? 'radial-gradient(#a855f7 16%, transparent 18%)'
+              : 'repeating-linear-gradient(0deg, #451a03 0px, #451a03 3px, #78350f 3px, #78350f 12px)',
+          backgroundSize: '24px 24px',
+        }}
+      />
+      {/* Soft warm sunbeam / vignette overlay */}
+      <div className="fixed inset-0 pointer-events-none bg-radial from-transparent via-black/10 to-black/40 z-0" />
+
       {/* Hidden File Input for CSV Import */}
       <input
         ref={fileInputRef}
@@ -456,7 +509,7 @@ export default function App() {
       />
 
       {/* View Content Body */}
-      <main className="flex-1 max-w-7xl w-full mx-auto p-3 sm:p-6">
+      <main className="flex-1 max-w-7xl w-full mx-auto p-3 sm:p-6 relative z-10">
         {activeTab === 'students' && (
           <StudentsView
             students={currentClass.students}
@@ -465,6 +518,9 @@ export default function App() {
             onChangeAvatar={(st) => setAvatarPickerStudent(st)}
             onBatchAdd={handleBatchAdd}
             onOpenFarmDetail={(st) => setInspectFarmStudent(st)}
+            currentTheme={activePageTheme}
+            onSelectPageTheme={handleSelectPageTheme}
+            onBatchSetCardBackground={handleBatchSetCardBackground}
           />
         )}
 

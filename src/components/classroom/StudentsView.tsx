@@ -3,7 +3,8 @@ import { Student } from '../../types/classroom';
 import { StudentCard } from './StudentCard';
 import { soundManager } from '../../utils/sound';
 import { PixelSprite } from '../common/PixelSprite';
-import { Search, Filter, ArrowUpDown, CheckSquare, Square, Plus, Star, Sparkles } from 'lucide-react';
+import { PageTheme, CLASSROOM_PAGE_THEMES, STUDENT_CARD_BACKGROUND_OPTIONS } from '../../data/classroomThemes';
+import { Search, Filter, ArrowUpDown, CheckSquare, Square, Plus, Star, Sparkles, Palette } from 'lucide-react';
 
 interface StudentsViewProps {
   students: Student[];
@@ -12,6 +13,9 @@ interface StudentsViewProps {
   onChangeAvatar: (student: Student) => void;
   onBatchAdd: (targetStudents: Student[], delta: number) => void;
   onOpenFarmDetail?: (student: Student) => void;
+  currentTheme?: PageTheme;
+  onSelectPageTheme?: (themeId: string) => void;
+  onBatchSetCardBackground?: (cardBackground: string) => void;
 }
 
 export const StudentsView: React.FC<StudentsViewProps> = ({
@@ -21,6 +25,9 @@ export const StudentsView: React.FC<StudentsViewProps> = ({
   onChangeAvatar,
   onBatchAdd,
   onOpenFarmDetail,
+  currentTheme,
+  onSelectPageTheme,
+  onBatchSetCardBackground,
 }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [farmTierFilter, setFarmTierFilter] = useState<string>('all');
@@ -145,9 +152,29 @@ export const StudentsView: React.FC<StudentsViewProps> = ({
             <option value="posDesc">依加分次數高到低</option>
           </select>
         </div>
+
+        {/* Page Theme Switcher */}
+        {onSelectPageTheme && (
+          <div className="flex items-center gap-1.5 bg-[#f5e0b7] px-2.5 py-1 rounded-lg border-2 border-[#8b5a2b] shadow-xs">
+            <Palette className="w-3.5 h-3.5 text-[#5a3818]" />
+            <span className="text-xs font-bold text-[#5a3818] hidden lg:inline">名冊背景：</span>
+            <select
+              value={currentTheme?.id || 'spring_farm'}
+              onChange={(e) => onSelectPageTheme(e.target.value)}
+              className="bg-[#faeed1] text-[#4a2800] text-xs font-bold border border-[#8b5a2b] rounded py-0.5 px-2 cursor-pointer focus:outline-none"
+              title="切換學生名冊整頁背景場景主題"
+            >
+              {CLASSROOM_PAGE_THEMES.map((theme) => (
+                <option key={theme.id} value={theme.id}>
+                  {theme.name}
+                </option>
+              ))}
+            </select>
+          </div>
+        )}
       </div>
 
-      {/* Batch Action Floating Toolbar (visible when students selected or select-all clicked) */}
+      {/* Batch Action & Card Style Toolbar */}
       <div className="pixel-wood-dark p-2.5 rounded-xl shadow-lg border-2 border-[#2b1807] flex flex-wrap items-center justify-between gap-3 text-[#ffebb3]">
         <div className="flex items-center gap-3">
           <button
@@ -170,6 +197,31 @@ export const StudentsView: React.FC<StudentsViewProps> = ({
             已選取 {selectedIds.size} / {filteredStudents.length} 位
           </span>
         </div>
+
+        {/* Batch Actions & Card Background Setter */}
+        <div className="flex items-center gap-2 flex-wrap">
+          {onBatchSetCardBackground && (
+            <div className="flex items-center gap-1 bg-[#4d2e13] px-2 py-1 rounded-lg border border-[#8b5a2b]">
+              <span className="text-[11px] font-bold text-[#fed7aa] hidden sm:inline">🖼️ 統一卡片背景：</span>
+              <select
+                onChange={(e) => {
+                  if (e.target.value) {
+                    onBatchSetCardBackground(e.target.value);
+                  }
+                }}
+                defaultValue=""
+                className="bg-[#faeed1] text-[#4a2800] text-[11px] font-bold border border-[#8b5a2b] rounded py-0.5 px-1.5 cursor-pointer focus:outline-none"
+                title="一鍵將全班學生卡片背景設定為指定主題風格"
+              >
+                <option value="" disabled>快速更換全班卡片風格...</option>
+                {STUDENT_CARD_BACKGROUND_OPTIONS.map((opt) => (
+                  <option key={opt.id} value={opt.id}>
+                    {opt.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
 
         {selectedIds.size > 0 && (
           <div className="flex items-center gap-2">
@@ -205,6 +257,7 @@ export const StudentsView: React.FC<StudentsViewProps> = ({
             </button>
           </div>
         )}
+        </div>
       </div>
 
       {/* Students Cards Grid */}

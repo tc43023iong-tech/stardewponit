@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import { Student } from '../../types/classroom';
 import { getCropGrowth, getFarmTier } from '../../data/classroomData';
+import { STUDENT_CARD_BACKGROUND_OPTIONS } from '../../data/classroomThemes';
 import { AvatarRenderer } from './AvatarRenderer';
 import { PixelSprite } from '../common/PixelSprite';
 import { soundManager } from '../../utils/sound';
-import { Check, Star, Sparkles } from 'lucide-react';
+import { Check, Star, Sparkles, Palette } from 'lucide-react';
 
 interface StudentCardProps {
   student: Student;
@@ -47,8 +48,53 @@ export const StudentCard: React.FC<StudentCardProps> = ({
     return null;
   };
 
+  const customBg = STUDENT_CARD_BACKGROUND_OPTIONS.find((o) => o.id === student.cardBackground);
+  const isCustomBgActive = Boolean(customBg && customBg.id !== 'auto');
+
   const miniAnimal = getCardMiniAnimal();
   const miniCrop = getCardMiniCrop();
+
+  const skyGradient = isCustomBgActive && customBg
+    ? customBg.skyGradient
+    : student.points >= 1000
+    ? 'linear-gradient(to bottom, #fde047 0%, #fed7aa 60%, #86efac 100%)'
+    : student.points >= 750
+    ? 'linear-gradient(to bottom, #fdba74 0%, #fef08a 60%, #86efac 100%)'
+    : student.points >= 500
+    ? 'linear-gradient(to bottom, #d8b4fe 0%, #fed7aa 60%, #a7f3d0 100%)'
+    : student.points >= 300
+    ? 'linear-gradient(to bottom, #93c5fd 0%, #bae6fd 60%, #bbf7d0 100%)'
+    : student.points >= 150
+    ? 'linear-gradient(to bottom, #bae6fd 0%, #e0f2fe 60%, #bbf7d0 100%)'
+    : student.points >= 50
+    ? 'linear-gradient(to bottom, #fef9c3 0%, #e2e8f0 60%, #d9f99d 100%)'
+    : 'linear-gradient(to bottom, #e7e5e4 0%, #f5f5f4 60%, #d6d3d1 100%)';
+
+  const groundBg = isCustomBgActive && customBg
+    ? customBg.groundBg
+    : student.points >= 1000
+    ? '#15803d'
+    : student.points >= 750
+    ? '#166534'
+    : student.points >= 500
+    ? '#15803d'
+    : student.points >= 300
+    ? '#16a34a'
+    : student.points >= 150
+    ? '#22c55e'
+    : student.points >= 50
+    ? '#4ade80'
+    : '#78350f';
+
+  const groundPattern = isCustomBgActive && customBg
+    ? customBg.groundPattern
+    : student.points >= 50
+    ? 'radial-gradient(#14532d 15%, transparent 16%), radial-gradient(#166534 15%, transparent 16%)'
+    : 'repeating-linear-gradient(0deg, #451a03 0px, #451a03 4px, #78350f 4px, #78350f 12px)';
+
+  const cardParchmentBg = isCustomBgActive && customBg
+    ? customBg.cardParchmentTint
+    : 'bg-[#faeed1]/93';
 
   return (
     <div
@@ -56,6 +102,8 @@ export const StudentCard: React.FC<StudentCardProps> = ({
       className={`group relative rounded-xl transition-all cursor-pointer flex flex-col justify-between select-none overflow-hidden hover:-translate-y-1 hover:shadow-xl border-4 ${
         isSelected
           ? 'border-[#fabc3f] ring-4 ring-[#fabc3f] shadow-lg'
+          : isCustomBgActive && customBg
+          ? customBg.borderColor
           : student.points >= 1000
           ? 'border-[#eab308] ring-2 ring-amber-300 shadow-md'
           : 'border-[#5a3818] shadow-md'
@@ -70,20 +118,7 @@ export const StudentCard: React.FC<StudentCardProps> = ({
         <div
           className="absolute inset-x-0 top-0 h-28 transition-colors duration-500"
           style={{
-            background:
-              student.points >= 1000
-                ? 'linear-gradient(to bottom, #fde047 0%, #fed7aa 60%, #86efac 100%)'
-                : student.points >= 750
-                ? 'linear-gradient(to bottom, #fdba74 0%, #fef08a 60%, #86efac 100%)'
-                : student.points >= 500
-                ? 'linear-gradient(to bottom, #d8b4fe 0%, #fed7aa 60%, #a7f3d0 100%)'
-                : student.points >= 300
-                ? 'linear-gradient(to bottom, #93c5fd 0%, #bae6fd 60%, #bbf7d0 100%)'
-                : student.points >= 150
-                ? 'linear-gradient(to bottom, #bae6fd 0%, #e0f2fe 60%, #bbf7d0 100%)'
-                : student.points >= 50
-                ? 'linear-gradient(to bottom, #fef9c3 0%, #e2e8f0 60%, #d9f99d 100%)'
-                : 'linear-gradient(to bottom, #e7e5e4 0%, #f5f5f4 60%, #d6d3d1 100%)',
+            background: skyGradient,
           }}
         />
 
@@ -101,29 +136,13 @@ export const StudentCard: React.FC<StudentCardProps> = ({
         <div
           className="absolute inset-x-0 bottom-0 h-32 transition-colors duration-500"
           style={{
-            backgroundColor:
-              student.points >= 1000
-                ? '#15803d'
-                : student.points >= 750
-                ? '#166534'
-                : student.points >= 500
-                ? '#15803d'
-                : student.points >= 300
-                ? '#16a34a'
-                : student.points >= 150
-                ? '#22c55e'
-                : student.points >= 50
-                ? '#4ade80'
-                : '#78350f',
+            backgroundColor: groundBg,
           }}
         >
           <div
             className="w-full h-full opacity-30"
             style={{
-              backgroundImage:
-                student.points >= 50
-                  ? 'radial-gradient(#14532d 15%, transparent 16%), radial-gradient(#166534 15%, transparent 16%)'
-                  : 'repeating-linear-gradient(0deg, #451a03 0px, #451a03 4px, #78350f 4px, #78350f 12px)',
+              backgroundImage: groundPattern,
               backgroundSize: '16px 16px',
             }}
           />
@@ -152,13 +171,21 @@ export const StudentCard: React.FC<StudentCardProps> = ({
       </div>
 
       {/* Semi-transparent Frosted Card Content Container */}
-      <div className="relative z-10 p-3.5 flex flex-col justify-between h-full bg-[#faeed1]/93 backdrop-blur-xs border-b border-[#c4a675]/80">
-        {/* Card Header: Roll No ONLY & Checkbox (Farm name removed per user request) */}
+      <div className={`relative z-10 p-3.5 flex flex-col justify-between h-full ${cardParchmentBg} backdrop-blur-xs border-b border-[#c4a675]/80`}>
+        {/* Card Header: Roll No & Theme badge & Checkbox */}
         <div className="flex items-center justify-between gap-1 mb-2">
           <div className="flex items-center gap-1.5">
             <span className="font-pixel text-xs bg-[#6a4422] text-[#ffebb3] px-2 py-0.5 rounded-sm border border-[#3b1f0b] shadow-xs">
               #{student.rollNo}
             </span>
+            {isCustomBgActive && customBg && (
+              <span
+                className="text-[10px] font-bold text-amber-900 bg-amber-100/90 px-1.5 py-0.5 rounded border border-amber-300 flex items-center gap-0.5"
+                title={`自訂卡片背景：${customBg.name}`}
+              >
+                {customBg.icon}
+              </span>
+            )}
           </div>
 
           {/* Selection Checkbox */}
@@ -263,6 +290,19 @@ export const StudentCard: React.FC<StudentCardProps> = ({
           >
             <Star className="w-3.5 h-3.5 fill-[#633300]" />
             <span>評分</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              soundManager.playClick();
+              onChangeAvatar(student);
+            }}
+            className="p-2 bg-[#faeed1] hover:bg-[#ffeec2] border-2 border-[#8b5a2b] text-[#5a3818] rounded-lg flex items-center justify-center cursor-pointer shadow-sm active:scale-95 transition-all shrink-0"
+            title="更換頭像與卡片背景風格 🎨"
+          >
+            <Palette className="w-3.5 h-3.5" />
           </button>
 
           {onOpenFarmDetail && (

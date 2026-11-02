@@ -18,6 +18,7 @@ export interface Student {
   negPoints: number;
   groupId?: number; // 1 to 6
   avatar?: string;
+  cardBackground?: string; // Custom card background theme ID
   history: PointHistoryItem[];
 }
 
