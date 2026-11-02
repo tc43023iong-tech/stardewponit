@@ -2,6 +2,7 @@ import React, { useState, useMemo } from 'react';
 import { Student } from '../../types/classroom';
 import { STARDEW_AVATARS } from '../../data/classroomData';
 import { STUDENT_CARD_BACKGROUND_OPTIONS, CardBackgroundOption } from '../../data/classroomThemes';
+import { CARD_PIXEL_BG_IMAGES } from '../../data/scenicBackgrounds';
 import { AvatarRenderer } from './AvatarRenderer';
 import { StudentCard } from './StudentCard';
 import { soundManager } from '../../utils/sound';
@@ -110,33 +111,22 @@ export const AvatarPickerModal: React.FC<AvatarPickerModalProps> = ({
           </span>
         )}
 
-        {/* Visual Mini Background Preview Box */}
-        <div className="relative h-16 rounded-lg overflow-hidden border border-[#5a3818] shadow-inner mb-1.5">
-          {/* Sky layer */}
-          <div
-            className="absolute inset-x-0 top-0 h-10"
-            style={{ background: bgOpt.skyGradient }}
-          />
-          {/* Mountains */}
-          <svg
-            className="absolute top-3 inset-x-0 w-full h-7 opacity-40"
-            preserveAspectRatio="none"
-            viewBox="0 0 100 25"
-          >
-            <polygon points="0,25 25,8 50,25 75,10 100,25" fill="#1b4332" />
-          </svg>
-          {/* Ground */}
-          <div
-            className="absolute inset-x-0 bottom-0 h-6"
-            style={{
-              backgroundColor: bgOpt.groundBg,
-              backgroundImage: bgOpt.groundPattern,
-              backgroundSize: '12px 12px',
-            }}
-          />
-          {/* Center Badge */}
-          <div className="absolute inset-0 flex items-center justify-center">
-            <span className="text-xl drop-shadow">{bgOpt.icon}</span>
+        {/* Visual Mini Background Preview Box with Real Pixel Art */}
+        <div className="relative h-20 rounded-lg overflow-hidden border-2 border-[#5a3818] shadow-inner mb-1.5 bg-[#2a1708]">
+          {CARD_PIXEL_BG_IMAGES[bgOpt.id] ? (
+            <img
+              src={CARD_PIXEL_BG_IMAGES[bgOpt.id]}
+              alt={bgOpt.name}
+              className="w-full h-full object-cover object-center"
+            />
+          ) : (
+            <div
+              className="w-full h-full"
+              style={{ background: bgOpt.skyGradient }}
+            />
+          )}
+          <div className="absolute inset-0 bg-black/25 flex items-center justify-center">
+            <span className="text-2xl drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">{bgOpt.icon}</span>
           </div>
         </div>
 
