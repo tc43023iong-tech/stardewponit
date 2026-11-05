@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { ClassroomClass, ViewTab } from '../../types/classroom';
+import { CLASSROOM_PAGE_THEMES } from '../../data/classroomThemes';
 import { PixelSprite } from '../common/PixelSprite';
 import { soundManager } from '../../utils/sound';
 import { 
@@ -34,6 +35,11 @@ interface ClassHeaderProps {
   onToggleSound: () => void;
   isMusicPlaying: boolean;
   onToggleMusic: () => void;
+  currentThemeId?: string;
+  onSelectTheme?: (themeId: string) => void;
+  onSwitchToPokemon?: () => void;
+  isParadiseOpen?: boolean;
+  onToggleParadise?: () => void;
 }
 
 export const ClassHeader: React.FC<ClassHeaderProps> = ({
@@ -52,6 +58,11 @@ export const ClassHeader: React.FC<ClassHeaderProps> = ({
   onToggleSound,
   isMusicPlaying,
   onToggleMusic,
+  currentThemeId,
+  onSelectTheme,
+  onSwitchToPokemon,
+  isParadiseOpen,
+  onToggleParadise,
 }) => {
   const [showAddClassModal, setShowAddClassModal] = useState(false);
   const [newClassName, setNewClassName] = useState('');
@@ -176,6 +187,25 @@ export const ClassHeader: React.FC<ClassHeaderProps> = ({
 
           <div className="h-5 w-[1px] bg-[#6b421d] mx-0.5" />
 
+          {/* Panoramic Scene Theme Selector */}
+          {onSelectTheme && (
+            <div className="flex items-center gap-1 bg-[#3a200a] px-2 py-0.5 border border-[#8b5a2b] rounded shadow-inner">
+              <span className="text-xs" title="切換全景場景特效">🌄</span>
+              <select
+                value={currentThemeId || 'spring_farm'}
+                onChange={(e) => onSelectTheme(e.target.value)}
+                className="bg-[#faeed1] text-[#4a2800] text-[11px] font-bold border border-[#8b5a2b] rounded py-0.5 px-1.5 cursor-pointer focus:outline-none max-w-[125px] sm:max-w-none"
+                title="切換星露谷全景背景場景與專屬動態特效（紫金秘境、皇家金輝、海濱夕陽、星空漫步等）"
+              >
+                {CLASSROOM_PAGE_THEMES.map((t) => (
+                  <option key={t.id} value={t.id}>
+                    {t.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
+
           {/* Sound & Music Controls */}
           <button
             onClick={onToggleMusic}
@@ -189,17 +219,38 @@ export const ClassHeader: React.FC<ClassHeaderProps> = ({
             <Music className="w-3.5 h-3.5" />
           </button>
 
-          <button
-            onClick={onToggleSound}
-            className={`p-1.5 text-xs border cursor-pointer ${
-              !isMuted
-                ? 'bg-[#2e5927] border-[#559945] text-[#bbf7d0]'
-                : 'bg-[#5a3818] border-[#8b5a2b] text-stone-400'
-            }`}
-            title={isMuted ? '開啟音效' : '靜音'}
-          >
-            {isMuted ? <VolumeX className="w-3.5 h-3.5" /> : <Volume2 className="w-3.5 h-3.5" />}
-          </button>
+          {/* Paradise Mode Button "😆" Placed immediately to the right of Music button as requested */}
+          {onToggleParadise && (
+            <button
+              onClick={() => {
+                soundManager.playClick();
+                onToggleParadise();
+              }}
+              className={`p-1.5 text-xs border cursor-pointer rounded transition-all active:scale-90 flex items-center justify-center ${
+                isParadiseOpen || activeTab === 'paradise'
+                  ? 'bg-gradient-to-r from-amber-400 to-yellow-300 border-[#8b5a2b] text-[#4a2800] ring-2 ring-yellow-400 font-bold scale-105 shadow-md animate-pulse'
+                  : 'bg-[#5a3818] hover:bg-[#6b421d] border-[#8b5a2b] text-yellow-300 hover:scale-105 shadow-xs'
+              }`}
+              title="開啟/關閉星露谷像素夥伴樂園 (Paradise Mode) 😆 全班每個孩子的夥伴都在樂園裡自己生活"
+            >
+              <span className="text-base leading-none select-none">😆</span>
+            </button>
+          )}
+
+          {/* Return to Pokemon Main View Button */}
+          {onSwitchToPokemon && (
+            <button
+              onClick={() => {
+                soundManager.playClick();
+                onSwitchToPokemon();
+              }}
+              className="bg-gradient-to-r from-amber-400 to-yellow-300 hover:from-amber-300 hover:to-yellow-200 text-[#4a2800] border-2 border-[#b45309] px-2.5 py-1 text-xs font-pixel flex items-center gap-1.5 shadow-md active:scale-95 transition-all cursor-pointer rounded"
+              title="返回寶可夢主介面 (Miss Iong's Pokémon Class)"
+            >
+              <span className="text-sm">⚡</span>
+              <span className="font-bold whitespace-nowrap">寶可夢主介面</span>
+            </button>
+          )}
         </div>
       </div>
 
@@ -263,6 +314,21 @@ export const ClassHeader: React.FC<ClassHeaderProps> = ({
         >
           <History className="w-4 h-4" />
           <span>加扣分記錄</span>
+        </button>
+
+        <button
+          onClick={() => {
+            soundManager.playClick();
+            onSelectTab('paradise');
+          }}
+          className={`px-3 py-1.5 text-xs sm:text-sm font-bold flex items-center gap-2 whitespace-nowrap cursor-pointer transition-all border-b-2 ${
+            activeTab === 'paradise'
+              ? 'bg-[#5a3818] text-[#ffd700] border-[#ffd700]'
+              : 'text-[#d6ba89] border-transparent hover:text-white hover:bg-[#4a2e13]'
+          }`}
+        >
+          <span className="text-base leading-none">😆</span>
+          <span>夥伴樂園</span>
         </button>
       </nav>
 

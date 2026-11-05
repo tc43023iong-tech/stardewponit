@@ -23,7 +23,7 @@ export const PointsModal: React.FC<PointsModalProps> = ({
   onClose,
   onApplyPoints,
 }) => {
-  // Custom score state located right beside the student's name in the header
+  // Custom score state located directly beside student name in header
   const [customDeltaInput, setCustomDeltaInput] = useState<string>('5');
   const [isNegativeSign, setIsNegativeSign] = useState<boolean>(false);
   const [customReasonInput, setCustomReasonInput] = useState<string>('');
@@ -65,19 +65,19 @@ export const PointsModal: React.FC<PointsModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/75 flex items-center justify-center p-2 sm:p-4 backdrop-blur-xs animate-in fade-in duration-150">
-      <div className="pixel-wood-box max-w-5xl w-full max-h-[94vh] flex flex-col overflow-hidden text-[#4a2800] shadow-2xl">
+    <div className="fixed inset-0 z-50 bg-black/75 flex items-center justify-center p-2 sm:p-4 backdrop-blur-xs animate-in fade-in duration-150 select-none">
+      <div className="pixel-wood-box max-w-5xl w-full max-h-[95vh] flex flex-col overflow-hidden text-[#4a2800] shadow-2xl">
         {/* Top Header: Student info & Direct Inline Custom Points Input */}
-        <div className="bg-[#5a3818] text-[#ffebb3] px-3.5 py-2.5 border-b-4 border-[#361f0d] flex flex-wrap items-center justify-between gap-2.5 sm:gap-4 shadow-md">
-          {/* Left: Student Avatar + Name + Current Score */}
+        <div className="bg-[#5a3818] text-[#ffebb3] px-3 sm:px-4 py-2.5 border-b-4 border-[#361f0d] flex flex-wrap items-center justify-between gap-3 shadow-md">
+          {/* Left: Student Avatar + Name + RollNo */}
           <div className="flex items-center gap-2.5 min-w-0">
             {!isBatch && primaryStudent ? (
               <div className="shrink-0 p-0.5 rounded-xl bg-amber-50/20 border-2 border-[#8b5a2b] shadow-xs">
-                <AvatarRenderer avatar={primaryStudent.avatar} name={primaryStudent.name} size={38} />
+                <AvatarRenderer avatar={primaryStudent.avatar} name={primaryStudent.name} size={40} />
               </div>
             ) : (
-              <div className="w-9 h-9 rounded-xl bg-amber-500/20 border-2 border-amber-600 flex items-center justify-center shrink-0">
-                <PixelSprite name="star_full" size={22} />
+              <div className="w-10 h-10 rounded-xl bg-amber-500/20 border-2 border-amber-600 flex items-center justify-center shrink-0">
+                <PixelSprite name="star_full" size={24} />
               </div>
             )}
 
@@ -105,7 +105,7 @@ export const PointsModal: React.FC<PointsModalProps> = ({
             </div>
           </div>
 
-          {/* Center: Custom Score Input Box - Placed directly beside student's name */}
+          {/* Center: Custom Score Input Box - Placed right beside student name */}
           <form
             onSubmit={handleApplyCustom}
             className="flex items-center gap-1.5 bg-[#3b1f0b] px-2.5 py-1.5 rounded-xl border-2 border-[#ca8a04] shadow-md ring-1 ring-amber-500/50 flex-wrap sm:flex-nowrap"
@@ -114,19 +114,19 @@ export const PointsModal: React.FC<PointsModalProps> = ({
               自訂分數：
             </span>
 
-            {/* +/- Mode Switch Toggle Button */}
+            {/* +/- Mode Switch Toggle Button with wobble hover */}
             <button
               type="button"
               onClick={() => {
                 soundManager.playClick();
                 setIsNegativeSign(!isNegativeSign);
               }}
-              className={`px-2 py-1 rounded-md font-pixel text-xs font-black flex items-center gap-1 border-2 transition-all cursor-pointer shadow-xs active:scale-95 ${
+              className={`item-wobble-hover px-2 py-1 rounded-md font-pixel text-xs font-black flex items-center gap-1 border-2 transition-all cursor-pointer shadow-xs active:scale-95 ${
                 isNegativeSign
                   ? 'bg-[#dc2626] hover:bg-[#b91c1c] text-white border-[#f87171] ring-1 ring-red-400'
                   : 'bg-[#16a34a] hover:bg-[#15803d] text-white border-[#86efac] ring-1 ring-emerald-400'
               }`}
-              title={isNegativeSign ? '目前為扣分模式，點擊切換為加分' : '目前為加分模式，點擊切換為扣分'}
+              title={isNegativeSign ? '目前為扣分模式，點擊切換為加分(+)' : '目前為加分模式，點擊切換為扣分(-)'}
             >
               {isNegativeSign ? (
                 <>
@@ -141,7 +141,7 @@ export const PointsModal: React.FC<PointsModalProps> = ({
               )}
             </button>
 
-            {/* Number Input */}
+            {/* Number Input Box */}
             <div className="flex items-center gap-1 bg-[#faeed1] border-2 border-[#8b5a2b] rounded-md px-1.5 py-0.5">
               <input
                 type="number"
@@ -155,7 +155,7 @@ export const PointsModal: React.FC<PointsModalProps> = ({
               <span className="text-[11px] font-pixel font-bold text-[#8b5a2b]">分</span>
             </div>
 
-            {/* Reason Input */}
+            {/* Reason Input Box */}
             <input
               type="text"
               value={customReasonInput}
@@ -164,42 +164,43 @@ export const PointsModal: React.FC<PointsModalProps> = ({
               className="w-24 sm:w-36 h-7 bg-[#faeed1] border-2 border-[#8b5a2b] text-[#4a2800] text-xs font-bold rounded-md px-2 focus:outline-none focus:ring-2 focus:ring-[#fabc3f]"
             />
 
-            {/* Submit Button */}
+            {/* Fast Submit Button with wobble hover */}
             <button
               type="submit"
-              className={`h-7 px-2.5 rounded-md font-pixel text-xs font-bold text-white flex items-center gap-1 cursor-pointer shadow transition-all active:scale-95 border-2 ${
+              className={`item-wobble-hover h-7 px-2.5 rounded-md font-pixel text-xs font-bold text-white flex items-center gap-1 cursor-pointer shadow transition-all active:scale-95 border-2 ${
                 isNegativeSign
                   ? 'bg-[#b91c1c] hover:bg-[#991b1b] border-[#ef4444]'
                   : 'bg-[#059669] hover:bg-[#047857] border-[#34d399]'
               }`}
+              title="執行快速更新分數"
             >
               <span>送出</span>
               <Send className="w-3 h-3" />
             </button>
           </form>
 
-          {/* Right: Close Modal Button */}
+          {/* Right: Close Modal Button with wobble hover */}
           <button
             onClick={() => {
               soundManager.playClick();
               onClose();
             }}
-            className="w-7 h-7 bg-[#3b1f0b] hover:bg-[#8b5a2b] text-[#fed7aa] flex items-center justify-center border-2 border-[#8b5a2b] rounded cursor-pointer transition-colors shrink-0"
+            className="item-wobble-hover w-7 h-7 bg-[#3b1f0b] hover:bg-[#8b5a2b] text-[#fed7aa] flex items-center justify-center border-2 border-[#8b5a2b] rounded cursor-pointer transition-colors shrink-0"
             title="關閉"
           >
             <X className="w-4 h-4" />
           </button>
         </div>
 
-        {/* Modal Main Body: ALWAYS Side-by-Side Left (加分項) & Right (扣分項) */}
-        <div className="p-2.5 sm:p-4 overflow-y-auto max-h-[74vh] bg-[#fbf5e6]">
-          <div className="grid grid-cols-2 gap-2 sm:gap-4 items-start">
-            {/* ================= LEFT COLUMN: 加分項 (Positive Presets) ================= */}
-            <div className="bg-[#f0fdf4] border-2 border-[#86efac] rounded-xl p-2 sm:p-3 shadow-xs">
-              {/* Column Header */}
-              <div className="flex items-center justify-between pb-2 mb-2 border-b-2 border-[#86efac]/80">
-                <div className="flex items-center gap-1.5 sm:gap-2 min-w-0">
-                  <div className="w-5 h-5 sm:w-6 sm:h-6 rounded-md bg-[#16a34a] text-white flex items-center justify-center font-bold text-xs shadow-xs shrink-0">
+        {/* Modal Main Body: TWO INDEPENDENT VERTICAL SCROLL AREAS (左側獎勵加分項目 / 右側違紀扣分項目) */}
+        <div className="p-2.5 sm:p-4 bg-[#fbf5e6] flex-1 overflow-hidden">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4 h-full">
+            {/* ================= LEFT COLUMN: 🌱 獎勵加分項目 (獨立垂直滾動) ================= */}
+            <div className="bg-[#f0fdf4] border-2 border-[#86efac] rounded-xl p-2.5 sm:p-3 shadow-xs flex flex-col h-full overflow-hidden">
+              {/* Left Column Header */}
+              <div className="flex items-center justify-between pb-2 mb-2 border-b-2 border-[#86efac] shrink-0">
+                <div className="flex items-center gap-2 min-w-0">
+                  <div className="w-6 h-6 rounded-md bg-[#16a34a] text-white flex items-center justify-center font-bold text-xs shadow-xs shrink-0">
                     +
                   </div>
                   <div className="min-w-0">
@@ -207,34 +208,34 @@ export const PointsModal: React.FC<PointsModalProps> = ({
                       <span>🌱 獎勵加分項目</span>
                       <span className="text-[10px] text-[#16a34a] font-normal">({POSITIVE_PRESETS.length}項)</span>
                     </h4>
-                    <p className="text-[9px] sm:text-[10px] text-[#15803d] truncate">游標懸停晃動，點擊加分</p>
+                    <p className="text-[9px] sm:text-[10px] text-[#15803d] truncate">游標懸停晃動，點擊立即加分</p>
                   </div>
                 </div>
                 <Sparkles className="w-4 h-4 text-[#16a34a] shrink-0" />
               </div>
 
-              {/* Positive List */}
-              <div className="space-y-1.5">
+              {/* Left Independent Vertical Scroll Area */}
+              <div className="flex-1 overflow-y-auto pr-1.5 space-y-1.5 max-h-[58vh] sm:max-h-[64vh]">
                 {POSITIVE_PRESETS.map((preset) => (
                   <button
                     key={preset.id}
                     onClick={() => handleSelectPreset(preset)}
-                    className="item-wobble-hover w-full p-1.5 sm:p-2 bg-white hover:bg-[#dcfce7] border-2 border-[#bbf7d0] hover:border-[#10b981] rounded-lg text-left flex items-center justify-between group shadow-xs cursor-pointer select-none"
+                    className="item-wobble-hover w-full p-2 bg-white hover:bg-[#dcfce7] border-2 border-[#bbf7d0] hover:border-[#10b981] rounded-lg text-left flex items-center justify-between group shadow-xs cursor-pointer select-none transition-colors"
                   >
-                    <div className="flex items-center gap-1.5 sm:gap-2 min-w-0 pr-1">
-                      <span className="text-base sm:text-xl shrink-0 group-hover:scale-120 transition-transform">
+                    <div className="flex items-center gap-2 min-w-0 pr-1">
+                      <span className="text-lg sm:text-xl shrink-0 group-hover:scale-120 transition-transform">
                         {preset.icon}
                       </span>
                       <div className="min-w-0 truncate">
-                        <div className="font-bold text-[11px] sm:text-xs text-[#14532d] truncate group-hover:text-[#047857]">
+                        <div className="font-bold text-xs text-[#14532d] truncate group-hover:text-[#047857]">
                           {preset.labelZh}
                         </div>
-                        <div className="text-[9px] text-stone-500 truncate hidden md:block">
+                        <div className="text-[9px] text-stone-500 truncate hidden sm:block">
                           {preset.labelEn}
                         </div>
                       </div>
                     </div>
-                    <span className="font-pixel text-[10px] sm:text-xs font-black bg-[#dcfce7] group-hover:bg-[#10b981] text-[#15803d] group-hover:text-white border border-[#86efac] px-1 sm:px-2 py-0.5 rounded shrink-0 whitespace-nowrap">
+                    <span className="font-pixel text-[10px] sm:text-xs font-black bg-[#dcfce7] group-hover:bg-[#10b981] text-[#15803d] group-hover:text-white border border-[#86efac] px-2 py-0.5 rounded shrink-0 whitespace-nowrap">
                       +{preset.points}分
                     </span>
                   </button>
@@ -242,12 +243,12 @@ export const PointsModal: React.FC<PointsModalProps> = ({
               </div>
             </div>
 
-            {/* ================= RIGHT COLUMN: 扣分項 (Negative Presets) ================= */}
-            <div className="bg-[#fef2f2] border-2 border-[#fca5a5] rounded-xl p-2 sm:p-3 shadow-xs">
-              {/* Column Header */}
-              <div className="flex items-center justify-between pb-2 mb-2 border-b-2 border-[#fca5a5]/80">
-                <div className="flex items-center gap-1.5 sm:gap-2 min-w-0">
-                  <div className="w-5 h-5 sm:w-6 sm:h-6 rounded-md bg-[#dc2626] text-white flex items-center justify-center font-bold text-xs shadow-xs shrink-0">
+            {/* ================= RIGHT COLUMN: ⚠️ 違紀扣分項目 (獨立垂直滾動) ================= */}
+            <div className="bg-[#fef2f2] border-2 border-[#fca5a5] rounded-xl p-2.5 sm:p-3 shadow-xs flex flex-col h-full overflow-hidden">
+              {/* Right Column Header */}
+              <div className="flex items-center justify-between pb-2 mb-2 border-b-2 border-[#fca5a5] shrink-0">
+                <div className="flex items-center gap-2 min-w-0">
+                  <div className="w-6 h-6 rounded-md bg-[#dc2626] text-white flex items-center justify-center font-bold text-xs shadow-xs shrink-0">
                     -
                   </div>
                   <div className="min-w-0">
@@ -255,34 +256,34 @@ export const PointsModal: React.FC<PointsModalProps> = ({
                       <span>⚠️ 違紀扣分項目</span>
                       <span className="text-[10px] text-[#dc2626] font-normal">({NEGATIVE_PRESETS.length}項)</span>
                     </h4>
-                    <p className="text-[9px] sm:text-[10px] text-[#b91c1c] truncate">游標懸停晃動，點擊扣分</p>
+                    <p className="text-[9px] sm:text-[10px] text-[#b91c1c] truncate">游標懸停晃動，點擊立即扣分</p>
                   </div>
                 </div>
                 <AlertTriangle className="w-4 h-4 text-[#dc2626] shrink-0" />
               </div>
 
-              {/* Negative List */}
-              <div className="space-y-1.5">
+              {/* Right Independent Vertical Scroll Area */}
+              <div className="flex-1 overflow-y-auto pr-1.5 space-y-1.5 max-h-[58vh] sm:max-h-[64vh]">
                 {NEGATIVE_PRESETS.map((preset) => (
                   <button
                     key={preset.id}
                     onClick={() => handleSelectPreset(preset)}
-                    className="item-wobble-hover w-full p-1.5 sm:p-2 bg-white hover:bg-[#fee2e2] border-2 border-[#fecaca] hover:border-[#ef4444] rounded-lg text-left flex items-center justify-between group shadow-xs cursor-pointer select-none"
+                    className="item-wobble-hover w-full p-2 bg-white hover:bg-[#fee2e2] border-2 border-[#fecaca] hover:border-[#ef4444] rounded-lg text-left flex items-center justify-between group shadow-xs cursor-pointer select-none transition-colors"
                   >
-                    <div className="flex items-center gap-1.5 sm:gap-2 min-w-0 pr-1">
-                      <span className="text-base sm:text-xl shrink-0 group-hover:scale-120 transition-transform">
+                    <div className="flex items-center gap-2 min-w-0 pr-1">
+                      <span className="text-lg sm:text-xl shrink-0 group-hover:scale-120 transition-transform">
                         {preset.icon}
                       </span>
                       <div className="min-w-0 truncate">
-                        <div className="font-bold text-[11px] sm:text-xs text-[#7f1d1d] truncate group-hover:text-[#991b1b]">
+                        <div className="font-bold text-xs text-[#7f1d1d] truncate group-hover:text-[#991b1b]">
                           {preset.labelZh}
                         </div>
-                        <div className="text-[9px] text-stone-500 truncate hidden md:block">
+                        <div className="text-[9px] text-stone-500 truncate hidden sm:block">
                           {preset.labelEn}
                         </div>
                       </div>
                     </div>
-                    <span className="font-pixel text-[10px] sm:text-xs font-black bg-[#fee2e2] group-hover:bg-[#ef4444] text-[#b91c1c] group-hover:text-white border border-[#fca5a5] px-1 sm:px-2 py-0.5 rounded shrink-0 whitespace-nowrap">
+                    <span className="font-pixel text-[10px] sm:text-xs font-black bg-[#fee2e2] group-hover:bg-[#ef4444] text-[#b91c1c] group-hover:text-white border border-[#fca5a5] px-2 py-0.5 rounded shrink-0 whitespace-nowrap">
                       {preset.points}分
                     </span>
                   </button>
@@ -293,16 +294,16 @@ export const PointsModal: React.FC<PointsModalProps> = ({
         </div>
 
         {/* Modal Footer */}
-        <div className="bg-[#faeed1] px-4 py-2.5 border-t-2 border-[#c4a675] flex flex-wrap items-center justify-between gap-2 text-xs text-[#5a3818]">
+        <div className="bg-[#faeed1] px-4 py-2 border-t-2 border-[#c4a675] flex flex-wrap items-center justify-between gap-2 text-xs text-[#5a3818] shrink-0">
           <span className="text-[11px] font-bold text-stone-600">
-            ✨ 左欄為獎勵加分、右欄為違紀扣分；游標懸停晃動提示，頂部名字旁可輸入自訂分數！
+            ✨ 左欄為獎勵加分、右欄為違紀扣分，均具備獨立滾動區與晃動懸停動畫；頂部名字旁可自訂分數！
           </span>
           <button
             onClick={() => {
               soundManager.playClick();
               onClose();
             }}
-            className="px-4 py-1 bg-[#ede0c2] hover:bg-[#dfcca4] text-[#4a2800] font-bold border-2 border-[#a3794b] rounded-lg cursor-pointer transition-colors shadow-xs"
+            className="item-wobble-hover px-4 py-1 bg-[#ede0c2] hover:bg-[#dfcca4] text-[#4a2800] font-bold border-2 border-[#a3794b] rounded-lg cursor-pointer transition-colors shadow-xs"
           >
             關閉
           </button>

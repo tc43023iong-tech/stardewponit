@@ -264,6 +264,63 @@ class SoundManager {
     }
   }
 
+  // Crisp sparkling "叮一聲" level-up chime for paradise companion growth
+  public playDingChime() {
+    if (this.isMuted) return;
+    try {
+      this.initCtx();
+      if (!this.ctx) return;
+      const now = this.ctx.currentTime;
+      // High bell chord: C6 -> E6 -> G6 -> C7 sparkle
+      const notes = [1046.50, 1318.51, 1567.98, 2093.00];
+      notes.forEach((freq, idx) => {
+        if (!this.ctx) return;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(freq, now + idx * 0.05);
+
+        gain.gain.setValueAtTime(0.28, now + idx * 0.05);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.05 + 0.55);
+
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start(now + idx * 0.05);
+        osc.stop(now + idx * 0.05 + 0.55);
+      });
+    } catch {
+      // Audio fallback
+    }
+  }
+
+  // Gentle happy purr / chirp when petting companion
+  public playPetSound() {
+    if (this.isMuted) return;
+    try {
+      this.initCtx();
+      if (!this.ctx) return;
+      const now = this.ctx.currentTime;
+      const notes = [659.25, 783.99, 987.77, 1174.66]; // E5 -> G5 -> B5 -> D6 cheerful chirp
+      notes.forEach((freq, idx) => {
+        if (!this.ctx) return;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(freq, now + idx * 0.04);
+
+        gain.gain.setValueAtTime(0.18, now + idx * 0.04);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.04 + 0.28);
+
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start(now + idx * 0.04);
+        osc.stop(now + idx * 0.04 + 0.28);
+      });
+    } catch {
+      // Audio fallback
+    }
+  }
+
   // Victory fanfare for level completion
   public playVictory() {
     if (this.isMuted) return;

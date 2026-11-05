@@ -4,7 +4,7 @@ export interface PageTheme {
   icon: string;
   description: string;
   bgGradient: string;
-  patternType: 'grass' | 'sunflower' | 'autumn' | 'snow' | 'wood' | 'magic';
+  patternType: 'grass' | 'sunflower' | 'autumn' | 'snow' | 'wood' | 'magic' | 'iridium' | 'gold' | 'ocean' | 'galaxy';
   accentBorder: string;
   badgeBg: string;
 }
@@ -69,6 +69,46 @@ export const CLASSROOM_PAGE_THEMES: PageTheme[] = [
     patternType: 'wood',
     accentBorder: '#ca8a04',
     badgeBg: 'bg-amber-900/60 text-amber-200 border-amber-700',
+  },
+  {
+    id: 'iridium_cavern',
+    name: '🔮 紫金銥晶秘境',
+    icon: '🔮',
+    description: '骷髏洞穴深處與紫晶礦脈！神秘紫光脈衝、發光銥礦與神秘地下水晶。',
+    bgGradient: 'from-[#2e1065] via-[#4c1d95] to-[#1e1b4b]',
+    patternType: 'iridium',
+    accentBorder: '#c084fc',
+    badgeBg: 'bg-purple-900/60 text-purple-200 border-purple-600',
+  },
+  {
+    id: 'golden_palace',
+    name: '👑 皇家金輝宮殿',
+    icon: '👑',
+    description: '純金榮耀大殿！金時鐘、純金獎盃雕像與滿室輝煌的金燦浮動金屑。',
+    bgGradient: 'from-[#451a03] via-[#78350f] to-[#b45309]',
+    patternType: 'gold',
+    accentBorder: '#facc15',
+    badgeBg: 'bg-amber-900/60 text-amber-200 border-amber-600',
+  },
+  {
+    id: 'ocean_sunset',
+    name: '🌊 鵜鶘海濱夕陽',
+    icon: '🌊',
+    description: '鵜鶘鎮海灘黃昏！落日餘暉映照著海面浪花波動與海風微瀾。',
+    bgGradient: 'from-[#082f49] via-[#0369a1] to-[#be185d]',
+    patternType: 'ocean',
+    accentBorder: '#38bdf8',
+    badgeBg: 'bg-sky-900/60 text-sky-200 border-sky-600',
+  },
+  {
+    id: 'galaxy_starlight',
+    name: '🌌 銀河星空漫步',
+    icon: '🌌',
+    description: '浩瀚宇宙與沙漠神柱！七彩極光光柱、旋轉星雲與漫天閃爍的璀璨星光。',
+    bgGradient: 'from-[#030712] via-[#1e1b4b] to-[#312e81]',
+    patternType: 'galaxy',
+    accentBorder: '#818cf8',
+    badgeBg: 'bg-indigo-900/60 text-indigo-200 border-indigo-600',
   },
 ];
 

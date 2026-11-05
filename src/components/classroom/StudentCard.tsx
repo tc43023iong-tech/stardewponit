@@ -55,10 +55,20 @@ export const StudentCard: React.FC<StudentCardProps> = ({
   const miniAnimal = getCardMiniAnimal();
   const miniCrop = getCardMiniCrop();
 
-  // Pixel Background Image for Card Canvas
+  // Pixel Background Image for Card Canvas: Dedicated custom theme or auto-progression by points
+  const getAutoThemeByPoints = () => {
+    if (student.points >= 1000) return CARD_PIXEL_BG_IMAGES.golden;
+    if (student.points >= 750) return CARD_PIXEL_BG_IMAGES.iridium;
+    if (student.points >= 500) return CARD_PIXEL_BG_IMAGES.summer;
+    if (student.points >= 300) return CARD_PIXEL_BG_IMAGES.spring;
+    if (student.points >= 150) return CARD_PIXEL_BG_IMAGES.autumn;
+    return CARD_PIXEL_BG_IMAGES.auto;
+  };
+
   const cardBgImage =
-    (student.cardBackground && CARD_PIXEL_BG_IMAGES[student.cardBackground]) ||
-    CARD_PIXEL_BG_IMAGES.auto;
+    isCustomBgActive && customBg && CARD_PIXEL_BG_IMAGES[customBg.id]
+      ? CARD_PIXEL_BG_IMAGES[customBg.id]
+      : getAutoThemeByPoints();
 
   return (
     <div
@@ -87,6 +97,44 @@ export const StudentCard: React.FC<StudentCardProps> = ({
 
         {/* Soft Vignette & Depth Shadow on Card Artwork */}
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/30 pointer-events-none" />
+
+        {/* Dynamic In-Card Special Effects for Galaxy, Ocean, Iridium, and Golden */}
+        {student.cardBackground === 'galaxy' && (
+          <div className="absolute inset-0 pointer-events-none overflow-hidden">
+            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-20 h-full bg-gradient-to-b from-cyan-400/25 via-fuchsia-500/15 to-transparent blur-xs animate-pulse" />
+            <div className="absolute top-2 left-3 text-cyan-200 text-xs animate-twinkle">✦</div>
+            <div className="absolute top-5 right-5 text-amber-200 text-sm animate-twinkle-delayed">★</div>
+            <div className="absolute top-10 left-1/3 text-pink-200 text-xs animate-twinkle">✧</div>
+          </div>
+        )}
+
+        {student.cardBackground === 'ocean' && (
+          <div className="absolute inset-0 pointer-events-none overflow-hidden">
+            <div className="absolute bottom-2 inset-x-0 h-10 opacity-35 animate-ocean-wave">
+              <svg className="w-full h-full" preserveAspectRatio="none" viewBox="0 0 500 50">
+                <path d="M 0 25 Q 125 10 250 25 T 500 25 L 500 50 L 0 50 Z" fill="#38bdf8" />
+              </svg>
+            </div>
+            <div className="absolute bottom-6 left-1/3 text-amber-300 text-xs animate-water-gleam">✧</div>
+            <div className="absolute bottom-4 right-1/4 text-orange-200 text-xs animate-water-gleam" style={{ animationDelay: '-1s' }}>✦</div>
+          </div>
+        )}
+
+        {student.cardBackground === 'iridium' && (
+          <div className="absolute inset-0 pointer-events-none overflow-hidden">
+            <div className="absolute top-4 left-6 w-24 h-24 rounded-full bg-purple-600/25 blur-xl animate-crystal-pulse" />
+            <div className="absolute top-6 right-6 text-purple-300 text-xs animate-floating-drift">🔮</div>
+            <div className="absolute bottom-8 left-10 text-fuchsia-300 text-xs animate-twinkle">✦</div>
+          </div>
+        )}
+
+        {student.cardBackground === 'golden' && (
+          <div className="absolute inset-0 pointer-events-none overflow-hidden">
+            <div className="absolute top-2 left-1/2 -translate-x-1/2 w-40 h-28 bg-amber-300/25 blur-lg animate-gold-gleam" />
+            <div className="absolute top-6 left-6 text-amber-300 text-sm animate-floating-drift">✨</div>
+            <div className="absolute top-8 right-6 text-yellow-200 text-xs animate-twinkle">★</div>
+          </div>
+        )}
 
         {/* 1000分 Rainbow Sparkles */}
         {student.points >= 1000 && (

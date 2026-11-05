@@ -24,15 +24,22 @@ import { AvatarPickerModal } from './components/classroom/AvatarPickerModal';
 import { ScenicPageBackdrop } from './components/classroom/ScenicPageBackdrop';
 import { AmbientEffects } from './components/common/AmbientEffects';
 import { PixelSprite } from './components/common/PixelSprite';
+import { PokemonClassView } from './components/pokemon/PokemonClassView';
+import { PixelParadiseView } from './components/classroom/PixelParadiseView';
 
 const STORAGE_CLASSES_KEY = 'stardew_classroom_classes_v2';
 const STORAGE_CURRENT_CLASS_KEY = 'stardew_classroom_current_class_id';
+const STORAGE_APP_MODE_KEY = 'miss_iong_app_mode';
+const STORAGE_POKEMON_CLASSES_KEY = 'miss_iong_class_data_v2';
 
 export default function App() {
+  // App Mode: 'pokemon' (Main Interface as requested) | 'stardew' (Stardew Valley Classroom)
+  const [appMode, setAppMode] = useState<'pokemon' | 'stardew'>('pokemon');
+
   // Persistent Classes State
   const [classes, setClasses] = useState<ClassroomClass[]>(() => {
     try {
-      const saved = localStorage.getItem(STORAGE_CLASSES_KEY);
+      const saved = localStorage.getItem(STORAGE_POKEMON_CLASSES_KEY) || localStorage.getItem(STORAGE_CLASSES_KEY);
       if (saved) {
         const parsed = JSON.parse(saved);
         if (Array.isArray(parsed) && parsed.length > 0) {
@@ -71,10 +78,11 @@ export default function App() {
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  // Save to LocalStorage on class changes
+  // Save to LocalStorage on class changes (Sync both keys for 100% two-way persistence)
   useEffect(() => {
     try {
       localStorage.setItem(STORAGE_CLASSES_KEY, JSON.stringify(classes));
+      localStorage.setItem(STORAGE_POKEMON_CLASSES_KEY, JSON.stringify(classes));
     } catch {}
   }, [classes]);
 
@@ -454,6 +462,19 @@ export default function App() {
     e.target.value = '';
   };
 
+  // Render Pokemon Classroom as the Main Interface (as requested: "把復刻的這個網站作為主界面")
+  if (appMode === 'pokemon') {
+    return (
+      <PokemonClassView
+        classes={classes}
+        currentClassId={currentClassId}
+        onUpdateClasses={setClasses}
+        onSelectClass={setCurrentClassId}
+        onSwitchToStardew={() => setAppMode('stardew')}
+      />
+    );
+  }
+
   return (
     <div className="min-h-screen text-[#2b2b2b] flex flex-col font-sans relative selection:bg-[#fabc3f] selection:text-[#4a2800]">
       {/* Dynamic Stardew Valley Panoramic Scenic Backdrop (Sky, Sun/Moon, Clouds, Mountain Silhouettes, Horizon Fence & Pasture) */}
@@ -488,6 +509,13 @@ export default function App() {
         onToggleSound={handleToggleSound}
         isMusicPlaying={isMusicPlaying}
         onToggleMusic={handleToggleMusic}
+        currentThemeId={pageThemeId}
+        onSelectTheme={handleSelectPageTheme}
+        onSwitchToPokemon={() => setAppMode('pokemon')}
+        isParadiseOpen={activeTab === 'paradise'}
+        onToggleParadise={() => {
+          setActiveTab((prev) => (prev === 'paradise' ? 'students' : 'paradise'));
+        }}
       />
 
       {/* View Content Body */}
@@ -500,9 +528,6 @@ export default function App() {
             onChangeAvatar={(st) => setAvatarPickerStudent(st)}
             onBatchAdd={handleBatchAdd}
             onOpenFarmDetail={(st) => setInspectFarmStudent(st)}
-            currentTheme={activePageTheme}
-            onSelectPageTheme={handleSelectPageTheme}
-            onBatchSetCardBackground={handleBatchSetCardBackground}
           />
         )}
 
@@ -526,6 +551,15 @@ export default function App() {
             students={currentClass.students}
             onUndoPoint={handleUndoPoint}
             onClearHistory={handleClearHistory}
+          />
+        )}
+
+        {activeTab === 'paradise' && (
+          <PixelParadiseView
+            students={currentClass.students}
+            className={currentClass.className}
+            onApplyPoints={handleApplyPoints}
+            onClose={() => setActiveTab('students')}
           />
         )}
       </main>

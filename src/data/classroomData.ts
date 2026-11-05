@@ -566,13 +566,13 @@ export function getFarmTier(points: number): FarmTierInfo {
   }
 }
 
-// Format initial classes with default avatar
+// Format initial classes with default avatar and pokemonId
 export const INITIAL_CLASSES: ClassroomClass[] = (rawClasses as any[]).map((cls) => {
   return {
     id: cls.id,
     className: cls.className,
     students: cls.students.map((st: any, idx: number) => {
-      const defaultSprite = STARDEW_AVATARS[idx % STARDEW_AVATARS.length].id;
+      const defaultSprite = STARDEW_AVATARS[idx % STARDEW_AVATARS.length]?.id || 'chicken';
       return {
         id: st.id,
         rollNo: st.rollNo,
@@ -581,7 +581,9 @@ export const INITIAL_CLASSES: ClassroomClass[] = (rawClasses as any[]).map((cls)
         posPoints: st.posPoints || 0,
         negPoints: st.negPoints || 0,
         groupId: (idx % 6) + 1,
+        pokemonId: st.pokemonId || ((idx % 150) + 1),
         avatar: st.avatar || defaultSprite,
+        cardBackground: st.cardBackground || 'default',
         history: st.history || [],
       };
     }),

@@ -17,6 +17,7 @@ export interface Student {
   posPoints: number;
   negPoints: number;
   groupId?: number; // 1 to 6
+  pokemonId?: number;
   avatar?: string;
   cardBackground?: string; // Custom card background theme ID
   history: PointHistoryItem[];
@@ -37,7 +38,7 @@ export interface PointPreset {
   icon: string;
 }
 
-export type ViewTab = 'students' | 'farm' | 'ranking' | 'history';
+export type ViewTab = 'students' | 'farm' | 'ranking' | 'history' | 'paradise';
 
 export interface ClassroomTheme {
   id: string;

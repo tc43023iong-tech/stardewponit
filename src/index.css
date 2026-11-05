@@ -2,12 +2,147 @@
 
 @layer base {
   body {
-    font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+    font-family: 'Zen Maru Gothic', 'M PLUS Rounded 1c', 'Nunito', 'Plus Jakarta Sans', system-ui, sans-serif;
   }
 }
 
 .font-pixel {
   font-family: 'Press Start 2P', monospace;
+}
+
+.font-rounded {
+  font-family: 'M PLUS Rounded 1c', 'Zen Maru Gothic', 'Nunito', sans-serif;
+}
+
+/* Farm Pattern Background from target site */
+.farm-bg {
+  background-color: #f8fbf6;
+  background-image: radial-gradient(#c8e6c9 1.5px, #0000 1.5px), radial-gradient(#e8f5e9 1.5px, #f8fbf6 1.5px);
+  background-position: 0 0, 20px 20px;
+  background-size: 40px 40px;
+}
+
+.farm-sky-banner {
+  background: linear-gradient(#e0f2fe 0%, #f0fdf4 100%);
+}
+
+/* Target site Keyframe animations */
+@keyframes card-vibrate-positive {
+  0% { transform: scale(1) translate(0); }
+  20% { transform: scale(1.06) translateY(-6px); }
+  40% { transform: scale(1.04) translateY(-3px); }
+  60% { transform: scale(1.02) translateY(-1px); }
+  100% { transform: scale(1) translateY(0); }
+}
+
+@keyframes card-vibrate-negative {
+  0% { transform: scale(1) translate(0) rotate(0); }
+  20% { transform: scale(0.96) translate(-5px) rotate(-3deg); }
+  40% { transform: scale(0.96) translate(5px) rotate(3deg); }
+  60% { transform: scale(0.98) translate(-3px) rotate(-1deg); }
+  80% { transform: scale(0.99) translate(3px) rotate(1deg); }
+  100% { transform: scale(1) translate(0) rotate(0); }
+}
+
+@keyframes ripple-glow-pos {
+  0% { box-shadow: 0 0 #22c55ebf, 0 0 30px #22c55e99; }
+  35% { box-shadow: 0 0 0 14px #22c55e66, 0 0 45px #22c55e8c; }
+  100% { box-shadow: 0 0 0 28px #22c55e00, 0 0 #22c55e00; }
+}
+
+@keyframes ripple-glow-neg {
+  0% { box-shadow: 0 0 #f43f5ecc, 0 0 35px #f43f5eb3; }
+  35% { box-shadow: 0 0 0 14px #f43f5e73, 0 0 50px #f43f5ea6; }
+  100% { box-shadow: 0 0 0 28px #f43f5e00, 0 0 #f43f5e00; }
+}
+
+@keyframes avatar-pos-vibrate {
+  0% { transform: scale(1) rotate(0); }
+  18% { transform: scale(1.22) translateY(-7px) rotate(-6deg); }
+  36% { transform: scale(1.2) translateY(-4px) rotate(6deg); }
+  54% { transform: scale(1.14) translateY(-2px) rotate(-3deg); }
+  72% { transform: scale(1.08) translateY(-1px) rotate(2deg); }
+  100% { transform: scale(1) translateY(0) rotate(0); }
+}
+
+@keyframes avatar-neg-vibrate {
+  0% { transform: scale(1) rotate(0); }
+  15% { transform: scale(0.92) translate(-7px) rotate(-8deg); }
+  30% { transform: scale(0.94) translate(7px) rotate(8deg); }
+  45% { transform: scale(0.95) translate(-5px) rotate(-5deg); }
+  60% { transform: scale(0.97) translate(5px) rotate(5deg); }
+  75% { transform: scale(0.99) translate(-3px) rotate(-2deg); }
+  100% { transform: scale(1) translate(0) rotate(0); }
+}
+
+@keyframes float-badge-up {
+  0% { opacity: 0; transform: translate(-50%) scale(0.5) rotate(-5deg); }
+  18% { opacity: 1; transform: translate(-50%, -14px) scale(1.2) rotate(3deg); }
+  40% { opacity: 1; transform: translate(-50%, -26px) scale(1.05) rotate(-2deg); }
+  75% { opacity: 0.95; transform: translate(-50%, -44px) scale(0.98) rotate(1deg); }
+  100% { opacity: 0; transform: translate(-50%, -60px) scale(0.85) rotate(0); }
+}
+
+@keyframes float-badge-down {
+  0% { opacity: 0; transform: translate(-50%) scale(0.5) rotate(5deg); }
+  18% { opacity: 1; transform: translate(-50%, 10px) scale(1.18) rotate(-3deg); }
+  40% { opacity: 1; transform: translate(-50%, 20px) scale(1.05) rotate(2deg); }
+  75% { opacity: 0.95; transform: translate(-50%, 34px) scale(0.98) rotate(-1deg); }
+  100% { opacity: 0; transform: translate(-50%, 48px) scale(0.85) rotate(0); }
+}
+
+@keyframes marquee-scroll {
+  0% { transform: translate(0%); }
+  100% { transform: translate(-50%); }
+}
+
+.animate-card-pos {
+  animation: 0.75s cubic-bezier(0.175, 0.885, 0.32, 1.25) both card-vibrate-positive, 0.75s ease-out both ripple-glow-pos;
+}
+
+.animate-card-neg {
+  animation: 0.75s cubic-bezier(0.175, 0.885, 0.32, 1.25) both card-vibrate-negative, 0.75s ease-out both ripple-glow-neg;
+}
+
+.animate-avatar-pos {
+  animation: 0.7s cubic-bezier(0.175, 0.885, 0.32, 1.25) both avatar-pos-vibrate;
+}
+
+.animate-avatar-neg {
+  animation: 0.7s cubic-bezier(0.175, 0.885, 0.32, 1.25) both avatar-neg-vibrate;
+}
+
+.animate-float-badge-up {
+  animation: 1.35s cubic-bezier(0.22, 1, 0.36, 1) forwards float-badge-up;
+}
+
+.animate-float-badge-down {
+  animation: 1.35s cubic-bezier(0.22, 1, 0.36, 1) forwards float-badge-down;
+}
+
+.animate-marquee {
+  width: max-content;
+  animation: 25s linear infinite marquee-scroll;
+  display: flex;
+}
+
+.animate-marquee:hover {
+  animation-play-state: paused;
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #d7ccc8;
+  border-radius: 10px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #a1887f;
 }
 
 /* Stardew Valley Wooden & Golden Box Shadows & Borders */
@@ -257,6 +392,90 @@
 
 .animate-water-gleam {
   animation: waterGleam 2.4s ease-in-out infinite;
+}
+
+/* Stardew Scenic Background Animations */
+@keyframes twinkleStar {
+  0%, 100% {
+    opacity: 0.25;
+    transform: scale(0.85);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.2);
+    filter: drop-shadow(0 0 8px rgba(165, 243, 252, 0.9));
+  }
+}
+
+@keyframes oceanWave {
+  0% {
+    transform: translateY(0px) scaleY(1);
+  }
+  50% {
+    transform: translateY(-5px) scaleY(1.06);
+  }
+  100% {
+    transform: translateY(0px) scaleY(1);
+  }
+}
+
+@keyframes crystalPulse {
+  0%, 100% {
+    opacity: 0.45;
+    filter: drop-shadow(0 0 8px rgba(192, 132, 252, 0.4));
+  }
+  50% {
+    opacity: 0.95;
+    filter: drop-shadow(0 0 22px rgba(168, 85, 247, 0.95));
+  }
+}
+
+@keyframes goldGleam {
+  0%, 100% {
+    opacity: 0.35;
+    transform: scale(0.96);
+  }
+  50% {
+    opacity: 0.85;
+    transform: scale(1.06);
+    filter: drop-shadow(0 0 14px rgba(250, 204, 21, 0.85));
+  }
+}
+
+@keyframes floatingDrift {
+  0% {
+    transform: translateY(0px) translateX(0px);
+  }
+  50% {
+    transform: translateY(-14px) translateX(6px);
+  }
+  100% {
+    transform: translateY(0px) translateX(0px);
+  }
+}
+
+.animate-twinkle {
+  animation: twinkleStar 2.6s ease-in-out infinite;
+}
+
+.animate-twinkle-delayed {
+  animation: twinkleStar 3.4s ease-in-out 1.2s infinite;
+}
+
+.animate-ocean-wave {
+  animation: oceanWave 3.8s ease-in-out infinite;
+}
+
+.animate-crystal-pulse {
+  animation: crystalPulse 3.2s ease-in-out infinite;
+}
+
+.animate-gold-gleam {
+  animation: goldGleam 2.8s ease-in-out infinite;
+}
+
+.animate-floating-drift {
+  animation: floatingDrift 4.5s ease-in-out infinite;
 }
 
 /* Custom Scrollbar */
