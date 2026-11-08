@@ -78,7 +78,9 @@ export const PokemonStudentCard: React.FC<PokemonStudentCardProps> = ({
     }
   }, [student.points]);
 
-  const avatarUrl = resolvePokemonAvatar(student.pokemonId || student.avatar);
+  const avatarUrl = resolvePokemonAvatar(
+    student.pokemonAvatar || student.pokemonId || (student.avatar && !student.avatar.startsWith('sdv_') ? student.avatar : undefined) || 25
+  );
   const isEmojiAvatar = isEmoji(avatarUrl);
   const theme = getCardTheme(student.cardBackground);
 

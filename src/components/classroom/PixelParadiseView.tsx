@@ -55,28 +55,18 @@ const STARDEW_ANIMAL_ROSTER = [
   'sdv_butterfly',      // 彩色彩蝶
 ];
 
-// Determine the student's unique Stardew Valley companion avatar
+// Determine the student's unique Stardew Valley companion avatar strictly from their roster selection
 function resolveStardewCompanion(student: Student, index: number): string {
-  // 1. If student already has a non-default Stardew avatar chosen
-  if (student.avatar && student.avatar !== 'junimo' && student.avatar !== '') {
+  // 1. Strictly prioritize the avatar the student selected in the Stardew Valley student roster page!
+  if (student.stardewAvatar && student.stardewAvatar.trim() !== '') {
+    return student.stardewAvatar;
+  }
+  if (student.avatar && student.avatar.trim() !== '') {
     return student.avatar;
   }
-  // 2. Exact match to the classroom smartboard reference photo (image_0bc01590.png)
-  if (student.rollNo === 21) return 'sdv_turtle';        // [21 庭羽] swimming in lake
-  if (student.rollNo === 13) return 'sdv_crow';          // [13 鈞哲] perched on top-left boulder
-  if (student.rollNo === 4) return 'sdv_golden_chicken'; // [04 承恩] golden bird by boulder
-  if (student.rollNo === 14) return 'sdv_dog';           // [14 子晴] puppy walking
-  if (student.rollNo === 16) return 'sdv_cat';           // [16 書妍] cat exploring
-  if (student.rollNo === 8) return 'sdv_duck';           // [08 詠芯] duckling
-  if (student.rollNo === 9) return 'sdv_white_chicken';  // [09 沐言] by the beach
-  if (student.rollNo === 5) return 'sdv_rabbit_farm';    // [05 以柔] cute bunny
-  if (student.rollNo === 15) return 'sdv_pig';           // [15 祐寧] cute piglet
-  if (student.rollNo === 22) return 'sdv_blue_chicken';  // [22 晞彤] near upper woods
-  if (student.rollNo === 10) return 'sdv_brown_chicken'; // [10 思妤] near center tree
-
-  // 3. Fallback distribution across Stardew farm animal roster based on rollNo
-  const rosterIdx = Math.abs(student.rollNo ? student.rollNo - 1 : index) % STARDEW_ANIMAL_ROSTER.length;
-  return STARDEW_ANIMAL_ROSTER[rosterIdx];
+  // 2. Fallback to roster item default if unassigned
+  const defaultItem = STARDEW_AVATARS[index % STARDEW_AVATARS.length]?.id || 'sdv_white_chicken';
+  return defaultItem;
 }
 
 interface CompanionState {
@@ -108,6 +98,7 @@ interface PixelParadiseViewProps {
     reasonEn?: string,
     icon?: string
   ) => void;
+  onChangeAvatar?: (student: Student) => void;
   onClose?: () => void;
   isFullScreenMode?: boolean;
 }
@@ -116,6 +107,7 @@ export const PixelParadiseView: React.FC<PixelParadiseViewProps> = ({
   students,
   className,
   onApplyPoints,
+  onChangeAvatar,
   onClose,
 }) => {
   // Season state: default is 'autumn' as shown in the reference photo
@@ -219,25 +211,44 @@ export const PixelParadiseView: React.FC<PixelParadiseViewProps> = ({
     });
   });
 
-  // Sync companions when students prop changes
+  // Sync companions when students prop changes (e.g. when student's avatar is changed in the Stardew roster)
   useEffect(() => {
     setCompanions((prev) =>
       students.map((s, idx) => {
         const existing = prev.find((p) => p.studentId === s.id);
         const stardewAvatar = resolveStardewCompanion(s, idx);
+        const isAquatic = checkIsAquatic(s, stardewAvatar, idx);
         const growthBonus = Math.min(0.55, Math.max(0, s.points * 0.005));
 
         if (existing) {
+          let nextX = existing.x;
+          let nextY = existing.y;
+          let nextAction = existing.action;
+
+          // If avatar changed to non-aquatic while swimming in deep lake, move to beach
+          if (!isAquatic && existing.action === 'swimming') {
+            nextX = 42;
+            nextY = 64;
+            nextAction = 'resting';
+          } else if (isAquatic && existing.action !== 'swimming') {
+            nextX = 74;
+            nextY = 78;
+            nextAction = 'swimming';
+          }
+
           return {
             ...existing,
             name: s.name,
             rollNo: s.rollNo,
             stardewAvatar,
+            isAquatic,
+            x: nextX,
+            y: nextY,
+            action: nextAction,
             growthBonus,
           };
         }
 
-        const isAquatic = checkIsAquatic(s, stardewAvatar, idx);
         const init = getInitialCoordinates(s.rollNo, idx, isAquatic);
         return {
           id: s.id,
@@ -944,7 +955,16 @@ export const PixelParadiseView: React.FC<PixelParadiseViewProps> = ({
         <div className="z-30 bg-[#FFFDF9]/95 backdrop-blur-md px-4 py-2.5 border-t-2 border-[#D7CCC8] flex flex-wrap items-center justify-between gap-3 shadow-xl shrink-0 animate-in slide-in-from-bottom-2 duration-200">
           {/* Student Info */}
           <div className="flex items-center gap-3">
-            <div className="w-12 h-12 bg-[#faeed1] rounded-2xl border-2 border-[#8D6E63] p-1 flex items-center justify-center shadow-xs">
+            <div
+              onClick={() => {
+                if (onChangeAvatar && focusedStudent) {
+                  soundManager.playClick();
+                  onChangeAvatar(focusedStudent);
+                }
+              }}
+              className="w-12 h-12 bg-[#faeed1] rounded-2xl border-2 border-[#8D6E63] hover:border-amber-500 hover:ring-2 hover:ring-amber-400 p-1 flex items-center justify-center shadow-xs cursor-pointer transition-all group"
+              title="點擊更換此學生在星露谷名冊的頭像 🎨"
+            >
               <AvatarRenderer
                 avatar={focusedCompanion.stardewAvatar}
                 name={focusedCompanion.name}
@@ -970,6 +990,20 @@ export const PixelParadiseView: React.FC<PixelParadiseViewProps> = ({
                   <Heart className="w-3 h-3 fill-rose-500 text-rose-500" />
                   <span>摸摸</span>
                 </button>
+                {/* Change Avatar Button */}
+                {onChangeAvatar && (
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      soundManager.playClick();
+                      onChangeAvatar(focusedStudent);
+                    }}
+                    className="px-2 py-0.5 bg-amber-100 hover:bg-amber-200 text-amber-900 border border-amber-300 rounded-lg text-xs font-bold flex items-center gap-1 cursor-pointer transition-colors"
+                    title="在星露谷頭像庫中為此學生挑選專屬夥伴"
+                  >
+                    <span>🎨 更換夥伴</span>
+                  </button>
+                )}
               </div>
               <p className="text-[11px] text-stone-500 font-bold mt-0.5 flex items-center gap-1.5">
                 <span>

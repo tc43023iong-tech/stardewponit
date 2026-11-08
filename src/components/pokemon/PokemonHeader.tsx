@@ -11,6 +11,7 @@ interface PokemonHeaderProps {
   onOpenImport: () => void;
   onOpenQuickBatch: () => void;
   onSwitchToStardew: () => void;
+  onOpenParadise?: () => void;
 }
 
 export const PokemonHeader: React.FC<PokemonHeaderProps> = ({
@@ -23,6 +24,7 @@ export const PokemonHeader: React.FC<PokemonHeaderProps> = ({
   onOpenImport,
   onOpenQuickBatch,
   onSwitchToStardew,
+  onOpenParadise,
 }) => {
   const isDark = eyeProtection;
 
@@ -136,6 +138,19 @@ export const PokemonHeader: React.FC<PokemonHeaderProps> = ({
           <span className="text-xl animate-pulse">🏡</span>
           <span className="font-black text-xs sm:text-sm tracking-tight">星露谷農場</span>
         </button>
+
+        {/* PARADISE EMOJI BUTTON - DIRECT SHORTCUT TO COMPANION PIXEL PARADISE */}
+        {onOpenParadise && (
+          <button
+            type="button"
+            onClick={onOpenParadise}
+            className="px-3 py-1.5 rounded-2xl font-black text-xs sm:text-sm shadow-sm flex items-center gap-1.5 active:scale-95 transition-all cursor-pointer bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-white border-2 border-amber-300"
+            title="進入夥伴像素樂園 😆 (全班夥伴自由生活)"
+          >
+            <span className="text-xl animate-bounce">😆</span>
+            <span className="font-black text-xs sm:text-sm tracking-tight">夥伴樂園</span>
+          </button>
+        )}
       </div>
     </header>
   );

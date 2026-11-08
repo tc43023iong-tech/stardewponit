@@ -365,11 +365,17 @@ export const PokemonClassView: React.FC<PokemonClassViewProps> = ({
   // Save student avatar & background
   const handleSaveAvatarAndBg = (updatedInfo: {
     pokemonId?: number;
+    pokemonAvatar?: string;
     avatar?: string;
     cardBackground?: string;
   }) => {
     if (!editingAvatarStudent) return;
-    const updatedStudent = { ...editingAvatarStudent, ...updatedInfo };
+    const updatedStudent: Student = {
+      ...editingAvatarStudent,
+      ...(updatedInfo.pokemonId !== undefined ? { pokemonId: updatedInfo.pokemonId } : {}),
+      ...(updatedInfo.pokemonAvatar !== undefined ? { pokemonAvatar: updatedInfo.pokemonAvatar } : {}),
+      ...(updatedInfo.cardBackground !== undefined ? { cardBackground: updatedInfo.cardBackground } : {}),
+    };
     const updatedStudents = students.map((s) =>
       s.id === editingAvatarStudent.id ? updatedStudent : s
     );
@@ -628,7 +634,7 @@ export const PokemonClassView: React.FC<PokemonClassViewProps> = ({
             const num = Number(avatarId);
             handleSaveAvatarAndBg({
               pokemonId: !isNaN(num) ? num : undefined,
-              avatar: isNaN(num) ? String(avatarId) : undefined,
+              pokemonAvatar: isNaN(num) ? String(avatarId) : undefined,
             });
           }}
           onSelectTheme={(themeKey) => {

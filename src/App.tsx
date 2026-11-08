@@ -327,6 +327,7 @@ export default function App() {
             return {
               ...st,
               avatar: avatarUrlOrSprite,
+              stardewAvatar: avatarUrlOrSprite,
               ...(cardBackground !== undefined ? { cardBackground } : {}),
             };
           }),
@@ -559,6 +560,7 @@ export default function App() {
             students={currentClass.students}
             className={currentClass.className}
             onApplyPoints={handleApplyPoints}
+            onChangeAvatar={(st) => setAvatarPickerStudent(st)}
             onClose={() => setActiveTab('students')}
           />
         )}

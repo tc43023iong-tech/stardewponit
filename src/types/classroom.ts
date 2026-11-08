@@ -18,6 +18,8 @@ export interface Student {
   negPoints: number;
   groupId?: number; // 1 to 6
   pokemonId?: number;
+  pokemonAvatar?: string;
+  stardewAvatar?: string;
   avatar?: string;
   cardBackground?: string; // Custom card background theme ID
   history: PointHistoryItem[];

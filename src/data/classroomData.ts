@@ -573,6 +573,7 @@ export const INITIAL_CLASSES: ClassroomClass[] = (rawClasses as any[]).map((cls)
     className: cls.className,
     students: cls.students.map((st: any, idx: number) => {
       const defaultSprite = STARDEW_AVATARS[idx % STARDEW_AVATARS.length]?.id || 'chicken';
+      const initialAvatar = st.stardewAvatar || st.avatar || defaultSprite;
       return {
         id: st.id,
         rollNo: st.rollNo,
@@ -582,7 +583,9 @@ export const INITIAL_CLASSES: ClassroomClass[] = (rawClasses as any[]).map((cls)
         negPoints: st.negPoints || 0,
         groupId: (idx % 6) + 1,
         pokemonId: st.pokemonId || ((idx % 150) + 1),
-        avatar: st.avatar || defaultSprite,
+        pokemonAvatar: st.pokemonAvatar,
+        stardewAvatar: initialAvatar,
+        avatar: initialAvatar,
         cardBackground: st.cardBackground || 'default',
         history: st.history || [],
       };
