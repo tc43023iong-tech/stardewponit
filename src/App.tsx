@@ -220,6 +220,7 @@ export default function App() {
 
   // Undo point change from history
   const handleUndoPoint = (historyId: string, studentId: string, delta: number) => {
+    let updatedSt: Student | null = null;
     setClasses((prevClasses) =>
       prevClasses.map((cls) => {
         if (cls.id !== currentClassId) return cls;
@@ -227,21 +228,32 @@ export default function App() {
           ...cls,
           students: cls.students.map((st) => {
             if (st.id !== studentId) return st;
-            const updatedHistory = st.history.filter((h) => h.id !== historyId);
+            const updatedHistory = (st.history || []).filter(
+              (h) => h.id !== historyId && String(h.timestamp) !== historyId
+            );
+            const isPos = delta > 0;
             const revertedPoints = st.points - delta;
-            const revertedPos = delta > 0 ? st.posPoints - delta : st.posPoints;
-            const revertedNeg = delta < 0 ? st.negPoints - delta : st.negPoints;
-            return {
+            const revertedPos = isPos ? Math.max(0, (st.posPoints || 0) - delta) : st.posPoints || 0;
+            const revertedNeg = !isPos ? Math.max(0, (st.negPoints || 0) - Math.abs(delta)) : st.negPoints || 0;
+            updatedSt = {
               ...st,
               points: revertedPoints,
-              posPoints: Math.max(0, revertedPos),
+              posPoints: revertedPos,
               negPoints: revertedNeg,
               history: updatedHistory,
             };
+            return updatedSt;
           }),
         };
       })
     );
+
+    if (updatedSt) {
+      const savedStudent = updatedSt as Student;
+      setPointsModalStudents((prev) =>
+        prev ? prev.map((s) => (s.id === studentId ? savedStudent : s)) : null
+      );
+    }
   };
 
   // Clear all history for current class
@@ -586,6 +598,7 @@ export default function App() {
           students={pointsModalStudents}
           onClose={() => setPointsModalStudents(null)}
           onApplyPoints={handleApplyPoints}
+          onUndoPoint={handleUndoPoint}
         />
       )}
 

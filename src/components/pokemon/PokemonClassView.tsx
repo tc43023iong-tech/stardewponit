@@ -324,8 +324,49 @@ export const PokemonClassView: React.FC<PokemonClassViewProps> = ({
       c.id === currentClassId ? { ...c, students: revertedStudents } : c
     );
 
-    onUpdateClasses(updatedClasses);
     setFeedbackData(null);
+  };
+
+  // Erase a specific point history record for a student and revert their points
+  const handleEraseHistoryItem = (studentId: string, historyItemId: string, timestamp?: number) => {
+    let deltaToRevert = 0;
+    const updatedStudents = students.map((s) => {
+      if (s.id !== studentId) return s;
+      const historyList = s.history || [];
+      const itemToErase = historyList.find(
+        (h) => (historyItemId && h.id === historyItemId) || (timestamp && h.timestamp === timestamp)
+      );
+      if (!itemToErase) return s;
+
+      deltaToRevert = itemToErase.delta;
+      const isPositive = deltaToRevert > 0;
+      const newPoints = s.points - deltaToRevert;
+      const newPos = isPositive ? Math.max(0, (s.posPoints || 0) - deltaToRevert) : s.posPoints || 0;
+      const newNeg = !isPositive ? Math.max(0, (s.negPoints || 0) - Math.abs(deltaToRevert)) : s.negPoints || 0;
+
+      const filteredHistory = historyList.filter((h) => h !== itemToErase);
+
+      return {
+        ...s,
+        points: newPoints,
+        posPoints: newPos,
+        negPoints: newNeg,
+        history: filteredHistory,
+      };
+    });
+
+    const updatedClasses = classes.map((c) =>
+      c.id === currentClassId ? { ...c, students: updatedStudents } : c
+    );
+
+    onUpdateClasses(updatedClasses);
+
+    // Also update pointsModalStudents in place so modal immediately updates
+    if (pointsModalStudents) {
+      setPointsModalStudents(
+        pointsModalStudents.map((st) => updatedStudents.find((s) => s.id === st.id) || st)
+      );
+    }
   };
 
   // Quick Batch Scoring Submit (Quiet, no animations)
@@ -580,6 +621,7 @@ export const PokemonClassView: React.FC<PokemonClassViewProps> = ({
           students={pointsModalStudents}
           onClose={() => setPointsModalStudents(null)}
           onApplyPoints={handleApplyPoints}
+          onEraseHistoryItem={handleEraseHistoryItem}
         />
       )}
 
