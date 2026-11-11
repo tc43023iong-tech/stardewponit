@@ -82,7 +82,15 @@ export const PokemonStudentCard: React.FC<PokemonStudentCardProps> = ({
     student.pokemonAvatar || student.pokemonId || (student.avatar && !student.avatar.startsWith('sdv_') ? student.avatar : undefined) || 25
   );
   const isEmojiAvatar = isEmoji(avatarUrl);
-  const theme = getCardTheme(student.cardBackground);
+  const cardBgKey =
+    student.cardBackground ||
+    (student as any).cardTheme ||
+    (student as any).themeKey ||
+    (student as any).theme ||
+    (student as any).background ||
+    (student as any).cardBg ||
+    (student as any).bgKey;
+  const theme = getCardTheme(cardBgKey);
 
   const isFirst = rank === 1 && !isNegKingMode;
   const isNegKing = rank === 1 && isNegKingMode;

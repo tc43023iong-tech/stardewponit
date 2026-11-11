@@ -77,5 +77,47 @@ export interface TargetCardTheme {
 
 export function getCardTheme(themeKey?: string): TargetCardTheme | undefined {
   if (!themeKey || themeKey === 'default') return undefined;
-  return POKEMON_CARD_THEMES[themeKey] || undefined;
+
+  let rawTheme = POKEMON_CARD_THEMES[themeKey];
+  if (!rawTheme) {
+    // Try matching by key, badge, or name
+    for (const k in POKEMON_CARD_THEMES) {
+      const item = POKEMON_CARD_THEMES[k];
+      if (
+        k === themeKey ||
+        item.key === themeKey ||
+        (item.badge && item.badge.toLowerCase() === themeKey.toLowerCase()) ||
+        item.name === themeKey
+      ) {
+        rawTheme = item;
+        break;
+      }
+    }
+  }
+
+  // If themeKey is directly an image URL
+  if (!rawTheme && (themeKey.startsWith('http://') || themeKey.startsWith('https://') || themeKey.startsWith('/') || themeKey.startsWith('data:'))) {
+    const fullUrl = themeKey.startsWith('/') ? `https://20261011missiongsclass.vercel.app${themeKey}` : themeKey;
+    return {
+      key: 'custom_bg',
+      name: '自訂背景',
+      badge: 'Custom',
+      bgUrl: fullUrl,
+      description: '自訂背景壁紙',
+      accentBorder: 'border-amber-300 hover:border-amber-500',
+      badgeBg: 'bg-amber-100/90 text-amber-900 border-amber-300',
+    };
+  }
+
+  if (!rawTheme) return undefined;
+
+  let resolvedBgUrl = rawTheme.bgUrl || '';
+  if (resolvedBgUrl.startsWith('/')) {
+    resolvedBgUrl = `https://20261011missiongsclass.vercel.app${resolvedBgUrl}`;
+  }
+
+  return {
+    ...rawTheme,
+    bgUrl: resolvedBgUrl,
+  };
 }

@@ -6,6 +6,15 @@ class PokemonSoundSynthesizer {
   private ctx: AudioContext | null = null;
   public isMuted: boolean = false;
 
+  constructor() {
+    try {
+      const saved = localStorage.getItem('pokemon_sound_muted') || localStorage.getItem('stardew_sound_muted');
+      if (saved !== null) {
+        this.isMuted = saved === 'true';
+      }
+    } catch {}
+  }
+
   public init() {
     try {
       if (!this.ctx) {
@@ -22,10 +31,18 @@ class PokemonSoundSynthesizer {
 
   public setMuted(muted: boolean) {
     this.isMuted = muted;
+    try {
+      localStorage.setItem('pokemon_sound_muted', String(muted));
+      localStorage.setItem('stardew_sound_muted', String(muted));
+    } catch {}
   }
 
   public toggleMute(): boolean {
     this.isMuted = !this.isMuted;
+    try {
+      localStorage.setItem('pokemon_sound_muted', String(this.isMuted));
+      localStorage.setItem('stardew_sound_muted', String(this.isMuted));
+    } catch {}
     return this.isMuted;
   }
 

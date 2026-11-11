@@ -341,7 +341,7 @@ export const PointsModal: React.FC<PointsModalProps> = ({
 
   return (
     <div className="fixed inset-0 z-50 bg-black/75 flex items-center justify-center p-2 sm:p-4 backdrop-blur-xs animate-in fade-in duration-150 select-none">
-      <div className="pixel-wood-box max-w-5xl w-full max-h-[95vh] flex flex-col overflow-hidden text-[#4a2800] shadow-2xl">
+      <div className="pixel-wood-box max-w-5xl w-full h-[90vh] max-h-[92vh] flex flex-col overflow-hidden text-[#4a2800] shadow-2xl">
         {/* Top Header: Student info & Direct Inline Custom Points Input */}
         <div className="bg-[#5a3818] text-[#ffebb3] px-3 sm:px-4 py-2.5 border-b-4 border-[#361f0d] flex flex-wrap items-center justify-between gap-3 shadow-md">
           {/* Left: Student Avatar + Name + RollNo */}
@@ -475,11 +475,11 @@ export const PointsModal: React.FC<PointsModalProps> = ({
           </button>
         </div>
 
-        {/* Modal Body: Split into Left (Positive) and Right (Negative) Columns */}
-        <div className="flex-1 overflow-hidden p-3 sm:p-4 bg-[#f7efd8]">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4 h-full">
+        {/* Modal Body: Split into Left (Positive) and Right (Negative) Columns with guaranteed scrollability */}
+        <div className="flex-1 min-h-0 overflow-y-auto md:overflow-hidden p-3 sm:p-4 bg-[#f7efd8] custom-scrollbar">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4 h-full min-h-0">
             {/* Left Column: Positive presets */}
-            <div className="pixel-parchment p-3 rounded-xl flex flex-col h-full overflow-hidden shadow-sm border-2 border-[#86efac]/70">
+            <div className="pixel-parchment p-3 rounded-xl flex flex-col h-[320px] md:h-full min-h-0 overflow-hidden shadow-sm border-2 border-[#86efac]/70">
               <div className="flex items-center justify-between pb-2 mb-2 border-b-2 border-[#bbf7d0] shrink-0">
                 <div className="flex items-center gap-1.5 font-bold text-xs sm:text-sm text-[#15803d]">
                   <Sparkles className="w-4 h-4 text-[#16a34a]" />
@@ -491,7 +491,7 @@ export const PointsModal: React.FC<PointsModalProps> = ({
               </div>
 
               {/* Scrollable list of positive presets */}
-              <div className="flex-1 overflow-y-auto space-y-1.5 pr-1 custom-scrollbar">
+              <div className="flex-1 min-h-0 overflow-y-auto space-y-1.5 pr-1.5 custom-scrollbar">
                 {POSITIVE_PRESETS.map((preset) => (
                   <button
                     key={preset.id}
@@ -520,7 +520,7 @@ export const PointsModal: React.FC<PointsModalProps> = ({
             </div>
 
             {/* Right Column: Negative presets */}
-            <div className="pixel-parchment p-3 rounded-xl flex flex-col h-full overflow-hidden shadow-sm border-2 border-[#fca5a5]/70">
+            <div className="pixel-parchment p-3 rounded-xl flex flex-col h-[320px] md:h-full min-h-0 overflow-hidden shadow-sm border-2 border-[#fca5a5]/70">
               <div className="flex items-center justify-between pb-2 mb-2 border-b-2 border-[#fecdd3] shrink-0">
                 <div className="flex items-center gap-1.5 font-bold text-xs sm:text-sm text-[#b91c1c]">
                   <AlertTriangle className="w-4 h-4 text-[#dc2626]" />
@@ -532,7 +532,7 @@ export const PointsModal: React.FC<PointsModalProps> = ({
               </div>
 
               {/* Scrollable list of negative presets */}
-              <div className="flex-1 overflow-y-auto space-y-1.5 pr-1 custom-scrollbar">
+              <div className="flex-1 min-h-0 overflow-y-auto space-y-1.5 pr-1.5 custom-scrollbar">
                 {NEGATIVE_PRESETS.map((preset) => (
                   <button
                     key={preset.id}

@@ -8,6 +8,7 @@ import { ClassroomClass, Student, ViewTab, PointHistoryItem } from './types/clas
 import { INITIAL_CLASSES, getCropGrowth } from './data/classroomData';
 import { CLASSROOM_PAGE_THEMES } from './data/classroomThemes';
 import { soundManager } from './utils/sound';
+import { pokemonSound } from './utils/pokemonAudio';
 
 // Components
 import { ClassHeader } from './components/classroom/ClassHeader';
@@ -112,6 +113,7 @@ export default function App() {
 
   const handleToggleSound = () => {
     const muted = soundManager.toggleMute();
+    pokemonSound.setMuted(muted);
     setIsMuted(muted);
     setIsMusicPlaying(!muted && soundManager.isMusicPlaying);
   };
@@ -311,6 +313,22 @@ export default function App() {
     localStorage.setItem('stardew_classroom_theme', themeId);
   };
 
+  // Auto-switch Stardew classroom background every 5 minutes (300,000 ms) as requested
+  useEffect(() => {
+    if (appMode !== 'stardew') return;
+    const interval = setInterval(() => {
+      setPageThemeId((prevThemeId) => {
+        const currentIndex = CLASSROOM_PAGE_THEMES.findIndex((t) => t.id === prevThemeId);
+        const nextIndex = (currentIndex + 1) % CLASSROOM_PAGE_THEMES.length;
+        const nextThemeId = CLASSROOM_PAGE_THEMES[nextIndex].id;
+        localStorage.setItem('stardew_classroom_theme', nextThemeId);
+        return nextThemeId;
+      });
+    }, 5 * 60 * 1000); // Every 5 minutes
+
+    return () => clearInterval(interval);
+  }, [appMode]);
+
   const handleBatchSetCardBackground = (cardBg: string) => {
     soundManager.playVictory();
     setClasses((prevClasses) =>
@@ -484,6 +502,10 @@ export default function App() {
         onUpdateClasses={setClasses}
         onSelectClass={setCurrentClassId}
         onSwitchToStardew={() => setAppMode('stardew')}
+        isMuted={isMuted}
+        onToggleSound={handleToggleSound}
+        isMusicPlaying={isMusicPlaying}
+        onToggleMusic={handleToggleMusic}
       />
     );
   }

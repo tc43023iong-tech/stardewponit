@@ -207,9 +207,23 @@ export const ClassHeader: React.FC<ClassHeaderProps> = ({
           )}
 
           {/* Sound & Music Controls */}
+          {onToggleSound && (
+            <button
+              onClick={onToggleSound}
+              className={`p-1.5 text-xs border cursor-pointer rounded transition-all active:scale-95 ${
+                !isMuted
+                  ? 'bg-[#2e5927] border-[#559945] text-[#bbf7d0]'
+                  : 'bg-[#5a3818] border-[#8b5a2b] text-rose-300'
+              }`}
+              title={isMuted ? '音效已靜音 (Sound Muted - 點擊開啟音效)' : '音效播放中 (Sound On - 點擊靜音)'}
+            >
+              {isMuted ? <VolumeX className="w-3.5 h-3.5" /> : <Volume2 className="w-3.5 h-3.5" />}
+            </button>
+          )}
+
           <button
             onClick={onToggleMusic}
-            className={`p-1.5 text-xs border cursor-pointer ${
+            className={`p-1.5 text-xs border cursor-pointer rounded transition-all active:scale-95 ${
               isMusicPlaying
                 ? 'bg-[#2e5927] border-[#559945] text-[#bbf7d0]'
                 : 'bg-[#5a3818] border-[#8b5a2b] text-stone-400'

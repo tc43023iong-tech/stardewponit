@@ -22,6 +22,7 @@ export interface Student {
   stardewAvatar?: string;
   avatar?: string;
   cardBackground?: string; // Custom card background theme ID
+  cardTheme?: string; // Target site alias for card background
   history: PointHistoryItem[];
 }
 

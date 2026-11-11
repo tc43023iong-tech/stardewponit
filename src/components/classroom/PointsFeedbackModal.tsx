@@ -39,7 +39,7 @@ export const PointsFeedbackModal: React.FC<PointsFeedbackModalProps> = ({
   return (
     <div
       onClick={onClose}
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/65 backdrop-blur-sm cursor-pointer select-none animate-in fade-in duration-150"
+      className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/65 backdrop-blur-sm cursor-pointer select-none animate-in fade-in duration-150"
     >
       <div
         onClick={(e) => e.stopPropagation()}

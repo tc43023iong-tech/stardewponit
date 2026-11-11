@@ -26,26 +26,32 @@ export const AvatarPickerModal: React.FC<AvatarPickerModalProps> = ({
   const [searchQuery, setSearchQuery] = useState<string>('');
 
   const handlePickAvatar = (avatarValue: string) => {
-    soundManager.playClick();
+    soundManager.playCorrect();
     setSelectedAvatar(avatarValue);
+    // Instant auto-save as requested: clicking immediately applies without needing a separate confirm button
+    onSaveAvatar(student.id, avatarValue, selectedCardBg);
   };
 
   const handlePickCardBg = (bgId: string) => {
-    soundManager.playClick();
+    soundManager.playCorrect();
     setSelectedCardBg(bgId);
+    // Instant auto-save as requested: clicking immediately applies without needing a separate confirm button
+    onSaveAvatar(student.id, selectedAvatar, bgId);
   };
 
   const handleRandomPick = () => {
-    soundManager.playTick();
+    soundManager.playCorrect();
     if (modalTab === 'avatar') {
       const rand = STARDEW_AVATARS[Math.floor(Math.random() * STARDEW_AVATARS.length)];
       if (rand) {
         setSelectedAvatar(rand.id);
+        onSaveAvatar(student.id, rand.id, selectedCardBg);
       }
     } else {
       const randBg = STUDENT_CARD_BACKGROUND_OPTIONS[Math.floor(Math.random() * STUDENT_CARD_BACKGROUND_OPTIONS.length)];
       if (randBg) {
         setSelectedCardBg(randBg.id);
+        onSaveAvatar(student.id, selectedAvatar, randBg.id);
       }
     }
   };
@@ -372,26 +378,21 @@ export const AvatarPickerModal: React.FC<AvatarPickerModalProps> = ({
           </div>
         )}
 
-        {/* Footer */}
-        <div className="bg-[#faeed1] px-4 py-2.5 border-t-2 border-[#c4a675] flex items-center justify-between">
-          <span className="text-xs text-[#5a3818] font-bold truncate pr-2">
-            當前設定：【{currentAvatarItem?.name.split(' ')[0]}】｜【{currentCardBgItem?.name}】
-          </span>
-          <div className="flex items-center gap-2 shrink-0">
-            <button
-              onClick={onClose}
-              className="px-4 py-1.5 bg-[#ede0c2] hover:bg-[#dfcca4] text-[#4a2800] text-xs font-bold border border-[#a3794b] rounded-lg cursor-pointer"
-            >
-              取消
-            </button>
-            <button
-              onClick={handleSave}
-              className="pixel-btn-green px-5 py-1.5 text-xs font-bold text-white flex items-center gap-1.5 cursor-pointer shadow-md active:scale-95"
-            >
-              <Check className="w-4 h-4" />
-              <span>確認套用</span>
-            </button>
+        {/* Footer with instant auto-save confirmation */}
+        <div className="bg-[#faeed1] px-4 py-2.5 border-t-2 border-[#c4a675] flex items-center justify-between flex-wrap gap-2">
+          <div className="flex items-center gap-2 text-xs text-[#5a3818] font-bold">
+            <span className="bg-[#dcfce7] text-[#15803d] border border-[#86efac] px-2 py-0.5 rounded-full text-[10px] flex items-center gap-1 font-pixel shadow-xs">
+              <Check className="w-3 h-3 stroke-[3]" /> 點選即自動保存
+            </span>
+            <span>【{currentAvatarItem?.name.split(' ')[0]}】｜【{currentCardBgItem?.name}】</span>
           </div>
+          <button
+            onClick={onClose}
+            className="pixel-btn-green px-5 py-1.5 text-xs font-bold text-white flex items-center gap-1.5 cursor-pointer shadow-md active:scale-95 ml-auto"
+          >
+            <Check className="w-4 h-4" />
+            <span>完成</span>
+          </button>
         </div>
       </div>
     </div>

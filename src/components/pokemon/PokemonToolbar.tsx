@@ -26,6 +26,8 @@ interface PokemonToolbarProps {
   onOpenClassSettings: () => void;
   isTimerOpen: boolean;
   onToggleTimer: () => void;
+  isMuted?: boolean;
+  onToggleSound?: () => void;
 }
 
 export const PokemonToolbar: React.FC<PokemonToolbarProps> = ({
@@ -52,6 +54,8 @@ export const PokemonToolbar: React.FC<PokemonToolbarProps> = ({
   onOpenClassSettings,
   isTimerOpen,
   onToggleTimer,
+  isMuted = false,
+  onToggleSound,
 }) => {
   const isDark = eyeProtection;
 
@@ -265,6 +269,26 @@ export const PokemonToolbar: React.FC<PokemonToolbarProps> = ({
           >
             ⚙️
           </button>
+          {/* Sound Toggle Button */}
+          {onToggleSound && (
+            <button
+              type="button"
+              onClick={onToggleSound}
+              className={`w-10 h-10 rounded-2xl flex items-center justify-center text-lg shadow-xs border-2 hover:scale-105 active:scale-90 transition-all cursor-pointer select-none ${
+                isMuted
+                  ? isDark
+                    ? 'bg-slate-800 border-rose-800 text-rose-400'
+                    : 'bg-rose-50 border-rose-300 text-rose-600'
+                  : isDark
+                  ? 'bg-slate-800 border-emerald-800 text-emerald-400'
+                  : 'bg-emerald-50 border-emerald-300 text-emerald-600'
+              }`}
+              title={isMuted ? '音效已靜音 (Sound Muted - 點擊開啟)' : '音效播放中 (Sound On - 點擊靜音)'}
+            >
+              {isMuted ? '🔇' : '🔊'}
+            </button>
+          )}
+
           <button
             type="button"
             onClick={onToggleTimer}

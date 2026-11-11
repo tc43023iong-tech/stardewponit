@@ -7,6 +7,10 @@ interface PokemonHeaderProps {
   onSelectClass: (id: string) => void;
   eyeProtection: boolean;
   onToggleEyeProtection: () => void;
+  isMuted?: boolean;
+  onToggleSound?: () => void;
+  isMusicPlaying?: boolean;
+  onToggleMusic?: () => void;
   onOpenExport: () => void;
   onOpenImport: () => void;
   onOpenQuickBatch: () => void;
@@ -20,6 +24,10 @@ export const PokemonHeader: React.FC<PokemonHeaderProps> = ({
   onSelectClass,
   eyeProtection,
   onToggleEyeProtection,
+  isMuted = false,
+  onToggleSound,
+  isMusicPlaying = false,
+  onToggleMusic,
   onOpenExport,
   onOpenImport,
   onOpenQuickBatch,
@@ -81,6 +89,46 @@ export const PokemonHeader: React.FC<PokemonHeaderProps> = ({
         >
           💤
         </button>
+
+        {/* Dedicated Sound Toggle Button matching Stardew View */}
+        {onToggleSound && (
+          <button
+            type="button"
+            onClick={onToggleSound}
+            className={`w-11 h-11 rounded-2xl flex items-center justify-center text-xl shadow-xs border-2 cursor-pointer transition-all active:scale-90 hover:scale-105 select-none ${
+              isMuted
+                ? isDark
+                  ? 'bg-slate-800 border-rose-800/80 text-rose-400 hover:bg-slate-750 ring-1 ring-rose-500/30'
+                  : 'bg-rose-50 border-rose-300 text-rose-600 hover:bg-rose-100 ring-1 ring-rose-300/40'
+                : isDark
+                ? 'bg-slate-800 border-emerald-800/80 text-emerald-400 hover:bg-slate-750'
+                : 'bg-emerald-50 border-emerald-300 text-emerald-600 hover:bg-emerald-100'
+            }`}
+            title={isMuted ? '音效已靜音 (Sound Muted - 點擊開啟音效)' : '音效播放中 (Sound On - 點擊靜音)'}
+          >
+            {isMuted ? '🔇' : '🔊'}
+          </button>
+        )}
+
+        {/* Dedicated Background Music Toggle Button matching Stardew View */}
+        {onToggleMusic && (
+          <button
+            type="button"
+            onClick={onToggleMusic}
+            className={`w-11 h-11 rounded-2xl flex items-center justify-center text-xl shadow-xs border-2 cursor-pointer transition-all active:scale-90 hover:scale-105 select-none ${
+              isMusicPlaying
+                ? isDark
+                  ? 'bg-slate-800 border-emerald-700 text-emerald-400 hover:bg-slate-750 ring-1 ring-emerald-500/30'
+                  : 'bg-emerald-50 border-emerald-300 text-emerald-600 hover:bg-emerald-100 ring-1 ring-emerald-300/40'
+                : isDark
+                ? 'bg-slate-800 border-slate-700 text-slate-500 hover:bg-slate-750'
+                : 'bg-white border-[#D7CCC8] text-stone-400 hover:bg-stone-50'
+            }`}
+            title={isMusicPlaying ? '背景音樂播放中 (BGM On - 點擊關閉)' : '背景音樂已關閉 (BGM Off - 點擊開啟)'}
+          >
+            {isMusicPlaying ? '🎵' : '🎶'}
+          </button>
+        )}
 
         {/* Class Selection Dropdown */}
         <div className="relative group">

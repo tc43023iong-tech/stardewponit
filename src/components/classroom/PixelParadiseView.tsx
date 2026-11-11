@@ -28,8 +28,22 @@ import springBg from '../../assets/images/paradise_pixel_spring_1793879486507.jp
 import summerBg from '../../assets/images/paradise_pixel_summer_1793879488062.jpg';
 import winterBg from '../../assets/images/paradise_pixel_winter_1793879487326.jpg';
 
+import { PointsFeedbackModal, PointsFeedbackData } from './PointsFeedbackModal';
+
 export type ParadiseSeason = 'autumn' | 'spring' | 'summer' | 'winter';
 export type ParadiseTimeOfDay = 'day' | 'dawn' | 'sunset' | 'night';
+
+// Auto-determine season according to real-world calendar month
+export function getSeasonByMonth(month = new Date().getMonth() + 1): ParadiseSeason {
+  // Spring: March (3), April (4), May (5)
+  if (month >= 3 && month <= 5) return 'spring';
+  // Summer: June (6), July (7), August (8)
+  if (month >= 6 && month <= 8) return 'summer';
+  // Autumn: September (9), October (10), November (11)
+  if (month >= 9 && month <= 11) return 'autumn';
+  // Winter: December (12), January (1), February (2)
+  return 'winter';
+}
 
 // Roster of authentic Stardew Valley farm animals & companions
 const STARDEW_ANIMAL_ROSTER = [
@@ -110,8 +124,11 @@ export const PixelParadiseView: React.FC<PixelParadiseViewProps> = ({
   onChangeAvatar,
   onClose,
 }) => {
-  // Season state: default is 'autumn' as shown in the reference photo
-  const [season, setSeason] = useState<ParadiseSeason>('autumn');
+  // Season state: automatically initialized and switched according to current calendar month
+  const [season, setSeason] = useState<ParadiseSeason>(() => getSeasonByMonth());
+
+  // Fullscreen / Windows PC feedback popup overlay state
+  const [paradiseFeedback, setParadiseFeedback] = useState<PointsFeedbackData | null>(null);
 
   // Time of Day lighting: 'day' (default), 'dawn', 'sunset', 'night'
   const [timeOfDay, setTimeOfDay] = useState<ParadiseTimeOfDay>('day');
@@ -400,6 +417,15 @@ export const PixelParadiseView: React.FC<PixelParadiseViewProps> = ({
       delta > 0 ? 'Paradise accomplishment' : 'Gentle reminder',
       delta > 0 ? '✨' : '🩹'
     );
+
+    // Show 1.3s celebratory ("恭喜你！" / "繼續努力！") feedback modal inside Paradise view (ensures Windows PC and fullscreen support)
+    const nextScore = scoringStudent.points + delta;
+    setParadiseFeedback({
+      students: [scoringStudent],
+      delta,
+      reason,
+      updatedScores: { [scoringStudent.id]: nextScore },
+    });
 
     // 3. Trigger creature celebration & growth animation
     setCompanions((prev) =>
@@ -1057,6 +1083,14 @@ export const PixelParadiseView: React.FC<PixelParadiseViewProps> = ({
             </button>
           </div>
         </div>
+      )}
+
+      {/* 1.3s Full-Screen Feedback Modal (Visible in normal and Fullscreen modes on Windows) */}
+      {paradiseFeedback && (
+        <PointsFeedbackModal
+          data={paradiseFeedback}
+          onClose={() => setParadiseFeedback(null)}
+        />
       )}
 
       {/* Animation keyframes for living nature */}

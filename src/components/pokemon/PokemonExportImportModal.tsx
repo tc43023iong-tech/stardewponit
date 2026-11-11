@@ -9,51 +9,13 @@ interface PokemonExportImportModalProps {
   onImportClasses: (imported: ClassroomClass[]) => void;
 }
 
-// Simple robust CSV line parser handling quoted cells
-function parseCsvRows(text: string): string[][] {
-  const rows: string[][] = [];
-  let currentRow: string[] = [];
-  let currentCell = '';
-  let insideQuote = false;
-
-  for (let i = 0; i < text.length; i++) {
-    const char = text[i];
-    const nextChar = text[i + 1];
-
-    if (char === '"') {
-      if (insideQuote && nextChar === '"') {
-        currentCell += '"';
-        i++; // skip escaped quote
-      } else {
-        insideQuote = !insideQuote;
-      }
-    } else if (char === ',' && !insideQuote) {
-      currentRow.push(currentCell.trim());
-      currentCell = '';
-    } else if ((char === '\r' || char === '\n') && !insideQuote) {
-      if (char === '\r' && nextChar === '\n') {
-        i++;
-      }
-      currentRow.push(currentCell.trim());
-      currentCell = '';
-      if (currentRow.length > 0 && currentRow.some((c) => c.length > 0)) {
-        rows.push(currentRow);
-      }
-      currentRow = [];
-    } else {
-      currentCell += char;
-    }
-  }
-
-  if (currentCell.length > 0 || currentRow.length > 0) {
-    currentRow.push(currentCell.trim());
-    if (currentRow.some((c) => c.length > 0)) {
-      rows.push(currentRow);
-    }
-  }
-
-  return rows;
-}
+import {
+  parseCsvRows,
+  normalizeImportedClasses,
+  normalizeImportedCsv,
+  buildClassroomExportBundle,
+  directExportClassroomJSON,
+} from '../../utils/classroomDataIO';
 
 export const PokemonExportImportModal: React.FC<PokemonExportImportModalProps> = ({
   mode,
@@ -67,45 +29,14 @@ export const PokemonExportImportModal: React.FC<PokemonExportImportModalProps> =
   const [importError, setImportError] = useState<string>('');
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  // 1. JSON Export (Complete full data across Pokemon and Stardew modes)
-  const handleExportJSON = () => {
-    // Construct rich backup bundle
-    const exportBundle = {
-      version: 2,
-      exportDate: new Date().toISOString(),
-      type: 'miss_iong_classroom_full_backup',
-      description: 'Contains complete student scores, avatars (Pokemon & Stardew), card backgrounds, and points history logs',
-      classes: classes.map((c) => ({
-        id: c.id,
-        className: c.className,
-        students: c.students.map((s) => ({
-          id: s.id,
-          rollNo: s.rollNo,
-          name: s.name,
-          points: s.points,
-          posPoints: s.posPoints || 0,
-          negPoints: s.negPoints || 0,
-          groupId: s.groupId,
-          pokemonId: s.pokemonId || 25,
-          pokemonAvatar: s.pokemonAvatar || '',
-          stardewAvatar: s.stardewAvatar || s.avatar || '',
-          avatar: s.avatar || s.stardewAvatar || '',
-          cardBackground: s.cardBackground || '',
-          history: s.history || [],
-        })),
-      })),
-    };
-
-    const dataStr = 'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(exportBundle, null, 2));
-    const downloadAnchor = document.createElement('a');
-    downloadAnchor.setAttribute('href', dataStr);
-    downloadAnchor.setAttribute(
-      'download',
-      `Miss_Iong_Full_Classroom_Backup_${new Date().toISOString().slice(0, 10)}.json`
-    );
-    document.body.appendChild(downloadAnchor);
-    downloadAnchor.click();
-    downloadAnchor.remove();
+  // 1. JSON Export (Complete full data across Pokemon and Stardew modes with native folder dialog)
+  const handleExportJSON = async () => {
+    const result = await directExportClassroomJSON(classes);
+    if (result === 'saved') {
+      setImportStatus('💾 班級完整資料已成功儲存至您指定的資料夾！');
+    } else if (result === 'downloaded') {
+      setImportStatus('💾 班級完整資料備份已自動下載！');
+    }
   };
 
   // 2. CSV Export for Current Class
@@ -132,7 +63,7 @@ export const PokemonExportImportModal: React.FC<PokemonExportImportModalProps> =
       const escapedName = (s.name || '').replace(/"/g, '""');
       const pokemonAvatar = (s.pokemonAvatar || '').replace(/"/g, '""');
       const stardewAvatar = (s.stardewAvatar || s.avatar || '').replace(/"/g, '""');
-      const cardBg = (s.cardBackground || '').replace(/"/g, '""');
+      const cardBg = (s.cardBackground || s.cardTheme || '').replace(/"/g, '""');
 
       return [
         s.rollNo,
@@ -179,66 +110,18 @@ export const PokemonExportImportModal: React.FC<PokemonExportImportModalProps> =
         try {
           const content = event.target?.result as string;
           const parsed = JSON.parse(content);
+          const normalized = normalizeImportedClasses(parsed, classes, currentClassId);
 
-          let importedClasses: ClassroomClass[] = [];
-
-          // Case A: Standard backup bundle { classes: [...] }
-          if (parsed && typeof parsed === 'object' && Array.isArray(parsed.classes)) {
-            importedClasses = parsed.classes;
-          } else if (Array.isArray(parsed) && parsed.length > 0) {
-            // Case B: Array of classes
-            if ('students' in parsed[0]) {
-              importedClasses = parsed;
-            } else if ('rollNo' in parsed[0] || 'name' in parsed[0]) {
-              // Case C: Array of students for current class
-              importedClasses = classes.map((c) =>
-                c.id === currentClassId ? { ...c, students: parsed } : c
-              );
-            }
-          } else if (parsed && typeof parsed === 'object' && Array.isArray(parsed.students)) {
-            // Case D: Object with single class { className, students: [...] }
-            importedClasses = classes.map((c) =>
-              c.id === currentClassId ? { ...c, students: parsed.students } : c
+          if (normalized && normalized.length > 0) {
+            onImportClasses(normalized);
+            setImportStatus(
+              `🎉 成功匯入 ${normalized.length} 個班級資料！雙介面分數、頭像、背景壁紙與歷史紀錄已完全還原。`
             );
-          }
-
-          if (importedClasses.length > 0) {
-            // Validate and normalize all imported students to prevent missing fields
-            const normalizedClasses: ClassroomClass[] = importedClasses.map((cls) => ({
-              id: cls.id || `cls_${Date.now()}`,
-              className: cls.className || '匯入班級',
-              students: (cls.students || []).map((st: Partial<Student>, idx: number) => {
-                const points = typeof st.points === 'number' ? st.points : 0;
-                const posPoints = typeof st.posPoints === 'number' ? st.posPoints : points > 0 ? points : 0;
-                const negPoints = typeof st.negPoints === 'number' ? st.negPoints : points < 0 ? Math.abs(points) : 0;
-                const stardewAvatar = st.stardewAvatar || st.avatar || undefined;
-                const avatar = st.avatar || stardewAvatar || undefined;
-
-                return {
-                  id: st.id || `st_${Date.now()}_${idx}`,
-                  rollNo: typeof st.rollNo === 'number' ? st.rollNo : idx + 1,
-                  name: st.name || `學生${idx + 1}`,
-                  points,
-                  posPoints,
-                  negPoints,
-                  groupId: st.groupId,
-                  pokemonId: typeof st.pokemonId === 'number' ? st.pokemonId : Math.floor(Math.random() * 150) + 1,
-                  pokemonAvatar: st.pokemonAvatar,
-                  stardewAvatar,
-                  avatar,
-                  cardBackground: st.cardBackground,
-                  history: Array.isArray(st.history) ? st.history : [],
-                };
-              }),
-            }));
-
-            onImportClasses(normalizedClasses);
-            setImportStatus(`🎉 成功匯入 ${normalizedClasses.length} 個班級資料！雙介面分數、頭像、背景與歷史紀錄已完全還原。`);
             setTimeout(() => {
               onClose();
             }, 1200);
           } else {
-            setImportError('無法辨識此 JSON 格式，請確認是否為本系統匯出的備份檔。');
+            setImportError('無法辨識此 JSON 格式，請確認是否為課堂系統匯出的備份檔。');
             setImportStatus('');
           }
         } catch {
@@ -251,100 +134,17 @@ export const PokemonExportImportModal: React.FC<PokemonExportImportModalProps> =
       reader.onload = (event) => {
         try {
           const content = event.target?.result as string;
-          const parsedRows = parseCsvRows(content);
-          if (parsedRows.length <= 1) {
-            setImportError('CSV 檔案為空或僅有標題列。');
+          const updated = normalizeImportedCsv(content, classes, currentClassId);
+          if (updated) {
+            onImportClasses(updated);
+            setImportStatus(`🎉 成功由 CSV 更新 ${currentClass.className} 的雙邊成績、頭像與歷史紀錄！`);
+            setTimeout(() => {
+              onClose();
+            }, 1200);
+          } else {
+            setImportError('CSV 解析出錯或內容為空，請確認檔案格式是否正確。');
             setImportStatus('');
-            return;
           }
-
-          const headerRow = parsedRows[0].map((h) => h.toLowerCase());
-          const rollNoIdx = headerRow.findIndex((h) => h.includes('座號') || h.includes('學號') || h.includes('roll'));
-          const nameIdx = headerRow.findIndex((h) => h.includes('姓名') || h.includes('name'));
-          const pointsIdx = headerRow.findIndex((h) => h.includes('總分') || h.includes('總積分') || h.includes('points'));
-          const posIdx = headerRow.findIndex((h) => h.includes('獎勵') || h.includes('正分') || h.includes('pos'));
-          const negIdx = headerRow.findIndex((h) => h.includes('違紀') || h.includes('扣分') || h.includes('neg'));
-          const pokeIdIdx = headerRow.findIndex((h) => h.includes('寶可夢編號') || h.includes('pokemonid'));
-          const pokeAvatarIdx = headerRow.findIndex((h) => h.includes('寶可夢頭像') || h.includes('pokemonavatar'));
-          const stardewAvatarIdx = headerRow.findIndex((h) => h.includes('星露谷') || h.includes('自訂頭像') || h.includes('stardewavatar'));
-          const cardBgIdx = headerRow.findIndex((h) => h.includes('背景') || h.includes('cardbackground'));
-          const historyIdx = headerRow.findIndex((h) => h.includes('明細') || h.includes('歷程') || h.includes('history'));
-
-          // Map CSV rows into current class students
-          const newStudents = [...currentClass.students];
-
-          for (let i = 1; i < parsedRows.length; i++) {
-            const cols = parsedRows[i];
-            if (cols.length < 2) continue;
-
-            const rollNo = rollNoIdx !== -1 ? parseInt(cols[rollNoIdx], 10) : parseInt(cols[0], 10);
-            const name = nameIdx !== -1 ? cols[nameIdx] : cols[1];
-            if (!name) continue;
-
-            const points = pointsIdx !== -1 ? parseInt(cols[pointsIdx], 10) || 0 : parseInt(cols[2], 10) || 0;
-            const posPoints = posIdx !== -1 ? parseInt(cols[posIdx], 10) || 0 : points > 0 ? points : 0;
-            const negPoints = negIdx !== -1 ? parseInt(cols[negIdx], 10) || 0 : points < 0 ? Math.abs(points) : 0;
-
-            const pokemonId = pokeIdIdx !== -1 && cols[pokeIdIdx] ? parseInt(cols[pokeIdIdx], 10) : undefined;
-            const pokemonAvatar = pokeAvatarIdx !== -1 && cols[pokeAvatarIdx] ? cols[pokeAvatarIdx] : undefined;
-            const stardewAvatar = stardewAvatarIdx !== -1 && cols[stardewAvatarIdx] ? cols[stardewAvatarIdx] : undefined;
-            const cardBg = cardBgIdx !== -1 && cols[cardBgIdx] ? cols[cardBgIdx] : undefined;
-
-            let parsedHistory: PointHistoryItem[] | undefined;
-            if (historyIdx !== -1 && cols[historyIdx]) {
-              try {
-                parsedHistory = JSON.parse(cols[historyIdx]);
-              } catch {
-                // If not JSON, leave as is
-              }
-            }
-
-            const existingIdx = newStudents.findIndex(
-              (s) => (rollNo && s.rollNo === rollNo) || s.name.trim() === name.trim()
-            );
-
-            if (existingIdx !== -1) {
-              const current = newStudents[existingIdx];
-              newStudents[existingIdx] = {
-                ...current,
-                points,
-                posPoints,
-                negPoints,
-                pokemonId: pokemonId || current.pokemonId,
-                pokemonAvatar: pokemonAvatar || current.pokemonAvatar,
-                stardewAvatar: stardewAvatar || current.stardewAvatar,
-                avatar: stardewAvatar || current.avatar,
-                cardBackground: cardBg || current.cardBackground,
-                history: parsedHistory || current.history || [],
-              };
-            } else {
-              // Add as new student
-              newStudents.push({
-                id: `st_csv_${Date.now()}_${i}`,
-                rollNo: rollNo || newStudents.length + 1,
-                name: name.trim(),
-                points,
-                posPoints,
-                negPoints,
-                pokemonId: pokemonId || Math.floor(Math.random() * 150) + 1,
-                pokemonAvatar,
-                stardewAvatar,
-                avatar: stardewAvatar,
-                cardBackground: cardBg,
-                history: parsedHistory || [],
-              });
-            }
-          }
-
-          const updatedClasses = classes.map((c) =>
-            c.id === currentClassId ? { ...c, students: newStudents } : c
-          );
-
-          onImportClasses(updatedClasses);
-          setImportStatus(`🎉 成功由 CSV 更新 ${currentClass.className} 的雙邊成績、頭像與歷史紀錄！`);
-          setTimeout(() => {
-            onClose();
-          }, 1200);
         } catch {
           setImportError('CSV 解析出錯，請確認檔案編碼是否為 UTF-8。');
           setImportStatus('');

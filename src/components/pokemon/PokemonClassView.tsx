@@ -15,6 +15,11 @@ import { PokemonAvatarPickerModal } from './PokemonAvatarPickerModal';
 import { PokemonClassSettingsModal } from './PokemonClassSettingsModal';
 import { PokemonPointsFeedbackModal } from './PokemonPointsFeedbackModal';
 import { pokemonSound } from '../../utils/pokemonAudio';
+import {
+  directExportClassroomJSON,
+  normalizeImportedClasses,
+  normalizeImportedCsv,
+} from '../../utils/classroomDataIO';
 
 interface PokemonClassViewProps {
   classes: ClassroomClass[];
@@ -22,6 +27,10 @@ interface PokemonClassViewProps {
   onUpdateClasses: (updated: ClassroomClass[]) => void;
   onSelectClass: (classId: string) => void;
   onSwitchToStardew: () => void;
+  isMuted?: boolean;
+  onToggleSound?: () => void;
+  isMusicPlaying?: boolean;
+  onToggleMusic?: () => void;
 }
 
 const STORAGE_EYE_PROTECTION = 'miss_iong_eye_protection';
@@ -33,9 +42,26 @@ export const PokemonClassView: React.FC<PokemonClassViewProps> = ({
   onUpdateClasses,
   onSelectClass,
   onSwitchToStardew,
+  isMuted,
+  onToggleSound,
+  isMusicPlaying = false,
+  onToggleMusic,
 }) => {
   const currentClass = classes.find((c) => c.id === currentClassId) || classes[0];
   const students = currentClass?.students || [];
+
+  // Dedicated sound mute state (synchronized with pokemonSound and parent)
+  const [internalMuted, setInternalMuted] = useState(pokemonSound.isMuted);
+  const activeMuted = isMuted !== undefined ? isMuted : internalMuted;
+
+  const handleToggleSound = () => {
+    if (onToggleSound) {
+      onToggleSound();
+    } else {
+      const nextMuted = pokemonSound.toggleMute();
+      setInternalMuted(nextMuted);
+    }
+  };
 
   // Eye Protection / Sleep Mode
   const [eyeProtection, setEyeProtection] = useState<boolean>(() => {
@@ -136,6 +162,92 @@ export const PokemonClassView: React.FC<PokemonClassViewProps> = ({
     affectedStudents: Student[];
     historyId: string;
   } | null>(null);
+
+  // Direct folder dialog & toast states
+  const [toastMessage, setToastMessage] = useState<string | null>(null);
+  const toastTimerRef = useRef<number | null>(null);
+  const directImportInputRef = useRef<HTMLInputElement>(null);
+
+  const showToast = (msg: string) => {
+    setToastMessage(msg);
+    if (toastTimerRef.current) clearTimeout(toastTimerRef.current);
+    toastTimerRef.current = window.setTimeout(() => {
+      setToastMessage(null);
+    }, 4500);
+  };
+
+  // Direct One-Click Export: Opens native OS Save As folder dialog
+  const handleDirectExport = async () => {
+    try {
+      const result = await directExportClassroomJSON(classes);
+      if (result === 'saved') {
+        pokemonSound.playPointUp();
+        showToast('💾 班級完整備份檔案已成功儲存至您指定的資料夾！');
+      } else if (result === 'downloaded') {
+        pokemonSound.playPointUp();
+        showToast('💾 班級完整備份檔案已下載至您的電腦下載資料夾！');
+      }
+    } catch {
+      showToast('⚠️ 匯出時發生錯誤，請稍後重試。');
+    }
+  };
+
+  // Direct One-Click Import: Immediately pops native file picker
+  const handleDirectImportClick = () => {
+    if (directImportInputRef.current) {
+      directImportInputRef.current.value = '';
+      directImportInputRef.current.click();
+    }
+  };
+
+  const handleDirectImportFile = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+
+    if (file.name.endsWith('.json')) {
+      reader.onload = (event) => {
+        try {
+          const content = event.target?.result as string;
+          const parsed = JSON.parse(content);
+          const normalized = normalizeImportedClasses(parsed, classes, currentClassId);
+
+          if (normalized && normalized.length > 0) {
+            onUpdateClasses(normalized);
+            pokemonSound.playShuffleSuccess();
+            showToast(
+              `🎉 成功匯入 ${normalized.length} 個班級！所有學生分數、雙介面頭像、卡片背景壁紙與歷史紀錄已完全還原！`
+            );
+          } else {
+            showToast('⚠️ 無法辨識此 JSON 格式，請確認是否為課堂系統匯出的備份檔。');
+          }
+        } catch {
+          showToast('⚠️ JSON 解析失敗，請檢查檔案格式是否正確。');
+        }
+      };
+      reader.readAsText(file);
+    } else if (file.name.endsWith('.csv')) {
+      reader.onload = (event) => {
+        try {
+          const content = event.target?.result as string;
+          const updated = normalizeImportedCsv(content, classes, currentClassId);
+          if (updated) {
+            onUpdateClasses(updated);
+            pokemonSound.playShuffleSuccess();
+            showToast(`🎉 成功由 CSV 表格匯入更新 ${currentClass.className} 的雙邊成績、頭像與歷史紀錄！`);
+          } else {
+            showToast('⚠️ CSV 表格內容為空或無法辨識格式。');
+          }
+        } catch {
+          showToast('⚠️ CSV 解析出錯，請確認檔案編碼是否為 UTF-8。');
+        }
+      };
+      reader.readAsText(file);
+    } else {
+      showToast('⚠️ 請選取 .json 備份檔或 .csv 表格檔。');
+    }
+  };
 
   // Sorted Students
   const sortedStudents = [...students].sort((a, b) => {
@@ -452,11 +564,41 @@ export const PokemonClassView: React.FC<PokemonClassViewProps> = ({
         onSelectClass={onSelectClass}
         eyeProtection={eyeProtection}
         onToggleEyeProtection={handleToggleEyeProtection}
-        onOpenExport={() => setExportImportMode('export')}
-        onOpenImport={() => setExportImportMode('import')}
+        isMuted={activeMuted}
+        onToggleSound={handleToggleSound}
+        isMusicPlaying={isMusicPlaying}
+        onToggleMusic={onToggleMusic}
+        onOpenExport={handleDirectExport}
+        onOpenImport={handleDirectImportClick}
         onOpenQuickBatch={() => setIsQuickBatchOpen(true)}
         onSwitchToStardew={onSwitchToStardew}
       />
+
+      {/* Hidden File Input for Direct Folder Dialog Import */}
+      <input
+        type="file"
+        ref={directImportInputRef}
+        accept=".json,.csv"
+        onChange={handleDirectImportFile}
+        className="hidden"
+      />
+
+      {/* Floating Instant Action Toast Notification */}
+      {toastMessage && (
+        <div className="fixed top-6 left-1/2 -translate-x-1/2 z-[10000] max-w-xl w-[92vw] px-6 py-4 rounded-3xl bg-[#FFFDF9] text-[#5D4037] border-4 border-[#F59E0B] shadow-2xl flex items-center justify-between gap-3 animate-fade-in select-none">
+          <div className="flex items-center gap-3">
+            <span className="text-3xl shrink-0">✨</span>
+            <p className="font-black text-sm sm:text-base leading-snug">{toastMessage}</p>
+          </div>
+          <button
+            type="button"
+            onClick={() => setToastMessage(null)}
+            className="w-8 h-8 rounded-full bg-stone-100 hover:bg-stone-200 text-[#8D6E63] font-black text-lg flex items-center justify-center shrink-0 cursor-pointer"
+          >
+            ✕
+          </button>
+        </div>
+      )}
 
       {/* 2. Collapsible Timer Bar */}
       {isTimerOpen && <PokemonTimerBar eyeProtection={eyeProtection} />}
@@ -506,6 +648,8 @@ export const PokemonClassView: React.FC<PokemonClassViewProps> = ({
         onOpenClassSettings={() => setIsSettingsOpen(true)}
         isTimerOpen={isTimerOpen}
         onToggleTimer={() => setIsTimerOpen(!isTimerOpen)}
+        isMuted={activeMuted}
+        onToggleSound={handleToggleSound}
       />
 
       {/* 5. Main Student Cards Grid */}
