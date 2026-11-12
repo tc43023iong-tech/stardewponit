@@ -2,11 +2,17 @@ import React from 'react';
 import { PageTheme } from '../../data/classroomThemes';
 import { SCENIC_PAGE_IMAGES } from '../../data/scenicBackgrounds';
 
+export type TimeOfDay = 'dawn' | 'day' | 'sunset' | 'night';
+
 interface ScenicPageBackdropProps {
   theme: PageTheme;
+  timeOfDay?: TimeOfDay;
 }
 
-export const ScenicPageBackdrop: React.FC<ScenicPageBackdropProps> = ({ theme }) => {
+export const ScenicPageBackdrop: React.FC<ScenicPageBackdropProps> = ({
+  theme,
+  timeOfDay = 'day',
+}) => {
   const bgImage = SCENIC_PAGE_IMAGES[theme.id] || SCENIC_PAGE_IMAGES.spring_farm;
 
   const isWinter = theme.id === 'winter_frost';
@@ -17,32 +23,93 @@ export const ScenicPageBackdrop: React.FC<ScenicPageBackdropProps> = ({ theme })
   const isOcean = theme.id === 'ocean_sunset' || theme.id === 'ocean';
   const isGalaxy = theme.id === 'galaxy_starlight' || theme.id === 'galaxy';
 
+  // Time of Day States for 晨昏變換
+  const isDawn = timeOfDay === 'dawn';
+  const isDay = timeOfDay === 'day';
+  const isSunset = timeOfDay === 'sunset';
+  const isNight = timeOfDay === 'night';
+
+  const timeFilterClass = isDawn
+    ? 'brightness-[0.96] contrast-[1.03] sepia-[0.16] saturate-[1.12] hue-rotate-[-6deg]'
+    : isSunset
+    ? 'brightness-[0.88] contrast-[1.08] sepia-[0.36] saturate-[1.35] hue-rotate-[14deg]'
+    : isNight
+    ? 'brightness-[0.58] contrast-[1.15] saturate-[0.80] hue-rotate-[-22deg]'
+    : 'brightness-[1.0] contrast-[1.0] saturate-[1.05]';
+
   return (
-    <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden select-none">
+    <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden select-none transition-colors duration-1000">
       {/* 1. HIGH-DEFINITION STARDEW VALLEY SCENIC PANORAMA WALLPAPER */}
       <img
         src={bgImage}
         alt="Stardew Valley Farm Panorama"
-        className="absolute inset-0 w-full h-full object-cover object-center filter brightness-[0.98] transition-opacity duration-700 select-none pointer-events-none"
+        className={`absolute inset-0 w-full h-full object-cover object-center transition-all duration-1000 select-none pointer-events-none ${timeFilterClass}`}
       />
 
-      {/* 2. THEMATIC TINT OVERLAY */}
+      {/* 2. THEMATIC SEASONAL/BIOME TINT OVERLAY */}
       {isWinter ? (
-        <div className="absolute inset-0 bg-sky-900/10 mix-blend-color-dodge" />
+        <div className="absolute inset-0 bg-sky-900/10 mix-blend-color-dodge transition-opacity duration-1000" />
       ) : isAutumn ? (
-        <div className="absolute inset-0 bg-amber-950/15 mix-blend-overlay" />
+        <div className="absolute inset-0 bg-amber-950/15 mix-blend-overlay transition-opacity duration-1000" />
       ) : isWoods ? (
-        <div className="absolute inset-0 bg-indigo-950/20 mix-blend-multiply" />
+        <div className="absolute inset-0 bg-indigo-950/20 mix-blend-multiply transition-opacity duration-1000" />
       ) : isIridium ? (
-        <div className="absolute inset-0 bg-purple-950/25 mix-blend-color-dodge" />
+        <div className="absolute inset-0 bg-purple-950/25 mix-blend-color-dodge transition-opacity duration-1000" />
       ) : isGold ? (
-        <div className="absolute inset-0 bg-amber-500/15 mix-blend-overlay" />
+        <div className="absolute inset-0 bg-amber-500/15 mix-blend-overlay transition-opacity duration-1000" />
       ) : isOcean ? (
-        <div className="absolute inset-0 bg-rose-950/15 mix-blend-overlay" />
+        <div className="absolute inset-0 bg-rose-950/15 mix-blend-overlay transition-opacity duration-1000" />
       ) : isGalaxy ? (
-        <div className="absolute inset-0 bg-indigo-950/25 mix-blend-screen" />
+        <div className="absolute inset-0 bg-indigo-950/25 mix-blend-screen transition-opacity duration-1000" />
       ) : (
-        <div className="absolute inset-0 bg-emerald-950/10 mix-blend-overlay" />
+        <div className="absolute inset-0 bg-emerald-950/10 mix-blend-overlay transition-opacity duration-1000" />
+      )}
+
+      {/* 2.1 TIME OF DAY ATMOSPHERIC LIGHTING & SUN/MOON (晨昏變換) */}
+      {/* DAWN: 晨光熹微 / 黎明金粉霞光 */}
+      {isDawn && (
+        <div className="absolute inset-0 pointer-events-none overflow-hidden transition-opacity duration-1000 animate-fade-in">
+          <div className="absolute inset-0 bg-gradient-to-t from-amber-400/25 via-rose-300/15 to-sky-300/10 mix-blend-screen" />
+          {/* East Rising Morning Sun Flare */}
+          <div className="absolute top-1/4 left-1/5 w-80 h-80 rounded-full bg-gradient-to-r from-amber-200/25 via-rose-200/20 to-transparent blur-3xl animate-pulse" />
+          <div className="absolute top-12 left-16 text-amber-200 text-lg animate-twinkle">✧</div>
+          <div className="absolute top-24 left-1/3 text-rose-200 text-sm animate-twinkle-delayed">✦</div>
+          <div className="absolute bottom-28 left-1/4 text-amber-300/80 text-xs animate-twinkle">✧</div>
+        </div>
+      )}
+
+      {/* SUNSET: 暮色落日 / 晚霞燦爛 */}
+      {isSunset && (
+        <div className="absolute inset-0 pointer-events-none overflow-hidden transition-opacity duration-1000 animate-fade-in">
+          <div className="absolute inset-0 bg-gradient-to-t from-amber-600/35 via-rose-600/20 to-purple-900/30 mix-blend-color-dodge" />
+          {/* West Sinking Dusk Glow */}
+          <div className="absolute top-1/3 right-1/4 w-96 h-96 rounded-full bg-gradient-to-br from-amber-400/30 via-orange-500/20 to-rose-600/15 blur-3xl animate-pulse" />
+          <div className="absolute bottom-32 left-1/3 text-amber-300 text-xs animate-water-gleam">✧</div>
+          <div className="absolute bottom-24 right-1/3 text-orange-300 text-sm animate-water-gleam" style={{ animationDelay: '-1s' }}>✦</div>
+        </div>
+      )}
+
+      {/* NIGHT: 靜謐夜幕 / 銀月星輝與流螢 */}
+      {isNight && (
+        <div className="absolute inset-0 pointer-events-none overflow-hidden transition-opacity duration-1000 animate-fade-in">
+          <div className="absolute inset-0 bg-gradient-to-b from-[#03071e]/75 via-[#081226]/55 to-[#001738]/60 mix-blend-multiply" />
+          {/* Glowing Stardew Crescent Moon */}
+          <div className="absolute top-8 right-16 flex items-center justify-center">
+            <div className="w-24 h-24 rounded-full bg-amber-100/15 blur-xl animate-pulse" />
+            <span className="text-3xl text-amber-100 drop-shadow-[0_0_12px_rgba(254,243,199,0.85)]">🌙</span>
+          </div>
+          {/* Starlight Canopy */}
+          <div className="absolute top-10 left-12 text-amber-100 text-xs animate-twinkle">✦</div>
+          <div className="absolute top-20 left-1/4 text-cyan-200 text-sm animate-twinkle-delayed">✧</div>
+          <div className="absolute top-8 left-1/2 text-sky-100 text-base animate-twinkle">★</div>
+          <div className="absolute top-28 right-1/3 text-amber-200 text-xs animate-twinkle-delayed">✦</div>
+          <div className="absolute top-14 right-1/5 text-cyan-100 text-sm animate-twinkle">✧</div>
+          <div className="absolute top-36 left-16 text-yellow-100 text-xs animate-twinkle-delayed">★</div>
+          {/* Floating Night Fireflies */}
+          <div className="absolute bottom-32 left-1/3 text-amber-300 text-xs animate-floating-drift">✨</div>
+          <div className="absolute bottom-40 right-1/4 text-emerald-300 text-sm animate-floating-drift" style={{ animationDelay: '-2s' }}>✨</div>
+          <div className="absolute bottom-24 left-2/3 text-yellow-200 text-xs animate-floating-drift" style={{ animationDelay: '-3.5s' }}>✨</div>
+        </div>
       )}
 
       {/* 3. DYNAMIC SPECIAL EFFECTS LAYER: GALAXY (星空漫步 - 閃爍星光與極光束) */}

@@ -18,6 +18,7 @@ import {
   Sprout,
   Plus
 } from 'lucide-react';
+import { FESTIVAL_CALENDAR } from './FestivalCelebrationOverlay';
 
 interface ClassHeaderProps {
   classes: ClassroomClass[];
@@ -40,6 +41,11 @@ interface ClassHeaderProps {
   onSwitchToPokemon?: () => void;
   isParadiseOpen?: boolean;
   onToggleParadise?: () => void;
+  activeFestivalMonth?: number | null;
+  onOpenFestivalSelector?: () => void;
+  timeOfDay?: 'dawn' | 'day' | 'sunset' | 'night';
+  onToggleTimeOfDay?: () => void;
+  isTimeAuto?: boolean;
 }
 
 export const ClassHeader: React.FC<ClassHeaderProps> = ({
@@ -63,9 +69,21 @@ export const ClassHeader: React.FC<ClassHeaderProps> = ({
   onSwitchToPokemon,
   isParadiseOpen,
   onToggleParadise,
+  activeFestivalMonth,
+  onOpenFestivalSelector,
+  timeOfDay = 'day',
+  onToggleTimeOfDay,
+  isTimeAuto = true,
 }) => {
   const [showAddClassModal, setShowAddClassModal] = useState(false);
   const [newClassName, setNewClassName] = useState('');
+
+  const currentCalMonth = new Date().getMonth() + 1;
+  const effectiveMonth =
+    activeFestivalMonth !== null && activeFestivalMonth !== undefined
+      ? activeFestivalMonth
+      : currentCalMonth;
+  const activeFestival = FESTIVAL_CALENDAR[effectiveMonth] || FESTIVAL_CALENDAR[12];
 
   const currentClass = classes.find((c) => c.id === currentClassId) || classes[0];
   const totalClassPoints = currentClass?.students.reduce((acc, st) => acc + st.points, 0) || 0;
@@ -158,7 +176,7 @@ export const ClassHeader: React.FC<ClassHeaderProps> = ({
               onExportData();
             }}
             className="bg-[#5a3818] hover:bg-[#7a4c22] border border-[#8b5a2b] p-1.5 text-xs text-[#fed7aa] cursor-pointer"
-            title="匯出班級資料 (CSV / JSON 備份)"
+            title="資料備份匯出 (彈出系統資料夾儲存，與寶可夢完全一致的完整 JSON 備份)"
           >
             <Download className="w-3.5 h-3.5" />
           </button>
@@ -169,7 +187,7 @@ export const ClassHeader: React.FC<ClassHeaderProps> = ({
               onImportData();
             }}
             className="bg-[#5a3818] hover:bg-[#7a4c22] border border-[#8b5a2b] p-1.5 text-xs text-[#fed7aa] cursor-pointer"
-            title="匯入名單 (CSV / JSON)"
+            title="資料還原匯入 (自動彈出資料夾，支援與寶可夢互通的完整 JSON 備份檔與 CSV)"
           >
             <Upload className="w-3.5 h-3.5" />
           </button>
@@ -195,8 +213,9 @@ export const ClassHeader: React.FC<ClassHeaderProps> = ({
                 value={currentThemeId || 'spring_farm'}
                 onChange={(e) => onSelectTheme(e.target.value)}
                 className="bg-[#faeed1] text-[#4a2800] text-[11px] font-bold border border-[#8b5a2b] rounded py-0.5 px-1.5 cursor-pointer focus:outline-none max-w-[125px] sm:max-w-none"
-                title="切換星露谷全景背景場景與專屬動態特效（紫金秘境、皇家金輝、海濱夕陽、星空漫步等）"
+                title="切換星露谷全景背景場景與專屬動態特效（依月份自動切換、紫金秘境、皇家金輝等）"
               >
+                <option value="__auto_month__">📅 依真實月份自動切換</option>
                 {CLASSROOM_PAGE_THEMES.map((t) => (
                   <option key={t.id} value={t.id}>
                     {t.name}
@@ -204,6 +223,52 @@ export const ClassHeader: React.FC<ClassHeaderProps> = ({
                 ))}
               </select>
             </div>
+          )}
+
+          {/* Time of Day Toggle Button (晨昏變換: 清晨 / 白天 / 黃昏 / 夜晚) */}
+          {onToggleTimeOfDay && (
+            <button
+              type="button"
+              onClick={() => {
+                soundManager.playClick();
+                onToggleTimeOfDay();
+              }}
+              className="px-2 py-0.5 text-xs font-pixel rounded border border-[#8b5a2b] bg-[#3a200a] hover:bg-[#5a3818] text-[#ffedd5] flex items-center gap-1 transition-all active:scale-95 shadow-inner cursor-pointer"
+              title={`切換晨昏時段 (目前：${
+                timeOfDay === 'dawn'
+                  ? '🌅 黎明清晨'
+                  : timeOfDay === 'sunset'
+                  ? '🌇 夕陽黃昏'
+                  : timeOfDay === 'night'
+                  ? '🌙 靜謐星夜'
+                  : '☀️ 晴朗白晝'
+              }${isTimeAuto ? ' - 依真實時鐘自動' : ' - 手動預覽'}，點擊切換)`}
+            >
+              <span className="text-sm">
+                {timeOfDay === 'dawn' ? '🌅' : timeOfDay === 'sunset' ? '🌇' : timeOfDay === 'night' ? '🌙' : '☀️'}
+              </span>
+              <span className="hidden lg:inline text-[11px] font-bold">
+                {timeOfDay === 'dawn' ? '清晨' : timeOfDay === 'sunset' ? '黃昏' : timeOfDay === 'night' ? '夜晚' : '白天'}
+              </span>
+            </button>
+          )}
+
+          {/* Monthly Festival Celebration Indicator & Selector Button */}
+          {onOpenFestivalSelector && (
+            <button
+              type="button"
+              onClick={() => {
+                soundManager.playClick();
+                onOpenFestivalSelector();
+              }}
+              className="px-2.5 py-1 text-xs font-pixel rounded border border-[#8b5a2b] bg-[#3a200a] hover:bg-[#5a3818] text-[#ffd700] flex items-center gap-1.5 transition-all active:scale-95 shadow-inner cursor-pointer"
+              title={`目前慶典：${activeFestival.month}月 ${activeFestival.name}（點擊切換或預覽 12月雪花 ❄️、2月愛心 💖 等）`}
+            >
+              <span className="text-sm animate-pulse">{activeFestival.icon}</span>
+              <span className="hidden md:inline font-bold text-[11px] text-[#ffedd5]">
+                {activeFestival.month}月 {activeFestival.name.slice(0, 5)}
+              </span>
+            </button>
           )}
 
           {/* Sound & Music Controls */}

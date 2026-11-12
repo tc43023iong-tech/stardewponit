@@ -5,10 +5,15 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { ClassroomClass, Student, ViewTab, PointHistoryItem } from './types/classroom';
-import { INITIAL_CLASSES, getCropGrowth } from './data/classroomData';
+import { INITIAL_CLASSES } from './data/classroomData';
 import { CLASSROOM_PAGE_THEMES } from './data/classroomThemes';
 import { soundManager } from './utils/sound';
 import { pokemonSound } from './utils/pokemonAudio';
+import {
+  directExportClassroomJSON,
+  normalizeImportedClasses,
+  normalizeImportedCsv,
+} from './utils/classroomDataIO';
 
 // Components
 import { ClassHeader } from './components/classroom/ClassHeader';
@@ -24,6 +29,7 @@ import { PointsFeedbackModal, PointsFeedbackData } from './components/classroom/
 import { AvatarPickerModal } from './components/classroom/AvatarPickerModal';
 import { ScenicPageBackdrop } from './components/classroom/ScenicPageBackdrop';
 import { AmbientEffects } from './components/common/AmbientEffects';
+import { FestivalCelebrationOverlay } from './components/classroom/FestivalCelebrationOverlay';
 import { PixelSprite } from './components/common/PixelSprite';
 import { PokemonClassView } from './components/pokemon/PokemonClassView';
 import { PixelParadiseView } from './components/classroom/PixelParadiseView';
@@ -76,6 +82,28 @@ export default function App() {
   // Sound & Music state
   const [isMuted, setIsMuted] = useState(soundManager.isMuted);
   const [isMusicPlaying, setIsMusicPlaying] = useState(soundManager.isMusicPlaying);
+
+  // Monthly Festival Celebration state (auto-determined by real month or manually selected)
+  const [festivalForcedMonth, setFestivalForcedMonth] = useState<number | null>(() => {
+    try {
+      const saved = localStorage.getItem('stardew_festival_month');
+      return saved !== null && saved !== '' ? parseInt(saved, 10) : null;
+    } catch {
+      return null;
+    }
+  });
+  const [isFestivalSelectorOpen, setIsFestivalSelectorOpen] = useState(false);
+
+  const handleFestivalMonthChange = (month: number | null) => {
+    setFestivalForcedMonth(month);
+    try {
+      if (month !== null) {
+        localStorage.setItem('stardew_festival_month', String(month));
+      } else {
+        localStorage.removeItem('stardew_festival_month');
+      }
+    } catch {}
+  };
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -300,34 +328,132 @@ export default function App() {
     }
   };
 
-  // Page Theme State (stored in localStorage)
+  // Auto-determine seasonal background theme according to current real calendar month
+  const getThemeByMonth = (month = new Date().getMonth() + 1): string => {
+    // Spring: March (3), April (4), May (5) -> 春日青翠農莊
+    if (month >= 3 && month <= 5) return 'spring_farm';
+    // Summer: June (6), July (7), August (8) -> 盛夏向日葵花海
+    if (month >= 6 && month <= 8) return 'summer_sunflower';
+    // Autumn: September (9), October (10), November (11) -> 溫馨楓葉秋收
+    if (month >= 9 && month <= 11) return 'autumn_amber';
+    // Winter: December (12), January (1), February (2) -> 冬雪晴空
+    return 'winter_frost';
+  };
+
+  // Auto-determine time of day according to current 24-hour clock (晨昏變換)
+  const getCurrentTimeOfDay = (hour = new Date().getHours()): 'dawn' | 'day' | 'sunset' | 'night' => {
+    // Dawn: 05:00 - 08:59 晨光黎明
+    if (hour >= 5 && hour < 9) return 'dawn';
+    // Day: 09:00 - 16:59 晴朗白晝
+    if (hour >= 9 && hour < 17) return 'day';
+    // Sunset: 17:00 - 19:59 夕陽黃昏
+    if (hour >= 17 && hour < 20) return 'sunset';
+    // Night: 20:00 - 04:59 靜謐星夜
+    return 'night';
+  };
+
+  // Page Theme State: Automatically derived from current real month (3-5春, 6-8夏, 9-11秋, 12-2冬)
   const [pageThemeId, setPageThemeId] = useState<string>(() => {
-    return localStorage.getItem('stardew_classroom_theme') || 'spring_farm';
+    const isManualLocked = localStorage.getItem('stardew_theme_manual_locked') === 'true';
+    const saved = localStorage.getItem('stardew_classroom_theme');
+    if (isManualLocked && saved && CLASSROOM_PAGE_THEMES.some((t) => t.id === saved)) {
+      return saved;
+    }
+    return getThemeByMonth();
   });
 
-  const activePageTheme = CLASSROOM_PAGE_THEMES.find((t) => t.id === pageThemeId) || CLASSROOM_PAGE_THEMES[0];
+  const activePageTheme =
+    CLASSROOM_PAGE_THEMES.find((t) => t.id === pageThemeId) || CLASSROOM_PAGE_THEMES[0];
+
+  // Time of Day State: 晨昏變換 (Dawn 黎明, Day 白晝, Sunset 黃昏, Night 星夜)
+  const [timeOfDay, setTimeOfDay] = useState<'dawn' | 'day' | 'sunset' | 'night'>(() => {
+    const isManual = localStorage.getItem('stardew_time_manual_locked') === 'true';
+    const saved = localStorage.getItem('stardew_time_of_day') as 'dawn' | 'day' | 'sunset' | 'night' | null;
+    if (isManual && saved && ['dawn', 'day', 'sunset', 'night'].includes(saved)) {
+      return saved;
+    }
+    return getCurrentTimeOfDay();
+  });
+
+  const [isTimeAuto, setIsTimeAuto] = useState<boolean>(() => {
+    return localStorage.getItem('stardew_time_manual_locked') !== 'true';
+  });
+
+  // Automatically update pageThemeId when real month changes or on mount
+  useEffect(() => {
+    const checkAndSyncMonth = () => {
+      const isManualLocked = localStorage.getItem('stardew_theme_manual_locked') === 'true';
+      if (!isManualLocked) {
+        const currentMonth = new Date().getMonth() + 1;
+        const monthTheme = getThemeByMonth(currentMonth);
+        setPageThemeId((prev) => {
+          if (prev !== monthTheme) {
+            localStorage.setItem('stardew_classroom_theme', monthTheme);
+            return monthTheme;
+          }
+          return prev;
+        });
+      }
+    };
+
+    checkAndSyncMonth();
+    const interval = setInterval(checkAndSyncMonth, 60 * 1000); // Check every minute
+    return () => clearInterval(interval);
+  }, []);
+
+  // Automatically update timeOfDay with real clock (晨昏變換)
+  useEffect(() => {
+    const checkAndSyncTime = () => {
+      if (isTimeAuto) {
+        const current = getCurrentTimeOfDay();
+        setTimeOfDay(current);
+      }
+    };
+
+    checkAndSyncTime();
+    const interval = setInterval(checkAndSyncTime, 20 * 1000); // Check every 20 seconds
+    return () => clearInterval(interval);
+  }, [isTimeAuto]);
 
   const handleSelectPageTheme = (themeId: string) => {
     soundManager.playClick();
+    if (themeId === '__auto_month__') {
+      localStorage.removeItem('stardew_theme_manual_locked');
+      const monthTheme = getThemeByMonth();
+      setPageThemeId(monthTheme);
+      localStorage.setItem('stardew_classroom_theme', monthTheme);
+      const matched = CLASSROOM_PAGE_THEMES.find((t) => t.id === monthTheme);
+      showStardewToast(`📅 已切換為依真實月份自動切換場景（當前：${matched?.name || monthTheme}）`);
+      return;
+    }
     setPageThemeId(themeId);
     localStorage.setItem('stardew_classroom_theme', themeId);
+    localStorage.setItem('stardew_theme_manual_locked', 'true');
   };
 
-  // Auto-switch Stardew classroom background every 5 minutes (300,000 ms) as requested
-  useEffect(() => {
-    if (appMode !== 'stardew') return;
-    const interval = setInterval(() => {
-      setPageThemeId((prevThemeId) => {
-        const currentIndex = CLASSROOM_PAGE_THEMES.findIndex((t) => t.id === prevThemeId);
-        const nextIndex = (currentIndex + 1) % CLASSROOM_PAGE_THEMES.length;
-        const nextThemeId = CLASSROOM_PAGE_THEMES[nextIndex].id;
-        localStorage.setItem('stardew_classroom_theme', nextThemeId);
-        return nextThemeId;
-      });
-    }, 5 * 60 * 1000); // Every 5 minutes
+  const handleToggleTimeOfDay = () => {
+    soundManager.playClick();
+    const cycle: ('auto' | 'dawn' | 'day' | 'sunset' | 'night')[] = ['auto', 'dawn', 'day', 'sunset', 'night'];
+    const currentMode = isTimeAuto ? 'auto' : timeOfDay;
+    const currentIndex = cycle.indexOf(currentMode);
+    const nextMode = cycle[(currentIndex + 1) % cycle.length];
 
-    return () => clearInterval(interval);
-  }, [appMode]);
+    if (nextMode === 'auto') {
+      setIsTimeAuto(true);
+      localStorage.removeItem('stardew_time_manual_locked');
+      const current = getCurrentTimeOfDay();
+      setTimeOfDay(current);
+      const label = current === 'dawn' ? '清晨 🌅' : current === 'sunset' ? '黃昏 🌇' : current === 'night' ? '夜晚 🌙' : '白天 ☀️';
+      showStardewToast(`⏰ 晨昏已恢復為依真實時鐘自動變換（目前時段：${label}）`);
+    } else {
+      setIsTimeAuto(false);
+      localStorage.setItem('stardew_time_manual_locked', 'true');
+      localStorage.setItem('stardew_time_of_day', nextMode);
+      setTimeOfDay(nextMode);
+      const label = nextMode === 'dawn' ? '🌅 黎明清晨' : nextMode === 'sunset' ? '🌇 夕陽黃昏' : nextMode === 'night' ? '🌙 靜謐星夜' : '☀️ 晴朗白晝';
+      showStardewToast(`🎨 晨昏時段已手動切換為：${label}`);
+    }
+  };
 
   const handleBatchSetCardBackground = (cardBg: string) => {
     soundManager.playVictory();
@@ -391,34 +517,40 @@ export default function App() {
     soundManager.playCorrect();
   };
 
-  // Export CSV
-  const handleExportCSV = () => {
-    const headers = ['學號', '姓名', '總積分(分)', '累計加分', '累計扣分', '作物階段'];
-    const rows = currentClass.students.map((st) => [
-      st.rollNo,
-      st.name,
-      st.points,
-      st.posPoints,
-      st.negPoints,
-      getCropGrowth(st.points).label,
-    ]);
+  // Floating Toast State for Stardew Mode
+  const [toastMessage, setToastMessage] = useState<string | null>(null);
+  const toastTimerRef = useRef<number | null>(null);
 
-    const csvContent =
-      '\uFEFF' +
-      [headers.join(','), ...rows.map((r) => r.map((c) => `"${c}"`).join(','))].join('\n');
-
-    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `${currentClass.className}_學生積分名冊.csv`;
-    a.click();
-    URL.revokeObjectURL(url);
+  const showStardewToast = (msg: string) => {
+    setToastMessage(msg);
+    if (toastTimerRef.current) clearTimeout(toastTimerRef.current);
+    toastTimerRef.current = window.setTimeout(() => {
+      setToastMessage(null);
+    }, 4500);
   };
 
-  // Trigger Import CSV
+  // Direct One-Click Export: Opens native OS Save As folder dialog (Exact same JSON backup as Pokemon mode)
+  const handleExportData = async () => {
+    try {
+      const result = await directExportClassroomJSON(classes);
+      if (result === 'saved') {
+        soundManager.playCorrect();
+        showStardewToast('💾 班級完整備份檔案已成功儲存至您指定的資料夾！');
+      } else if (result === 'downloaded') {
+        soundManager.playCorrect();
+        showStardewToast('💾 班級完整備份檔案已下載至您的電腦下載資料夾！');
+      }
+    } catch {
+      showStardewToast('⚠️ 匯出時發生錯誤，請稍後重試。');
+    }
+  };
+
+  // Direct One-Click Import: Immediately pops native folder/file selector dialog (Exact same as Pokemon mode)
   const handleTriggerImport = () => {
-    fileInputRef.current?.click();
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+      fileInputRef.current.click();
+    }
   };
 
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -426,71 +558,48 @@ export default function App() {
     if (!file) return;
 
     const reader = new FileReader();
-    reader.onload = (event) => {
-      try {
-        const text = event.target?.result as string;
-        if (!text) return;
 
-        // Try JSON import first if file is json
-        if (file.name.endsWith('.json')) {
-          const parsed = JSON.parse(text);
-          if (Array.isArray(parsed)) {
-            setClasses(parsed);
-            alert('成功匯入備份資料！');
-            return;
+    if (file.name.endsWith('.json')) {
+      reader.onload = (event) => {
+        try {
+          const content = event.target?.result as string;
+          const parsed = JSON.parse(content);
+          const normalized = normalizeImportedClasses(parsed, classes, currentClassId);
+
+          if (normalized && normalized.length > 0) {
+            setClasses(normalized);
+            soundManager.playVictory();
+            showStardewToast(
+              `🎉 成功匯入 ${normalized.length} 個班級！所有學生分數、雙介面頭像、卡片背景壁紙與歷史紀錄已完全還原！`
+            );
+          } else {
+            showStardewToast('⚠️ 無法辨識此 JSON 格式，請確認是否為課堂系統匯出的備份檔。');
           }
+        } catch {
+          showStardewToast('⚠️ JSON 解析失敗，請檢查檔案格式是否正確。');
         }
-
-        // CSV Parser
-        const lines = text
-          .split('\n')
-          .map((l) => l.trim())
-          .filter(Boolean);
-        if (lines.length <= 1) return;
-
-        const newStudents: Student[] = [];
-        // Skip header if line 1 contains words like '學號' or 'name'
-        const startIdx = lines[0].includes('學號') || lines[0].includes('name') ? 1 : 0;
-
-        for (let i = startIdx; i < lines.length; i++) {
-          const cols = lines[i]
-            .split(',')
-            .map((c) => c.replace(/^["']|["']$/g, '').trim());
-          if (cols.length >= 2) {
-            const rollNo = parseInt(cols[0], 10) || i + 1;
-            const name = cols[1];
-            const groupMatch = cols[2]?.match(/\d+/);
-            const groupId = groupMatch ? parseInt(groupMatch[0], 10) : ((i % 6) + 1);
-            const points = parseInt(cols[3], 10) || 0;
-
-            newStudents.push({
-              id: `${currentClass.id}-${rollNo}`,
-              rollNo,
-              name,
-              points,
-              posPoints: points > 0 ? points : 0,
-              negPoints: points < 0 ? points : 0,
-              groupId,
-              avatar: 'junimo',
-              history: [],
-            });
+      };
+      reader.readAsText(file);
+    } else if (file.name.endsWith('.csv')) {
+      reader.onload = (event) => {
+        try {
+          const content = event.target?.result as string;
+          const updated = normalizeImportedCsv(content, classes, currentClassId);
+          if (updated) {
+            setClasses(updated);
+            soundManager.playVictory();
+            showStardewToast(`🎉 成功由 CSV 表格匯入更新 ${currentClass.className} 的雙邊成績、頭像與歷史紀錄！`);
+          } else {
+            showStardewToast('⚠️ CSV 表格內容為空或無法辨識格式。');
           }
+        } catch {
+          showStardewToast('⚠️ CSV 解析出錯，請確認檔案編碼是否為 UTF-8。');
         }
-
-        if (newStudents.length > 0) {
-          setClasses((prev) =>
-            prev.map((c) => (c.id === currentClassId ? { ...c, students: newStudents } : c))
-          );
-          soundManager.playVictory();
-          alert(`成功匯入 ${newStudents.length} 位學生至「${currentClass.className}」！`);
-        }
-      } catch (err) {
-        alert('匯入解析失敗，請確認檔案格式是否正確。');
-      }
-    };
-    reader.readAsText(file);
-    // Reset input
-    e.target.value = '';
+      };
+      reader.readAsText(file);
+    } else {
+      showStardewToast('⚠️ 請選取 .json 備份檔或 .csv 表格檔。');
+    }
   };
 
   // Render Pokemon Classroom as the Main Interface (as requested: "把復刻的這個網站作為主界面")
@@ -513,19 +622,41 @@ export default function App() {
   return (
     <div className="min-h-screen text-[#2b2b2b] flex flex-col font-sans relative selection:bg-[#fabc3f] selection:text-[#4a2800]">
       {/* Dynamic Stardew Valley Panoramic Scenic Backdrop (Sky, Sun/Moon, Clouds, Mountain Silhouettes, Horizon Fence & Pasture) */}
-      <ScenicPageBackdrop theme={activePageTheme} />
+      <ScenicPageBackdrop theme={activePageTheme} timeOfDay={timeOfDay} />
 
-      {/* Hidden File Input for CSV Import */}
+      {/* Floating Action Toast Notification (Exact match to Pokemon feedback) */}
+      {toastMessage && (
+        <div className="fixed top-6 left-1/2 -translate-x-1/2 z-[10000] max-w-xl w-[92vw] px-6 py-4 rounded-2xl bg-[#FFFDF9] text-[#4a2800] border-4 border-[#b45309] shadow-2xl flex items-center justify-between gap-3 animate-fade-in font-pixel select-none">
+          <div className="flex items-center gap-3">
+            <span className="text-2xl shrink-0">✨</span>
+            <p className="font-bold text-xs sm:text-sm leading-snug">{toastMessage}</p>
+          </div>
+          <button
+            type="button"
+            onClick={() => setToastMessage(null)}
+            className="w-7 h-7 rounded-full bg-[#faeed1] hover:bg-[#fed7aa] text-[#8b5a2b] font-bold text-base flex items-center justify-center shrink-0 cursor-pointer border border-[#b45309]"
+          >
+            ✕
+          </button>
+        </div>
+      )}
+
+      {/* Hidden File Input for Direct Folder Dialog Import */}
       <input
         ref={fileInputRef}
         type="file"
-        accept=".csv,.json"
+        accept=".json,.csv"
         className="hidden"
         onChange={handleFileUpload}
       />
 
-      {/* Floating Autumn Ambient Leaves */}
-      <AmbientEffects leafCount={12} />
+      {/* Monthly Festival Celebration Ambient Effects (12月雪花 ❄️, 2月愛心 💖, 4月櫻花 🌸 等) */}
+      <FestivalCelebrationOverlay
+        forcedMonth={festivalForcedMonth}
+        onMonthChange={handleFestivalMonthChange}
+        showSelector={isFestivalSelectorOpen}
+        onCloseSelector={() => setIsFestivalSelectorOpen(false)}
+      />
 
       {/* Main Top Header Bar */}
       <ClassHeader
@@ -536,7 +667,7 @@ export default function App() {
         onSelectTab={setActiveTab}
         onOpenTimer={() => setIsTimerOpen(true)}
         onOpenRandomPicker={() => setIsRandomPickerOpen(true)}
-        onExportData={handleExportCSV}
+        onExportData={handleExportData}
         onImportData={handleTriggerImport}
         onResetPoints={handleResetClassPoints}
         onAddNewClass={handleAddNewClass}
@@ -551,6 +682,11 @@ export default function App() {
         onToggleParadise={() => {
           setActiveTab((prev) => (prev === 'paradise' ? 'students' : 'paradise'));
         }}
+        activeFestivalMonth={festivalForcedMonth}
+        onOpenFestivalSelector={() => setIsFestivalSelectorOpen(true)}
+        timeOfDay={timeOfDay}
+        onToggleTimeOfDay={handleToggleTimeOfDay}
+        isTimeAuto={isTimeAuto}
       />
 
       {/* View Content Body */}
@@ -596,6 +732,7 @@ export default function App() {
             onApplyPoints={handleApplyPoints}
             onChangeAvatar={(st) => setAvatarPickerStudent(st)}
             onClose={() => setActiveTab('students')}
+            initialTimeOfDay={timeOfDay}
           />
         )}
       </main>

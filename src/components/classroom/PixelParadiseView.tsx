@@ -94,7 +94,10 @@ interface CompanionState {
   targetX: number;
   targetY: number;
   facing: 'left' | 'right';
-  action: 'idle' | 'walking' | 'swimming' | 'resting' | 'perched' | 'celebrating';
+  action: 'idle' | 'walking' | 'swimming' | 'resting' | 'perched' | 'celebrating' | 'running';
+  speed: number;
+  runUntil?: number;
+  wanderTimer?: number;
   isAquatic: boolean;
   speechBubble?: string;
   floatingText?: { text: string; isPositive: boolean; key: number };
@@ -115,6 +118,7 @@ interface PixelParadiseViewProps {
   onChangeAvatar?: (student: Student) => void;
   onClose?: () => void;
   isFullScreenMode?: boolean;
+  initialTimeOfDay?: ParadiseTimeOfDay;
 }
 
 export const PixelParadiseView: React.FC<PixelParadiseViewProps> = ({
@@ -123,6 +127,7 @@ export const PixelParadiseView: React.FC<PixelParadiseViewProps> = ({
   onApplyPoints,
   onChangeAvatar,
   onClose,
+  initialTimeOfDay = 'day',
 }) => {
   // Season state: automatically initialized and switched according to current calendar month
   const [season, setSeason] = useState<ParadiseSeason>(() => getSeasonByMonth());
@@ -130,8 +135,14 @@ export const PixelParadiseView: React.FC<PixelParadiseViewProps> = ({
   // Fullscreen / Windows PC feedback popup overlay state
   const [paradiseFeedback, setParadiseFeedback] = useState<PointsFeedbackData | null>(null);
 
-  // Time of Day lighting: 'day' (default), 'dawn', 'sunset', 'night'
-  const [timeOfDay, setTimeOfDay] = useState<ParadiseTimeOfDay>('day');
+  // Time of Day lighting: synced with classroom timeOfDay
+  const [timeOfDay, setTimeOfDay] = useState<ParadiseTimeOfDay>(initialTimeOfDay);
+
+  useEffect(() => {
+    if (initialTimeOfDay) {
+      setTimeOfDay(initialTimeOfDay);
+    }
+  }, [initialTimeOfDay]);
 
   // Name tags visibility toggle
   const [showNameTags, setShowNameTags] = useState<boolean>(true);
@@ -186,13 +197,13 @@ export const PixelParadiseView: React.FC<PixelParadiseViewProps> = ({
       };
     }
 
-    // Land meadow zones avoiding obstacles:
+    // Land meadow zones for natural initial distribution across the entire landscape:
     const zones = [
-      { minX: 12, maxX: 34, minY: 18, maxY: 55 }, // Left meadow & cobblestones
-      { minX: 25, maxX: 44, minY: 28, maxY: 52 }, // Mid-left clearing
-      { minX: 65, maxX: 88, minY: 16, maxY: 42 }, // Upper right near log
+      { minX: 12, maxX: 36, minY: 18, maxY: 48 }, // Northwest hill & rock perches
+      { minX: 28, maxX: 68, minY: 24, maxY: 56 }, // Central ancient oaks clearing
+      { minX: 64, maxX: 88, minY: 16, maxY: 46 }, // Northeast campsite logs
       { minX: 38, maxX: 56, minY: 60, maxY: 72 }, // Sandy beach shoreline
-      { minX: 18, maxX: 38, minY: 68, maxY: 86 }, // Lower left forest path
+      { minX: 12, maxX: 46, minY: 56, maxY: 84 }, // Southwest meadow & flower orchard
     ];
     const z = zones[idx % zones.length];
     return {
@@ -200,6 +211,80 @@ export const PixelParadiseView: React.FC<PixelParadiseViewProps> = ({
       y: z.minY + Math.random() * (z.maxY - z.minY),
       action: 'idle' as const,
     };
+  };
+
+  // 5 Landscape Regions for Autonomous Irregular Wandering across the entire paradise:
+  const PARADISE_REGIONS = useMemo(
+    () => [
+      { id: 'hills', minX: 10, maxX: 38, minY: 16, maxY: 46 },     // NW rocky hills
+      { id: 'oaks', minX: 28, maxX: 68, minY: 22, maxY: 56 },      // Central giant oaks
+      { id: 'campsite', minX: 64, maxX: 90, minY: 14, maxY: 46 },  // NE logs & campsite
+      { id: 'orchard', minX: 10, maxX: 46, minY: 56, maxY: 84 },   // SW meadow & flower orchard
+      { id: 'beach', minX: 38, maxX: 58, minY: 60, maxY: 72 },     // S Sandy shoreline & beach
+    ],
+    []
+  );
+
+  // Helper to pick random organic destination across the entire paradise
+  const getRandomDestination = (
+    isAquatic: boolean,
+    currentX: number,
+    currentY: number,
+    isSprint = false
+  ): { x: number; y: number } => {
+    if (isAquatic) {
+      if (isSprint) {
+        // Sprint across to the opposite end of the lake
+        const destX = currentX > 78 ? 64 + Math.random() * 8 : 82 + Math.random() * 9;
+        const destY = currentY > 80 ? 68 + Math.random() * 8 : 82 + Math.random() * 9;
+        return { x: destX, y: destY };
+      }
+      return {
+        x: 64 + Math.random() * 27,
+        y: 68 + Math.random() * 23,
+      };
+    }
+
+    if (isSprint) {
+      // Sprint far away from current spot (at least 32% distance across the meadow)
+      const distantRegions = PARADISE_REGIONS.filter((r) => {
+        const centerX = (r.minX + r.maxX) / 2;
+        const centerY = (r.minY + r.maxY) / 2;
+        return Math.hypot(centerX - currentX, centerY - currentY) > 28;
+      });
+      const reg =
+        distantRegions.length > 0
+          ? distantRegions[Math.floor(Math.random() * distantRegions.length)]
+          : PARADISE_REGIONS[Math.floor(Math.random() * PARADISE_REGIONS.length)];
+
+      return {
+        x: reg.minX + Math.random() * (reg.maxX - reg.minX),
+        y: reg.minY + Math.random() * (reg.maxY - reg.minY),
+      };
+    }
+
+    // Irregular autonomous wandering:
+    // 60% chance to venture to another region across the field
+    // 40% chance to roam nearby
+    if (Math.random() < 0.6) {
+      const reg = PARADISE_REGIONS[Math.floor(Math.random() * PARADISE_REGIONS.length)];
+      return {
+        x: reg.minX + Math.random() * (reg.maxX - reg.minX),
+        y: reg.minY + Math.random() * (reg.maxY - reg.minY),
+      };
+    } else {
+      const deltaX = Math.random() * 28 - 14;
+      const deltaY = Math.random() * 22 - 11;
+      let targetX = Math.max(9, Math.min(90, currentX + deltaX));
+      let targetY = Math.max(16, Math.min(85, currentY + deltaY));
+
+      // Avoid plunging into deep lake (x > 62 && y > 72)
+      if (targetX > 62 && targetY > 72) {
+        targetY = 65; // Stop safely on the beach sand!
+      }
+
+      return { x: targetX, y: targetY };
+    }
   };
 
   // State of all active student companions in the paradise
@@ -222,13 +307,15 @@ export const PixelParadiseView: React.FC<PixelParadiseViewProps> = ({
         targetY: init.y,
         facing: Math.random() > 0.5 ? 'right' : 'left',
         action: init.action,
+        speed: 0.28,
+        wanderTimer: Math.floor(Math.random() * 45) + 15,
         isAquatic,
         growthBonus,
       };
     });
   });
 
-  // Sync companions when students prop changes (e.g. when student's avatar is changed in the Stardew roster)
+  // Sync companions when students prop changes
   useEffect(() => {
     setCompanions((prev) =>
       students.map((s, idx) => {
@@ -242,7 +329,6 @@ export const PixelParadiseView: React.FC<PixelParadiseViewProps> = ({
           let nextY = existing.y;
           let nextAction = existing.action;
 
-          // If avatar changed to non-aquatic while swimming in deep lake, move to beach
           if (!isAquatic && existing.action === 'swimming') {
             nextX = 42;
             nextY = 64;
@@ -279,6 +365,8 @@ export const PixelParadiseView: React.FC<PixelParadiseViewProps> = ({
           targetY: init.y,
           facing: 'right',
           action: init.action,
+          speed: 0.28,
+          wanderTimer: Math.floor(Math.random() * 45) + 15,
           isAquatic,
           growthBonus,
         };
@@ -286,81 +374,142 @@ export const PixelParadiseView: React.FC<PixelParadiseViewProps> = ({
     );
   }, [students]);
 
-  // Autonomous wandering & life cycle simulation
+  // Click Companion to Run ("一點擊某個人物，那個人物就會跑")
+  const handleCompanionClick = (comp: CompanionState, e: React.MouseEvent) => {
+    e.stopPropagation();
+    soundManager.playPop();
+
+    // Pick a distant running destination
+    const sprintTarget = getRandomDestination(comp.isAquatic, comp.x, comp.y, true);
+    const facing = sprintTarget.x < comp.x ? 'left' : 'right';
+    const runBubble = [
+      '💨 溜了溜了~',
+      '🏃 衝啊！',
+      '⚡ 好快！',
+      '🐾 奔跑中~',
+      '😆 哈哈！',
+      '✨ 飛奔！',
+      '💨 追不到我~',
+      '💖 嘻嘻！',
+    ][Math.floor(Math.random() * 8)];
+
+    setCompanions((prev) =>
+      prev.map((c) => {
+        if (c.id === comp.id) {
+          return {
+            ...c,
+            action: 'running',
+            targetX: sprintTarget.x,
+            targetY: sprintTarget.y,
+            facing,
+            speed: 0.92, // ~3.5x sprint speed!
+            runUntil: Date.now() + 4000, // Runs excitedly for 4 seconds
+            speechBubble: runBubble,
+          };
+        }
+        return c;
+      })
+    );
+
+    // Also select this student in spotlight dock & quick points modal
+    setFocusedCompanionId(comp.id);
+    const currentStudent = students.find((s) => s.id === comp.studentId);
+    if (currentStudent) {
+      setScoringStudent(currentStudent);
+    }
+  };
+
+  // High-performance autonomous irregular wandering & movement physics (50ms silky smooth tick)
   useEffect(() => {
-    const wanderInterval = setInterval(() => {
+    const moveInterval = setInterval(() => {
+      const now = Date.now();
+
       setCompanions((prev) =>
         prev.map((c) => {
           if (c.action === 'celebrating') return c;
 
-          // 28% chance to pick a new destination and wander
-          if (Math.random() < 0.28) {
-            let nextX = c.x;
-            let nextY = c.y;
-            let nextAction: CompanionState['action'] = c.action;
+          let action = c.action;
+          let speed = c.speed || 0.28;
+          let targetX = c.targetX;
+          let targetY = c.targetY;
+          let wanderTimer = (c.wanderTimer ?? 30) - 1;
+          let speechBubble = c.speechBubble;
 
-            if (c.isAquatic) {
-              // Lake boundaries: x in [62, 92], y in [70, 92]
-              nextX = Math.max(62, Math.min(92, c.x + (Math.random() * 10 - 5)));
-              nextY = Math.max(70, Math.min(92, c.y + (Math.random() * 8 - 4)));
-              nextAction = 'swimming';
-            } else {
-              // Land boundaries: avoid deep lake (x > 62 && y > 72)
-              let deltaX = (Math.random() * 10 - 5);
-              let deltaY = (Math.random() * 8 - 4);
-              let candX = Math.max(8, Math.min(90, c.x + deltaX));
-              let candY = Math.max(14, Math.min(85, c.y + deltaY));
-
-              // If wandering into lake, pause on the sandy shore
-              if (candX > 60 && candY > 70) {
-                candY = 65;
-                nextAction = 'resting';
-              } else {
-                nextAction = Math.random() < 0.4 ? 'walking' : 'idle';
-              }
-
-              nextX = candX;
-              nextY = candY;
-            }
-
-            const facing = nextX < c.x ? 'left' : 'right';
-
-            return {
-              ...c,
-              targetX: nextX,
-              targetY: nextY,
-              facing,
-              action: nextAction,
-              speechBubble:
-                Math.random() < 0.08
-                  ? ['🌾', '✨', '🐾', '🌸', '🎵', '💤', '🐟', '🍀', '🍎', '💖'][Math.floor(Math.random() * 10)]
-                  : undefined,
-            };
+          // Check if running sprint has concluded
+          if (action === 'running' && c.runUntil && now > c.runUntil) {
+            action = c.isAquatic ? 'swimming' : 'walking';
+            speed = 0.28;
+            speechBubble = undefined;
           }
 
-          // Smoothly step toward target
-          const dx = c.targetX - c.x;
-          const dy = c.targetY - c.y;
+          // When wander timer expires (and animal is not sprinting), pick a new organic destination!
+          if (wanderTimer <= 0 && action !== 'running') {
+            wanderTimer = Math.floor(Math.random() * 70) + 40; // 2 to 5.5 seconds until next wander
+
+            // 75% chance to wander to a new landscape region
+            // 25% chance to take a short pause with Stardew behavior
+            if (Math.random() < 0.75) {
+              const nextDest = getRandomDestination(c.isAquatic, c.x, c.y, false);
+              targetX = nextDest.x;
+              targetY = nextDest.y;
+              action = c.isAquatic ? 'swimming' : 'walking';
+              speed = 0.24 + Math.random() * 0.12;
+              speechBubble =
+                Math.random() < 0.12
+                  ? ['🌾', '✨', '🐾', '🌸', '🎵', '🍀', '🍎', '💖', '🌱'][Math.floor(Math.random() * 9)]
+                  : undefined;
+            } else {
+              action = c.isAquatic ? 'swimming' : 'idle';
+              speechBubble = Math.random() < 0.2 ? '💤' : undefined;
+            }
+          }
+
+          // Step towards target coordinates
+          const dx = targetX - c.x;
+          const dy = targetY - c.y;
           const dist = Math.hypot(dx, dy);
 
           if (dist > 0.4) {
+            const step = Math.min(dist, speed);
+            const nextX = c.x + (dx / dist) * step;
+            const nextY = c.y + (dy / dist) * step;
+            const facing: 'left' | 'right' = dx < -0.1 ? 'left' : dx > 0.1 ? 'right' : c.facing;
+
             return {
               ...c,
-              x: c.x + (dx / dist) * 0.32,
-              y: c.y + (dy / dist) * 0.32,
-              action: c.isAquatic ? 'swimming' : 'walking',
+              x: nextX,
+              y: nextY,
+              targetX,
+              targetY,
+              facing,
+              action,
+              speed,
+              wanderTimer,
+              speechBubble,
             };
           } else {
+            // Reached destination
+            let finalAction = action;
+            if (action === 'running') {
+              finalAction = c.isAquatic ? 'swimming' : 'idle';
+              speed = 0.28;
+            } else if (action === 'walking') {
+              finalAction = c.isAquatic ? 'swimming' : 'idle';
+            }
+
             return {
               ...c,
-              action: c.isAquatic ? 'swimming' : c.action === 'walking' ? 'idle' : c.action,
+              action: finalAction,
+              speed,
+              wanderTimer,
+              speechBubble,
             };
           }
         })
       );
-    }, 450);
+    }, 50);
 
-    return () => clearInterval(wanderInterval);
+    return () => clearInterval(moveInterval);
   }, []);
 
   // Center camera when companion is focused
@@ -876,13 +1025,7 @@ export const PixelParadiseView: React.FC<PixelParadiseViewProps> = ({
             return (
               <div
                 key={comp.id}
-                onClick={(e) => {
-                  soundManager.playClick();
-                  setFocusedCompanionId(comp.id);
-                  if (currentStudent) {
-                    setScoringStudent(currentStudent);
-                  }
-                }}
+                onClick={(e) => handleCompanionClick(comp, e)}
                 className={`absolute cursor-pointer transition-all duration-300 z-20 group ${
                   isSelected ? 'z-40 scale-125' : 'hover:scale-115'
                 }`}
@@ -937,13 +1080,29 @@ export const PixelParadiseView: React.FC<PixelParadiseViewProps> = ({
                 <div
                   className={`relative flex items-center justify-center transition-transform ${
                     comp.facing === 'left' ? 'scale-x-[-1]' : 'scale-x-[1]'
-                  } ${isSwimming ? 'animate-swim-bob' : comp.action === 'walking' ? 'animate-walk-wobble' : 'animate-pet-breathe'}`}
+                  } ${
+                    isSwimming
+                      ? 'animate-swim-bob'
+                      : comp.action === 'running'
+                      ? 'animate-run-dash'
+                      : comp.action === 'walking'
+                      ? 'animate-walk-wobble'
+                      : 'animate-pet-breathe'
+                  }`}
                   style={{
                     width: `${46 * scale}px`,
                     height: `${46 * scale}px`,
                   }}
-                  title={`點擊選中 ${comp.name} · 右上角愛心撫摸`}
+                  title={`點擊使 ${comp.name} 奔跑 · 右上角愛心撫摸`}
                 >
+                  {/* Running dust puff particles 💨 behind feet */}
+                  {comp.action === 'running' && (
+                    <div className="absolute -bottom-2 -left-3 pointer-events-none z-30 flex items-center gap-0.5 animate-pulse">
+                      <span className="text-base select-none">💨</span>
+                      <span className="text-[10px] select-none text-stone-300">💨</span>
+                    </div>
+                  )}
+
                   <AvatarRenderer
                     avatar={comp.stardewAvatar}
                     name={comp.name}
@@ -1113,6 +1272,15 @@ export const PixelParadiseView: React.FC<PixelParadiseViewProps> = ({
         @keyframes swim-bob {
           0%, 100% { transform: translateY(0) scaleY(0.94); }
           50% { transform: translateY(-4px) scaleY(1.06); }
+        }
+        @keyframes run-dash {
+          0%, 100% { transform: translateY(0) rotate(0deg); }
+          25% { transform: translateY(-6px) rotate(-4deg); }
+          50% { transform: translateY(0) rotate(0deg); }
+          75% { transform: translateY(-6px) rotate(4deg); }
+        }
+        .animate-run-dash {
+          animation: run-dash 0.18s ease-in-out infinite;
         }
       `}</style>
     </div>
