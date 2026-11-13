@@ -436,6 +436,8 @@ export const PokemonClassView: React.FC<PokemonClassViewProps> = ({
       c.id === currentClassId ? { ...c, students: revertedStudents } : c
     );
 
+    pokemonSound.playUndo();
+    onUpdateClasses(updatedClasses);
     setFeedbackData(null);
   };
 
@@ -471,6 +473,9 @@ export const PokemonClassView: React.FC<PokemonClassViewProps> = ({
       c.id === currentClassId ? { ...c, students: updatedStudents } : c
     );
 
+    if (deltaToRevert !== 0) {
+      pokemonSound.playUndo();
+    }
     onUpdateClasses(updatedClasses);
 
     // Also update pointsModalStudents in place so modal immediately updates
@@ -481,13 +486,18 @@ export const PokemonClassView: React.FC<PokemonClassViewProps> = ({
     }
   };
 
-  // Quick Batch Scoring Submit (Quiet, no animations)
+  // Quick Batch Scoring Submit with audio feedback
   const handleSubmitQuickBatch = (deltas: Record<string, number>, reason: string) => {
     const timestamp = Date.now();
+    let totalNetDelta = 0;
+    let hasChanges = false;
+
     const updatedStudents = students.map((s) => {
       const delta = deltas[s.id] || 0;
       if (delta === 0) return s;
 
+      hasChanges = true;
+      totalNetDelta += delta;
       const isPos = delta > 0;
       const historyItem: PointHistoryItem = {
         id: `h_quick_${timestamp}_${s.id}`,
@@ -506,6 +516,14 @@ export const PokemonClassView: React.FC<PokemonClassViewProps> = ({
         history: [...(s.history || []), historyItem],
       };
     });
+
+    if (hasChanges) {
+      if (totalNetDelta >= 0) {
+        pokemonSound.playPointUp();
+      } else {
+        pokemonSound.playPointDown();
+      }
+    }
 
     const updatedClasses = classes.map((c) =>
       c.id === currentClassId ? { ...c, students: updatedStudents } : c

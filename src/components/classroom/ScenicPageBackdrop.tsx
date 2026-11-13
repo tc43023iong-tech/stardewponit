@@ -89,10 +89,12 @@ export const ScenicPageBackdrop: React.FC<ScenicPageBackdropProps> = ({
         </div>
       )}
 
-      {/* NIGHT: 靜謐夜幕 / 銀月星輝與流螢 */}
+      {/* NIGHT: 靜謐夜幕 / 銀月星輝與極光夜色 */}
       {isNight && (
         <div className="absolute inset-0 pointer-events-none overflow-hidden transition-opacity duration-1000 animate-fade-in">
           <div className="absolute inset-0 bg-gradient-to-b from-[#03071e]/75 via-[#081226]/55 to-[#001738]/60 mix-blend-multiply" />
+          {/* Subtle Northern Sky Aurora Glow */}
+          <div className="absolute -top-10 left-1/4 w-[60%] h-44 rounded-full bg-gradient-to-r from-emerald-400/15 via-cyan-400/15 to-violet-500/15 blur-3xl animate-pulse" />
           {/* Glowing Stardew Crescent Moon */}
           <div className="absolute top-8 right-16 flex items-center justify-center">
             <div className="w-24 h-24 rounded-full bg-amber-100/15 blur-xl animate-pulse" />
@@ -105,10 +107,6 @@ export const ScenicPageBackdrop: React.FC<ScenicPageBackdropProps> = ({
           <div className="absolute top-28 right-1/3 text-amber-200 text-xs animate-twinkle-delayed">✦</div>
           <div className="absolute top-14 right-1/5 text-cyan-100 text-sm animate-twinkle">✧</div>
           <div className="absolute top-36 left-16 text-yellow-100 text-xs animate-twinkle-delayed">★</div>
-          {/* Floating Night Fireflies */}
-          <div className="absolute bottom-32 left-1/3 text-amber-300 text-xs animate-floating-drift">✨</div>
-          <div className="absolute bottom-40 right-1/4 text-emerald-300 text-sm animate-floating-drift" style={{ animationDelay: '-2s' }}>✨</div>
-          <div className="absolute bottom-24 left-2/3 text-yellow-200 text-xs animate-floating-drift" style={{ animationDelay: '-3.5s' }}>✨</div>
         </div>
       )}
 

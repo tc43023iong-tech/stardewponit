@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Student } from '../../types/classroom';
 import { resolveStudentAvatar } from '../../utils/pokemonAvatars';
+import { pokemonSound } from '../../utils/pokemonAudio';
 
 interface PokemonQuickBatchModalProps {
   students: Student[];
@@ -32,6 +33,11 @@ export const PokemonQuickBatchModal: React.FC<PokemonQuickBatchModalProps> = ({
   };
 
   const adjustDelta = (studentId: string, diff: number) => {
+    if (diff > 0) {
+      pokemonSound.playTimerClick();
+    } else {
+      pokemonSound.playUndo();
+    }
     setDeltas((prev) => ({
       ...prev,
       [studentId]: (prev[studentId] || 0) + diff,
@@ -39,6 +45,11 @@ export const PokemonQuickBatchModal: React.FC<PokemonQuickBatchModalProps> = ({
   };
 
   const handleApplyAll = (val: number) => {
+    if (val > 0) {
+      pokemonSound.playPointUp();
+    } else {
+      pokemonSound.playPointDown();
+    }
     const newDeltas: Record<string, number> = {};
     students.forEach((s) => {
       newDeltas[s.id] = (deltas[s.id] || 0) + val;
@@ -70,7 +81,7 @@ export const PokemonQuickBatchModal: React.FC<PokemonQuickBatchModalProps> = ({
               </span>
             </h2>
             <p className="text-[#8D6E63] text-xs font-bold mt-1">
-              在表格中輸入全班分數，快速提交，安靜無音效 🌱
+              在表格中快速調整全班加減分，一鍵批次登記並播放音效 🌱
             </p>
           </div>
           <button

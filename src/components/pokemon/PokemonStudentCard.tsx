@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Student } from '../../types/classroom';
 import { resolvePokemonAvatar, getCardTheme, isEmoji } from '../../utils/pokemonAvatars';
-import { pokemonSound } from '../../utils/pokemonAudio';
 
 interface FloatingBadge {
   id: number;
@@ -52,12 +51,6 @@ export const PokemonStudentCard: React.FC<PokemonStudentCardProps> = ({
 
       setCardVibrate(isPos ? 'pos' : 'neg');
       setAvatarVibrate(isPos ? 'pos' : 'neg');
-
-      if (isPos) {
-        pokemonSound.playPointUp();
-      } else {
-        pokemonSound.playPointDown();
-      }
 
       const badgeId = Date.now() + Math.random();
       setFloatingBadges((prev) => [...prev, { id: badgeId, delta, type: isPos ? 'pos' : 'neg' }]);

@@ -8,24 +8,59 @@ class PokemonSoundSynthesizer {
 
   constructor() {
     try {
-      const saved = localStorage.getItem('pokemon_sound_muted') || localStorage.getItem('stardew_sound_muted');
+      const saved = localStorage.getItem('pokemon_sound_muted') ?? localStorage.getItem('stardew_sound_muted');
       if (saved !== null) {
         this.isMuted = saved === 'true';
       }
     } catch {}
+
+    // Early unlock on user interaction (Windows/Chrome/iframe safe)
+    if (typeof window !== 'undefined') {
+      const unlock = () => {
+        this.init();
+      };
+      window.addEventListener('pointerdown', unlock, { passive: true });
+      window.addEventListener('keydown', unlock, { passive: true });
+    }
   }
 
-  public init() {
+  public init(): AudioContext | null {
     try {
       if (!this.ctx) {
-        const AudioCtx = window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
-        this.ctx = new AudioCtx();
+        const AudioCtx =
+          window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
+        if (AudioCtx) {
+          this.ctx = new AudioCtx();
+        }
       }
       if (this.ctx && this.ctx.state === 'suspended') {
         this.ctx.resume().catch(() => {});
       }
     } catch {
       // AudioContext not supported or permission denied
+    }
+    return this.ctx;
+  }
+
+  private withAudio(fn: (ctx: AudioContext) => void) {
+    if (this.isMuted) return;
+    try {
+      const ctx = this.init();
+      if (!ctx) return;
+      if (ctx.state === 'suspended') {
+        ctx
+          .resume()
+          .then(() => {
+            if (!this.isMuted && this.ctx) {
+              fn(this.ctx);
+            }
+          })
+          .catch(() => {});
+      } else {
+        fn(ctx);
+      }
+    } catch {
+      // Audio playback failed
     }
   }
 
@@ -38,99 +73,102 @@ class PokemonSoundSynthesizer {
   }
 
   public toggleMute(): boolean {
-    this.isMuted = !this.isMuted;
-    try {
-      localStorage.setItem('pokemon_sound_muted', String(this.isMuted));
-      localStorage.setItem('stardew_sound_muted', String(this.isMuted));
-    } catch {}
+    this.setMuted(!this.isMuted);
     return this.isMuted;
   }
 
   public playPointUp() {
-    if (this.isMuted) return;
-    this.init();
-    if (!this.ctx) return;
-    try {
-      const now = this.ctx.currentTime;
+    this.withAudio((ctx) => {
+      const now = ctx.currentTime;
       const notes = [587.33, 739.99, 880, 1174.66, 1479.98, 1760];
       const step = 0.045;
 
       notes.forEach((freq, idx) => {
-        if (!this.ctx) return;
-        const osc = this.ctx.createOscillator();
-        const gain = this.ctx.createGain();
+        const start = now + idx * step;
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
 
         osc.type = 'sine';
-        osc.frequency.setValueAtTime(freq, now + idx * step);
-        gain.gain.setValueAtTime(0.001, now + idx * step);
-        gain.gain.linearRampToValueAtTime(0.22, now + idx * step + 0.012);
-        gain.gain.exponentialRampToValueAtTime(0.0001, now + idx * step + 0.52);
+        osc.frequency.setValueAtTime(freq, start);
+        gain.gain.setValueAtTime(0.001, start);
+        gain.gain.linearRampToValueAtTime(0.24, start + 0.012);
+        gain.gain.exponentialRampToValueAtTime(0.0001, start + 0.52);
 
         osc.connect(gain);
-        gain.connect(this.ctx.destination);
-        osc.start(now + idx * step);
-        osc.stop(now + idx * step + 0.53);
+        gain.connect(ctx.destination);
+        osc.start(start);
+        osc.stop(start + 0.53);
 
         // Harmonic shimmer
-        const oscH = this.ctx.createOscillator();
-        const gainH = this.ctx.createGain();
+        const oscH = ctx.createOscillator();
+        const gainH = ctx.createGain();
         oscH.type = 'sine';
-        oscH.frequency.setValueAtTime(freq * 2, now + idx * step);
-        gainH.gain.setValueAtTime(0.001, now + idx * step);
-        gainH.gain.linearRampToValueAtTime(0.04, now + idx * step + 0.01);
-        gainH.gain.exponentialRampToValueAtTime(0.0001, now + idx * step + 0.25);
+        oscH.frequency.setValueAtTime(freq * 2, start);
+        gainH.gain.setValueAtTime(0.001, start);
+        gainH.gain.linearRampToValueAtTime(0.05, start + 0.01);
+        gainH.gain.exponentialRampToValueAtTime(0.0001, start + 0.25);
 
         oscH.connect(gainH);
-        gainH.connect(this.ctx.destination);
-        oscH.start(now + idx * step);
-        oscH.stop(now + idx * step + 0.26);
+        gainH.connect(ctx.destination);
+        oscH.start(start);
+        oscH.stop(start + 0.26);
       });
-    } catch {
-      // Audio playback failed
-    }
+    });
   }
 
   public playPointDown() {
-    if (this.isMuted) return;
-    this.init();
-    if (!this.ctx) return;
-    try {
-      const now = this.ctx.currentTime;
+    this.withAudio((ctx) => {
+      const now = ctx.currentTime;
       const notes = [783.99, 659.25, 523.25];
       const step = 0.085;
 
       notes.forEach((freq, idx) => {
-        if (!this.ctx) return;
-        const osc = this.ctx.createOscillator();
-        const gain = this.ctx.createGain();
+        const start = now + idx * step;
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
 
         osc.type = 'triangle';
-        osc.frequency.setValueAtTime(freq, now + idx * step);
-        gain.gain.setValueAtTime(0.001, now + idx * step);
-        gain.gain.linearRampToValueAtTime(0.35, now + idx * step + 0.01);
-        gain.gain.exponentialRampToValueAtTime(0.0001, now + idx * step + 0.32);
+        osc.frequency.setValueAtTime(freq, start);
+        gain.gain.setValueAtTime(0.001, start);
+        gain.gain.linearRampToValueAtTime(0.32, start + 0.01);
+        gain.gain.exponentialRampToValueAtTime(0.0001, start + 0.32);
 
         osc.connect(gain);
-        gain.connect(this.ctx.destination);
-        osc.start(now + idx * step);
-        osc.stop(now + idx * step + 0.33);
+        gain.connect(ctx.destination);
+        osc.start(start);
+        osc.stop(start + 0.33);
 
-        const oscSub = this.ctx.createOscillator();
-        const gainSub = this.ctx.createGain();
+        const oscSub = ctx.createOscillator();
+        const gainSub = ctx.createGain();
         oscSub.type = 'sawtooth';
-        oscSub.frequency.setValueAtTime(freq / 2, now + idx * step);
-        gainSub.gain.setValueAtTime(0.001, now + idx * step);
-        gainSub.gain.linearRampToValueAtTime(0.06, now + idx * step + 0.008);
-        gainSub.gain.exponentialRampToValueAtTime(0.0001, now + idx * step + 0.18);
+        oscSub.frequency.setValueAtTime(freq / 2, start);
+        gainSub.gain.setValueAtTime(0.001, start);
+        gainSub.gain.linearRampToValueAtTime(0.07, start + 0.008);
+        gainSub.gain.exponentialRampToValueAtTime(0.0001, start + 0.18);
 
         oscSub.connect(gainSub);
-        gainSub.connect(this.ctx.destination);
-        oscSub.start(now + idx * step);
-        oscSub.stop(now + idx * step + 0.19);
+        gainSub.connect(ctx.destination);
+        oscSub.start(start);
+        oscSub.stop(start + 0.19);
       });
-    } catch {
-      // Audio failed
-    }
+    });
+  }
+
+  public playUndo() {
+    this.withAudio((ctx) => {
+      const now = ctx.currentTime;
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(560, now);
+      osc.frequency.exponentialRampToValueAtTime(320, now + 0.14);
+      gain.gain.setValueAtTime(0.2, now);
+      gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.15);
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start(now);
+      osc.stop(now + 0.16);
+    });
   }
 
   public playShuffleTick(index: number, total: number) {

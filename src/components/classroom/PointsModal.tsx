@@ -37,11 +37,6 @@ export const PointsModal: React.FC<PointsModalProps> = ({
   const primaryStudent = students[0];
 
   const handleSelectPreset = (preset: PointPreset) => {
-    if (preset.points > 0) {
-      soundManager.playCorrect();
-    } else {
-      soundManager.playBuzzer();
-    }
     onApplyPoints(students, preset.points, preset.labelZh, preset.labelEn, preset.icon);
     onClose();
   };
@@ -52,12 +47,6 @@ export const PointsModal: React.FC<PointsModalProps> = ({
     const finalDelta = (isNegativeSign ? -1 : 1) * parsedNumber;
     const defaultReason = finalDelta > 0 ? '自訂加分獎勵' : '自訂扣分提醒';
     const reasonText = customReasonInput.trim() || defaultReason;
-
-    if (finalDelta > 0) {
-      soundManager.playCorrect();
-    } else {
-      soundManager.playBuzzer();
-    }
 
     onApplyPoints(
       students,

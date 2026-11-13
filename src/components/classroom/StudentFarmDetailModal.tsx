@@ -315,20 +315,14 @@ export const StudentFarmDetailModal: React.FC<StudentFarmDetailModalProps> = ({
 
           <div className="flex items-center gap-2">
             <button
-              onClick={() => {
-                soundManager.playCorrect();
-                onQuickAdd(student, 2);
-              }}
+              onClick={() => onQuickAdd(student, 2)}
               className="bg-[#dcfce7] hover:bg-[#bbf7d0] text-[#15803d] border border-[#86efac] px-2.5 py-1 text-xs font-pixel font-bold rounded cursor-pointer active:scale-95 shadow-xs"
               title="給予+2分"
             >
               <Plus className="w-3 h-3 inline mr-0.5" /> 2分
             </button>
             <button
-              onClick={() => {
-                soundManager.playCorrect();
-                onQuickAdd(student, 5);
-              }}
+              onClick={() => onQuickAdd(student, 5)}
               className="bg-[#dcfce7] hover:bg-[#bbf7d0] text-[#15803d] border border-[#86efac] px-2.5 py-1 text-xs font-pixel font-bold rounded cursor-pointer active:scale-95 shadow-xs"
               title="給予+5分"
             >

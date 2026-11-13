@@ -172,9 +172,9 @@ export default function App() {
     });
 
     if (delta > 0) {
-      soundManager.playCorrect();
-    } else {
-      soundManager.playBuzzer();
+      soundManager.playPointAdd();
+    } else if (delta < 0) {
+      soundManager.playPointDeduct();
     }
 
     // Trigger 1.3s celebratory ("恭喜你！") or encouraging ("繼續加油！") feedback overlay
@@ -234,11 +234,6 @@ export default function App() {
 
   // Batch Add shortcut
   const handleBatchAdd = (targetStudents: Student[], delta: number) => {
-    if (delta > 0) {
-      soundManager.playCorrect();
-    } else {
-      soundManager.playBuzzer();
-    }
     handleApplyPoints(
       targetStudents,
       delta,
@@ -250,6 +245,7 @@ export default function App() {
 
   // Undo point change from history
   const handleUndoPoint = (historyId: string, studentId: string, delta: number) => {
+    soundManager.playUndo();
     let updatedSt: Student | null = null;
     setClasses((prevClasses) =>
       prevClasses.map((cls) => {
@@ -624,6 +620,9 @@ export default function App() {
       {/* Dynamic Stardew Valley Panoramic Scenic Backdrop (Sky, Sun/Moon, Clouds, Mountain Silhouettes, Horizon Fence & Pasture) */}
       <ScenicPageBackdrop theme={activePageTheme} timeOfDay={timeOfDay} />
 
+      {/* Seasonal Dynamic Weather System (Rain, Falling Leaves, Petals, Snow) & Night Visual Atmosphere (Fireflies & Aurora) */}
+      <AmbientEffects themeId={pageThemeId} timeOfDay={timeOfDay} />
+
       {/* Floating Action Toast Notification (Exact match to Pokemon feedback) */}
       {toastMessage && (
         <div className="fixed top-6 left-1/2 -translate-x-1/2 z-[10000] max-w-xl w-[92vw] px-6 py-4 rounded-2xl bg-[#FFFDF9] text-[#4a2800] border-4 border-[#b45309] shadow-2xl flex items-center justify-between gap-3 animate-fade-in font-pixel select-none">
@@ -690,7 +689,13 @@ export default function App() {
       />
 
       {/* View Content Body */}
-      <main className="flex-1 max-w-7xl w-full mx-auto p-3 sm:p-6 relative z-10">
+      <main
+        className={`flex-1 w-full mx-auto relative z-10 ${
+          activeTab === 'paradise'
+            ? 'max-w-none px-1.5 sm:px-3 py-1.5 flex flex-col'
+            : 'max-w-7xl p-3 sm:p-6'
+        }`}
+      >
         {activeTab === 'students' && (
           <StudentsView
             students={currentClass.students}
