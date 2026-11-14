@@ -16,7 +16,7 @@ interface PokemonAvatarPickerModalProps {
 
 // 1. Sanrio exact subcategories from original target site
 const SANRIO_SUBCATEGORIES = [
-  { key: 'all', name: '全部', icon: '🎀' },
+  { key: 'all', name: '全部分區', icon: '🎀' },
   { key: 'collection', name: 'Collection 典藏', icon: '✨', avatarIds: [10029, 10030, 10031, 10032, 10033, 10034, 10035, 10036, 10037, 10038, 10039, 10040, 10041] },
   { key: 'kuromi', name: '酷洛米', icon: '🖤', avatarIds: [10042, 10043, 8247, 8248, 8249, 8250, 8251, 8252, 8055, 8056, 8057, 8058, 8059, 8060, 8061, 8062, 8063, 8064, 8229, 8230, 8231, 8232, 8233] },
   { key: 'kitty', name: 'Hello Kitty', icon: '🎀', avatarIds: [8031, 8032, 8033, 8034, 8035, 8151, 8157, 8320] },
@@ -29,26 +29,27 @@ const SANRIO_SUBCATEGORIES = [
 
 // 2. Partner exact subcategories from original target site
 const PARTNER_SUBCATEGORIES = [
-  { key: 'all', name: '全部', icon: '🐾' },
+  { key: 'all', name: '全部分區', icon: '🐾' },
   { key: 'puppy', name: '線條小狗', icon: '🐶', avatarIds: [13000, 13001, 13002, 13003, 13004, 13005, 13006, 13007, 13008, 13009, 13010, 13011, 13012, 13013, 13014, 13015] },
   { key: 'sumikko', name: '角落生物', icon: '🍱', avatarIds: [8001, 8002, 8003, 8004, 8005, 8006, 8007, 8008, 8009, 8010, 8011, 8012, 8013, 8014, 8015, 8016, 8017, 8018, 8019, 8020, 8021, 8022, 8023, 8024, 8025, 8026, 8027, 8028, 8029, 8030] },
-  { key: 'chiikawa', name: 'chikawwa', icon: '🐹', avatarIds: [10000, 10001, 10002, 10003, 10004, 10005, 10006, 10007, 10008, 10009, 10010, 10011, 10012, 10013, 10014, 10015, 10016, 10017, 10018, 10019, 10020, 10021, 10022, 10023, 10024, 10025, 8041, 8042, 8043, 8044, 8045, 8140, 8142, 8143, 8144, 8145, 8148, 8204, 8205, 8206, 8207, 8208, 8224, 8225, 8226, 8227, 8228, 8256, 8301, 8302, 8303, 8304, 8305, 8306, 8307, 8308, 8309, 8310, 8311, 8312, 8313, 8314] },
+  { key: 'chiikawa', name: '吉伊卡哇 (Chiikawa)', icon: '🐹', avatarIds: [10000, 10001, 10002, 10003, 10004, 10005, 10006, 10007, 10008, 10009, 10010, 10011, 10012, 10013, 10014, 10015, 10016, 10017, 10018, 10019, 10020, 10021, 10022, 10023, 10024, 10025, 8041, 8042, 8043, 8044, 8045, 8140, 8142, 8143, 8144, 8145, 8148, 8204, 8205, 8206, 8207, 8208, 8224, 8225, 8226, 8227, 8228, 8256, 8301, 8302, 8303, 8304, 8305, 8306, 8307, 8308, 8309, 8310, 8311, 8312, 8313, 8314] },
   { key: 'rilakkuma', name: '輕鬆熊', icon: '🍯', avatarIds: [8189, 8190, 8191, 8192, 8193, 8194, 8195, 8196, 8197, 8209, 8210, 8211, 8212, 8213, 8214, 8215, 8216, 8217] },
   { key: 'marvel', name: '漫威', icon: '🦸‍♂️', avatarIds: [8046, 8047, 8048, 8049, 8105, 8106, 8107, 8108, 8109, 8110, 8179, 8180, 8181, 8182, 8183, 8184, 8185, 8186, 8187, 8188] },
   { key: 'ultraman', name: '超人', icon: '⚡', avatarIds: [8086, 8087, 8169, 8170, 8171, 8172, 8173, 8174, 8175, 8176, 8177, 8178] },
-  { key: 'snoopy', name: 'snoopy', icon: '🐶', avatarIds: [8079, 8080, 8317, 8318, 8319] },
+  { key: 'snoopy', name: 'Snoopy', icon: '🐶', avatarIds: [8079, 8080, 8317, 8318, 8319] },
   { key: 'princess', name: '公主', icon: '👑', avatarIds: [8081, 8082, 8083, 8095, 8096, 8097, 8098, 8121, 8122, 8123, 8124, 8125, 8126, 8127, 8128, 8129, 8130] },
   { key: 'bean', name: '憨豆先生', icon: '🧸', avatarIds: [8084, 8085, 8135, 8136, 8137, 8138, 8159, 8160, 8161, 8163, 8164, 8165, 8166, 8167, 8168] },
-  { key: 'other_partners', name: '其他', icon: '✨', avatarIds: [10026, 10027, 10028, 8050, 8051, 8052, 8053, 8054, 8077, 8078, 8093, 8094, 8099, 8100, 8101, 8102, 8103, 8104, 8111, 8112, 8113, 8114, 8115, 8117, 8118, 8133, 8134, 8147] },
+  { key: 'other_partners', name: '其他夥伴', icon: '✨', avatarIds: [10026, 10027, 10028, 8050, 8051, 8052, 8053, 8054, 8077, 8078, 8093, 8094, 8099, 8100, 8101, 8102, 8103, 8104, 8111, 8112, 8113, 8114, 8115, 8117, 8118, 8133, 8134, 8147] },
 ];
 
 // 3. Animated subcategories
+const EXCLUDED_ANIMATED_IDS = [9802, 9807, 9812, 9813, 9814, 9815, 9816, 9818, 9820, 9821, 9823, 9824, 9827, 9917, 9924, 9925, 9927, 9929, 9930, 9937, 9939, 9966, 9989, 9991, 9994, 9995, 9997, 9998, 9999];
 const ANIMATED_SUBCATEGORIES = [
-  { key: 'all', name: '全部動態', icon: '⚡' },
-  { key: 'emoji', name: '😀 表情符號', filter: (id: number) => id >= 9800 && id <= 9999 },
-  { key: 'chiikawa_gif', name: '🐹 吉伊卡哇', filter: (id: number) => id >= 8307 && id <= 8314 },
-  { key: 'sanrio_gif', name: '🎀 三麗鷗', filter: (id: number) => id === 8316 || id === 8320 },
-  { key: 'snoopy_gif', name: '🐶 史努比', filter: (id: number) => id === 8318 || id === 8319 },
+  { key: 'all', name: '全部分區', icon: '⚡' },
+  { key: 'emoji', name: '表情符號', icon: '😀', filter: (id: number) => id >= 9800 && id <= 9999 && !EXCLUDED_ANIMATED_IDS.includes(id) },
+  { key: 'chiikawa_gif', name: '吉伊卡哇動態', icon: '🐹', filter: (id: number) => id >= 8307 && id <= 8314 },
+  { key: 'sanrio_gif', name: '三麗鷗動態', icon: '🎀', filter: (id: number) => id === 8316 || id === 8320 },
+  { key: 'snoopy_gif', name: '史努比動態', icon: '🐶', filter: (id: number) => id === 8318 || id === 8319 },
 ];
 
 // 4. Background categories (for 149 500-pt themes)
@@ -167,6 +168,75 @@ export const PokemonAvatarPickerModal: React.FC<PokemonAvatarPickerModalProps> =
     }
 
     return sortOrder === 'desc' ? [...items].reverse() : items;
+  }, [allIds, activeTab, subCategory, searchQuery, sortOrder]);
+
+  // Grouped sections for 🐾 夥伴, 🎀 Sanrio, and 動態 so avatars are cleanly organized by character/type
+  const groupedSections = useMemo(() => {
+    if (searchQuery.trim()) return null;
+
+    const sortList = (ids: number[]) => (sortOrder === 'desc' ? [...ids].reverse() : ids);
+
+    if (activeTab === '🐾 夥伴') {
+      const targetSubs =
+        subCategory === 'all'
+          ? PARTNER_SUBCATEGORIES.filter((s) => s.key !== 'all')
+          : PARTNER_SUBCATEGORIES.filter((s) => s.key === subCategory);
+      return targetSubs
+        .map((sub) => {
+          const validIds = (sub.avatarIds || []).filter((id) => allIds.includes(id));
+          return {
+            key: sub.key,
+            title: sub.name,
+            icon: sub.icon,
+            ids: sortList(validIds),
+            accentBg: 'bg-amber-50/70 border-amber-200',
+            badgeClass: 'bg-amber-100 text-amber-900 border-amber-300',
+          };
+        })
+        .filter((sec) => sec.ids.length > 0);
+    }
+
+    if (activeTab === '🎀 Sanrio') {
+      const targetSubs =
+        subCategory === 'all'
+          ? SANRIO_SUBCATEGORIES.filter((s) => s.key !== 'all')
+          : SANRIO_SUBCATEGORIES.filter((s) => s.key === subCategory);
+      return targetSubs
+        .map((sub) => {
+          const validIds = (sub.avatarIds || []).filter((id) => allIds.includes(id));
+          return {
+            key: sub.key,
+            title: sub.name,
+            icon: sub.icon,
+            ids: sortList(validIds),
+            accentBg: 'bg-pink-50/70 border-pink-200',
+            badgeClass: 'bg-pink-100 text-pink-900 border-pink-300',
+          };
+        })
+        .filter((sec) => sec.ids.length > 0);
+    }
+
+    if (activeTab === '動態') {
+      const targetSubs =
+        subCategory === 'all'
+          ? ANIMATED_SUBCATEGORIES.filter((s) => s.key !== 'all')
+          : ANIMATED_SUBCATEGORIES.filter((s) => s.key === subCategory);
+      return targetSubs
+        .map((sub) => {
+          const validIds = sub.filter ? allIds.filter(sub.filter) : [];
+          return {
+            key: sub.key,
+            title: sub.name,
+            icon: sub.icon,
+            ids: sortList(validIds),
+            accentBg: 'bg-violet-50/70 border-violet-200',
+            badgeClass: 'bg-violet-100 text-violet-900 border-violet-300',
+          };
+        })
+        .filter((sec) => sec.ids.length > 0);
+    }
+
+    return null;
   }, [allIds, activeTab, subCategory, searchQuery, sortOrder]);
 
   // Card background themes list filtered by category
@@ -516,6 +586,113 @@ export const PokemonAvatarPickerModal: React.FC<PokemonAvatarPickerModalProps> =
               {filteredIds.length === 0 ? (
                 <div className="py-20 text-center text-stone-400 font-black text-base">
                   找不到相符的頭像喔 🥺
+                </div>
+              ) : groupedSections ? (
+                /* Cleanly Sectioned Gallery for 🐾 夥伴, 🎀 Sanrio, and 動態 */
+                <div className="space-y-4">
+                  {groupedSections.map((section) => (
+                    <section
+                      key={section.key}
+                      className={`rounded-2xl border-2 p-3 sm:p-4 shadow-2xs ${section.accentBg}`}
+                    >
+                      <div className="flex items-center justify-between gap-2 pb-2.5 mb-3 border-b border-black/10">
+                        <div className="flex items-center gap-2">
+                          <span className="text-xl leading-none">{section.icon}</span>
+                          <h3 className="font-black text-sm sm:text-base text-[#4A2E25]">
+                            {section.title}
+                          </h3>
+                          <span
+                            className={`text-[11px] font-black px-2 py-0.5 rounded-full border ${section.badgeClass}`}
+                          >
+                            {section.ids.length} 款
+                          </span>
+                        </div>
+
+                        {subCategory === 'all' ? (
+                          <button
+                            type="button"
+                            onClick={() => setSubCategory(section.key)}
+                            className="text-xs font-black text-[#8D6E63] hover:text-[#4A2E25] bg-white/90 hover:bg-white px-2.5 py-1 rounded-lg border border-stone-200 cursor-pointer transition-colors"
+                          >
+                            只看此分區 →
+                          </button>
+                        ) : (
+                          <button
+                            type="button"
+                            onClick={() => setSubCategory('all')}
+                            className="text-xs font-black text-[#8D6E63] hover:text-[#4A2E25] bg-white/90 hover:bg-white px-2.5 py-1 rounded-lg border border-stone-200 cursor-pointer transition-colors"
+                          >
+                            ← 顯示全部分區
+                          </button>
+                        )}
+                      </div>
+
+                      <div className="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-8 gap-2 sm:gap-2.5">
+                        {section.ids.map((id) => {
+                          const isSelected = id === currentId;
+                          const avatarUrl = resolvePokemonAvatar(id);
+                          const isEmojiItem = isEmoji(avatarUrl);
+
+                          return (
+                            <button
+                              key={id}
+                              type="button"
+                              onClick={() => onSelectAvatar(id)}
+                              className={`group relative w-full overflow-hidden p-1.5 rounded-2xl border-2 transition-all duration-200 flex flex-col items-center active:scale-95 shadow-2xs cursor-pointer ${
+                                isSelected
+                                  ? 'border-[#F59E0B] bg-[#FEF3C7] ring-3 ring-[#FDE68A] z-10 scale-105'
+                                  : 'border-[#E7DFD5] bg-white hover:border-[#81C784] hover:bg-[#F0FDF4]'
+                              }`}
+                            >
+                              <div
+                                className={`w-full flex items-center justify-between text-[10px] font-black mb-1 tabular-nums px-0.5 ${
+                                  isSelected ? 'text-[#B45309]' : 'text-stone-400'
+                                }`}
+                              >
+                                <span className="truncate">#{id}</span>
+                                <span
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    setPreviewItem({
+                                      id,
+                                      name: `${section.title} #${id}`,
+                                      badge: `Avatar #${id}`,
+                                      url: avatarUrl,
+                                      description: '點擊下方「✨ 一鍵套用」即可立即套用',
+                                    });
+                                  }}
+                                  className="text-stone-400 hover:text-[#D97706] hover:scale-125 transition-transform p-0.5"
+                                  title="全圖預覽"
+                                >
+                                  🔍
+                                </span>
+                              </div>
+
+                              <div className="w-full flex items-center justify-center relative overflow-hidden aspect-square rounded-xl bg-stone-50/60 border border-[#E7DFD5] p-1">
+                                {isEmojiItem ? (
+                                  <span className="text-2xl select-none">{avatarUrl}</span>
+                                ) : (
+                                  <img
+                                    src={avatarUrl}
+                                    alt={`#${id}`}
+                                    className="w-full h-full object-contain pointer-events-none drop-shadow-2xs"
+                                    loading="lazy"
+                                    referrerPolicy="no-referrer"
+                                  />
+                                )}
+                              </div>
+
+                              {isSelected && (
+                                <div className="mt-1 text-[8px] font-black text-[#B45309] uppercase tracking-tight bg-[#FDE68A] px-1.5 py-0.2 rounded-full">
+                                  使用中 ✓
+                                </div>
+                              )}
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </section>
+                  ))}
                 </div>
               ) : (
                 /* Exactly 8 columns on desktop (grid-cols-4 sm:grid-cols-6 md:grid-cols-8) */

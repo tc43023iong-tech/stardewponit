@@ -38,20 +38,36 @@ export const FarmShowcaseView: React.FC<FarmShowcaseViewProps> = ({
               🌾 星露谷班級豐收田園 (Classroom Farm)
             </h3>
             <p className="text-xs text-stone-700 font-bold">
-              點擊任一學生的 16-bit 專屬農莊卡片，即可走進他們的實景農場！積分越高（最高 1000 分），莊園建築與動物越繁華！
+              每湊夠 100 分即解鎖全新 16-bit 農莊背景（100 → 1000 分共 10 種專屬背景）！點擊學生卡片即可進入實景農場、動物圖鑑與植物圖鑑！
             </p>
           </div>
         </div>
 
-        {/* 1000分 Scale Legend */}
-        <div className="flex items-center gap-2 text-xs font-bold text-[#5a3818] flex-wrap bg-[#f5e0b7] px-3 py-1.5 rounded-lg border border-[#c4a675]">
-          <span>🪵 初建農舍 (0分)</span>
+        {/* 1000分 10-Background Progression Scale Legend */}
+        <div className="flex items-center gap-1.5 text-[11px] font-bold text-[#5a3818] flex-wrap bg-[#f5e0b7] px-3 py-1.5 rounded-lg border border-[#c4a675]">
+          <span className="text-rose-800">🌧️ &lt;0荒蕪</span>
+          <span aria-hidden="true">·</span>
+          <span>🪵 0木屋</span>
           <span aria-hidden="true">→</span>
-          <span>🏡 豐收牧場 (150分)</span>
+          <span>🌻 100向日葵</span>
           <span aria-hidden="true">→</span>
-          <span>🔮 晶石莊園 (300分)</span>
+          <span>🏡 200紅屋牧場</span>
           <span aria-hidden="true">→</span>
-          <span className="text-amber-900 font-black">👑 黃金天宮 (750–1000分)</span>
+          <span>🍎 300水車果園</span>
+          <span aria-hidden="true">→</span>
+          <span>🌿 400玻璃溫室</span>
+          <span aria-hidden="true">→</span>
+          <span>🔮 500紫晶</span>
+          <span aria-hidden="true">→</span>
+          <span>🌸 600櫻花</span>
+          <span aria-hidden="true">→</span>
+          <span>🌙 700星月</span>
+          <span aria-hidden="true">→</span>
+          <span>🏖️ 800海濱</span>
+          <span aria-hidden="true">→</span>
+          <span>👑 900金宮</span>
+          <span aria-hidden="true">→</span>
+          <span className="text-amber-900 font-black">✨ 1000極光仙境</span>
         </div>
       </div>
 
@@ -68,11 +84,15 @@ export const FarmShowcaseView: React.FC<FarmShowcaseViewProps> = ({
                 key={st.id}
                 onClick={() => handleOpenStudentFarm(st)}
                 className={`group relative rounded-xl overflow-hidden border-2 transition-all duration-200 cursor-pointer select-none aspect-[16/11] flex flex-col justify-between bg-[#2b1807] shadow-md hover:shadow-2xl hover:-translate-y-0.5 ${
-                  st.points >= 1000
+                  st.points < 0
+                    ? 'border-[#f43f5e]/80 ring-1 ring-rose-500/40'
+                    : st.points >= 1000
                     ? 'border-[#fbbf24] ring-2 ring-[#fde047]'
-                    : st.points >= 500
+                    : st.points >= 700
+                    ? 'border-[#818cf8]'
+                    : st.points >= 400
                     ? 'border-[#c084fc]'
-                    : st.points >= 150
+                    : st.points >= 100
                     ? 'border-[#4ade80]'
                     : 'border-[#8b5a2b] hover:border-[#fbbf24]'
                 }`}

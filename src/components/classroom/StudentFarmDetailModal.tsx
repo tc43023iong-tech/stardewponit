@@ -1,10 +1,34 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Student } from '../../types/classroom';
-import { getFarmTier, getCropGrowth, LIVE_FARM_ANIMALS_ROSTER, LiveFarmAnimalBlueprint } from '../../data/classroomData';
+import {
+  getFarmTier,
+  getCropGrowth,
+  LIVE_FARM_ANIMALS_ROSTER,
+  LIVE_FARM_PLANTS_ROSTER,
+  LiveFarmPlantBlueprint,
+} from '../../data/classroomData';
 import { AvatarRenderer } from './AvatarRenderer';
-import { getStudentFarmArtwork } from '../../utils/farmArtwork';
+import {
+  getStudentFarmArtwork,
+  FARM_BACKGROUND_MILESTONES,
+  FarmArtworkTier,
+} from '../../utils/farmArtwork';
 import { soundManager } from '../../utils/sound';
-import { X, Plus, Star, Sparkles, CheckCircle2, Lock, Volume2, Maximize2, Minimize2, Hammer, Droplets, Shield } from 'lucide-react';
+import {
+  X,
+  Plus,
+  Star,
+  Sparkles,
+  CheckCircle2,
+  Lock,
+  Volume2,
+  Maximize2,
+  Minimize2,
+  Droplets,
+  Shield,
+  Sprout,
+  Image as ImageIcon,
+} from 'lucide-react';
 
 interface StudentFarmDetailModalProps {
   student: Student;
@@ -20,89 +44,27 @@ interface WanderingAnimal {
   quote: string;
   url: string;
   sprite: string;
-  x: number; // percentage 6% to 88%
-  y: number; // percentage 42% to 86%
+  x: number;
+  y: number;
   targetX: number;
   targetY: number;
-  direction: 1 | -1; // 1 = right, -1 = left
+  direction: 1 | -1;
   isWalking: boolean;
-  pauseTimer: number; // in ticks
+  pauseTimer: number;
   bobOffset: number;
   heartActive?: boolean;
 }
 
-// 7 All Expansion Tiers Reference for the Expansion Almanac Tab
-const ALL_EXPANSION_TIERS = [
-  {
-    level: 1,
-    minPoints: 0,
-    title: 'Lv.1 原木初建起步期',
-    fence: '粗鋸原木木樁圍欄 (樸實天然)',
-    trough: '杉木手工釘製水槽 (清冽井水)',
-    decorations: ['乾草捆', '木質小水桶'],
-    summary: '開拓起步！以粗原木木樁圈定牧區，杉木小水槽供動物飲用。',
-    icon: '🪵',
-  },
-  {
-    level: 2,
-    minPoints: 50,
-    title: 'Lv.2 硬木圍欄田園擴建',
-    fence: '堅固硬木圍欄 (十字榫卯)',
-    trough: '青石雕鑿防漏水槽 (蓄存甘露)',
-    decorations: ['守護稻草人', '農用木推車', '石板小徑'],
-    summary: '田園圍欄升級！鋪設堅固硬木柵欄與防漏青石水槽！',
-    icon: '🌲',
-  },
-  {
-    level: 3,
-    minPoints: 150,
-    title: 'Lv.3 白木牧場設施擴建',
-    fence: '鄉村白漆牧場木柵欄 (開闊牧區)',
-    trough: '純銅自動閥門水槽 (恆定注水)',
-    decorations: ['木棧觀景台', '清涼水塘石階', '稻草人立柱', '木箱花圃'],
-    summary: '牧場初具規模！增設白木欄杆與純銅自動補水槽！',
-    icon: '🏡',
-  },
-  {
-    level: 4,
-    minPoints: 300,
-    title: 'Lv.4 鐵藝果園莊園擴建',
-    fence: '鍛鐵精工雕花護欄 (堅固防風)',
-    trough: '漢白玉雙層噴泉水槽 (清泉激盪)',
-    decorations: ['甘泉水井', '復古風向雞', '鵝卵石休閒小徑', '遮陽花架'],
-    summary: '莊園全面擴建！升級為鍛鐵雕花欄杆與雙層大理石噴泉！',
-    icon: '🏰',
-  },
-  {
-    level: 5,
-    minPoints: 500,
-    title: 'Lv.5 秘境林地附魔擴建',
-    fence: '附魔紫晶強化護欄 (夜間微光)',
-    trough: '銥金晶石多層湧泉 (甘醇泉水)',
-    decorations: ['祝尼魔小木亭', '紫晶路燈', '魔法水晶花壇', '石板大道'],
-    summary: '林地秘境擴建！鋪設銥金護欄與晶石水池，動物心情大好！',
-    icon: '🔮',
-  },
-  {
-    level: 6,
-    minPoints: 750,
-    title: 'Lv.6 皇家金輝莊園擴建',
-    fence: '皇家黃金帝國護欄 (金雕鏤空)',
-    trough: '皇家黃金天鵝噴泉 (金色活水)',
-    decorations: ['黃金迎賓大門', '星輝路燈', '古典繁花拱門', '紅木野餐長椅'],
-    summary: '奢華莊園擴建！黃金護欄與天鵝噴泉落成，金碧輝煌！',
-    icon: '👑',
-  },
-  {
-    level: 7,
-    minPoints: 1000,
-    title: 'Lv.MAX 星露傳奇天宮',
-    fence: '星露傳奇結界護欄 (極致銥晶流光)',
-    trough: '萬物生息·星露女神神泉 (彩虹湧泉)',
-    decorations: ['星露榮譽金盃', '黃金時鐘', '純金女神雕像', '七彩祥雲', '銥金自動撫摸機'],
-    summary: '終極農場擴建完工！全自動神泉灌溉，傳奇結界護佑，滿分金盃閃耀！',
-    icon: '🌟',
-  },
+const SEASON_FILTERS: Array<{
+  key: 'all' | '春季' | '夏季' | '秋季' | '冬季' | '傳奇四季';
+  label: string;
+}> = [
+  { key: 'all', label: '🌿 全部四季 (16種)' },
+  { key: '春季', label: '🌸 春季作物' },
+  { key: '夏季', label: '☀️ 夏季作物' },
+  { key: '秋季', label: '🍁 秋季作物' },
+  { key: '冬季', label: '❄️ 冬季珍果' },
+  { key: '傳奇四季', label: '✨ 傳奇四季' },
 ];
 
 export const StudentFarmDetailModal: React.FC<StudentFarmDetailModalProps> = ({
@@ -111,27 +73,48 @@ export const StudentFarmDetailModal: React.FC<StudentFarmDetailModalProps> = ({
   onQuickAdd,
   onOpenPointsModal,
 }) => {
-  const [activeTab, setActiveTab] = useState<'farm' | 'expansion' | 'almanac'>('farm');
+  const [activeTab, setActiveTab] = useState<'farm' | 'expansion' | 'almanac' | 'plants'>('farm');
   const [clickedAnimalNote, setClickedAnimalNote] = useState<string | null>(null);
+  const [clickedPlantNote, setClickedPlantNote] = useState<string | null>(null);
+  const [plantSeasonFilter, setPlantSeasonFilter] = useState<
+    'all' | '春季' | '夏季' | '秋季' | '冬季' | '傳奇四季'
+  >('all');
+  const [previewMinPoints, setPreviewMinPoints] = useState<number | null>(null);
   const [isFullscreen, setIsFullscreen] = useState<boolean>(false);
   const modalContainerRef = useRef<HTMLDivElement>(null);
 
   const farmTier = getFarmTier(student.points);
   const cropInfo = getCropGrowth(student.points);
+  const isWithered = student.points < 0;
   const maxGoal = 1000;
   const progressPercent = Math.min(100, Math.round((Math.max(0, student.points) / maxGoal) * 100));
 
-  // Filter the exact 15 animals from LIVE_FARM_ANIMALS_ROSTER based on student points
-  const unlockedAnimals = LIVE_FARM_ANIMALS_ROSTER.filter(
-    (a) => a.unlockScore <= student.points
-  );
+  // Filter animals and plants unlocked by student's current score
+  const unlockedAnimals = isWithered
+    ? []
+    : LIVE_FARM_ANIMALS_ROSTER.filter((a) => a.unlockScore <= student.points);
+  const unlockedPlants = isWithered
+    ? []
+    : LIVE_FARM_PLANTS_ROSTER.filter((p) => p.unlockScore <= student.points);
 
-  // Always ensure at least the 1st animal (純白小母雞) is present
-  const activeAnimalBlueprints = unlockedAnimals.length > 0 ? unlockedAnimals : [LIVE_FARM_ANIMALS_ROSTER[0]];
+  const activeAnimalBlueprints =
+    unlockedAnimals.length > 0 ? unlockedAnimals : [LIVE_FARM_ANIMALS_ROSTER[0]];
 
-  const farmArtwork = getStudentFarmArtwork(student.points);
+  const defaultArtwork = getStudentFarmArtwork(student.points);
+  const previewMilestone: FarmArtworkTier | undefined =
+    previewMinPoints !== null && !isWithered && student.points >= previewMinPoints
+      ? FARM_BACKGROUND_MILESTONES.find((m) => m.minPoints === previewMinPoints)
+      : undefined;
+  const farmArtwork = previewMilestone || defaultArtwork;
 
-  // Initialize wandering animals on the open lower green pasture (y: 58%..88%)
+  // Reset manual preview if student score drops below previewed threshold or student changes
+  useEffect(() => {
+    if (previewMinPoints !== null && student.points < previewMinPoints) {
+      setPreviewMinPoints(null);
+    }
+  }, [student.id, student.points, previewMinPoints]);
+
+  // Initialize wandering animals on the open lower green pasture (y: 60%..87%)
   const [animals, setAnimals] = useState<WanderingAnimal[]>(() => {
     return activeAnimalBlueprints.map((bp, i) => {
       const startX = 10 + ((i * 13) % 78);
@@ -190,7 +173,8 @@ export const StudentFarmDetailModal: React.FC<StudentFarmDetailModalProps> = ({
     const interval = setInterval(() => {
       setAnimals((prev) =>
         prev.map((anim) => {
-          let { x, y, targetX, targetY, direction, isWalking, pauseTimer, bobOffset, heartActive } = anim;
+          let { x, y, targetX, targetY, direction, isWalking, pauseTimer, bobOffset, heartActive } =
+            anim;
 
           if (isWalking) {
             const dx = targetX - x;
@@ -241,16 +225,16 @@ export const StudentFarmDetailModal: React.FC<StudentFarmDetailModalProps> = ({
 
   const handleAnimalClick = (anim: WanderingAnimal) => {
     soundManager.playCorrect();
-    setClickedAnimalNote(`💖 【${anim.name.split(' ')[0]}】歡快地叫喚了一聲：「${anim.quote}」`);
-
-    setAnimals((prev) =>
-      prev.map((a) => (a.id === anim.id ? { ...a, heartActive: true } : a))
+    setClickedAnimalNote(
+      isWithered
+        ? `🌧️ 【${anim.name.split(' ')[0]}】淋著小雨縮成一團：「咕…好冷喔，快幫我加分讓農場放晴長出綠草吧！」`
+        : `💖 【${anim.name.split(' ')[0]}】歡快地叫喚了一聲：「${anim.quote}」`
     );
 
+    setAnimals((prev) => prev.map((a) => (a.id === anim.id ? { ...a, heartActive: true } : a)));
+
     setTimeout(() => {
-      setAnimals((prev) =>
-        prev.map((a) => (a.id === anim.id ? { ...a, heartActive: false } : a))
-      );
+      setAnimals((prev) => prev.map((a) => (a.id === anim.id ? { ...a, heartActive: false } : a)));
     }, 1400);
 
     setTimeout(() => {
@@ -258,15 +242,35 @@ export const StudentFarmDetailModal: React.FC<StudentFarmDetailModalProps> = ({
     }, 3200);
   };
 
+  const handlePlantCardClick = (plant: LiveFarmPlantBlueprint, isUnlocked: boolean) => {
+    if (isUnlocked) {
+      soundManager.playCollect();
+      setClickedPlantNote(
+        `🌿 【${plant.name.split(' ')[0]}】（${plant.season} · ${plant.growthDays}）：${plant.quote}`
+      );
+    } else {
+      soundManager.playTick();
+      const needed = plant.unlockScore - student.points;
+      setClickedPlantNote(
+        `🔒 【${plant.name.split(' ')[0]}】將於 ${plant.unlockScore} 分解鎖，目前還差 ${needed} 分！`
+      );
+    }
+    setTimeout(() => setClickedPlantNote(null), 3400);
+  };
+
   const handleTroughClick = () => {
     soundManager.playCollect();
-    setClickedAnimalNote(`💦 【${farmTier.expansion.waterTroughName}】：水質清澈甘冽，動物們暢飲後神采奕奕！`);
+    setClickedAnimalNote(
+      `💦 【${farmTier.expansion.waterTroughName}】：水質清澈甘冽，動物們暢飲後神采奕奕！`
+    );
     setTimeout(() => setClickedAnimalNote(null), 3000);
   };
 
   const handleFenceClick = () => {
     soundManager.playTick();
-    setClickedAnimalNote(`🛡️ 【${farmTier.expansion.fenceName}】：堅固美觀的擴建護欄，讓整個牧區整齊安全！`);
+    setClickedAnimalNote(
+      `🛡️ 【${farmTier.expansion.fenceName}】：堅固美觀的擴建護欄，讓整個牧區整齊安全！`
+    );
     setTimeout(() => setClickedAnimalNote(null), 3000);
   };
 
@@ -280,6 +284,16 @@ export const StudentFarmDetailModal: React.FC<StudentFarmDetailModalProps> = ({
       setIsFullscreen(false);
     }
   };
+
+  const filteredPlantsRoster =
+    plantSeasonFilter === 'all'
+      ? LIVE_FARM_PLANTS_ROSTER
+      : LIVE_FARM_PLANTS_ROSTER.filter((p) => p.season === plantSeasonFilter);
+
+  const unlockedBackgroundCount = isWithered
+    ? 0
+    : FARM_BACKGROUND_MILESTONES.filter((m) => m.minPoints >= 100 && student.points >= m.minPoints)
+        .length;
 
   return (
     <div className="fixed inset-0 z-50 bg-black/85 flex items-center justify-center p-2 sm:p-4 backdrop-blur-sm animate-in fade-in duration-200">
@@ -304,9 +318,13 @@ export const StudentFarmDetailModal: React.FC<StudentFarmDetailModalProps> = ({
                   #{student.rollNo}
                 </span>
               </div>
-              <p className="text-[11px] text-[#fed7aa] font-bold mt-0.5 flex items-center gap-1.5">
+              <p className="text-[11px] text-[#fed7aa] font-bold mt-0.5 flex items-center gap-1.5 flex-wrap">
                 <span>{farmTier.tierName}</span>
-                <span className="text-[#86efac]">· 藍天白雲，微風輕拂，動植物與農場設施隨積分成長！</span>
+                <span className={isWithered ? 'text-rose-300' : 'text-[#86efac]'}>
+                  {isWithered
+                    ? '· 🌧️ 陰雨荒蕪中，加油賺取正分就能重見晴空與嫩芽！'
+                    : `· 已解鎖 ${unlockedBackgroundCount}/10 張百分解鎖背景 · ${unlockedPlants.length}/16 種植物`}
+                </span>
               </p>
             </div>
           </div>
@@ -354,79 +372,98 @@ export const StudentFarmDetailModal: React.FC<StudentFarmDetailModalProps> = ({
           </div>
         </div>
 
-        {/* 1000分 Score HUD Progress Bar & Tab Switchers */}
-        <div className="bg-[#4a2e13] px-4 py-2 text-[#ffebb3] border-b-2 border-[#2b1807] flex flex-wrap items-center justify-between gap-3">
-          <div className="flex items-center gap-2 font-pixel text-xs text-[#ffd700]">
-            <span aria-hidden="true">🪙</span>
-            <span>目前莊園積分：{student.points} 分 / 1000 分</span>
-            {student.points >= 1000 ? (
-              <span className="bg-[#eab308] text-[#4a2800] text-[10px] px-2 py-0.5 rounded font-black animate-pulse">
-                👑 1000分滿級傳奇！農場設施與15種動物全解鎖！
-              </span>
-            ) : (
-              <span className="text-[11px] text-[#fed7aa] font-bold">
-                (已解鎖 {animals.length}/15 種農場動物 · {farmTier.expansion.levelTitle})
-              </span>
-            )}
-          </div>
-
-          {/* Progress bar to 1000分 */}
-          <div className="flex items-center gap-3 flex-1 max-w-sm">
-            <div className="w-full bg-[#2b1807] h-3.5 rounded-full overflow-hidden border border-[#8b5a2b] relative shadow-inner">
-              <div
-                className={`h-full transition-all duration-700 ${
-                  student.points >= 1000
-                    ? 'bg-gradient-to-r from-amber-300 via-yellow-400 to-amber-500 animate-pulse'
-                    : 'bg-gradient-to-r from-lime-400 to-emerald-500'
-                }`}
-                style={{ width: `${progressPercent}%` }}
-              />
+        {/* 1000分 Score HUD Progress Bar & 4 Tab Switchers */}
+        <div className="bg-[#4a2e13] px-4 py-2 text-[#ffebb3] border-b-2 border-[#2b1807] flex flex-col gap-2">
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <div className="flex items-center gap-2 font-pixel text-xs text-[#ffd700]">
+              <span aria-hidden="true">🪙</span>
+              <span className="tabular-nums">目前莊園積分：{student.points} 分 / 1000 分</span>
+              {student.points >= 1000 ? (
+                <span className="bg-[#eab308] text-[#4a2800] text-[10px] px-2 py-0.5 rounded font-black">
+                  👑 1000分滿級傳奇！10大背景、15種動物與16種植物全解鎖！
+                </span>
+              ) : isWithered ? (
+                <span className="text-[11px] text-rose-300 font-bold">
+                  (🌧️ 負分待修復 · 還差 {Math.abs(student.points)} 分重返晴朗初建牧區)
+                </span>
+              ) : (
+                <span className="text-[11px] text-[#fed7aa] font-bold">
+                  (動物 {unlockedAnimals.length}/15 · 植物 {unlockedPlants.length}/16 · 背景 {unlockedBackgroundCount}/10)
+                </span>
+              )}
             </div>
-            <span className="font-pixel text-[11px] text-[#fed7aa] whitespace-nowrap">
-              {progressPercent}%
-            </span>
+
+            {/* Progress bar to 1000分 */}
+            <div className="flex items-center gap-3 flex-1 min-w-[180px] max-w-sm">
+              <div className="w-full bg-[#2b1807] h-3.5 rounded-full overflow-hidden border border-[#8b5a2b] relative shadow-inner">
+                <div
+                  className={`h-full transition-all duration-700 ${
+                    student.points >= 1000
+                      ? 'bg-gradient-to-r from-amber-300 via-yellow-400 to-amber-500 animate-pulse'
+                      : 'bg-gradient-to-r from-lime-400 to-emerald-500'
+                  }`}
+                  style={{ width: `${progressPercent}%` }}
+                />
+              </div>
+              <span className="font-pixel text-[11px] text-[#fed7aa] whitespace-nowrap tabular-nums">
+                {progressPercent}%
+              </span>
+            </div>
           </div>
 
-          {/* View Tab Buttons */}
-          <div className="flex items-center gap-1.5">
+          {/* 4 Navigation Tabs */}
+          <div className="flex items-center gap-1.5 flex-wrap">
             <button
               onClick={() => {
                 soundManager.playClick();
                 setActiveTab('farm');
               }}
-              className={`px-3 py-1 rounded-lg text-xs font-bold font-pixel cursor-pointer transition-colors ${
+              className={`px-3 py-1 rounded-lg text-xs font-bold font-pixel cursor-pointer transition-colors whitespace-nowrap ${
                 activeTab === 'farm'
                   ? 'bg-[#fabc3f] text-[#4a2800] shadow'
                   : 'bg-[#6a4422] text-[#d6ba89] hover:text-white'
               }`}
             >
-              🏡 實景農場 (動物漫步與微風)
+              🏡 實景農場
             </button>
             <button
               onClick={() => {
                 soundManager.playClick();
                 setActiveTab('expansion');
               }}
-              className={`px-3 py-1 rounded-lg text-xs font-bold font-pixel cursor-pointer transition-colors ${
+              className={`px-3 py-1 rounded-lg text-xs font-bold font-pixel cursor-pointer transition-colors whitespace-nowrap ${
                 activeTab === 'expansion'
                   ? 'bg-[#fabc3f] text-[#4a2800] shadow'
                   : 'bg-[#6a4422] text-[#d6ba89] hover:text-white'
               }`}
             >
-              🔨 農場擴建等級表 (圍欄/水槽)
+              🖼️ 背景與擴建 (100~1000分)
             </button>
             <button
               onClick={() => {
                 soundManager.playClick();
                 setActiveTab('almanac');
               }}
-              className={`px-3 py-1 rounded-lg text-xs font-bold font-pixel cursor-pointer transition-colors ${
+              className={`px-3 py-1 rounded-lg text-xs font-bold font-pixel cursor-pointer transition-colors whitespace-nowrap ${
                 activeTab === 'almanac'
                   ? 'bg-[#fabc3f] text-[#4a2800] shadow'
                   : 'bg-[#6a4422] text-[#d6ba89] hover:text-white'
               }`}
             >
-              📖 15種動物圖鑑 (0~1000分)
+              📖 動物圖鑑 ({unlockedAnimals.length}/15)
+            </button>
+            <button
+              onClick={() => {
+                soundManager.playClick();
+                setActiveTab('plants');
+              }}
+              className={`px-3 py-1 rounded-lg text-xs font-bold font-pixel cursor-pointer transition-colors whitespace-nowrap ${
+                activeTab === 'plants'
+                  ? 'bg-[#fabc3f] text-[#4a2800] shadow'
+                  : 'bg-[#6a4422] text-[#d6ba89] hover:text-white'
+              }`}
+            >
+              🌿 植物圖鑑 ({unlockedPlants.length}/16)
             </button>
           </div>
         </div>
@@ -437,27 +474,62 @@ export const StudentFarmDetailModal: React.FC<StudentFarmDetailModalProps> = ({
           {activeTab === 'farm' && (
             <div className="space-y-3">
               {/* Farm Expansion Status Banner */}
-              <div className="bg-[#fef9c3] border-2 border-[#ca8a04] px-3.5 py-2 rounded-xl flex flex-wrap items-center justify-between gap-2 shadow-xs">
+              <div
+                className={`border-2 px-3.5 py-2 rounded-xl flex flex-wrap items-center justify-between gap-2 shadow-xs ${
+                  isWithered
+                    ? 'bg-rose-50 border-rose-400'
+                    : 'bg-[#fef9c3] border-[#ca8a04]'
+                }`}
+              >
                 <div className="flex items-center gap-2">
-                  <span className="text-xl">🔨</span>
+                  <span className="text-xl">{isWithered ? '🌧️' : farmArtwork.icon}</span>
                   <div>
-                    <span className="font-pixel text-[11px] font-bold text-[#854d0e] block">
-                      【農場擴建視覺進度】{farmTier.expansion.levelTitle}
+                    <span
+                      className={`font-pixel text-[11px] font-bold block ${
+                        isWithered ? 'text-rose-900' : 'text-[#854d0e]'
+                      }`}
+                    >
+                      【目前農場背景】{farmArtwork.showcaseLabel}
+                      {previewMilestone && (
+                        <span className="ml-2 text-emerald-700 font-black">
+                          (正在預覽已解鎖的 {previewMilestone.minPoints} 分背景)
+                        </span>
+                      )}
                     </span>
-                    <span className="text-xs font-bold text-[#713f12]">
+                    <span
+                      className={`text-xs font-bold ${
+                        isWithered ? 'text-rose-800' : 'text-[#713f12]'
+                      }`}
+                    >
                       圍欄：{farmTier.expansion.fenceName} ｜ 水槽：{farmTier.expansion.waterTroughName}
                     </span>
                   </div>
                 </div>
 
-                <div className="flex items-center gap-2">
-                  {farmTier.expansion.nextPoints ? (
+                <div className="flex items-center gap-2 flex-wrap">
+                  {previewMilestone && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        soundManager.playClick();
+                        setPreviewMinPoints(null);
+                      }}
+                      className="text-[11px] font-bold bg-emerald-600 hover:bg-emerald-700 text-white px-2.5 py-0.5 rounded cursor-pointer"
+                    >
+                      回到目前最高階背景
+                    </button>
+                  )}
+                  {isWithered ? (
+                    <span className="text-[11px] font-pixel text-rose-800 bg-rose-200/80 px-2 py-0.5 rounded border border-rose-400">
+                      還需 {Math.abs(student.points)} 分恢復綠意農舍
+                    </span>
+                  ) : farmTier.expansion.nextPoints ? (
                     <span className="text-[11px] font-pixel text-[#854d0e] bg-amber-200/80 px-2 py-0.5 rounded border border-[#ca8a04]">
-                      距下一級升級尚需: {farmTier.expansion.nextPoints - student.points} 分
+                      距 {farmTier.expansion.nextPoints} 分新背景尚需: {farmTier.expansion.nextPoints - student.points} 分
                     </span>
                   ) : (
                     <span className="text-[11px] font-pixel text-[#15803d] bg-green-200/80 px-2 py-0.5 rounded border border-[#86efac]">
-                      👑 已達成最高級極致擴建！
+                      👑 已解鎖全部 10 種滿級背景！
                     </span>
                   )}
                   <button
@@ -465,9 +537,13 @@ export const StudentFarmDetailModal: React.FC<StudentFarmDetailModalProps> = ({
                       soundManager.playClick();
                       setActiveTab('expansion');
                     }}
-                    className="text-xs font-bold text-[#854d0e] hover:text-[#451a03] underline cursor-pointer"
+                    className={`text-xs font-bold underline cursor-pointer ${
+                      isWithered
+                        ? 'text-rose-800 hover:text-rose-950'
+                        : 'text-[#854d0e] hover:text-[#451a03]'
+                    }`}
                   >
-                    查看擴建路線圖 →
+                    查看全部背景 (100~1000) →
                   </button>
                 </div>
               </div>
@@ -482,22 +558,24 @@ export const StudentFarmDetailModal: React.FC<StudentFarmDetailModalProps> = ({
 
               {/* AUTHENTIC 16-BIT PIXEL ART STARDEW VALLEY FARM STAGE */}
               <div
-                className="relative rounded-2xl border-4 border-[#3b1f0b] overflow-hidden shadow-2xl select-none bg-[#2b4d1e]"
+                className={`relative rounded-2xl border-4 border-[#3b1f0b] overflow-hidden shadow-2xl select-none ${
+                  isWithered ? 'bg-[#2c2826]' : 'bg-[#2b4d1e]'
+                }`}
                 style={{
                   height: isFullscreen ? '78vh' : '540px',
                 }}
               >
-                {/* 1. Full 16-bit Pixel Art Homestead Scene (Zero ugly CSS/SVG drawings) */}
+                {/* 1. Full 16-bit Pixel Art Homestead Scene */}
                 <img
                   src={farmArtwork.bgUrl}
                   alt={`${student.name} 的星露谷專屬農場`}
                   referrerPolicy="no-referrer"
-                  className="absolute inset-0 w-full h-full object-cover select-none pointer-events-none"
+                  className="absolute inset-0 w-full h-full object-cover select-none pointer-events-none transition-all duration-300"
                   style={{ imageRendering: 'pixelated' }}
                 />
 
                 {/* Subtle top gradient only for HUD legibility */}
-                <div className="absolute inset-x-0 top-0 h-20 bg-gradient-to-b from-black/45 to-transparent pointer-events-none z-10" />
+                <div className="absolute inset-x-0 top-0 h-20 bg-gradient-to-b from-black/50 to-transparent pointer-events-none z-10" />
 
                 {/* 2. Top-Left Clean Interactive Facility Controls (Fence & Water Trough) */}
                 <div className="absolute top-3 left-3 right-3 z-20 flex flex-wrap items-center justify-between gap-2 pointer-events-none">
@@ -509,7 +587,9 @@ export const StudentFarmDetailModal: React.FC<StudentFarmDetailModalProps> = ({
                       title={`點擊查看圍欄設施：${farmTier.expansion.fenceName}`}
                     >
                       <Shield className="w-3.5 h-3.5 text-amber-300" />
-                      <span className="truncate max-w-[150px] sm:max-w-none">{farmTier.expansion.fenceName.split(' ')[0]}</span>
+                      <span className="truncate max-w-[150px] sm:max-w-none">
+                        {farmTier.expansion.fenceName.split(' ')[0]}
+                      </span>
                     </button>
                     <button
                       type="button"
@@ -518,19 +598,27 @@ export const StudentFarmDetailModal: React.FC<StudentFarmDetailModalProps> = ({
                       title={`點擊查看水槽噴泉：${farmTier.expansion.waterTroughName}`}
                     >
                       <Droplets className="w-3.5 h-3.5 text-sky-300" />
-                      <span className="truncate max-w-[150px] sm:max-w-none">{farmTier.expansion.waterTroughName.split(' ')[0]}</span>
+                      <span className="truncate max-w-[150px] sm:max-w-none">
+                        {farmTier.expansion.waterTroughName.split(' ')[0]}
+                      </span>
                     </button>
                   </div>
 
-                  <div className="px-2.5 py-1 rounded-lg bg-[#2b1807]/85 text-[#fde047] border border-[#8b5a2b] text-[11px] font-bold shadow-md backdrop-blur-xs">
-                    {farmArtwork.showcaseLabel} · {cropInfo.label}
+                  <div
+                    className={`px-2.5 py-1 rounded-lg bg-[#2b1807]/85 border text-[11px] font-bold shadow-md backdrop-blur-xs ${
+                      isWithered
+                        ? 'text-rose-200 border-rose-500/80'
+                        : 'text-[#fde047] border-[#8b5a2b]'
+                    }`}
+                  >
+                    {farmArtwork.icon} {farmArtwork.showcaseLabel} · {cropInfo.label}
                   </div>
                 </div>
 
-                {/* 3. Unlocked Stardew Crops & Harvest Shelf (Authentic PNG Sprites) */}
-                <div className="absolute bottom-3 left-3 z-25 flex items-center gap-1.5 bg-[#2b1807]/85 border-2 border-[#8b5a2b] px-2.5 py-1.5 rounded-xl shadow-xl backdrop-blur-xs">
-                  <span className="text-[10px] font-bold text-[#fed7aa] mr-1 hidden sm:inline">
-                    豐收農產:
+                {/* 3. Unlocked Stardew Crops & Harvest Shelf + Direct Link to Plant Encyclopedia */}
+                <div className="absolute bottom-3 left-3 z-25 flex items-center gap-1.5 bg-[#2b1807]/85 border-2 border-[#8b5a2b] px-2.5 py-1.5 rounded-xl shadow-xl backdrop-blur-xs max-w-[92%] overflow-x-auto">
+                  <span className="text-[10px] font-bold text-[#fed7aa] mr-1 hidden sm:inline shrink-0">
+                    {isWithered ? '田間狀態:' : '代表植物:'}
                   </span>
                   {farmArtwork.unlockedCrops.map((crop, idx) => (
                     <button
@@ -538,22 +626,41 @@ export const StudentFarmDetailModal: React.FC<StudentFarmDetailModalProps> = ({
                       type="button"
                       onClick={() => {
                         soundManager.playCollect();
-                        setClickedAnimalNote(`🌾 【${crop.label}】在農場陽光與微風中閃閃發亮！收成品質滿分！`);
-                        setTimeout(() => setClickedAnimalNote(null), 2600);
+                        setClickedAnimalNote(
+                          isWithered
+                            ? `🐦‍⬛ 【田間烏鴉】：目前積分為負分，作物暫時枯萎了，趕快加分回到 0 分以上讓嫩芽重生吧！`
+                            : `🌾 【${crop.label}】在農場陽光與微風中閃閃發亮！收成品質滿分！`
+                        );
+                        setTimeout(() => setClickedAnimalNote(null), 2800);
                       }}
-                      className="p-0.5 rounded-lg hover:bg-white/15 hover:scale-125 transition-transform cursor-pointer"
-                      style={{
-                        animation: `plantWindSway ${2.6 + (idx % 3) * 0.4}s ease-in-out infinite`,
-                        animationDelay: `${-(idx * 0.4)}s`,
-                      }}
-                      title={`${crop.label}（點擊欣賞作物）`}
+                      className="p-0.5 rounded-lg hover:bg-white/15 hover:scale-125 transition-transform cursor-pointer shrink-0"
+                      style={
+                        isWithered
+                          ? undefined
+                          : {
+                              animation: `plantWindSway ${2.6 + (idx % 3) * 0.4}s ease-in-out infinite`,
+                              animationDelay: `${-(idx * 0.4)}s`,
+                            }
+                      }
+                      title={`${crop.label}（點擊查看）`}
                     >
                       <AvatarRenderer avatar={crop.id} name={crop.label} size={28} bare={true} />
                     </button>
                   ))}
+                  <button
+                    type="button"
+                    onClick={() => {
+                      soundManager.playClick();
+                      setActiveTab('plants');
+                    }}
+                    className="ml-1 px-2 py-1 rounded-lg bg-[#4c8c38] hover:bg-[#3f752e] text-white text-[10px] font-bold flex items-center gap-1 cursor-pointer shrink-0 border border-[#86efac]/50"
+                  >
+                    <Sprout className="w-3 h-3" />
+                    <span>植物圖鑑 ({unlockedPlants.length}/16)</span>
+                  </button>
                 </div>
 
-                {/* 4. Free-Roaming Authentic Stardew Farm Animals on the Lush Pasture */}
+                {/* 4. Free-Roaming Authentic Stardew Farm Animals on the Pasture */}
                 <div className="absolute inset-0 pointer-events-auto z-20 overflow-hidden">
                   {animals.map((anim) => (
                     <div
@@ -570,22 +677,23 @@ export const StudentFarmDetailModal: React.FC<StudentFarmDetailModalProps> = ({
                       }}
                       title={`${anim.name} · ${anim.subtitle} (點擊互動)`}
                     >
-                      {/* Floating Heart Effect when clicked */}
                       {anim.heartActive && (
                         <div className="absolute -top-8 text-rose-500 animate-bounce text-xl filter drop-shadow">
-                          ❤️
+                          {isWithered ? '💧' : '❤️'}
                         </div>
                       )}
 
-                      {/* Name & Subtitle tooltip on hover */}
                       <div className="opacity-0 group-hover:opacity-100 transition-opacity absolute -top-9 font-pixel text-[9px] bg-[#2b1807]/95 text-[#ffebb3] px-2 py-1 rounded shadow-lg whitespace-nowrap pointer-events-none flex flex-col items-center border border-[#8b5a2b] z-40">
                         <span className="font-bold text-[#ffd700]">{anim.name.split(' ')[0]}</span>
-                        <span className="text-[8px] text-[#fed7aa]">{anim.subtitle}</span>
+                        <span className="text-[8px] text-[#fed7aa]">
+                          {isWithered ? '淋雨等待放晴中' : anim.subtitle}
+                        </span>
                       </div>
 
-                      {/* Official Stardew Valley Sprite (No blocky SVGs) */}
                       <div
-                        className="transition-transform duration-200 hover:scale-125 flex items-center justify-center filter drop-shadow-md select-none"
+                        className={`transition-transform duration-200 hover:scale-125 flex items-center justify-center filter drop-shadow-md select-none ${
+                          isWithered ? 'brightness-90 saturate-75' : ''
+                        }`}
                         style={{
                           transform: `scaleX(${anim.direction})`,
                         }}
@@ -593,7 +701,6 @@ export const StudentFarmDetailModal: React.FC<StudentFarmDetailModalProps> = ({
                         <AvatarRenderer avatar={anim.id} name={anim.name} size={54} bare={true} />
                       </div>
 
-                      {/* Natural soft shadow under animal */}
                       <div className="w-9 h-2 bg-black/30 rounded-full blur-[1px] -mt-1.5 pointer-events-none" />
                     </div>
                   ))}
@@ -603,123 +710,155 @@ export const StudentFarmDetailModal: React.FC<StudentFarmDetailModalProps> = ({
                     <div className="absolute bottom-3 right-3 bg-[#2b1807]/90 border-2 border-[#fbbf24] px-3 py-1.5 rounded-xl shadow-lg flex items-center gap-2 pointer-events-none">
                       <Sparkles className="w-4 h-4 text-[#fde047]" />
                       <span className="font-pixel text-[11px] text-[#fde047] font-bold">
-                        👑 1000分傳奇莊園 · 15種動物全員大團圓！
+                        👑 1000分傳奇仙境 · 全圖鑑全員大團圓！
                       </span>
                     </div>
                   )}
                 </div>
 
-                {/* Subtle ambient floating petals/sparkles */}
-                <div className="absolute inset-0 pointer-events-none z-15">
-                  <div className="absolute top-1/4 left-1/5 text-xs text-white/75 animate-ping">
-                    🌸
+                {/* Ambient stage weather */}
+                {isWithered ? (
+                  <div className="absolute inset-0 pointer-events-none z-15 overflow-hidden">
+                    {Array.from({ length: 18 }).map((_, idx) => (
+                      <div
+                        key={`farm-rain-${idx}`}
+                        className="absolute w-[1.5px] h-5 bg-gradient-to-b from-transparent via-slate-300/60 to-sky-200/70 animate-pixel-rain"
+                        style={{
+                          left: `${(idx * 5.7 + 2) % 98}%`,
+                          top: '-24px',
+                          animationDuration: `${0.85 + (idx % 3) * 0.15}s`,
+                          animationDelay: `${(idx * 0.17) % 1.2}s`,
+                        }}
+                      />
+                    ))}
                   </div>
-                  <div
-                    className="absolute top-1/3 right-1/4 text-xs text-yellow-100/75 animate-ping"
-                    style={{ animationDelay: '1.2s' }}
-                  >
-                    ✨
+                ) : (
+                  <div className="absolute inset-0 pointer-events-none z-15">
+                    <div className="absolute top-1/4 left-1/5 text-xs text-white/75 animate-ping">
+                      🌸
+                    </div>
+                    <div
+                      className="absolute top-1/3 right-1/4 text-xs text-yellow-100/75 animate-ping"
+                      style={{ animationDelay: '1.2s' }}
+                    >
+                      ✨
+                    </div>
                   </div>
-                </div>
+                )}
               </div>
             </div>
           )}
 
-          {/* TAB 2: FARM EXPANSION PROGRESSION ROADMAP (農場擴建階段表) */}
+          {/* TAB 2: 100-POINT MILESTONE BACKGROUNDS & EXPANSION ROADMAP (0, 100, 200, ..., 1000) */}
           {activeTab === 'expansion' && (
             <div className="space-y-4">
               <div className="bg-[#ede0c2] p-3.5 rounded-xl border border-[#c4a675] text-xs text-stone-700 flex items-start gap-2.5">
-                <Hammer className="w-5 h-5 text-amber-700 shrink-0 mt-0.5" />
+                <ImageIcon className="w-5 h-5 text-amber-700 shrink-0 mt-0.5" />
                 <div>
                   <span className="font-bold text-[#4a2800] block text-sm">
-                    🔨 星露谷農場擴建進度體系 (Farm Expansion Blueprint)
+                    🖼️ 每湊夠 100 分解鎖一張專屬農莊背景（100 → 1000 分共 10 種獨特背景）
                   </span>
                   <p className="mt-0.5 text-xs text-[#5a3818]">
-                    學生的農場會隨累計積分自動升級！圍欄將由原木木樁升級為硬木、白漆木柵、鍛鐵雕花、銥金紫晶直至皇家黃金與傳奇結界；水槽亦隨之進化為純銅自動閥門、漢白玉噴泉與星露女神神泉！
+                    從 0 分起步的原木小屋開始，每累積滿 100 分（100、200、300、400、500、600、700、800、900、1000）就會解鎖全新 16-bit 農莊風景與擴建設施！點擊任一「已解鎖」卡片即可切換至實景預覽。
                   </p>
                 </div>
               </div>
 
-              {/* Tiers List */}
-              <div className="space-y-3">
-                {ALL_EXPANSION_TIERS.map((tier) => {
-                  const isCurrent = farmTier.expansion.level === tier.level;
-                  const isUnlocked = student.points >= tier.minPoints;
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+                {FARM_BACKGROUND_MILESTONES.map((milestone) => {
+                  const isUnlocked = !isWithered && student.points >= milestone.minPoints;
+                  const isCurrentHighest =
+                    !isWithered && defaultArtwork.minPoints === milestone.minPoints;
+                  const isPreviewing = farmArtwork.minPoints === milestone.minPoints;
+                  const expTier = getFarmTier(milestone.minPoints);
 
                   return (
                     <div
-                      key={tier.level}
-                      className={`p-3.5 rounded-xl border-2 transition-all ${
-                        isCurrent
+                      key={milestone.minPoints}
+                      className={`rounded-xl border-2 overflow-hidden transition-all flex flex-col ${
+                        isCurrentHighest
                           ? 'bg-[#fef9c3] border-[#ca8a04] shadow-md ring-2 ring-[#eab308]'
                           : isUnlocked
-                          ? 'bg-[#f0fdf4] border-[#86efac]'
-                          : 'bg-[#ede0c2]/50 border-[#c4a675] opacity-75'
+                          ? 'bg-[#fdfbf7] border-[#4ade80] shadow-xs'
+                          : 'bg-[#ede0c2]/60 border-[#c4a675] opacity-80'
                       }`}
                     >
-                      <div className="flex flex-wrap items-center justify-between gap-2 border-b pb-2 mb-2 border-stone-200">
-                        <div className="flex items-center gap-2">
-                          <span className="text-2xl">{tier.icon}</span>
-                          <div>
-                            <div className="flex items-center gap-2">
-                              <h4 className="font-bold text-sm text-[#4a2800]">
-                                {tier.title}
-                              </h4>
-                              {isCurrent && (
-                                <span className="bg-[#eab308] text-[#4a2800] font-pixel text-[9px] px-2 py-0.5 rounded font-black">
-                                  目前所屬階段
-                                </span>
-                              )}
-                            </div>
-                            <span className="text-xs text-stone-600">{tier.summary}</span>
-                          </div>
+                      {/* 16:9 Farm Background Preview */}
+                      <div className="relative aspect-[16/9] w-full overflow-hidden bg-[#2b1807]">
+                        <img
+                          src={milestone.bgUrl}
+                          alt={`${milestone.minPoints}分 ${milestone.showcaseLabel}`}
+                          referrerPolicy="no-referrer"
+                          className={`w-full h-full object-cover ${
+                            isUnlocked ? '' : 'grayscale-[55%] brightness-75 blur-[1px]'
+                          }`}
+                          style={{ imageRendering: 'pixelated' }}
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-transparent to-black/35 pointer-events-none" />
+
+                        <div className="absolute top-2 left-2 right-2 flex items-center justify-between gap-2">
+                          <span className="font-pixel text-[11px] font-bold px-2.5 py-0.5 rounded bg-[#2b1807]/90 text-[#fde047] border border-[#a16207]">
+                            {milestone.minPoints === 0
+                              ? '0 分起點'
+                              : `${milestone.minPoints} 分背景`}
+                          </span>
+
+                          {isCurrentHighest ? (
+                            <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-amber-400 text-[#4a2800] shadow">
+                              ✨ 目前所屬階級
+                            </span>
+                          ) : isUnlocked ? (
+                            <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-emerald-500 text-white flex items-center gap-1 shadow">
+                              <CheckCircle2 className="w-3 h-3" /> 已解鎖
+                            </span>
+                          ) : (
+                            <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-stone-800/90 text-stone-200 flex items-center gap-1">
+                              <Lock className="w-3 h-3" /> 還差 {milestone.minPoints - student.points} 分
+                            </span>
+                          )}
                         </div>
 
-                        <div className="flex items-center gap-2">
-                          <span
-                            className={`font-pixel text-xs px-2.5 py-1 rounded font-bold ${
-                              isUnlocked
-                                ? 'bg-[#dcfce7] text-[#15803d]'
-                                : 'bg-stone-200 text-stone-600'
-                            }`}
-                          >
-                            {tier.minPoints} 分門檻
-                          </span>
-                          {isUnlocked ? (
-                            <CheckCircle2 className="w-5 h-5 text-green-600" />
-                          ) : (
-                            <Lock className="w-5 h-5 text-stone-400" />
+                        <div className="absolute bottom-2 left-2.5 right-2.5 flex items-end justify-between gap-2 text-white">
+                          <div>
+                            <h4 className="font-bold text-sm drop-shadow">
+                              {milestone.icon} {milestone.showcaseLabel}
+                            </h4>
+                            <p className="text-[11px] text-amber-100/95 line-clamp-1">
+                              {milestone.description}
+                            </p>
+                          </div>
+
+                          {isUnlocked && (
+                            <button
+                              type="button"
+                              onClick={() => {
+                                soundManager.playCorrect();
+                                setPreviewMinPoints(
+                                  isCurrentHighest ? null : milestone.minPoints
+                                );
+                                setActiveTab('farm');
+                              }}
+                              className={`px-2.5 py-1 rounded-lg text-[11px] font-bold shrink-0 cursor-pointer shadow ${
+                                isPreviewing
+                                  ? 'bg-amber-400 text-[#4a2800]'
+                                  : 'bg-white/95 hover:bg-white text-[#4a2800]'
+                              }`}
+                            >
+                              {isPreviewing ? '預覽中 ✓' : '切回實景觀看'}
+                            </button>
                           )}
                         </div>
                       </div>
 
-                      {/* Upgrade Items Breakdown */}
-                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 text-xs">
-                        <div className="bg-white/80 p-2 rounded-lg border border-stone-200">
-                          <span className="font-bold text-[#854d0e] flex items-center gap-1">
-                            <Shield className="w-3.5 h-3.5" /> 圍欄升級：
-                          </span>
-                          <span className="text-stone-700 font-medium block mt-0.5">
-                            {tier.fence}
-                          </span>
+                      {/* Facility Details Footer */}
+                      <div className="p-2.5 text-[11px] grid grid-cols-1 sm:grid-cols-2 gap-1.5 text-[#5a3818]">
+                        <div className="bg-white/75 px-2 py-1 rounded border border-stone-200 truncate">
+                          <span className="font-bold text-[#854d0e]">🛡️ 圍欄：</span>
+                          {expTier.expansion.fenceName}
                         </div>
-
-                        <div className="bg-white/80 p-2 rounded-lg border border-stone-200">
-                          <span className="font-bold text-[#0284c7] flex items-center gap-1">
-                            <Droplets className="w-3.5 h-3.5" /> 水槽/噴泉升級：
-                          </span>
-                          <span className="text-stone-700 font-medium block mt-0.5">
-                            {tier.trough}
-                          </span>
-                        </div>
-
-                        <div className="bg-white/80 p-2 rounded-lg border border-stone-200">
-                          <span className="font-bold text-[#15803d] flex items-center gap-1">
-                            <Sparkles className="w-3.5 h-3.5" /> 特色莊園裝飾：
-                          </span>
-                          <span className="text-stone-700 font-medium block mt-0.5">
-                            {tier.decorations.join('、')}
-                          </span>
+                        <div className="bg-white/75 px-2 py-1 rounded border border-stone-200 truncate">
+                          <span className="font-bold text-[#0284c7]">💧 水源：</span>
+                          {expTier.expansion.waterTroughName}
                         </div>
                       </div>
                     </div>
@@ -738,10 +877,9 @@ export const StudentFarmDetailModal: React.FC<StudentFarmDetailModalProps> = ({
                 分即可達成滿級極致傳奇，15 種動物全員到齊！
               </div>
 
-              {/* 15 Animals Grid */}
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
                 {LIVE_FARM_ANIMALS_ROSTER.map((animal) => {
-                  const isUnlocked = student.points >= animal.unlockScore;
+                  const isUnlocked = !isWithered && student.points >= animal.unlockScore;
                   return (
                     <div
                       key={animal.id}
@@ -782,11 +920,113 @@ export const StudentFarmDetailModal: React.FC<StudentFarmDetailModalProps> = ({
                         <span className="text-[11px] font-bold text-amber-800 block truncate">
                           {animal.subtitle}
                         </span>
-                        <p className="text-[10px] text-stone-500 truncate mt-0.5">
-                          {animal.quote}
-                        </p>
+                        <p className="text-[10px] text-stone-500 truncate mt-0.5">{animal.quote}</p>
                       </div>
                     </div>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+
+          {/* TAB 4: 16 Farm Plants & Crops Encyclopedia (植物圖鑑) */}
+          {activeTab === 'plants' && (
+            <div className="space-y-4">
+              <div className="bg-[#e8f5e9] p-3 rounded-xl border border-[#81c784] text-xs text-stone-700 flex flex-wrap items-center justify-between gap-2">
+                <div>
+                  <span className="font-bold text-[#1b5e20] block text-sm">
+                    🌿 星露谷 16 種農場植物圖鑑（0 ~ 1000 分四季培育收集）
+                  </span>
+                  <span className="text-xs text-[#2e7d32]">
+                    隨著莊園積分累積，從春天的防風草、草莓到冬日水晶果與傳說星之果實將陸續收入植物圖鑑！點擊植物卡片可聆聽培育秘訣。
+                  </span>
+                </div>
+                <span className="font-pixel text-xs font-bold bg-white text-[#1b5e20] px-3 py-1 rounded-lg border border-[#81c784] shrink-0 tabular-nums">
+                  已收集 {unlockedPlants.length} / {LIVE_FARM_PLANTS_ROSTER.length} 種植物
+                </span>
+              </div>
+
+              {/* Season Filter Controls */}
+              <div className="flex items-center gap-1.5 flex-wrap bg-white/75 p-2 rounded-xl border border-[#c4a675]">
+                {SEASON_FILTERS.map((sf) => (
+                  <button
+                    key={sf.key}
+                    type="button"
+                    onClick={() => {
+                      soundManager.playClick();
+                      setPlantSeasonFilter(sf.key);
+                    }}
+                    className={`px-2.5 py-1 rounded-lg text-xs font-bold transition-colors cursor-pointer whitespace-nowrap ${
+                      plantSeasonFilter === sf.key
+                        ? 'bg-[#4c8c38] text-white shadow-xs'
+                        : 'bg-[#f5e6c8] text-[#5a3818] hover:bg-[#ecd4a7]'
+                    }`}
+                  >
+                    {sf.label}
+                  </button>
+                ))}
+              </div>
+
+              {clickedPlantNote && (
+                <div className="bg-[#ecfdf5] border-2 border-[#10b981] px-4 py-2 rounded-xl text-xs font-bold text-[#065f46] shadow-sm flex items-center gap-2">
+                  <Sprout className="w-4 h-4 text-emerald-600 shrink-0" />
+                  <span>{clickedPlantNote}</span>
+                </div>
+              )}
+
+              {/* 16 Plants Grid */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
+                {filteredPlantsRoster.map((plant) => {
+                  const isUnlocked = !isWithered && student.points >= plant.unlockScore;
+                  return (
+                    <button
+                      key={plant.id}
+                      type="button"
+                      onClick={() => handlePlantCardClick(plant, isUnlocked)}
+                      className={`p-3 rounded-xl border-2 flex items-center gap-3 transition-all text-left cursor-pointer hover:shadow-md ${
+                        isUnlocked
+                          ? 'bg-[#fdfbf7] border-[#22c55e] shadow-sm hover:-translate-y-0.5'
+                          : 'bg-[#ede0c2]/60 border-[#c4a675] opacity-75'
+                      }`}
+                    >
+                      <div className="p-1 rounded-xl bg-white border border-[#c4a675] shrink-0 shadow-xs relative">
+                        <AvatarRenderer avatar={plant.id} name={plant.name} size={48} />
+                        {isUnlocked ? (
+                          <div className="absolute -top-1 -right-1 bg-green-500 text-white rounded-full p-0.5 shadow">
+                            <CheckCircle2 className="w-3.5 h-3.5" />
+                          </div>
+                        ) : (
+                          <div className="absolute -top-1 -right-1 bg-stone-400 text-white rounded-full p-0.5 shadow">
+                            <Lock className="w-3.5 h-3.5" />
+                          </div>
+                        )}
+                      </div>
+
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center justify-between gap-1">
+                          <span className="font-bold text-xs text-[#3d240d] truncate">
+                            {plant.name.split(' ')[0]}
+                          </span>
+                          <span
+                            className={`text-[10px] font-pixel px-1.5 py-0.5 rounded font-bold shrink-0 ${
+                              isUnlocked
+                                ? 'bg-[#dcfce7] text-[#15803d]'
+                                : 'bg-stone-200 text-stone-600'
+                            }`}
+                          >
+                            {plant.unlockScore} 分
+                          </span>
+                        </div>
+                        <div className="text-[11px] font-bold text-emerald-800 flex items-center gap-1.5 mt-0.5 truncate">
+                          <span>{plant.season}</span>
+                          <span aria-hidden="true">·</span>
+                          <span className="text-amber-800 truncate">{plant.growthDays}</span>
+                        </div>
+                        <p className="text-[10px] text-stone-600 line-clamp-2 mt-0.5 leading-snug">
+                          {plant.quote}
+                        </p>
+                      </div>
+                    </button>
                   );
                 })}
               </div>
@@ -795,16 +1035,16 @@ export const StudentFarmDetailModal: React.FC<StudentFarmDetailModalProps> = ({
         </div>
 
         {/* Modal Bottom Footer */}
-        <div className="bg-[#faeed1] px-4 py-3 border-t-2 border-[#c4a675] flex items-center justify-between">
+        <div className="bg-[#faeed1] px-4 py-3 border-t-2 border-[#c4a675] flex items-center justify-between gap-2">
           <span className="text-xs font-bold text-stone-600">
-            🌾 點擊草地漫步的動物、水槽或圍欄可進行互動 · 1000 分滿分 15 種動物與最高級擴建全到位
+            🌾 每滿 100 分解鎖新農場背景 (100~1000分) · 動物與植物圖鑑同步收錄於上方分頁
           </span>
           <button
             onClick={() => {
               soundManager.playClick();
               onClose();
             }}
-            className="px-5 py-1.5 bg-[#ede0c2] hover:bg-[#dfcca4] text-[#4a2800] text-xs font-bold border border-[#a3794b] rounded-lg cursor-pointer"
+            className="px-5 py-1.5 bg-[#ede0c2] hover:bg-[#dfcca4] text-[#4a2800] text-xs font-bold border border-[#a3794b] rounded-lg cursor-pointer shrink-0"
           >
             返回名冊
           </button>
