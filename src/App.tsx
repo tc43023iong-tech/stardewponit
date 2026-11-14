@@ -139,6 +139,18 @@ export default function App() {
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  // Scope Stardew Valley pixel scrollbar theme to document root while in Stardew mode
+  useEffect(() => {
+    if (appMode === 'stardew') {
+      document.documentElement.classList.add('stardew-mode');
+    } else {
+      document.documentElement.classList.remove('stardew-mode');
+    }
+    return () => {
+      document.documentElement.classList.remove('stardew-mode');
+    };
+  }, [appMode]);
+
   // Save to LocalStorage on class changes (Sync both keys for 100% two-way persistence)
   useEffect(() => {
     try {
@@ -648,7 +660,7 @@ export default function App() {
   }
 
   return (
-    <div className="min-h-screen text-[#2b2b2b] flex flex-col font-sans relative selection:bg-[#fabc3f] selection:text-[#4a2800]">
+    <div className="stardew-interface min-h-screen text-[#2b2b2b] flex flex-col font-sans relative selection:bg-[#fabc3f] selection:text-[#4a2800]">
       {/* Dynamic Stardew Valley Panoramic Scenic Backdrop (Sky, Sun/Moon, Clouds, Mountain Silhouettes, Horizon Fence & Pasture) */}
       <ScenicPageBackdrop theme={activePageTheme} timeOfDay={timeOfDay} />
 

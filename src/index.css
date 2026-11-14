@@ -683,4 +683,58 @@
   background: transparent;
 }
 
+/* Stardew Valley Retro Pixel Scrollbar (Light Cream Track + Dark Coffee Pixel Block Thumb) */
+html.stardew-mode,
+.stardew-mode *,
+.stardew-mode .custom-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: #5a3818 #faeed1;
+}
+
+html.stardew-mode::-webkit-scrollbar,
+.stardew-mode ::-webkit-scrollbar,
+.stardew-mode .custom-scrollbar::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+html.stardew-mode::-webkit-scrollbar-track,
+.stardew-mode ::-webkit-scrollbar-track,
+.stardew-mode .custom-scrollbar::-webkit-scrollbar-track {
+  background: #faeed1;
+  border-radius: 0;
+  border: 1px solid #d9b984;
+}
+
+html.stardew-mode::-webkit-scrollbar-thumb,
+.stardew-mode ::-webkit-scrollbar-thumb,
+.stardew-mode .custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #5a3818;
+  border-radius: 0;
+  border: 1px solid #361f0d;
+  box-shadow:
+    inset 1px 1px 0px #8b5a2b,
+    inset -1px -1px 0px #2a1508;
+}
+
+html.stardew-mode::-webkit-scrollbar-thumb:hover,
+.stardew-mode ::-webkit-scrollbar-thumb:hover,
+.stardew-mode .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #73471f;
+  box-shadow:
+    inset 1px 1px 0px #a6723c,
+    inset -1px -1px 0px #361f0d;
+}
+
+html.stardew-mode::-webkit-scrollbar-thumb:active,
+.stardew-mode ::-webkit-scrollbar-thumb:active,
+.stardew-mode .custom-scrollbar::-webkit-scrollbar-thumb:active {
+  background: #42270f;
+}
+
+html.stardew-mode::-webkit-scrollbar-corner,
+.stardew-mode ::-webkit-scrollbar-corner {
+  background: #faeed1;
+}
+
 
