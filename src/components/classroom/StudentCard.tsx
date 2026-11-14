@@ -1,6 +1,5 @@
 import React from 'react';
 import { Student } from '../../types/classroom';
-import { getCropGrowth, getFarmTier } from '../../data/classroomData';
 import { STUDENT_CARD_BACKGROUND_OPTIONS } from '../../data/classroomThemes';
 import { CARD_PIXEL_BG_IMAGES } from '../../data/scenicBackgrounds';
 import { AvatarRenderer } from './AvatarRenderer';
@@ -26,8 +25,6 @@ export const StudentCard: React.FC<StudentCardProps> = ({
   onChangeAvatar,
   onOpenFarmDetail,
 }) => {
-  const cropInfo = getCropGrowth(student.points);
-  const farmTier = getFarmTier(student.points);
 
   // Determine mini farm animal sprite based on points
   const getCardMiniAnimal = () => {
@@ -146,21 +143,12 @@ export const StudentCard: React.FC<StudentCardProps> = ({
 
       {/* 1. UPPER SCENIC CANVAS (Exposes the pixel scenery, avatar, stickers, and tags) */}
       <div className="relative z-10 p-2.5 flex flex-col justify-between h-[142px]">
-        {/* Top Header: Roll No & Custom Theme Badge & Selection Checkbox */}
+        {/* Top Header: Roll No & Selection Checkbox */}
         <div className="flex items-center justify-between gap-1">
           <div className="flex items-center gap-1.5">
             <span className="font-pixel text-[11px] bg-[#4a2e13]/90 text-[#ffebb3] px-2 py-0.5 rounded border border-[#2b1807] shadow-md backdrop-blur-xs">
               #{student.rollNo}
             </span>
-            {isCustomBgActive && customBg && (
-              <span
-                className="text-[10px] font-bold text-amber-950 bg-amber-200/90 px-1.5 py-0.5 rounded border border-amber-500 flex items-center gap-1 shadow-md backdrop-blur-xs"
-                title={`自訂卡片背景：${customBg.name}`}
-              >
-                <span>{customBg.icon}</span>
-                <span className="truncate max-w-[80px]">{customBg.name.split(' ')[1] || ''}</span>
-              </span>
-            )}
           </div>
 
           {/* Selection Checkbox */}
@@ -221,18 +209,11 @@ export const StudentCard: React.FC<StudentCardProps> = ({
 
       {/* 2. LOWER PARCHMENT DOCK (Stardew Valley Wooden Framed Info Board) */}
       <div className="relative z-10 p-2.5 bg-[#faeed1] border-t-3 border-[#6b421d] shadow-[0_-3px_10px_rgba(0,0,0,0.25)] flex flex-col justify-between gap-1.5">
-        {/* Student Name & Crop Badge Row */}
+        {/* Student Name Row */}
         <div className="flex items-center justify-between gap-2">
           <h4 className="font-extrabold text-sm sm:text-base text-[#3d240d] truncate">
             {student.name}
           </h4>
-          {/* Crop Growth Stage Badge */}
-          <span
-            className={`text-[10px] font-extrabold px-1.5 py-0.5 rounded border flex items-center gap-1 whitespace-nowrap shadow-xs ${cropInfo.badgeBg}`}
-          >
-            <span>{cropInfo.icon}</span>
-            <span className="truncate">{cropInfo.label}</span>
-          </span>
         </div>
 
         {/* Score Bar with Gold Coin & 1000分 Farm Progress */}
@@ -266,7 +247,7 @@ export const StudentCard: React.FC<StudentCardProps> = ({
           </div>
         </div>
 
-        {/* Bottom Actions: "⭐ 評分", "🎨 風格", "🏡 農場" */}
+        {/* Bottom Actions: "⭐ 評分", "🎨 風格", "🏡" */}
         <div className="pt-1.5 border-t border-[#dfcca4] flex items-center gap-2">
           <button
             type="button"
@@ -303,11 +284,10 @@ export const StudentCard: React.FC<StudentCardProps> = ({
                 soundManager.playCorrect();
                 onOpenFarmDetail(student);
               }}
-              className="pixel-btn-green py-1.5 px-2 text-xs font-bold rounded-lg flex items-center justify-center gap-1 cursor-pointer shadow-md active:scale-95 transition-all text-white"
-              title="走進該同學的專屬農場，觀賞漫步動物與植物"
+              className="pixel-btn-green py-1.5 px-2.5 text-xs font-bold rounded-lg flex items-center justify-center cursor-pointer shadow-md active:scale-95 transition-all text-white shrink-0"
+              title="走進該同學的專屬空間，觀賞漫步動物與植物"
             >
               <span>🏡</span>
-              <span>農場</span>
             </button>
           )}
         </div>

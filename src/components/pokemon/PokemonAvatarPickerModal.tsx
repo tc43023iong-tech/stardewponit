@@ -54,14 +54,117 @@ const ANIMATED_SUBCATEGORIES = [
 
 // 4. Background categories (for 149 500-pt themes)
 const BG_THEME_CATEGORIES = [
-  { key: 'all', name: '全部 (149款)', icon: '🏆' },
-  { key: 'puppy', name: '🐶 線條小狗 (12款)', filter: (k: string) => k.includes('puppy') },
-  { key: 'sanrio', name: '🎀 三麗鷗 (37款)', filter: (k: string) => k.includes('sanrio') || k.includes('kitty') || k.includes('melody') || k.includes('kuromi') || k.includes('purin') || k.includes('cinna') || k.includes('pochacco') || k.includes('keroppi') || k.includes('twinstars') },
-  { key: 'chiikawa', name: '🐹 吉伊卡哇 (15款)', filter: (k: string) => k.includes('chiikawa') || k.includes('usagi') || k.includes('momonga') || k.includes('kurimanju') },
-  { key: 'pokemon', name: '⚡ 寶可夢 (16款)', filter: (k: string) => k.includes('pokemon') || k.includes('snorlax') },
-  { key: 'sumikko', name: '🍱 角落生物&熊 (10款)', filter: (k: string) => k.includes('sumikko') || k.includes('rilakkuma') },
-  { key: 'disney', name: '🎬 動漫與迪士尼 (35款)', filter: (k: string) => k.includes('disney') || k.includes('conan') || k.includes('doraemon') || k.includes('shinchan') || k.includes('frozen') || k.includes('naruto') || k.includes('onepiece') || k.includes('snoopy') || k.includes('spongebob') || k.includes('toystory') || k.includes('zootopia') || k.includes('minions') || k.includes('marvel') },
-  { key: 'fantasy', name: '🌌 奇幻與星空 (24款)', filter: (k: string) => k.includes('magic') || k.includes('pixel') || k.includes('space') || k.includes('star') || k.includes('castle') || k.includes('jurassic') || k.includes('ninja') || k.includes('campfire') || k.includes('orchard') || k.includes('cloud') },
+  { key: 'all', name: '全部分區', icon: '🏆', accentBg: '', badgeClass: '' },
+  {
+    key: 'puppy',
+    name: '線條小狗',
+    icon: '🐶',
+    accentBg: 'bg-amber-50/70 border-amber-200',
+    badgeClass: 'bg-amber-100 text-amber-900 border-amber-300',
+    filter: (k: string) => k.includes('puppy'),
+  },
+  {
+    key: 'sanrio',
+    name: '三麗鷗世界',
+    icon: '🎀',
+    accentBg: 'bg-pink-50/70 border-pink-200',
+    badgeClass: 'bg-pink-100 text-pink-900 border-pink-300',
+    filter: (k: string) =>
+      k.includes('sanrio') ||
+      k.includes('kitty') ||
+      k.includes('melody') ||
+      k.includes('kuromi') ||
+      k.includes('purin') ||
+      k.includes('cinna') ||
+      k.includes('pochacco') ||
+      k.includes('keroppi') ||
+      k.includes('twinstars') ||
+      k.includes('badtz') ||
+      k.includes('usahana') ||
+      k.includes('hangyodon') ||
+      k.includes('cogimyun') ||
+      k.includes('chococat') ||
+      k.includes('tuxedosam'),
+  },
+  {
+    key: 'chiikawa',
+    name: '吉伊卡哇',
+    icon: '🐹',
+    accentBg: 'bg-rose-50/70 border-rose-200',
+    badgeClass: 'bg-rose-100 text-rose-900 border-rose-300',
+    filter: (k: string) =>
+      k.includes('chiikawa') || k.includes('usagi') || k.includes('momonga') || k.includes('kurimanju'),
+  },
+  {
+    key: 'pokemon',
+    name: '寶可夢世界',
+    icon: '⚡',
+    accentBg: 'bg-yellow-50/70 border-yellow-200',
+    badgeClass: 'bg-yellow-100 text-yellow-900 border-yellow-300',
+    filter: (k: string) => k.includes('pokemon') || k.includes('snorlax'),
+  },
+  {
+    key: 'sumikko',
+    name: '角落生物與萌熊',
+    icon: '🍱',
+    accentBg: 'bg-emerald-50/70 border-emerald-200',
+    badgeClass: 'bg-emerald-100 text-emerald-900 border-emerald-300',
+    filter: (k: string) =>
+      k.includes('sumikko') ||
+      k.includes('rilakkuma') ||
+      k.includes('butterbear') ||
+      k.includes('webarebears') ||
+      k.includes('jellycat'),
+  },
+  {
+    key: 'disney',
+    name: '動漫與人氣角色',
+    icon: '🎬',
+    accentBg: 'bg-sky-50/70 border-sky-200',
+    badgeClass: 'bg-sky-100 text-sky-900 border-sky-300',
+    filter: (k: string) =>
+      k.includes('disney') ||
+      k.includes('conan') ||
+      k.includes('doraemon') ||
+      k.includes('shinchan') ||
+      k.includes('frozen') ||
+      k.includes('naruto') ||
+      k.includes('onepiece') ||
+      k.includes('snoopy') ||
+      k.includes('spongebob') ||
+      k.includes('toystory') ||
+      k.includes('zootopia') ||
+      k.includes('minions') ||
+      k.includes('marvel') ||
+      k.includes('miffy') ||
+      k.includes('peppapig') ||
+      k.includes('barbie') ||
+      k.includes('mickey') ||
+      k.includes('yoshi') ||
+      k.includes('nailong') ||
+      k.includes('starman'),
+  },
+  {
+    key: 'fantasy',
+    name: '奇幻星空與經典風景',
+    icon: '🌌',
+    accentBg: 'bg-violet-50/70 border-violet-200',
+    badgeClass: 'bg-violet-100 text-violet-900 border-violet-300',
+    filter: (k: string) =>
+      k.includes('magic') ||
+      k.includes('pixel') ||
+      k.includes('space') ||
+      k.includes('star') ||
+      k.includes('castle') ||
+      k.includes('jurassic') ||
+      k.includes('ninja') ||
+      k.includes('campfire') ||
+      k.includes('orchard') ||
+      k.includes('cloud') ||
+      k.includes('skate') ||
+      k.includes('bg_other') ||
+      k === 'default',
+  },
 ];
 
 const TABS = [
@@ -239,13 +342,42 @@ export const PokemonAvatarPickerModal: React.FC<PokemonAvatarPickerModalProps> =
     return null;
   }, [allIds, activeTab, subCategory, searchQuery, sortOrder]);
 
-  // Card background themes list filtered by category
-  const backgroundThemesList = useMemo(() => {
-    const list = Object.values(POKEMON_CARD_THEMES);
-    if (bgCategory === 'all') return list;
-    const cat = BG_THEME_CATEGORIES.find((c) => c.key === bgCategory);
-    if (!cat?.filter) return list;
-    return list.filter((b) => cat.filter(b.key));
+  // Sectioned card background themes so 500-pt backgrounds are never piled together
+  const bgThemeSections = useMemo(() => {
+    const allThemes = Object.values(POKEMON_CARD_THEMES);
+    const assignedKeys = new Set<string>();
+
+    const sections = BG_THEME_CATEGORIES.filter((c) => c.key !== 'all').map((cat) => {
+      const items = allThemes.filter((theme) => {
+        if (assignedKeys.has(theme.key)) return false;
+        if (cat.filter && cat.filter(theme.key)) {
+          assignedKeys.add(theme.key);
+          return true;
+        }
+        return false;
+      });
+      return {
+        key: cat.key,
+        name: cat.name,
+        icon: cat.icon,
+        accentBg: cat.accentBg || 'bg-stone-50/70 border-stone-200',
+        badgeClass: cat.badgeClass || 'bg-stone-100 text-stone-800 border-stone-300',
+        items,
+      };
+    });
+
+    // Catch any uncategorized background keys into the final fantasy/classic bucket
+    const leftover = allThemes.filter((theme) => !assignedKeys.has(theme.key));
+    if (leftover.length > 0) {
+      const fantasySection = sections.find((s) => s.key === 'fantasy');
+      if (fantasySection) {
+        fantasySection.items.push(...leftover);
+      }
+    }
+
+    const nonEmpty = sections.filter((s) => s.items.length > 0);
+    if (bgCategory === 'all') return nonEmpty;
+    return nonEmpty.filter((s) => s.key === bgCategory);
   }, [bgCategory]);
 
   // Shuffle pick random avatar
@@ -443,12 +575,12 @@ export const PokemonAvatarPickerModal: React.FC<PokemonAvatarPickerModalProps> =
             </div>
           )}
 
-          {/* TAB: 🏆 500分 Card Background Themes (With Categories and Taller Vertical Previews) */}
+          {/* TAB: 🏆 500分 Card Background Themes (Sectioned + 5 per row) */}
           {activeTab === '🏆 500分' ? (
             <div className="space-y-4">
               {/* 500-pt Theme Category Filter Tabs */}
               <div className="w-full flex items-center gap-1.5 overflow-x-auto py-1 px-2 bg-white/80 rounded-xl border border-[#8D6E63]/20 shadow-2xs">
-                <span className="text-xs font-black text-[#8D6E63] shrink-0 mr-1">🎨 壁紙分類：</span>
+                <span className="text-xs font-black text-[#8D6E63] shrink-0 mr-1">🎨 壁紙分區：</span>
                 {BG_THEME_CATEGORIES.map((cat) => (
                   <button
                     key={cat.key}
@@ -460,109 +592,146 @@ export const PokemonAvatarPickerModal: React.FC<PokemonAvatarPickerModalProps> =
                         : 'bg-white text-stone-700 border-stone-200 hover:bg-amber-50'
                     }`}
                   >
+                    <span>{cat.icon}</span>
                     <span>{cat.name}</span>
                   </button>
                 ))}
               </div>
 
-              {/* Taller Vertical Card Previews so teachers can clearly see the artwork */}
-              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
-                {backgroundThemesList.map((bg) => {
-                  const isCurrent = currentThemeKey === bg.key;
+              {/* Cleanly Sectioned Background Galleries (5 cards per row on desktop) */}
+              <div className="space-y-4">
+                {bgThemeSections.map((section) => (
+                  <section
+                    key={section.key}
+                    className={`rounded-2xl border-2 p-3 sm:p-4 shadow-2xs ${section.accentBg}`}
+                  >
+                    <div className="flex items-center justify-between gap-2 pb-2.5 mb-3 border-b border-black/10">
+                      <div className="flex items-center gap-2">
+                        <span className="text-xl leading-none">{section.icon}</span>
+                        <h3 className="font-black text-sm sm:text-base text-[#4A2E25]">
+                          {section.name}
+                        </h3>
+                        <span
+                          className={`text-[11px] font-black px-2 py-0.5 rounded-full border ${section.badgeClass}`}
+                        >
+                          {section.items.length} 款
+                        </span>
+                      </div>
 
-                  return (
-                    <div
-                      key={bg.key}
-                      onClick={() => onSelectTheme(bg.key)}
-                      className={`relative rounded-3xl border-3 transition-all cursor-pointer overflow-hidden min-h-[280px] sm:min-h-[310px] aspect-[3/4.2] flex flex-col justify-between shadow-sm hover:shadow-2xl hover:scale-[1.02] ${
-                        isCurrent
-                          ? 'ring-4 ring-[#F59E0B] border-[#D97706] scale-[1.02] shadow-xl'
-                          : 'border-[#E7DFD5] hover:border-[#F59E0B] bg-white'
-                      }`}
-                    >
-                      {/* Full Background Art Image */}
-                      {bg.bgUrl ? (
-                        <img
-                          src={bg.bgUrl}
-                          alt={bg.name}
-                          className="absolute inset-0 w-full h-full object-cover filter contrast-[1.05] saturate-[1.1]"
-                          referrerPolicy="no-referrer"
-                          loading="lazy"
-                        />
+                      {bgCategory === 'all' ? (
+                        <button
+                          type="button"
+                          onClick={() => setBgCategory(section.key)}
+                          className="text-xs font-black text-[#8D6E63] hover:text-[#4A2E25] bg-white/90 hover:bg-white px-2.5 py-1 rounded-lg border border-stone-200 cursor-pointer transition-colors"
+                        >
+                          只看此分區 →
+                        </button>
                       ) : (
-                        <div className="absolute inset-0 bg-gradient-to-b from-[#FFFDF0] to-[#FEF3C7]" />
+                        <button
+                          type="button"
+                          onClick={() => setBgCategory('all')}
+                          className="text-xs font-black text-[#8D6E63] hover:text-[#4A2E25] bg-white/90 hover:bg-white px-2.5 py-1 rounded-lg border border-stone-200 cursor-pointer transition-colors"
+                        >
+                          ← 顯示全部分區
+                        </button>
                       )}
-
-                      {/* Translucent Glass Scrim */}
-                      <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-black/80 pointer-events-none" />
-
-                      {/* Card Top: Mock student header */}
-                      <div className="relative z-10 p-3 flex items-center justify-between">
-                        <span className="font-mono text-xs font-black px-2 py-0.5 rounded-lg bg-white/95 text-[#2E7D32] shadow-xs border border-white">
-                          #{student.rollNo}
-                        </span>
-                        <span className="font-black text-[10px] px-2 py-0.5 rounded-full bg-amber-400 text-amber-950 border border-white shadow-xs">
-                          👑 500+
-                        </span>
-                      </div>
-
-                      {/* Card Center: Student Avatar with Ring */}
-                      <div className="relative z-10 flex flex-col items-center justify-center my-auto">
-                        <div className="w-16 h-16 rounded-2xl bg-white/90 border-2 border-white shadow-lg p-1 flex items-center justify-center">
-                          <img
-                            src={resolvePokemonAvatar(student.pokemonId || student.avatar)}
-                            alt={student.name}
-                            className="w-full h-full object-contain"
-                            referrerPolicy="no-referrer"
-                          />
-                        </div>
-                        <div className="mt-1 px-2.5 py-0.5 rounded-lg bg-white/90 text-[#4E2713] text-xs font-black shadow-xs border border-white">
-                          {student.name}
-                        </div>
-                      </div>
-
-                      {/* Card Bottom: Theme Title & Info with Clear Scrim */}
-                      <div className="relative z-10 p-3 bg-gradient-to-t from-black/95 via-black/80 to-transparent pt-6 text-white flex flex-col">
-                        <div className="flex items-center justify-between gap-1">
-                          <h4 className="font-black text-sm text-amber-200 drop-shadow-sm truncate">
-                            {bg.name}
-                          </h4>
-                          <span className="text-[9px] font-black px-1.5 py-0.2 rounded bg-amber-500/80 text-white shrink-0">
-                            {bg.badge}
-                          </span>
-                        </div>
-                        <p className="text-[11px] text-stone-200 line-clamp-2 mt-1 leading-tight">
-                          {bg.description}
-                        </p>
-                        <div className="flex items-center justify-between mt-2 pt-1 border-t border-white/20">
-                          {isCurrent ? (
-                            <span className="text-[10px] font-black text-amber-950 bg-amber-300 px-2 py-0.5 rounded-md">
-                              使用中 ✓
-                            </span>
-                          ) : (
-                            <span className="text-[10px] font-bold text-amber-300">點擊套用</span>
-                          )}
-                          <button
-                            type="button"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              setPreviewItem({
-                                themeKey: bg.key,
-                                name: bg.name,
-                                badge: bg.badge,
-                                url: bg.bgUrl,
-                                description: bg.description,
-                              });
-                            }}
-                            className="text-stone-300 hover:text-white text-xs font-black p-0.5"
-                          >
-                            🔍 放大
-                          </button>
-                        </div>
-                      </div>
                     </div>
-                  );
-                })}
+
+                    {/* 5 columns per row on desktop */}
+                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
+                      {section.items.map((bg) => {
+                        const isCurrent = currentThemeKey === bg.key;
+
+                        return (
+                          <div
+                            key={bg.key}
+                            onClick={() => onSelectTheme(bg.key)}
+                            className={`relative rounded-2xl border-2 transition-all cursor-pointer overflow-hidden min-h-[205px] sm:min-h-[225px] aspect-[3/4] flex flex-col justify-between shadow-sm hover:shadow-xl hover:scale-[1.02] ${
+                              isCurrent
+                                ? 'ring-3 ring-[#F59E0B] border-[#D97706] scale-[1.02] shadow-lg'
+                                : 'border-[#E7DFD5] hover:border-[#F59E0B] bg-white'
+                            }`}
+                          >
+                            {/* Full Background Art Image */}
+                            {bg.bgUrl ? (
+                              <img
+                                src={bg.bgUrl}
+                                alt={bg.name}
+                                className="absolute inset-0 w-full h-full object-cover filter contrast-[1.05] saturate-[1.1]"
+                                referrerPolicy="no-referrer"
+                                loading="lazy"
+                              />
+                            ) : (
+                              <div className="absolute inset-0 bg-gradient-to-b from-[#FFFDF0] to-[#FEF3C7]" />
+                            )}
+
+                            {/* Translucent Glass Scrim */}
+                            <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-black/80 pointer-events-none" />
+
+                            {/* Card Top */}
+                            <div className="relative z-10 p-2 flex items-center justify-between">
+                              <span className="font-mono text-[10px] font-black px-1.5 py-0.5 rounded-md bg-white/95 text-[#2E7D32] shadow-xs border border-white">
+                                #{student.rollNo}
+                              </span>
+                              <span className="font-black text-[9px] px-1.5 py-0.5 rounded-full bg-amber-400 text-amber-950 border border-white shadow-xs">
+                                👑 500+
+                              </span>
+                            </div>
+
+                            {/* Card Center */}
+                            <div className="relative z-10 flex flex-col items-center justify-center my-auto">
+                              <div className="w-12 h-12 rounded-xl bg-white/90 border-2 border-white shadow-md p-1 flex items-center justify-center">
+                                <img
+                                  src={resolvePokemonAvatar(student.pokemonId || student.avatar)}
+                                  alt={student.name}
+                                  className="w-full h-full object-contain"
+                                  referrerPolicy="no-referrer"
+                                />
+                              </div>
+                              <div className="mt-1 px-2 py-0.5 rounded-md bg-white/90 text-[#4E2713] text-[10px] font-black shadow-xs border border-white truncate max-w-[90%]">
+                                {student.name}
+                              </div>
+                            </div>
+
+                            {/* Card Bottom */}
+                            <div className="relative z-10 p-2 bg-gradient-to-t from-black/95 via-black/80 to-transparent pt-4 text-white flex flex-col">
+                              <div className="flex items-center justify-between gap-1">
+                                <h4 className="font-black text-xs text-amber-200 drop-shadow-sm truncate">
+                                  {bg.name}
+                                </h4>
+                              </div>
+                              <div className="flex items-center justify-between mt-1.5 pt-1 border-t border-white/20">
+                                {isCurrent ? (
+                                  <span className="text-[9px] font-black text-amber-950 bg-amber-300 px-1.5 py-0.5 rounded">
+                                    使用中 ✓
+                                  </span>
+                                ) : (
+                                  <span className="text-[9px] font-bold text-amber-300">點擊套用</span>
+                                )}
+                                <button
+                                  type="button"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    setPreviewItem({
+                                      themeKey: bg.key,
+                                      name: bg.name,
+                                      badge: bg.badge,
+                                      url: bg.bgUrl,
+                                      description: bg.description,
+                                    });
+                                  }}
+                                  className="text-stone-300 hover:text-white text-[10px] font-black p-0.5 cursor-pointer"
+                                >
+                                  🔍 放大
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </section>
+                ))}
               </div>
             </div>
           ) : (
