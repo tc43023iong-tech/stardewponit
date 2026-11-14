@@ -459,10 +459,10 @@ export const PixelParadiseView: React.FC<PixelParadiseViewProps> = ({
         targetY: firstDest.y,
         facing: firstDest.x < init.x ? 'left' : 'right',
         action: isAquatic ? 'swimming' : 'walking',
-        speed: 0.25 + Math.random() * 0.14,
+        speed: 0.11 + Math.random() * 0.07,
         swayPhase: Math.random() * Math.PI * 2,
-        swaySpeed: 0.08 + Math.random() * 0.08,
-        wanderTimer: Math.floor(Math.random() * 50) + 25,
+        swaySpeed: 0.05 + Math.random() * 0.04,
+        wanderTimer: Math.floor(Math.random() * 70) + 35,
         isAquatic,
         growthBonus,
       };
@@ -520,10 +520,10 @@ export const PixelParadiseView: React.FC<PixelParadiseViewProps> = ({
           targetY: dest.y,
           facing: dest.x < init.x ? 'left' : 'right',
           action: isAquatic ? 'swimming' : 'walking',
-          speed: 0.26 + Math.random() * 0.12,
+          speed: 0.11 + Math.random() * 0.07,
           swayPhase: Math.random() * Math.PI * 2,
-          swaySpeed: 0.08 + Math.random() * 0.08,
-          wanderTimer: Math.floor(Math.random() * 45) + 20,
+          swaySpeed: 0.05 + Math.random() * 0.04,
+          wanderTimer: Math.floor(Math.random() * 65) + 30,
           isAquatic,
           growthBonus,
         };
@@ -558,7 +558,7 @@ export const PixelParadiseView: React.FC<PixelParadiseViewProps> = ({
             targetX: sprintTarget.x,
             targetY: sprintTarget.y,
             facing,
-            speed: 0.96,
+            speed: 0.68,
             runUntil: Date.now() + 4200,
             pauseUntil: undefined,
             speechBubble: runBubble,
@@ -587,7 +587,7 @@ export const PixelParadiseView: React.FC<PixelParadiseViewProps> = ({
           if (c.action === 'celebrating') return c;
 
           let action = c.action;
-          let speed = c.speed || 0.28;
+          let speed = c.speed || 0.13;
           let targetX = c.targetX;
           let targetY = c.targetY;
           let wanderTimer = (c.wanderTimer ?? 35) - 1;
@@ -595,7 +595,7 @@ export const PixelParadiseView: React.FC<PixelParadiseViewProps> = ({
           let speechType = c.speechType;
           let speechExpiresAt = c.speechExpiresAt;
           let pauseUntil = c.pauseUntil;
-          const swayPhase = (c.swayPhase || 0) + (c.swaySpeed || 0.1);
+          const swayPhase = (c.swayPhase || 0) + (c.swaySpeed || 0.06);
 
           // Auto-expire timed speech/OS bubbles
           if (speechExpiresAt && now > speechExpiresAt) {
@@ -612,7 +612,7 @@ export const PixelParadiseView: React.FC<PixelParadiseViewProps> = ({
           // Check if running sprint finished
           if (action === 'running' && c.runUntil && now > c.runUntil) {
             action = c.isAquatic ? 'swimming' : 'walking';
-            speed = 0.28;
+            speed = 0.13;
             speechBubble = undefined;
             speechType = undefined;
             speechExpiresAt = undefined;
@@ -633,14 +633,14 @@ export const PixelParadiseView: React.FC<PixelParadiseViewProps> = ({
 
           // Pick a new organic destination across the world when timer expires
           if (wanderTimer <= 0 && action !== 'running') {
-            // 86% active exploration, 14% brief pause
-            if (Math.random() < 0.86) {
-              wanderTimer = Math.floor(Math.random() * 90) + 45; // 2.2s - 6.7s travel window
+            // 76% gentle strolling exploration, 24% cozy pause
+            if (Math.random() < 0.76) {
+              wanderTimer = Math.floor(Math.random() * 110) + 65; // 3.2s - 8.7s stroll window
               const nextDest = getRandomDestination(c.isAquatic, c.x, c.y, false);
               targetX = nextDest.x;
               targetY = nextDest.y;
               action = c.isAquatic ? 'swimming' : 'walking';
-              speed = 0.24 + Math.random() * 0.18;
+              speed = 0.10 + Math.random() * 0.08;
 
               if (!speechBubble && Math.random() < 0.1) {
                 speechBubble = ['🌾', '✨', '🐾', '🌸', '🎵', '🍀', '🍎', '💖', '🦋'][
@@ -650,7 +650,7 @@ export const PixelParadiseView: React.FC<PixelParadiseViewProps> = ({
                 speechExpiresAt = now + 2600;
               }
             } else {
-              wanderTimer = Math.floor(Math.random() * 28) + 18; // Short 0.9s - 2.3s rest
+              wanderTimer = Math.floor(Math.random() * 38) + 28; // Cozy 1.4s - 3.3s rest
               action = c.isAquatic ? 'swimming' : 'idle';
               if (!speechBubble && Math.random() < 0.22) {
                 speechBubble = '💤';
@@ -669,8 +669,8 @@ export const PixelParadiseView: React.FC<PixelParadiseViewProps> = ({
             const dirX = dx / dist;
             const dirY = dy / dist;
 
-            // Add organic perpendicular curve sway (so walks weave naturally instead of stiff lines)
-            const swayAmp = action === 'running' ? 0.04 : 0.14;
+            // Add subtle perpendicular curve sway so strolls weave naturally without jitter
+            const swayAmp = action === 'running' ? 0.03 : 0.06;
             const sway = Math.sin(swayPhase) * swayAmp;
             const perpX = -dirY;
             const perpY = dirX;
@@ -711,7 +711,7 @@ export const PixelParadiseView: React.FC<PixelParadiseViewProps> = ({
             let finalAction = action;
             if (action === 'running') {
               finalAction = c.isAquatic ? 'swimming' : 'idle';
-              speed = 0.28;
+              speed = 0.13;
             } else if (action === 'walking') {
               finalAction = c.isAquatic ? 'swimming' : 'idle';
             }
@@ -1841,8 +1841,17 @@ export const PixelParadiseView: React.FC<PixelParadiseViewProps> = ({
           50% { transform: translateY(0) rotate(0deg); }
           75% { transform: translateY(-6px) rotate(4deg); }
         }
+        .animate-pet-breathe {
+          animation: pet-breathe 2.6s ease-in-out infinite;
+        }
+        .animate-walk-wobble {
+          animation: walk-wobble 0.85s ease-in-out infinite;
+        }
+        .animate-swim-bob {
+          animation: swim-bob 1.8s ease-in-out infinite;
+        }
         .animate-run-dash {
-          animation: run-dash 0.18s ease-in-out infinite;
+          animation: run-dash 0.22s ease-in-out infinite;
         }
       `}</style>
     </div>
