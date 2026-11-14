@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import { Student } from '../../types/classroom';
-import { getCropGrowth, getFarmTier } from '../../data/classroomData';
-import { PixelSprite } from '../common/PixelSprite';
+import { getCropGrowth } from '../../data/classroomData';
+import { getStudentFarmArtwork } from '../../utils/farmArtwork';
 import { AvatarRenderer } from './AvatarRenderer';
 import { StudentFarmDetailModal } from './StudentFarmDetailModal';
 import { soundManager } from '../../utils/sound';
-import { Sprout, Star, Plus, Eye, Sparkles } from 'lucide-react';
+import { Sprout, Eye } from 'lucide-react';
 
 interface FarmShowcaseViewProps {
   students: Student[];
@@ -20,17 +20,6 @@ export const FarmShowcaseView: React.FC<FarmShowcaseViewProps> = ({
 }) => {
   const [inspectingStudent, setInspectingStudent] = useState<Student | null>(null);
 
-  const getFarmSpriteForPoints = (points: number): string => {
-    if (points >= 1000) return 'trophy';
-    if (points >= 750) return 'melon';
-    if (points >= 500) return 'junimo';
-    if (points >= 300) return 'cow';
-    if (points >= 150) return 'melon';
-    if (points >= 50) return 'sunflower';
-    if (points >= 20) return 'chicken';
-    return 'rabbit';
-  };
-
   const handleOpenStudentFarm = (student: Student) => {
     soundManager.playCorrect();
     setInspectingStudent(student);
@@ -41,111 +30,97 @@ export const FarmShowcaseView: React.FC<FarmShowcaseViewProps> = ({
       {/* Farm Header */}
       <div className="pixel-parchment p-4 rounded-xl flex flex-wrap items-center justify-between gap-3 shadow-md">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 bg-[#70b05b] border-2 border-[#285416] rounded-lg flex items-center justify-center text-white shadow">
+          <div className="w-10 h-10 bg-[#4c8c38] border-2 border-[#285416] rounded-lg flex items-center justify-center text-white shadow">
             <Sprout className="w-6 h-6" />
           </div>
           <div>
             <h3 className="font-pixel text-sm sm:text-base text-[#4a2800]">
               🌾 星露谷班級豐收田園 (Classroom Farm)
             </h3>
-            <p className="text-xs text-stone-600 font-bold">
-              點擊任一學生的田園地塊，即可走進他們的個人農場！分數越高（最高 1000 分），動植物越多越熱鬧！
+            <p className="text-xs text-stone-700 font-bold">
+              點擊任一學生的 16-bit 專屬農莊卡片，即可走進他們的實景農場！積分越高（最高 1000 分），莊園建築與動物越繁華！
             </p>
           </div>
         </div>
 
         {/* 1000分 Scale Legend */}
         <div className="flex items-center gap-2 text-xs font-bold text-[#5a3818] flex-wrap bg-[#f5e0b7] px-3 py-1.5 rounded-lg border border-[#c4a675]">
-          <span className="flex items-center gap-1">🌱 嫩苗(0分)</span>
-          <span>→</span>
-          <span className="flex items-center gap-1">🌻 向日葵(50分)</span>
-          <span>→</span>
-          <span className="flex items-center gap-1">🌽 牧場(150分)</span>
-          <span>→</span>
-          <span className="flex items-center gap-1">🍇 秘境(500分)</span>
-          <span>→</span>
-          <span className="flex items-center gap-1 text-amber-800 font-black">👑 滿級極致(1000分)</span>
+          <span>🪵 初建農舍 (0分)</span>
+          <span aria-hidden="true">→</span>
+          <span>🏡 豐收牧場 (150分)</span>
+          <span aria-hidden="true">→</span>
+          <span>🔮 晶石莊園 (300分)</span>
+          <span aria-hidden="true">→</span>
+          <span className="text-amber-900 font-black">👑 黃金天宮 (750–1000分)</span>
         </div>
       </div>
 
-      {/* Main Soil Farm Field Grid */}
-      <div className="bg-[#5a3311] border-4 border-[#2b1807] p-4 sm:p-6 rounded-2xl shadow-2xl relative">
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3 sm:gap-4">
+      {/* Pixel-Art Student Farm Cards Grid */}
+      <div className="bg-[#3d220a] border-4 border-[#251305] p-3.5 sm:p-5 rounded-2xl shadow-2xl">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3.5">
           {students.map((st) => {
             const crop = getCropGrowth(st.points);
-            const farmTier = getFarmTier(st.points);
-            const farmSprite = getFarmSpriteForPoints(st.points);
+            const artwork = getStudentFarmArtwork(st.points);
+            const companionId = st.stardewAvatar || st.avatar || 'sdv_white_chicken';
 
             return (
               <div
                 key={st.id}
                 onClick={() => handleOpenStudentFarm(st)}
-                className={`group relative p-2.5 rounded-xl border-3 transition-all cursor-pointer flex flex-col items-center justify-between select-none ${
+                className={`group relative rounded-xl overflow-hidden border-2 transition-all duration-200 cursor-pointer select-none aspect-[16/11] flex flex-col justify-between bg-[#2b1807] shadow-md hover:shadow-2xl hover:-translate-y-0.5 ${
                   st.points >= 1000
-                    ? 'bg-gradient-to-b from-[#fef08a] to-[#22c55e] border-[#ffd700] ring-4 ring-amber-400 shadow-xl scale-102'
+                    ? 'border-[#fbbf24] ring-2 ring-[#fde047]'
                     : st.points >= 500
-                    ? 'bg-gradient-to-b from-[#f3e8ff] to-[#15803d] border-[#a855f7] shadow-lg hover:scale-105'
+                    ? 'border-[#c084fc]'
                     : st.points >= 150
-                    ? 'bg-gradient-to-b from-[#e0f2fe] to-[#16a34a] border-[#38bdf8] shadow-md hover:scale-105'
-                    : 'bg-[#783e16] hover:bg-[#8a4719] border-[#4a2208] shadow-sm hover:scale-105'
+                    ? 'border-[#4ade80]'
+                    : 'border-[#8b5a2b] hover:border-[#fbbf24]'
                 }`}
-                style={{
-                  boxShadow: 'inset 0 2px 4px rgba(0,0,0,0.25)',
-                }}
               >
-                {/* 1000分 Sparkle */}
-                {st.points >= 1000 && (
-                  <span className="absolute -top-2 -right-2 text-sm animate-ping">
-                    👑
-                  </span>
-                )}
+                {/* 16-bit Pixel Art Farm Backdrop */}
+                <img
+                  src={artwork.bgUrl}
+                  alt={`${st.name} 的星露谷農場`}
+                  referrerPolicy="no-referrer"
+                  loading="lazy"
+                  className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                  style={{ imageRendering: 'pixelated' }}
+                />
 
-                {/* Top Bar on Tile: Roll No & Score */}
-                <div className="w-full flex items-center justify-between text-[10px] mb-1">
-                  <span className="font-pixel px-1.5 py-0.5 rounded bg-[#3b1f0b] text-[#ffd700] border border-[#5a3818]">
-                    #{st.rollNo}
+                {/* Measured Contrast Scrim for Crisp Typography */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/15 to-black/60 pointer-events-none" />
+
+                {/* Top Row: Roll No & Points */}
+                <div className="relative z-10 px-2.5 pt-2 flex items-center justify-between text-xs text-white">
+                  <span className="font-mono font-black tracking-tight tabular-nums drop-shadow-sm">
+                    #{String(st.rollNo).padStart(2, '0')} {st.name}
                   </span>
-                  <span className="font-pixel text-[11px] font-bold text-[#ffd700] bg-[#251306]/80 px-1 rounded">
+                  <span className="font-mono font-black text-[#fde047] tabular-nums drop-shadow-sm">
                     {st.points} 分
                   </span>
                 </div>
 
-                {/* Central Crop / Animal Sprite on Field Tile */}
-                <div className="my-2 relative flex items-center justify-center h-14 w-14">
-                  <PixelSprite
-                    name={farmSprite}
-                    size={46}
-                    className="group-hover:scale-125 transition-transform drop-shadow-md"
-                    animate={st.points >= 50}
-                  />
-                  {st.points >= 1000 && (
-                    <span className="absolute -bottom-1 -right-1 text-xs">
-                      ✨
-                    </span>
-                  )}
+                {/* Pasture Foreground: Student Companion Sprite + Tier Crop Sprite (Zero blocky SVGs) */}
+                <div className="relative z-10 flex items-end justify-center gap-3 my-auto pt-3 pointer-events-none">
+                  <div className="relative flex flex-col items-center group-hover:scale-110 transition-transform duration-200">
+                    <AvatarRenderer avatar={companionId} name={st.name} size={46} bare={true} />
+                    <div className="w-8 h-1.5 bg-black/45 rounded-full blur-[1px] -mt-1" />
+                  </div>
+                  <div className="relative flex flex-col items-center group-hover:scale-110 transition-transform duration-200">
+                    <AvatarRenderer avatar={artwork.showcaseCropId} name={crop.label} size={32} bare={true} />
+                    <div className="w-5 h-1 bg-black/40 rounded-full blur-[1px] -mt-0.5" />
+                  </div>
                 </div>
 
-                {/* Student Avatar & Name */}
-                <div className="flex items-center gap-1.5 w-full justify-center mt-1">
-                  <AvatarRenderer avatar={st.avatar} name={st.name} size={22} />
-                  <span
-                    className={`font-extrabold text-xs truncate max-w-[80px] ${
-                      st.points >= 150 ? 'text-[#1e293b]' : 'text-[#ffebb3]'
-                    }`}
-                  >
-                    {st.name}
+                {/* Bottom Row: Farm Stage & Action */}
+                <div className="relative z-10 px-2.5 pb-2 flex items-center justify-between gap-2 text-[11px]">
+                  <span className="text-amber-100/95 font-bold truncate drop-shadow-sm">
+                    {artwork.showcaseLabel}
                   </span>
-                </div>
-
-                {/* Growth Stage Pill */}
-                <div className="mt-1 text-[9px] font-bold text-[#ffe066] truncate text-center">
-                  {crop.label.split(' ')[0]}
-                </div>
-
-                {/* Click to enter hint on hover */}
-                <div className="mt-1.5 w-full bg-[#faeed1] hover:bg-[#fff9ea] text-[#5a3818] text-[10px] font-bold py-0.5 rounded border border-[#8b5a2b] flex items-center justify-center gap-1 shadow-xs group-hover:bg-[#fabc3f] group-hover:text-[#4a2800] transition-colors">
-                  <Eye className="w-3 h-3" />
-                  <span>進入農場</span>
+                  <span className="text-[#fde047] font-bold flex items-center gap-1 shrink-0 group-hover:text-white transition-colors whitespace-nowrap">
+                    <Eye className="w-3 h-3" />
+                    進入
+                  </span>
                 </div>
               </div>
             );

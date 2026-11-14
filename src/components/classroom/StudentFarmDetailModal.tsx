@@ -2,10 +2,9 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Student } from '../../types/classroom';
 import { getFarmTier, getCropGrowth, LIVE_FARM_ANIMALS_ROSTER, LiveFarmAnimalBlueprint } from '../../data/classroomData';
 import { AvatarRenderer } from './AvatarRenderer';
-import { PixelSprite } from '../common/PixelSprite';
-import { FarmAnimalSprite } from './FarmAnimalSprite';
+import { getStudentFarmArtwork } from '../../utils/farmArtwork';
 import { soundManager } from '../../utils/sound';
-import { X, Plus, Star, Sparkles, CheckCircle2, Lock, Volume2, Maximize2, Minimize2, Hammer, Droplets, Shield, Award } from 'lucide-react';
+import { X, Plus, Star, Sparkles, CheckCircle2, Lock, Volume2, Maximize2, Minimize2, Hammer, Droplets, Shield } from 'lucide-react';
 
 interface StudentFarmDetailModalProps {
   student: Student;
@@ -130,11 +129,13 @@ export const StudentFarmDetailModal: React.FC<StudentFarmDetailModalProps> = ({
   // Always ensure at least the 1st animal (純白小母雞) is present
   const activeAnimalBlueprints = unlockedAnimals.length > 0 ? unlockedAnimals : [LIVE_FARM_ANIMALS_ROSTER[0]];
 
-  // Initialize wandering animals with comfortable random starting positions
+  const farmArtwork = getStudentFarmArtwork(student.points);
+
+  // Initialize wandering animals on the open lower green pasture (y: 58%..88%)
   const [animals, setAnimals] = useState<WanderingAnimal[]>(() => {
     return activeAnimalBlueprints.map((bp, i) => {
-      const startX = 8 + ((i * 13) % 76);
-      const startY = 48 + ((i * 17) % 36);
+      const startX = 10 + ((i * 13) % 78);
+      const startY = 60 + ((i * 11) % 26);
       return {
         id: bp.id,
         name: bp.name,
@@ -161,8 +162,8 @@ export const StudentFarmDetailModal: React.FC<StudentFarmDetailModalProps> = ({
       return activeAnimalBlueprints.map((bp, i) => {
         const existing = prev.find((p) => p.id === bp.id);
         if (existing) return existing;
-        const startX = 10 + ((i * 13) % 72);
-        const startY = 48 + ((i * 17) % 36);
+        const startX = 10 + ((i * 13) % 78);
+        const startY = 60 + ((i * 11) % 26);
         return {
           id: bp.id,
           name: bp.name,
@@ -184,7 +185,7 @@ export const StudentFarmDetailModal: React.FC<StudentFarmDetailModalProps> = ({
     });
   }, [student.points, activeAnimalBlueprints.length]);
 
-  // Gentle animal walking tick simulation
+  // Gentle animal walking tick simulation across the wide grass pasture
   useEffect(() => {
     const interval = setInterval(() => {
       setAnimals((prev) =>
@@ -198,10 +199,10 @@ export const StudentFarmDetailModal: React.FC<StudentFarmDetailModalProps> = ({
 
             if (dist < 0.8) {
               isWalking = false;
-              pauseTimer = Math.floor(Math.random() * 18) + 8;
+              pauseTimer = Math.floor(Math.random() * 16) + 6;
               bobOffset = 0;
             } else {
-              const speed = 0.35;
+              const speed = 0.42;
               const stepX = (dx / dist) * speed;
               const stepY = (dy / dist) * speed;
               x += stepX;
@@ -213,8 +214,8 @@ export const StudentFarmDetailModal: React.FC<StudentFarmDetailModalProps> = ({
             if (pauseTimer > 0) {
               pauseTimer -= 1;
             } else {
-              targetX = Math.floor(Math.random() * 78) + 8;
-              targetY = Math.floor(Math.random() * 38) + 48;
+              targetX = Math.floor(Math.random() * 82) + 8;
+              targetY = Math.floor(Math.random() * 27) + 60;
               isWalking = true;
             }
           }
@@ -279,9 +280,6 @@ export const StudentFarmDetailModal: React.FC<StudentFarmDetailModalProps> = ({
       setIsFullscreen(false);
     }
   };
-
-  // Plant count scaled by points: 4 up to 24 crops swaying naturally
-  const plantCount = Math.min(24, Math.max(4, Math.floor(student.points / 35) + 4));
 
   return (
     <div className="fixed inset-0 z-50 bg-black/85 flex items-center justify-center p-2 sm:p-4 backdrop-blur-sm animate-in fade-in duration-200">
@@ -359,7 +357,7 @@ export const StudentFarmDetailModal: React.FC<StudentFarmDetailModalProps> = ({
         {/* 1000分 Score HUD Progress Bar & Tab Switchers */}
         <div className="bg-[#4a2e13] px-4 py-2 text-[#ffebb3] border-b-2 border-[#2b1807] flex flex-wrap items-center justify-between gap-3">
           <div className="flex items-center gap-2 font-pixel text-xs text-[#ffd700]">
-            <PixelSprite name="coin_gold" size={16} />
+            <span aria-hidden="true">🪙</span>
             <span>目前莊園積分：{student.points} 分 / 1000 分</span>
             {student.points >= 1000 ? (
               <span className="bg-[#eab308] text-[#4a2800] text-[10px] px-2 py-0.5 rounded font-black animate-pulse">
@@ -482,357 +480,81 @@ export const StudentFarmDetailModal: React.FC<StudentFarmDetailModalProps> = ({
                 </div>
               )}
 
-              {/* LIVING COZY STARDEW VALLEY FARM CANVAS */}
+              {/* AUTHENTIC 16-BIT PIXEL ART STARDEW VALLEY FARM STAGE */}
               <div
-                className="relative rounded-2xl border-4 border-[#3b1f0b] overflow-hidden shadow-2xl select-none"
+                className="relative rounded-2xl border-4 border-[#3b1f0b] overflow-hidden shadow-2xl select-none bg-[#2b4d1e]"
                 style={{
-                  height: isFullscreen ? '78vh' : '520px',
-                  background: 'linear-gradient(180deg, #38bdf8 0%, #7dd3fc 26%, #bae6fd 42%, #86efac 50%, #22c55e 68%, #15803d 100%)',
+                  height: isFullscreen ? '78vh' : '540px',
                 }}
               >
-                {/* 1. 藍天白雲 (Blue Sky & Slowly Drifting Clouds) */}
-                <div className="absolute inset-x-0 top-0 h-48 pointer-events-none overflow-hidden z-0">
-                  {/* Gentle Sun with warm rays */}
-                  <div className="absolute top-4 right-12 w-20 h-20 bg-yellow-200/90 rounded-full blur-xs shadow-[0_0_50px_rgba(253,224,71,0.8)] flex items-center justify-center">
-                    <div className="w-14 h-14 bg-amber-300 rounded-full animate-pulse" />
+                {/* 1. Full 16-bit Pixel Art Homestead Scene (Zero ugly CSS/SVG drawings) */}
+                <img
+                  src={farmArtwork.bgUrl}
+                  alt={`${student.name} 的星露谷專屬農場`}
+                  referrerPolicy="no-referrer"
+                  className="absolute inset-0 w-full h-full object-cover select-none pointer-events-none"
+                  style={{ imageRendering: 'pixelated' }}
+                />
+
+                {/* Subtle top gradient only for HUD legibility */}
+                <div className="absolute inset-x-0 top-0 h-20 bg-gradient-to-b from-black/45 to-transparent pointer-events-none z-10" />
+
+                {/* 2. Top-Left Clean Interactive Facility Controls (Fence & Water Trough) */}
+                <div className="absolute top-3 left-3 right-3 z-20 flex flex-wrap items-center justify-between gap-2 pointer-events-none">
+                  <div className="flex items-center gap-2 pointer-events-auto">
+                    <button
+                      type="button"
+                      onClick={handleFenceClick}
+                      className="px-2.5 py-1 rounded-lg bg-[#2b1807]/85 hover:bg-[#3f240b] text-[#ffebb3] border border-[#a16207] text-[11px] font-bold flex items-center gap-1.5 shadow-md backdrop-blur-xs cursor-pointer transition-colors"
+                      title={`點擊查看圍欄設施：${farmTier.expansion.fenceName}`}
+                    >
+                      <Shield className="w-3.5 h-3.5 text-amber-300" />
+                      <span className="truncate max-w-[150px] sm:max-w-none">{farmTier.expansion.fenceName.split(' ')[0]}</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={handleTroughClick}
+                      className="px-2.5 py-1 rounded-lg bg-[#2b1807]/85 hover:bg-[#3f240b] text-[#bae6fd] border border-[#0284c7] text-[11px] font-bold flex items-center gap-1.5 shadow-md backdrop-blur-xs cursor-pointer transition-colors"
+                      title={`點擊查看水槽噴泉：${farmTier.expansion.waterTroughName}`}
+                    >
+                      <Droplets className="w-3.5 h-3.5 text-sky-300" />
+                      <span className="truncate max-w-[150px] sm:max-w-none">{farmTier.expansion.waterTroughName.split(' ')[0]}</span>
+                    </button>
                   </div>
 
-                  {/* Cloud 1 (Slow top layer) */}
-                  <div
-                    className="absolute top-5 left-0 w-36 h-14 bg-white/85 rounded-full blur-[0.5px] shadow-sm animate-cloud-slow"
-                    style={{ animationDelay: '0s' }}
-                  >
-                    <div className="absolute -top-4 left-6 w-16 h-16 bg-white/85 rounded-full" />
-                    <div className="absolute -top-2 left-16 w-12 h-12 bg-white/85 rounded-full" />
-                  </div>
-
-                  {/* Cloud 2 (Mid layer) */}
-                  <div
-                    className="absolute top-14 left-1/3 w-48 h-16 bg-white/90 rounded-full blur-[0.5px] shadow-md animate-cloud-med"
-                    style={{ animationDelay: '-12s' }}
-                  >
-                    <div className="absolute -top-6 left-8 w-20 h-20 bg-white/90 rounded-full" />
-                    <div className="absolute -top-3 left-24 w-16 h-16 bg-white/90 rounded-full" />
-                  </div>
-
-                  {/* Cloud 3 (Low fluffy layer) */}
-                  <div
-                    className="absolute top-22 left-2/3 w-40 h-14 bg-white/80 rounded-full blur-[0.5px] shadow-sm animate-cloud-slow"
-                    style={{ animationDelay: '-24s' }}
-                  >
-                    <div className="absolute -top-5 left-8 w-16 h-16 bg-white/80 rounded-full" />
-                  </div>
-
-                  {/* Distant Mountain Ridges */}
-                  <svg
-                    className="absolute bottom-6 inset-x-0 w-full h-24 opacity-40"
-                    preserveAspectRatio="none"
-                    viewBox="0 0 400 60"
-                  >
-                    <polygon points="0,60 50,15 110,60 170,10 240,60 310,20 370,60 400,30 400,60" fill="#1b4332" />
-                    <polygon points="20,60 70,25 130,60 200,18 270,60 340,28 400,60" fill="#2d6a4f" />
-                  </svg>
-                </div>
-
-                {/* 2. Cozy Farm Structures (Farmhouse, Pond, Wooden Fences) */}
-                <div className="absolute top-22 inset-x-0 flex items-end justify-between px-6 pointer-events-none z-10">
-                  {/* Left: Red Farmhouse with Chimney Smoke */}
-                  <div className="relative flex flex-col items-center">
-                    {/* Puffing Chimney Smoke */}
-                    <div className="absolute -top-8 right-3 w-4 h-4 bg-stone-200/80 rounded-full animate-smoke" />
-                    <div className="w-22 h-16 bg-[#8b3a1d] border-3 border-[#3b1703] rounded-t-lg shadow-lg relative">
-                      <div className="w-full h-8 bg-[#b91c1c] border-b-2 border-[#541313] rounded-t-lg" />
-                      <div className="absolute bottom-0 left-2 w-5 h-8 bg-[#542407] border border-[#2b0f02]" />
-                      <div className="absolute bottom-2 right-2 w-5 h-5 bg-[#fef08a] border-2 border-[#542407]" />
-                    </div>
-                    <span className="font-pixel text-[9px] text-[#ffebb3] bg-[#3b1f0b]/80 px-1.5 rounded mt-0.5">
-                      星露農舍
-                    </span>
-                  </div>
-
-                  {/* Center: Sparkling Blue Water Pond where ducks splash */}
-                  <div className="relative w-44 sm:w-60 h-16 bg-[#38bdf8] border-3 border-[#0284c7] rounded-full shadow-inner flex items-center justify-center overflow-hidden">
-                    <div className="w-full h-full bg-[#0284c7]/20 rounded-full animate-water-gleam" />
-                    <span className="absolute text-[10px] text-[#0369a1] font-pixel font-bold">
-                      清澈水塘 💧
-                    </span>
-                    {student.points >= 120 && (
-                      <div className="absolute right-5 top-2 animate-bounce" title="綠頭野鴨正在游泳">
-                        <PixelSprite name="duck" size={24} />
-                      </div>
-                    )}
-                  </div>
-
-                  {/* Right: Golden Clock / Well / Trophy */}
-                  <div className="flex items-center gap-2">
-                    {student.points >= 300 && (
-                      <div className="flex flex-col items-center">
-                        <PixelSprite name="well" size={36} />
-                        <span className="font-pixel text-[9px] text-[#ffebb3] bg-[#3b1f0b]/80 px-1 rounded">
-                          甘泉水井
-                        </span>
-                      </div>
-                    )}
-                    {student.points >= 1000 && (
-                      <div className="flex flex-col items-center animate-bounce">
-                        <PixelSprite name="clock" size={42} />
-                        <span className="font-pixel text-[9px] text-amber-900 bg-yellow-300 font-bold px-1 rounded shadow">
-                          黃金時鐘 👑
-                        </span>
-                      </div>
-                    )}
+                  <div className="px-2.5 py-1 rounded-lg bg-[#2b1807]/85 text-[#fde047] border border-[#8b5a2b] text-[11px] font-bold shadow-md backdrop-blur-xs">
+                    {farmArtwork.showcaseLabel} · {cropInfo.label}
                   </div>
                 </div>
 
-                {/* 3. 植物搖晃 (Fertile Tilled Soil & Rows of Swaying Crops) */}
-                <div className="absolute top-44 inset-x-4 sm:inset-x-8 z-15 bg-[#603813]/90 border-3 border-[#3b1703] p-2.5 rounded-xl shadow-inner">
-                  <div className="flex items-center justify-between text-[11px] font-pixel text-[#ffebb3] mb-1">
-                    <span className="flex items-center gap-1.5">
-                      <span>🌾 豐收耕作田</span>
-                      <span className="text-[#86efac] text-[10px] font-sans font-bold">
-                        (微風吹拂，共 {plantCount} 株作物輕輕搖擺～)
-                      </span>
-                    </span>
-                    <span className="text-amber-300 font-bold">{cropInfo.label}</span>
-                  </div>
-
-                  {/* Swaying Plants Grid */}
-                  <div className="grid grid-cols-6 sm:grid-cols-9 md:grid-cols-12 gap-2 justify-items-center">
-                    {Array.from({ length: plantCount }).map((_, i) => {
-                      const cropType =
-                        student.points >= 1000
-                          ? i % 4 === 0 ? 'trophy' : i % 3 === 0 ? 'melon' : 'sunflower'
-                          : student.points >= 500
-                          ? i % 3 === 0 ? 'melon' : i % 2 === 0 ? 'sunflower' : 'rabbit'
-                          : student.points >= 150
-                          ? i % 2 === 0 ? 'sunflower' : 'melon'
-                          : 'sunflower';
-
-                      const duration = 2.4 + (i % 5) * 0.35;
-                      const delay = -((i * 0.45) % 3);
-
-                      return (
-                        <div
-                          key={i}
-                          className="w-8 h-8 bg-[#451e06] rounded-lg border border-[#2b0f02] flex items-center justify-center p-0.5 hover:scale-125 transition-transform cursor-pointer drop-shadow-md"
-                          style={{
-                            transformOrigin: 'bottom center',
-                            animation: `plantWindSway ${duration}s ease-in-out infinite`,
-                            animationDelay: `${delay}s`,
-                          }}
-                          title={`第 ${i + 1} 株活力作物，點擊欣賞`}
-                          onClick={() => {
-                            soundManager.playCollect();
-                            setClickedAnimalNote(`🌻 作物正在陽光與微風中茁壯生長！成長度 100%！`);
-                            setTimeout(() => setClickedAnimalNote(null), 2500);
-                          }}
-                        >
-                          <PixelSprite name={cropType} size={22} />
-                        </div>
-                      );
-                    })}
-                  </div>
-                </div>
-
-                {/* 4. VISUAL FARM EXPANSION FENCE (農場擴建圍欄視覺效果) */}
-                <div
-                  onClick={handleFenceClick}
-                  className="absolute top-68 inset-x-2 sm:inset-x-4 z-18 pointer-events-auto cursor-pointer"
-                  title={`點擊查看圍欄資訊：${farmTier.expansion.fenceName}`}
-                >
-                  {/* Simple Wood Stakes (Lv.1) */}
-                  {farmTier.expansion.fenceType === 'simple_wood' && (
-                    <div className="flex items-center justify-between px-2">
-                      {Array.from({ length: 16 }).map((_, idx) => (
-                        <div key={idx} className="flex flex-col items-center">
-                          <div className="w-2.5 h-6 bg-[#854d0e] border border-[#451a03] rounded-t-sm shadow-xs" />
-                          <div className="w-7 h-1 bg-[#a16207] -mt-4 border-b border-[#451a03]" />
-                        </div>
-                      ))}
-                    </div>
-                  )}
-
-                  {/* Hardwood Fence (Lv.2) */}
-                  {farmTier.expansion.fenceType === 'hardwood' && (
-                    <div className="flex items-center justify-between px-2">
-                      {Array.from({ length: 16 }).map((_, idx) => (
-                        <div key={idx} className="flex flex-col items-center">
-                          <div className="w-3.5 h-7 bg-[#542407] border border-[#270f02] rounded-t shadow-sm relative">
-                            <div className="w-1.5 h-1.5 bg-[#ca8a04] rounded-full mx-auto mt-0.5" />
-                          </div>
-                          <div className="w-8 h-1.5 bg-[#78350f] -mt-5 border-y border-[#270f02]" />
-                        </div>
-                      ))}
-                    </div>
-                  )}
-
-                  {/* Ranch Rail White (Lv.3) */}
-                  {farmTier.expansion.fenceType === 'ranch_rail' && (
-                    <div className="flex items-center justify-between px-2">
-                      {Array.from({ length: 16 }).map((_, idx) => (
-                        <div key={idx} className="flex flex-col items-center">
-                          <div className="w-3 h-8 bg-white border border-stone-400 rounded-t shadow-sm" />
-                          <div className="w-8 h-1.5 bg-white -mt-6 border-y border-stone-300" />
-                          <div className="w-8 h-1 bg-white mt-1 border-b border-stone-300" />
-                        </div>
-                      ))}
-                    </div>
-                  )}
-
-                  {/* Wrought Iron (Lv.4) */}
-                  {farmTier.expansion.fenceType === 'wrought_iron' && (
-                    <div className="flex items-center justify-between px-2">
-                      {Array.from({ length: 18 }).map((_, idx) => (
-                        <div key={idx} className="flex flex-col items-center">
-                          <div className="w-1.5 h-2 bg-[#0f172a] rounded-t-full" />
-                          <div className="w-2 h-7 bg-[#1e293b] border-x border-[#0f172a] shadow-sm" />
-                          <div className="w-7 h-1 bg-[#334155] -mt-5" />
-                        </div>
-                      ))}
-                    </div>
-                  )}
-
-                  {/* Iridium Glowing Fence (Lv.5) */}
-                  {farmTier.expansion.fenceType === 'iridium_fence' && (
-                    <div className="flex items-center justify-between px-2 drop-shadow-[0_0_8px_rgba(168,85,247,0.7)]">
-                      {Array.from({ length: 18 }).map((_, idx) => (
-                        <div key={idx} className="flex flex-col items-center">
-                          <div className="w-2.5 h-3 bg-fuchsia-300 rounded-t-full animate-pulse" />
-                          <div className="w-3 h-7 bg-[#7e22ce] border border-[#a855f7] shadow-lg" />
-                          <div className="w-8 h-1.5 bg-purple-400 -mt-5 border border-purple-200" />
-                        </div>
-                      ))}
-                    </div>
-                  )}
-
-                  {/* Royal Golden Fence (Lv.6) */}
-                  {farmTier.expansion.fenceType === 'golden_fence' && (
-                    <div className="flex items-center justify-between px-2 drop-shadow-[0_0_10px_rgba(250,204,21,0.8)]">
-                      {Array.from({ length: 18 }).map((_, idx) => (
-                        <div key={idx} className="flex flex-col items-center">
-                          <div className="w-3 h-3 bg-yellow-200 rotate-45 border border-amber-600" />
-                          <div className="w-3.5 h-7 bg-gradient-to-b from-yellow-300 to-amber-500 border border-amber-700 shadow-md" />
-                          <div className="w-8 h-1.5 bg-yellow-300 -mt-5 border-y border-amber-600" />
-                        </div>
-                      ))}
-                    </div>
-                  )}
-
-                  {/* Celestial Barrier (Lv.MAX) */}
-                  {farmTier.expansion.fenceType === 'celestial_barrier' && (
-                    <div className="flex items-center justify-between px-2 drop-shadow-[0_0_14px_rgba(56,189,248,0.9)]">
-                      {Array.from({ length: 20 }).map((_, idx) => (
-                        <div key={idx} className="flex flex-col items-center animate-pulse">
-                          <div className="w-3 h-3 bg-cyan-200 rounded-full shadow-lg" />
-                          <div className="w-2 h-8 bg-gradient-to-b from-cyan-300 via-indigo-300 to-pink-300 rounded-full" />
-                          <div className="w-7 h-1 bg-gradient-to-r from-cyan-200 to-pink-200 -mt-6" />
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </div>
-
-                {/* 5. VISUAL FARM EXPANSION WATER TROUGH / FOUNTAIN (農場擴建水槽視覺效果) */}
-                <div
-                  onClick={handleTroughClick}
-                  className="absolute bottom-4 left-6 sm:left-10 z-25 pointer-events-auto cursor-pointer hover:scale-110 transition-transform group flex flex-col items-center"
-                  title={`點擊使用水槽：${farmTier.expansion.waterTroughName}`}
-                >
-                  {/* Tooltip */}
-                  <div className="opacity-0 group-hover:opacity-100 transition-opacity absolute -top-9 font-pixel text-[9px] bg-[#3b1f0b]/95 text-[#ffd700] px-2 py-1 rounded shadow-lg whitespace-nowrap pointer-events-none border border-[#8b5a2b]">
-                    {farmTier.expansion.waterTroughName}
-                  </div>
-
-                  {/* Wooden Trough (Lv.1) */}
-                  {farmTier.expansion.waterTroughType === 'wooden_trough' && (
-                    <div className="w-16 h-8 bg-[#854d0e] border-2 border-[#451a03] rounded-md shadow-lg flex items-center justify-center p-1 relative">
-                      <div className="w-full h-full bg-[#38bdf8] rounded-sm border border-[#0284c7] relative overflow-hidden">
-                        <div className="w-full h-full bg-[#0284c7]/20 animate-water-gleam" />
-                      </div>
-                      <div className="absolute -right-3 bottom-0 text-xs">🪣</div>
-                    </div>
-                  )}
-
-                  {/* Stone Basin (Lv.2) */}
-                  {farmTier.expansion.waterTroughType === 'stone_basin' && (
-                    <div className="w-18 h-9 bg-[#64748b] border-2 border-[#334155] rounded-lg shadow-lg flex items-center justify-center p-1 relative">
-                      <div className="w-full h-full bg-[#0284c7] rounded-sm border border-[#0369a1] overflow-hidden">
-                        <div className="w-full h-full bg-cyan-200/30 animate-water-gleam" />
-                      </div>
-                      <div className="absolute -left-1 -bottom-1 text-xs">🌿</div>
-                    </div>
-                  )}
-
-                  {/* Copper Auto Trough (Lv.3) */}
-                  {farmTier.expansion.waterTroughType === 'copper_auto_trough' && (
-                    <div className="w-20 h-10 bg-gradient-to-r from-amber-600 to-orange-700 border-2 border-amber-900 rounded-lg shadow-lg flex items-center justify-center p-1 relative">
-                      <div className="w-full h-full bg-[#0ea5e9] rounded border border-[#0284c7] overflow-hidden">
-                        <div className="w-full h-full bg-white/20 animate-water-gleam" />
-                      </div>
-                      <div className="absolute -top-3 right-2 text-xs">🚰</div>
-                    </div>
-                  )}
-
-                  {/* Marble Fountain (Lv.4) */}
-                  {farmTier.expansion.waterTroughType === 'marble_fountain' && (
-                    <div className="flex flex-col items-center">
-                      <div className="w-7 h-4 bg-slate-200 border border-slate-400 rounded-t-full flex items-center justify-center">
-                        <div className="w-2 h-2 bg-sky-400 rounded-full animate-ping" />
-                      </div>
-                      <div className="w-22 h-9 bg-slate-100 border-2 border-slate-400 rounded-b-xl shadow-lg flex items-center justify-center p-1">
-                        <div className="w-full h-full bg-sky-400 rounded-b-lg animate-water-gleam" />
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Iridium Crystal Fountain (Lv.5) */}
-                  {farmTier.expansion.waterTroughType === 'iridium_crystal_fountain' && (
-                    <div className="flex flex-col items-center drop-shadow-[0_0_10px_rgba(168,85,247,0.8)]">
-                      <div className="w-8 h-5 bg-purple-500 border border-purple-300 rounded-t-full flex items-center justify-center animate-pulse">
-                        <div className="w-2.5 h-2.5 bg-fuchsia-200 rounded-full" />
-                      </div>
-                      <div className="w-24 h-10 bg-[#581c87] border-2 border-[#a855f7] rounded-b-xl shadow-2xl flex items-center justify-center p-1">
-                        <div className="w-full h-full bg-purple-400 rounded-b-lg animate-water-gleam" />
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Royal Golden Fountain (Lv.6) */}
-                  {farmTier.expansion.waterTroughType === 'golden_fountain' && (
-                    <div className="flex flex-col items-center drop-shadow-[0_0_12px_rgba(250,204,21,0.9)]">
-                      <div className="text-sm -mb-1 animate-bounce">🦢</div>
-                      <div className="w-26 h-10 bg-gradient-to-r from-yellow-300 via-amber-400 to-yellow-500 border-2 border-amber-600 rounded-xl shadow-2xl flex items-center justify-center p-1">
-                        <div className="w-full h-full bg-cyan-300 rounded-lg animate-water-gleam" />
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Celestial Spring (Lv.MAX) */}
-                  {farmTier.expansion.waterTroughType === 'celestial_spring' && (
-                    <div className="flex flex-col items-center drop-shadow-[0_0_16px_rgba(56,189,248,0.9)] animate-pulse">
-                      <div className="text-base -mb-1">✨⛲✨</div>
-                      <div className="w-28 h-11 bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-400 border-2 border-white rounded-2xl shadow-2xl flex items-center justify-center p-1">
-                        <div className="w-full h-full bg-gradient-to-r from-cyan-200 to-pink-200 rounded-xl animate-water-gleam" />
-                      </div>
-                    </div>
-                  )}
-                  <span className="font-pixel text-[8px] text-[#ffebb3] bg-[#3b1f0b]/90 px-1.5 py-0.5 rounded shadow mt-0.5">
-                    {farmTier.expansion.waterTroughType === 'wooden_trough' ? '杉木水槽' : '自動泉池'}
+                {/* 3. Unlocked Stardew Crops & Harvest Shelf (Authentic PNG Sprites) */}
+                <div className="absolute bottom-3 left-3 z-25 flex items-center gap-1.5 bg-[#2b1807]/85 border-2 border-[#8b5a2b] px-2.5 py-1.5 rounded-xl shadow-xl backdrop-blur-xs">
+                  <span className="text-[10px] font-bold text-[#fed7aa] mr-1 hidden sm:inline">
+                    豐收農產:
                   </span>
+                  {farmArtwork.unlockedCrops.map((crop, idx) => (
+                    <button
+                      key={crop.id}
+                      type="button"
+                      onClick={() => {
+                        soundManager.playCollect();
+                        setClickedAnimalNote(`🌾 【${crop.label}】在農場陽光與微風中閃閃發亮！收成品質滿分！`);
+                        setTimeout(() => setClickedAnimalNote(null), 2600);
+                      }}
+                      className="p-0.5 rounded-lg hover:bg-white/15 hover:scale-125 transition-transform cursor-pointer"
+                      style={{
+                        animation: `plantWindSway ${2.6 + (idx % 3) * 0.4}s ease-in-out infinite`,
+                        animationDelay: `${-(idx * 0.4)}s`,
+                      }}
+                      title={`${crop.label}（點擊欣賞作物）`}
+                    >
+                      <AvatarRenderer avatar={crop.id} name={crop.label} size={28} bare={true} />
+                    </button>
+                  ))}
                 </div>
 
-                {/* 6. 動物走來走去 (Free-Roaming Walking Animals on the Green Pasture) */}
-                <div className="absolute inset-x-0 bottom-0 top-70 pointer-events-auto z-20 overflow-hidden">
-                  {/* Pasture Grass details */}
-                  <div
-                    className="absolute inset-0 opacity-20 pointer-events-none"
-                    style={{
-                      backgroundImage: 'radial-gradient(#14532d 15%, transparent 16%)',
-                      backgroundSize: '18px 18px',
-                    }}
-                  />
-
-                  {/* Render Wandering Farm Animals */}
+                {/* 4. Free-Roaming Authentic Stardew Farm Animals on the Lush Pasture */}
+                <div className="absolute inset-0 pointer-events-auto z-20 overflow-hidden">
                   {animals.map((anim) => (
                     <div
                       key={anim.id}
@@ -856,44 +578,44 @@ export const StudentFarmDetailModal: React.FC<StudentFarmDetailModalProps> = ({
                       )}
 
                       {/* Name & Subtitle tooltip on hover */}
-                      <div className="opacity-0 group-hover:opacity-100 transition-opacity absolute -top-8 font-pixel text-[9px] bg-[#3b1f0b]/95 text-[#ffebb3] px-2 py-1 rounded shadow-lg whitespace-nowrap pointer-events-none flex flex-col items-center border border-[#8b5a2b]">
+                      <div className="opacity-0 group-hover:opacity-100 transition-opacity absolute -top-9 font-pixel text-[9px] bg-[#2b1807]/95 text-[#ffebb3] px-2 py-1 rounded shadow-lg whitespace-nowrap pointer-events-none flex flex-col items-center border border-[#8b5a2b] z-40">
                         <span className="font-bold text-[#ffd700]">{anim.name.split(' ')[0]}</span>
                         <span className="text-[8px] text-[#fed7aa]">{anim.subtitle}</span>
                       </div>
 
-                      {/* Animated Sprite / Image Facing Direction - 100% Vector Pixel Sprite with NO white box */}
+                      {/* Official Stardew Valley Sprite (No blocky SVGs) */}
                       <div
-                        className="transition-transform duration-200 hover:scale-125 flex items-center justify-center filter drop-shadow-sm select-none"
+                        className="transition-transform duration-200 hover:scale-125 flex items-center justify-center filter drop-shadow-md select-none"
                         style={{
                           transform: `scaleX(${anim.direction})`,
                         }}
                       >
-                        <FarmAnimalSprite animalId={anim.id} size={50} />
+                        <AvatarRenderer avatar={anim.id} name={anim.name} size={54} bare={true} />
                       </div>
 
-                      {/* Natural gentle shadow on green pasture under animal */}
-                      <div className="w-8 h-2 bg-emerald-950/25 rounded-full blur-[0.5px] -mt-1 pointer-events-none" />
+                      {/* Natural soft shadow under animal */}
+                      <div className="w-9 h-2 bg-black/30 rounded-full blur-[1px] -mt-1.5 pointer-events-none" />
                     </div>
                   ))}
 
-                  {/* 1000分 Rainbow Confetti celebration */}
+                  {/* 1000分 Celebration Banner */}
                   {student.points >= 1000 && (
-                    <div className="absolute bottom-3 right-6 bg-yellow-100/95 border-2 border-amber-500 px-3.5 py-2 rounded-xl shadow-lg flex items-center gap-2 pointer-events-none animate-pulse">
-                      <Sparkles className="w-5 h-5 text-amber-600" />
-                      <span className="font-pixel text-xs text-amber-900 font-bold">
-                        👑 1000分滿分極致榮譽！15種農場動物全員大團圓！
+                    <div className="absolute bottom-3 right-3 bg-[#2b1807]/90 border-2 border-[#fbbf24] px-3 py-1.5 rounded-xl shadow-lg flex items-center gap-2 pointer-events-none">
+                      <Sparkles className="w-4 h-4 text-[#fde047]" />
+                      <span className="font-pixel text-[11px] text-[#fde047] font-bold">
+                        👑 1000分傳奇莊園 · 15種動物全員大團圓！
                       </span>
                     </div>
                   )}
                 </div>
 
-                {/* Ambient floating petals/dandelions */}
-                <div className="absolute inset-0 pointer-events-none z-30">
-                  <div className="absolute top-1/4 left-1/5 text-xs text-white/70 animate-ping">
+                {/* Subtle ambient floating petals/sparkles */}
+                <div className="absolute inset-0 pointer-events-none z-15">
+                  <div className="absolute top-1/4 left-1/5 text-xs text-white/75 animate-ping">
                     🌸
                   </div>
                   <div
-                    className="absolute top-1/2 right-1/4 text-xs text-yellow-100/70 animate-ping"
+                    className="absolute top-1/3 right-1/4 text-xs text-yellow-100/75 animate-ping"
                     style={{ animationDelay: '1.2s' }}
                   >
                     ✨

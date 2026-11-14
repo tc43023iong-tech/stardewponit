@@ -140,6 +140,8 @@ interface FestivalCelebrationOverlayProps {
   onMonthChange?: (month: number | null) => void;
   showSelector?: boolean;
   onCloseSelector?: () => void;
+  effectsEnabled?: boolean;
+  onToggleEffects?: () => void;
 }
 
 export const FestivalCelebrationOverlay: React.FC<FestivalCelebrationOverlayProps> = ({
@@ -147,20 +149,23 @@ export const FestivalCelebrationOverlay: React.FC<FestivalCelebrationOverlayProp
   onMonthChange,
   showSelector = false,
   onCloseSelector,
+  effectsEnabled = true,
+  onToggleEffects,
 }) => {
   const currentCalendarMonth = new Date().getMonth() + 1;
   const activeMonth = forcedMonth !== null && forcedMonth !== undefined ? forcedMonth : currentCalendarMonth;
   const festival = FESTIVAL_CALENDAR[activeMonth] || FESTIVAL_CALENDAR[12];
 
-  // Particle generation
+  // Sparse, margin-hugging ambient festival particles (never floods center UI)
   const particles = useMemo(() => {
-    const count = festival.particleType === 'snow' || festival.particleType === 'sakura' ? 24 : 18;
+    if (!effectsEnabled) return [];
+    const count = 5;
     return Array.from({ length: count }).map((_, i) => {
-      const left = (i * 5.2 + (i % 7) * 3) % 96 + 2;
-      const delay = (i * 0.45) % 6;
-      const duration = 6 + (i % 5) * 1.8;
-      const size = 12 + (i % 4) * 5;
-      const swing = 15 + (i % 3) * 20;
+      const left = i % 2 === 0 ? 1.5 + (i * 3) % 7 : 90 + (i * 2.5) % 8;
+      const delay = (i * 1.6) % 8;
+      const duration = 12 + (i % 4) * 2.5;
+      const size = 10 + (i % 2) * 3;
+      const swing = 10 + (i % 3) * 10;
 
       return {
         id: i,
@@ -172,12 +177,13 @@ export const FestivalCelebrationOverlay: React.FC<FestivalCelebrationOverlayProp
         variant: i % 4,
       };
     });
-  }, [festival.particleType]);
+  }, [festival.particleType, effectsEnabled]);
 
   return (
     <>
-      {/* 1. Full-screen Pointer-Events-None Particle Canvas Overlay */}
-      <div className="fixed inset-0 pointer-events-none overflow-hidden z-25 select-none">
+      {/* 1. Background Pointer-Events-None Particle Layer (Strictly behind main UI cards z-10) */}
+      {effectsEnabled && (
+      <div className="fixed inset-0 pointer-events-none overflow-hidden z-[2] select-none opacity-45">
         {particles.map((p) => {
           // Render specific particle aesthetics based on festival type:
           switch (festival.particleType) {
@@ -336,8 +342,8 @@ export const FestivalCelebrationOverlay: React.FC<FestivalCelebrationOverlayProp
                   }}
                 >
                   <span
-                    className="inline-block text-red-500 drop-shadow-sm filter"
-                    style={{ fontSize: `${p.size + 4}px` }}
+                    className="inline-block text-red-500/80 drop-shadow-sm filter"
+                    style={{ fontSize: `${p.size + 1}px` }}
                   >
                     {p.variant % 2 === 0 ? '🍁' : '🍂'}
                   </span>
@@ -346,6 +352,7 @@ export const FestivalCelebrationOverlay: React.FC<FestivalCelebrationOverlayProp
           }
         })}
       </div>
+      )}
 
       {/* 2. Interactive Festival Celebration Selector Modal (Allows teacher to test any month's festival) */}
       {showSelector && (
@@ -398,18 +405,37 @@ export const FestivalCelebrationOverlay: React.FC<FestivalCelebrationOverlayProp
                 </div>
               </div>
 
-              {forcedMonth !== null && onMonthChange && (
-                <button
-                  type="button"
-                  onClick={() => {
-                    soundManager.playClick();
-                    onMonthChange(null);
-                  }}
-                  className="px-3 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-black text-xs cursor-pointer shadow-xs whitespace-nowrap"
-                >
-                  恢復自動切換
-                </button>
-              )}
+              <div className="flex items-center gap-2 shrink-0">
+                {onToggleEffects && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      soundManager.playClick();
+                      onToggleEffects();
+                    }}
+                    className={`px-3 py-1.5 rounded-xl font-black text-xs cursor-pointer shadow-xs whitespace-nowrap border ${
+                      effectsEnabled
+                        ? 'bg-amber-200 hover:bg-amber-300 text-amber-950 border-amber-400'
+                        : 'bg-stone-200 hover:bg-stone-300 text-stone-700 border-stone-300'
+                    }`}
+                  >
+                    {effectsEnabled ? '✨ 飄落特效：開啟中' : '🌿 飄落特效：已關閉'}
+                  </button>
+                )}
+
+                {forcedMonth !== null && onMonthChange && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      soundManager.playClick();
+                      onMonthChange(null);
+                    }}
+                    className="px-3 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-black text-xs cursor-pointer shadow-xs whitespace-nowrap"
+                  >
+                    恢復自動切換
+                  </button>
+                )}
+              </div>
             </div>
 
             {/* Month Grid Picker (1 ~ 12 Months) */}

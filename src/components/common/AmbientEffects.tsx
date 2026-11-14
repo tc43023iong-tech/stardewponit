@@ -9,6 +9,7 @@ interface AmbientEffectsProps {
   season?: AmbientSeason;
   themeId?: string;
   timeOfDay?: AmbientTimeOfDay;
+  enabled?: boolean;
 }
 
 function resolveCurrentSeason(season?: AmbientSeason, themeId?: string): AmbientSeason {
@@ -40,10 +41,11 @@ function getDefaultWeatherForSeason(s: AmbientSeason): AmbientWeather {
 }
 
 export const AmbientEffects: React.FC<AmbientEffectsProps> = ({
-  leafCount = 14,
+  leafCount = 5,
   season,
   themeId,
   timeOfDay = 'day',
+  enabled = true,
 }) => {
   const activeSeason = useMemo(() => resolveCurrentSeason(season, themeId), [season, themeId]);
 
@@ -62,10 +64,10 @@ export const AmbientEffects: React.FC<AmbientEffectsProps> = ({
 
   // Dynamic seasonal weather system: occasionally triggers rain, gusts, or seasonal shifts
   useEffect(() => {
+    if (!enabled) return;
     const triggerSeasonalWeather = () => {
       const roll = Math.random();
       if (activeSeason === 'spring') {
-        // Spring: occasional refreshing spring rain or drifting cherry/spring petals
         if (roll < 0.35) {
           setWeather('rain');
           setRainIntensity('light');
@@ -73,7 +75,6 @@ export const AmbientEffects: React.FC<AmbientEffectsProps> = ({
           setWeather('petals');
         }
       } else if (activeSeason === 'summer') {
-        // Summer: occasional summer shower or warm sunlit pollen breeze
         if (roll < 0.32) {
           setWeather('rain');
           setRainIntensity('steady');
@@ -81,7 +82,6 @@ export const AmbientEffects: React.FC<AmbientEffectsProps> = ({
           setWeather('pollen');
         }
       } else if (activeSeason === 'autumn') {
-        // Autumn: swirling fallen leaves or occasional crisp autumn drizzle
         if (roll < 0.28) {
           setWeather('rain');
           setRainIntensity('light');
@@ -89,7 +89,6 @@ export const AmbientEffects: React.FC<AmbientEffectsProps> = ({
           setWeather('leaves');
         }
       } else {
-        // Winter: snow flurries (always snowy ambiance, alternating density)
         setWeather('snow');
         setRainIntensity(roll < 0.4 ? 'steady' : 'light');
       }
@@ -97,7 +96,7 @@ export const AmbientEffects: React.FC<AmbientEffectsProps> = ({
 
     const interval = setInterval(triggerSeasonalWeather, 42 * 1000);
     return () => clearInterval(interval);
-  }, [activeSeason]);
+  }, [activeSeason, enabled]);
 
   // Randomize night visual atmosphere flavor when entering night
   useEffect(() => {
@@ -106,14 +105,14 @@ export const AmbientEffects: React.FC<AmbientEffectsProps> = ({
     }
   }, [timeOfDay, activeSeason]);
 
-  // Falling autumn leaves (also lightly present during autumn rain gusts)
+  // Sparse, gentle autumn leaves along screen edges so they never clutter content
   const leaves = useMemo(() => {
     return Array.from({ length: leafCount }).map((_, i) => ({
       id: i,
-      left: `${(i * 9 + 4) % 96}%`,
-      delay: `${(i * 1.7) % 10}s`,
-      duration: `${11 + (i % 6) * 2}s`,
-      size: 10 + (i % 3) * 4,
+      left: i % 2 === 0 ? `${2 + (i * 3) % 10}%` : `${86 + (i * 3) % 10}%`,
+      delay: `${(i * 2.4) % 10}s`,
+      duration: `${15 + (i % 4) * 3}s`,
+      size: 10 + (i % 2) * 2,
       color:
         i % 4 === 0
           ? '#ea580c'
@@ -125,85 +124,87 @@ export const AmbientEffects: React.FC<AmbientEffectsProps> = ({
     }));
   }, [leafCount]);
 
-  // Spring petals
+  // Subtle spring petals
   const petals = useMemo(() => {
-    return Array.from({ length: 18 }).map((_, i) => ({
+    return Array.from({ length: 6 }).map((_, i) => ({
       id: i,
-      left: `${(i * 6.3 + 3) % 95}%`,
-      delay: `${(i * 1.1) % 9}s`,
-      duration: `${9 + (i % 5) * 2.1}s`,
-      size: 8 + (i % 3) * 3,
+      left: i % 2 === 0 ? `${3 + (i * 4) % 12}%` : `${84 + (i * 4) % 12}%`,
+      delay: `${(i * 1.9) % 9}s`,
+      duration: `${13 + (i % 4) * 2.5}s`,
+      size: 8 + (i % 2) * 2,
       color: i % 3 === 0 ? '#fbcfe8' : i % 3 === 1 ? '#f9a8d4' : '#bbf7d0',
     }));
   }, []);
 
-  // Summer warm sunlit pollen motes
+  // Subtle summer sunlit pollen motes
   const pollenMotes = useMemo(() => {
-    return Array.from({ length: 16 }).map((_, i) => ({
+    return Array.from({ length: 6 }).map((_, i) => ({
       id: i,
-      left: `${(i * 7.1 + 5) % 94}%`,
-      top: `${15 + ((i * 13) % 72)}%`,
-      delay: `${(i * 0.7) % 5}s`,
-      duration: `${6 + (i % 4) * 1.8}s`,
-      size: 4 + (i % 3) * 2,
+      left: `${(i * 15 + 6) % 92}%`,
+      top: `${16 + ((i * 17) % 68)}%`,
+      delay: `${(i * 0.9) % 5}s`,
+      duration: `${8 + (i % 3) * 2}s`,
+      size: 4 + (i % 2) * 2,
     }));
   }, []);
 
-  // Occasional seasonal raindrops & ground splashes
+  // Gentle seasonal raindrops & ground splashes
   const raindrops = useMemo(() => {
-    const count = rainIntensity === 'steady' ? 42 : 26;
+    const count = rainIntensity === 'steady' ? 16 : 10;
     return Array.from({ length: count }).map((_, i) => ({
       id: i,
-      left: `${(i * 2.4 + (i % 5) * 1.7) % 100}%`,
-      delay: `${((i * 0.19) % 1.6).toFixed(2)}s`,
-      duration: `${(rainIntensity === 'steady' ? 0.75 : 0.95) + (i % 4) * 0.12}s`,
-      height: 14 + (i % 3) * 6,
-      opacity: 0.35 + (i % 4) * 0.12,
+      left: `${(i * 6.2 + (i % 3) * 2.5) % 98}%`,
+      delay: `${((i * 0.27) % 1.6).toFixed(2)}s`,
+      duration: `${(rainIntensity === 'steady' ? 0.9 : 1.15) + (i % 4) * 0.14}s`,
+      height: 12 + (i % 3) * 4,
+      opacity: 0.2 + (i % 3) * 0.08,
     }));
   }, [rainIntensity]);
 
   const splashes = useMemo(() => {
-    return Array.from({ length: 10 }).map((_, i) => ({
+    return Array.from({ length: 4 }).map((_, i) => ({
       id: i,
-      left: `${8 + ((i * 9.5) % 86)}%`,
-      bottom: `${3 + (i % 4) * 3}%`,
-      delay: `${(i * 0.35) % 1.8}s`,
+      left: `${12 + ((i * 22) % 78)}%`,
+      bottom: `${4 + (i % 3) * 3}%`,
+      delay: `${(i * 0.45) % 1.8}s`,
     }));
   }, []);
 
-  // Winter snow flurries
+  // Gentle winter snow flurries
   const snowflakes = useMemo(() => {
-    const count = rainIntensity === 'steady' ? 28 : 18;
+    const count = rainIntensity === 'steady' ? 10 : 7;
     return Array.from({ length: count }).map((_, i) => ({
       id: i,
-      left: `${(i * 4.9 + 2) % 97}%`,
-      delay: `${(i * 0.85) % 8}s`,
-      duration: `${8 + (i % 5) * 2}s`,
-      size: 4 + (i % 3) * 3,
+      left: `${(i * 11 + 4) % 95}%`,
+      delay: `${(i * 1.3) % 8}s`,
+      duration: `${12 + (i % 4) * 2.5}s`,
+      size: 4 + (i % 2) * 2,
     }));
   }, [rainIntensity]);
 
-  // Randomly generated twinkling night fireflies (re-randomized each time night begins)
+  // Subtle twinkling night fireflies
   const nightFireflies = useMemo(() => {
     if (timeOfDay !== 'night') return [];
-    const count = 26;
+    const count = 10;
     const glowColors = ['#fde047', '#bef264', '#fef08a', '#86efac', '#fcd34d'];
     return Array.from({ length: count }).map((_, i) => {
-      const size = 4 + Math.floor(Math.random() * 4);
+      const size = 4 + Math.floor(Math.random() * 3);
       const color = glowColors[Math.floor(Math.random() * glowColors.length)];
       return {
         id: i,
-        left: `${4 + Math.random() * 92}%`,
-        top: `${16 + Math.random() * 76}%`,
+        left: `${6 + Math.random() * 88}%`,
+        top: `${16 + Math.random() * 72}%`,
         size,
         color,
-        floatDuration: `${(6 + Math.random() * 6).toFixed(1)}s`,
+        floatDuration: `${(7 + Math.random() * 6).toFixed(1)}s`,
         floatDelay: `${(-Math.random() * 6).toFixed(1)}s`,
-        blinkDuration: `${(2.2 + Math.random() * 2.8).toFixed(1)}s`,
+        blinkDuration: `${(2.6 + Math.random() * 2.8).toFixed(1)}s`,
         blinkDelay: `${(-Math.random() * 3).toFixed(1)}s`,
       };
     });
   }, [timeOfDay]);
+
+  if (!enabled) return null;
 
   const isNight = timeOfDay === 'night';
   const showAurora = isNight;
@@ -215,27 +216,24 @@ export const AmbientEffects: React.FC<AmbientEffectsProps> = ({
       {isNight && (
         <div
           aria-hidden="true"
-          className="fixed inset-0 pointer-events-none overflow-hidden z-[2] select-none"
+          className="fixed inset-0 pointer-events-none overflow-hidden z-[1] select-none"
         >
-          {/* Northern Lights / Aurora Borealis Shimmering Curtains */}
           {showAurora && (
             <div className="absolute top-0 inset-x-0 h-[55vh] pointer-events-none overflow-hidden">
-              {/* Primary Emerald-Cyan Aurora Ribbon */}
               <div
                 className="absolute -top-12 -left-1/4 w-[150%] h-72 rounded-full blur-3xl animate-aurora-wave"
                 style={{
                   background:
                     nightModeFlavor === 'aurora_rich'
-                      ? 'linear-gradient(105deg, transparent 10%, rgba(52, 211, 153, 0.28) 28%, rgba(34, 211, 238, 0.30) 48%, rgba(167, 139, 250, 0.26) 68%, transparent 90%)'
-                      : 'linear-gradient(105deg, transparent 12%, rgba(52, 211, 153, 0.22) 32%, rgba(56, 189, 248, 0.22) 55%, rgba(192, 132, 252, 0.18) 74%, transparent 92%)',
+                      ? 'linear-gradient(105deg, transparent 10%, rgba(52, 211, 153, 0.24) 28%, rgba(34, 211, 238, 0.26) 48%, rgba(167, 139, 250, 0.22) 68%, transparent 90%)'
+                      : 'linear-gradient(105deg, transparent 12%, rgba(52, 211, 153, 0.18) 32%, rgba(56, 189, 248, 0.18) 55%, rgba(192, 132, 252, 0.15) 74%, transparent 92%)',
                 }}
               />
-              {/* Secondary Violet-Teal Aurora Curtain */}
               <div
                 className="absolute top-6 -right-1/4 w-[140%] h-56 rounded-full blur-3xl animate-aurora-wave-alt"
                 style={{
                   background:
-                    'linear-gradient(255deg, transparent 15%, rgba(168, 85, 247, 0.20) 35%, rgba(45, 212, 191, 0.24) 58%, rgba(163, 230, 53, 0.14) 76%, transparent 92%)',
+                    'linear-gradient(255deg, transparent 15%, rgba(168, 85, 247, 0.16) 35%, rgba(45, 212, 191, 0.20) 58%, rgba(163, 230, 53, 0.12) 76%, transparent 92%)',
                 }}
               />
             </div>
@@ -243,17 +241,17 @@ export const AmbientEffects: React.FC<AmbientEffectsProps> = ({
         </div>
       )}
 
-      {/* 2. FOREGROUND WEATHER & NIGHT FIREFLIES AMBIENT LAYER */}
+      {/* 2. BACKGROUND WEATHER & NIGHT FIREFLIES LAYER (Strictly behind main UI cards z-10) */}
       <div
         aria-hidden="true"
-        className="fixed inset-0 pointer-events-none overflow-hidden z-20 select-none"
+        className="fixed inset-0 pointer-events-none overflow-hidden z-[2] select-none"
       >
         {/* Subtle Rain Atmospheric Mist */}
         {weather === 'rain' && (
-          <div className="absolute inset-0 bg-sky-950/15 transition-opacity duration-1000" />
+          <div className="absolute inset-0 bg-sky-950/10 transition-opacity duration-1000" />
         )}
 
-        {/* Autumn Falling Leaves (Shown in autumn, or lightly mixed in autumn rain) */}
+        {/* Autumn Falling Leaves (Sparse & gentle along edges) */}
         {(weather === 'leaves' || (activeSeason === 'autumn' && weather === 'rain')) &&
           leaves.slice(0, weather === 'rain' ? Math.ceil(leaves.length / 2) : leaves.length).map((leaf) => (
             <div
@@ -270,7 +268,7 @@ export const AmbientEffects: React.FC<AmbientEffectsProps> = ({
                 width={leaf.size}
                 height={leaf.size}
                 viewBox="0 0 16 16"
-                className="opacity-80"
+                className="opacity-45"
                 shapeRendering="crispEdges"
               >
                 <rect x="7" y="1" width="2" height="3" fill="#78350f" />
@@ -299,7 +297,7 @@ export const AmbientEffects: React.FC<AmbientEffectsProps> = ({
                 width={petal.size}
                 height={petal.size}
                 viewBox="0 0 12 12"
-                className="opacity-85"
+                className="opacity-45"
                 shapeRendering="crispEdges"
               >
                 <rect x="4" y="2" width="4" height="3" fill={petal.color} />
@@ -315,7 +313,7 @@ export const AmbientEffects: React.FC<AmbientEffectsProps> = ({
           pollenMotes.map((mote) => (
             <div
               key={`pollen-${mote.id}`}
-              className="fixed rounded-full bg-amber-200/75 shadow-[0_0_6px_rgba(253,230,138,0.85)] animate-firefly-float"
+              className="fixed rounded-full bg-amber-200/45 shadow-[0_0_5px_rgba(253,230,138,0.6)] animate-firefly-float"
               style={{
                 left: mote.left,
                 top: mote.top,
@@ -347,7 +345,7 @@ export const AmbientEffects: React.FC<AmbientEffectsProps> = ({
             {splashes.map((sp) => (
               <div
                 key={`splash-${sp.id}`}
-                className="fixed w-3 h-1 rounded-full border border-sky-200/60 animate-rain-splash"
+                className="fixed w-3 h-1 rounded-full border border-sky-200/45 animate-rain-splash"
                 style={{
                   left: sp.left,
                   bottom: sp.bottom,
@@ -363,7 +361,7 @@ export const AmbientEffects: React.FC<AmbientEffectsProps> = ({
           snowflakes.map((flake) => (
             <div
               key={`snow-${flake.id}`}
-              className="fixed rounded-sm bg-white/90 shadow-[0_0_6px_rgba(224,242,254,0.9)] animate-winter-snow"
+              className="fixed rounded-sm bg-white/55 shadow-[0_0_4px_rgba(224,242,254,0.6)] animate-winter-snow"
               style={{
                 left: flake.left,
                 top: '-14px',

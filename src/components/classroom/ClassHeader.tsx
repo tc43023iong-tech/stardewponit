@@ -46,6 +46,8 @@ interface ClassHeaderProps {
   timeOfDay?: 'dawn' | 'day' | 'sunset' | 'night';
   onToggleTimeOfDay?: () => void;
   isTimeAuto?: boolean;
+  effectsEnabled?: boolean;
+  onToggleEffects?: () => void;
 }
 
 export const ClassHeader: React.FC<ClassHeaderProps> = ({
@@ -74,6 +76,8 @@ export const ClassHeader: React.FC<ClassHeaderProps> = ({
   timeOfDay = 'day',
   onToggleTimeOfDay,
   isTimeAuto = true,
+  effectsEnabled = true,
+  onToggleEffects,
 }) => {
   const [showAddClassModal, setShowAddClassModal] = useState(false);
   const [newClassName, setNewClassName] = useState('');
@@ -264,9 +268,35 @@ export const ClassHeader: React.FC<ClassHeaderProps> = ({
               className="px-2.5 py-1 text-xs font-pixel rounded border border-[#8b5a2b] bg-[#3a200a] hover:bg-[#5a3818] text-[#ffd700] flex items-center gap-1.5 transition-all active:scale-95 shadow-inner cursor-pointer"
               title={`目前慶典：${activeFestival.month}月 ${activeFestival.name}（點擊切換或預覽 12月雪花 ❄️、2月愛心 💖 等）`}
             >
-              <span className="text-sm animate-pulse">{activeFestival.icon}</span>
+              <span className="text-sm">{activeFestival.icon}</span>
               <span className="hidden md:inline font-bold text-[11px] text-[#ffedd5]">
                 {activeFestival.month}月 {activeFestival.name.slice(0, 5)}
+              </span>
+            </button>
+          )}
+
+          {/* Ambient Falling/Weather Effects Toggle */}
+          {onToggleEffects && (
+            <button
+              type="button"
+              onClick={() => {
+                soundManager.playClick();
+                onToggleEffects();
+              }}
+              className={`px-2 py-1 text-xs border cursor-pointer rounded transition-all active:scale-95 flex items-center gap-1 ${
+                effectsEnabled
+                  ? 'bg-[#3a200a] hover:bg-[#5a3818] border-[#8b5a2b] text-[#fde68a]'
+                  : 'bg-[#2e5927] hover:bg-[#376b2f] border-[#559945] text-[#bbf7d0]'
+              }`}
+              title={
+                effectsEnabled
+                  ? '飄落/氛圍特效開啟中（點擊關閉特效，享受純淨靜態畫面）'
+                  : '純淨無特效模式（點擊重新開啟背景飄落特效）'
+              }
+            >
+              <span className="text-xs">{effectsEnabled ? '✨' : '🌿'}</span>
+              <span className="hidden xl:inline font-bold text-[11px]">
+                {effectsEnabled ? '特效開' : '無特效'}
               </span>
             </button>
           )}

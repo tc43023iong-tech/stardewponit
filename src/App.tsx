@@ -94,6 +94,31 @@ export default function App() {
   });
   const [isFestivalSelectorOpen, setIsFestivalSelectorOpen] = useState(false);
 
+  // Toggle for ambient falling leaves / weather / festival particles (persisted)
+  const [effectsEnabled, setEffectsEnabled] = useState<boolean>(() => {
+    try {
+      const saved = localStorage.getItem('stardew_ambient_effects_enabled');
+      return saved === null ? true : saved === 'true';
+    } catch {
+      return true;
+    }
+  });
+
+  const handleToggleEffects = () => {
+    setEffectsEnabled((prev) => {
+      const next = !prev;
+      try {
+        localStorage.setItem('stardew_ambient_effects_enabled', String(next));
+      } catch {}
+      showStardewToast(
+        next
+          ? '✨ 已開啟背景微光與季節氛圍特效（位於視窗背景層，不遮擋文字）。'
+          : '🌿 已關閉飄落特效，目前為純淨清爽視覺模式！'
+      );
+      return next;
+    });
+  };
+
   const handleFestivalMonthChange = (month: number | null) => {
     setFestivalForcedMonth(month);
     try {
@@ -620,8 +645,8 @@ export default function App() {
       {/* Dynamic Stardew Valley Panoramic Scenic Backdrop (Sky, Sun/Moon, Clouds, Mountain Silhouettes, Horizon Fence & Pasture) */}
       <ScenicPageBackdrop theme={activePageTheme} timeOfDay={timeOfDay} />
 
-      {/* Seasonal Dynamic Weather System (Rain, Falling Leaves, Petals, Snow) & Night Visual Atmosphere (Fireflies & Aurora) */}
-      <AmbientEffects themeId={pageThemeId} timeOfDay={timeOfDay} />
+      {/* Seasonal Dynamic Weather System & Night Visual Atmosphere (Strictly behind main content) */}
+      <AmbientEffects themeId={pageThemeId} timeOfDay={timeOfDay} enabled={effectsEnabled} />
 
       {/* Floating Action Toast Notification (Exact match to Pokemon feedback) */}
       {toastMessage && (
@@ -655,6 +680,8 @@ export default function App() {
         onMonthChange={handleFestivalMonthChange}
         showSelector={isFestivalSelectorOpen}
         onCloseSelector={() => setIsFestivalSelectorOpen(false)}
+        effectsEnabled={effectsEnabled}
+        onToggleEffects={handleToggleEffects}
       />
 
       {/* Main Top Header Bar */}
@@ -686,6 +713,8 @@ export default function App() {
         timeOfDay={timeOfDay}
         onToggleTimeOfDay={handleToggleTimeOfDay}
         isTimeAuto={isTimeAuto}
+        effectsEnabled={effectsEnabled}
+        onToggleEffects={handleToggleEffects}
       />
 
       {/* View Content Body */}
