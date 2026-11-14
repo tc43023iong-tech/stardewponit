@@ -22,11 +22,11 @@ import {
   Crosshair,
 } from 'lucide-react';
 
-// Authentic 16-bit retro pixel art game landscape maps (handcrafted Stardew Valley style tilesets)
-import autumnBg from '../../assets/images/paradise_pixel_autumn_1793879484596.jpg';
-import springBg from '../../assets/images/paradise_pixel_spring_1793879486507.jpg';
-import summerBg from '../../assets/images/paradise_pixel_summer_1793879488062.jpg';
-import winterBg from '../../assets/images/paradise_pixel_winter_1793879487326.jpg';
+// Wide panoramic 16-bit retro pixel art game world maps (Stardew Valley style, 16:9 expansive scenery)
+import autumnBg from '../../assets/images/paradise_wide_autumn_1794664724856.jpg';
+import springBg from '../../assets/images/paradise_wide_spring_1794664721186.jpg';
+import summerBg from '../../assets/images/paradise_wide_summer_1794664723512.jpg';
+import winterBg from '../../assets/images/paradise_wide_winter_1794664724169.jpg';
 
 import { PointsFeedbackModal, PointsFeedbackData } from './PointsFeedbackModal';
 
@@ -35,9 +35,9 @@ import { pokemonSound } from '../../utils/pokemonAudio';
 export type ParadiseSeason = 'autumn' | 'spring' | 'summer' | 'winter';
 export type ParadiseTimeOfDay = 'day' | 'dawn' | 'sunset' | 'night';
 
-// World expansion multiplier (1.45x width & height = 2.1x total playable area!)
-const WORLD_SCALE = 1.45;
-const MIN_ZOOM = 0.69; // 1 / 1.45 -> entire giant world fits edge-to-edge cleanly
+// World expansion multiplier & native 16:9 panoramic aspect ratio
+const WORLD_SCALE = 1.5;
+const WORLD_ASPECT = 16 / 9;
 const MAX_ZOOM = 2.4;
 
 // Auto-determine season according to real-world calendar month
@@ -60,20 +60,20 @@ function resolveStardewCompanion(student: Student, index: number): string {
   return defaultItem;
 }
 
-// Helper: keep land animals out of the deep lake water (x > 64 && y > 73), while allowing pier access!
+// Helper: keep land animals out of the southeast lake water (x > 65 && y > 69), while allowing lakeside pier access
 function sanitizeLandPoint(x: number, y: number): { x: number; y: number } {
   const cx = Math.max(4, Math.min(95, x));
   const cy = Math.max(10, Math.min(91, y));
-  // Allow walking onto the wooden lakeside pier (x: 60..73, y: 65..72)
-  if (cx >= 60 && cx <= 74 && cy >= 65 && cy <= 73) {
+  // Allow walking near/onto the wooden lakeside piers
+  if (cx >= 65 && cx <= 88 && cy >= 64 && cy <= 71) {
     return { x: cx, y: cy };
   }
-  // Gently steer around the southeast deep lake basin (x > 63 && y > 73)
-  if (cx > 63 && cy > 73) {
-    if (cx - 63 < cy - 73) {
-      return { x: 58, y: cy };
+  // Gently steer around the southeast lake basin (x > 65 && y > 69)
+  if (cx > 65 && cy > 69) {
+    if (cx - 65 < cy - 69) {
+      return { x: 60, y: cy };
     }
-    return { x: cx, y: 66 };
+    return { x: cx, y: 63 };
   }
   return { x: cx, y: cy };
 }
@@ -147,9 +147,26 @@ export const PixelParadiseView: React.FC<PixelParadiseViewProps> = ({
   // Camera Viewport, Zoom, Pan & Drag state
   const containerRef = useRef<HTMLDivElement>(null);
   const viewportRef = useRef<HTMLDivElement>(null);
-  const [viewportSize, setViewportSize] = useState<{ w: number; h: number }>({ w: 1200, h: 700 });
-  const [zoomLevel, setZoomLevel] = useState<number>(0.76);
-  const [panOffset, setPanOffset] = useState<{ x: number; y: number }>({ x: -60, y: -40 });
+  const [viewportSize, setViewportSize] = useState<{ w: number; h: number }>({ w: 1280, h: 720 });
+
+  // True 16:9 panoramic world dimensions based on viewport so scenery is never cropped
+  const worldBaseSize = useMemo(() => {
+    const baseW = Math.max(viewportSize.w, viewportSize.h * WORLD_ASPECT) * WORLD_SCALE;
+    const baseH = baseW / WORLD_ASPECT;
+    return { w: baseW, h: baseH };
+  }, [viewportSize]);
+
+  const minZoom = useMemo(() => {
+    const fitZoom = Math.max(
+      viewportSize.w / worldBaseSize.w,
+      viewportSize.h / worldBaseSize.h
+    );
+    return Number(Math.max(0.45, fitZoom).toFixed(3));
+  }, [viewportSize, worldBaseSize]);
+
+  const [zoomLevel, setZoomLevel] = useState<number>(1 / WORLD_SCALE);
+  const hasInitializedZoomRef = useRef(false);
+  const [panOffset, setPanOffset] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
   const [isDragging, setIsDragging] = useState<boolean>(false);
   const dragStartRef = useRef<{
     clientX: number;
@@ -180,7 +197,7 @@ export const PixelParadiseView: React.FC<PixelParadiseViewProps> = ({
     const el = viewportRef.current;
     if (!el) return;
     const updateSize = () => {
-      setViewportSize({ w: el.clientWidth || 1200, h: el.clientHeight || 700 });
+      setViewportSize({ w: el.clientWidth || 1280, h: el.clientHeight || 720 });
     };
     updateSize();
     const ro = new ResizeObserver(updateSize);
@@ -191,8 +208,8 @@ export const PixelParadiseView: React.FC<PixelParadiseViewProps> = ({
   // Clamp pan coordinates so expanded world never leaves empty borders
   const clampPan = useCallback(
     (px: number, py: number, zoom: number, vw = viewportSize.w, vh = viewportSize.h) => {
-      const worldW = vw * WORLD_SCALE * zoom;
-      const worldH = vh * WORLD_SCALE * zoom;
+      const worldW = worldBaseSize.w * zoom;
+      const worldH = worldBaseSize.h * zoom;
       const minX = Math.min(0, vw - worldW);
       const minY = Math.min(0, vh - worldH);
       return {
@@ -200,15 +217,24 @@ export const PixelParadiseView: React.FC<PixelParadiseViewProps> = ({
         y: Math.max(minY, Math.min(0, py)),
       };
     },
-    [viewportSize]
+    [viewportSize, worldBaseSize]
   );
+
+  // Start at wide full-map overview on initial mount
+  useEffect(() => {
+    if (!hasInitializedZoomRef.current && viewportSize.w > 0 && viewportSize.h > 0) {
+      hasInitializedZoomRef.current = true;
+      setZoomLevel(minZoom);
+      setPanOffset(clampPan(-(worldBaseSize.w * minZoom - viewportSize.w) / 2, -(worldBaseSize.h * minZoom - viewportSize.h) / 2, minZoom));
+    }
+  }, [minZoom, viewportSize, worldBaseSize, clampPan]);
 
   // Smoothly focus camera onto any map coordinate (x%, y%)
   const focusOnCoordinates = useCallback(
     (xPct: number, yPct: number, targetZoom?: number) => {
-      const nextZoom = targetZoom ?? zoomLevel;
-      const worldW = viewportSize.w * WORLD_SCALE * nextZoom;
-      const worldH = viewportSize.h * WORLD_SCALE * nextZoom;
+      const nextZoom = Math.max(minZoom, targetZoom ?? zoomLevel);
+      const worldW = worldBaseSize.w * nextZoom;
+      const worldH = worldBaseSize.h * nextZoom;
       const rawPanX = viewportSize.w / 2 - (xPct / 100) * worldW;
       const rawPanY = viewportSize.h / 2 - (yPct / 100) * worldH;
       if (targetZoom !== undefined) {
@@ -216,13 +242,14 @@ export const PixelParadiseView: React.FC<PixelParadiseViewProps> = ({
       }
       setPanOffset(clampPan(rawPanX, rawPanY, nextZoom));
     },
-    [viewportSize, zoomLevel, clampPan]
+    [viewportSize, worldBaseSize, minZoom, zoomLevel, clampPan]
   );
 
-  // Keep pan clamped on resize
+  // Keep zoom & pan clamped on resize
   useEffect(() => {
-    setPanOffset((prev) => clampPan(prev.x, prev.y, zoomLevel));
-  }, [viewportSize, zoomLevel, clampPan]);
+    setZoomLevel((prev) => Math.max(minZoom, prev));
+    setPanOffset((prev) => clampPan(prev.x, prev.y, Math.max(minZoom, zoomLevel)));
+  }, [viewportSize, minZoom, zoomLevel, clampPan]);
 
   // Determine if a student's companion is aquatic
   const checkIsAquatic = (student: Student, stardewAvatar: string, idx: number): boolean => {
@@ -233,25 +260,25 @@ export const PixelParadiseView: React.FC<PixelParadiseViewProps> = ({
 
   // Distribute companions broadly across the entire expanded world
   const getInitialCoordinates = (rollNo: number, idx: number, isAquatic: boolean) => {
-    if (rollNo === 21) return { x: 78, y: 82, action: 'swimming' as const };
+    if (rollNo === 21) return { x: 80, y: 80, action: 'swimming' as const };
 
     if (isAquatic) {
       return {
-        x: 65 + ((idx * 17) % 28),
-        y: 74 + ((idx * 13) % 17),
+        x: 70 + ((idx * 17) % 23),
+        y: 72 + ((idx * 13) % 19),
         action: 'swimming' as const,
       };
     }
 
-    // Spread students organically across all 6 landmarks + wide open fields (4%..94%)
+    // Spread students organically across wide open meadows, plazas, orchards, and paths
     const broadSpots = [
-      { minX: 6, maxX: 28, minY: 12, maxY: 36 },  // NW Farmhouse meadow
-      { minX: 32, maxX: 62, minY: 12, maxY: 34 }, // North Junimo Grove
-      { minX: 68, maxX: 93, minY: 12, maxY: 42 }, // NE Campsite & woods
-      { minX: 6, maxX: 32, minY: 44, maxY: 88 },  // West/SW Crop Garden & orchard
-      { minX: 34, maxX: 64, minY: 38, maxY: 66 }, // Central Fountain Plaza
-      { minX: 38, maxX: 62, minY: 66, maxY: 88 }, // South shoreline & beach
-      { minX: 70, maxX: 93, minY: 46, maxY: 66 }, // East flower ridge above lake
+      { minX: 6, maxX: 28, minY: 14, maxY: 36 },  // NW Farmhouse & gardens
+      { minX: 34, maxX: 62, minY: 14, maxY: 36 }, // North Windmill/Barn/Mill/Tower grove
+      { minX: 68, maxX: 93, minY: 14, maxY: 44 }, // NE Orchard & fields
+      { minX: 6, maxX: 32, minY: 46, maxY: 88 },  // West/SW Wildflower meadows
+      { minX: 36, maxX: 62, minY: 40, maxY: 66 }, // Central Fountain Plaza
+      { minX: 36, maxX: 61, minY: 68, maxY: 89 }, // South trails & stream banks
+      { minX: 68, maxX: 93, minY: 46, maxY: 63 }, // East meadow ridge above lake
     ];
     const z = broadSpots[idx % broadSpots.length];
     const pt = sanitizeLandPoint(
@@ -276,18 +303,18 @@ export const PixelParadiseView: React.FC<PixelParadiseViewProps> = ({
       // 18% chance for ducks/turtles to briefly waddle up onto the sandy shoreline
       if (!isSprint && Math.random() < 0.18) {
         return {
-          x: 48 + Math.random() * 14,
-          y: 68 + Math.random() * 10,
+          x: 56 + Math.random() * 10,
+          y: 66 + Math.random() * 12,
         };
       }
       if (isSprint) {
-        const destX = currentX > 79 ? 64 + Math.random() * 10 : 83 + Math.random() * 10;
-        const destY = currentY > 82 ? 73 + Math.random() * 7 : 83 + Math.random() * 8;
+        const destX = currentX > 81 ? 70 + Math.random() * 9 : 84 + Math.random() * 10;
+        const destY = currentY > 81 ? 72 + Math.random() * 7 : 83 + Math.random() * 9;
         return { x: destX, y: destY };
       }
       return {
-        x: 64 + Math.random() * 29,
-        y: 73 + Math.random() * 19,
+        x: 69 + Math.random() * 24,
+        y: 72 + Math.random() * 20,
       };
     }
 
@@ -698,7 +725,7 @@ export const PixelParadiseView: React.FC<PixelParadiseViewProps> = ({
   const handleWheelZoom = (e: React.WheelEvent<HTMLDivElement>) => {
     e.preventDefault();
     const delta = e.deltaY > 0 ? -0.14 : 0.14;
-    const nextZoom = Math.max(MIN_ZOOM, Math.min(MAX_ZOOM, Number((zoomLevel + delta).toFixed(2))));
+    const nextZoom = Math.max(minZoom, Math.min(MAX_ZOOM, Number((zoomLevel + delta).toFixed(3))));
     if (nextZoom === zoomLevel) return;
 
     const ratio = nextZoom / zoomLevel;
@@ -727,8 +754,14 @@ export const PixelParadiseView: React.FC<PixelParadiseViewProps> = ({
   const handleResetOverview = () => {
     setIsFollowingCamera(false);
     setFocusedCompanionId(null);
-    setZoomLevel(MIN_ZOOM);
-    setPanOffset({ x: 0, y: 0 });
+    setZoomLevel(minZoom);
+    setPanOffset(
+      clampPan(
+        -(worldBaseSize.w * minZoom - viewportSize.w) / 2,
+        -(worldBaseSize.h * minZoom - viewportSize.h) / 2,
+        minZoom
+      )
+    );
   };
 
   // Jump camera directly to student companion ("孩子一眼找到自己那隻")
@@ -799,8 +832,8 @@ export const PixelParadiseView: React.FC<PixelParadiseViewProps> = ({
   );
 
   // Minimap viewport indicator box percentage
-  const worldRenderedW = viewportSize.w * WORLD_SCALE * zoomLevel;
-  const worldRenderedH = viewportSize.h * WORLD_SCALE * zoomLevel;
+  const worldRenderedW = worldBaseSize.w * zoomLevel;
+  const worldRenderedH = worldBaseSize.h * zoomLevel;
   const viewBoxLeftPct = Math.max(0, Math.min(100, (-panOffset.x / worldRenderedW) * 100));
   const viewBoxTopPct = Math.max(0, Math.min(100, (-panOffset.y / worldRenderedH) * 100));
   const viewBoxWidthPct = Math.min(100, (viewportSize.w / worldRenderedW) * 100);
@@ -1000,7 +1033,7 @@ export const PixelParadiseView: React.FC<PixelParadiseViewProps> = ({
             <button
               onClick={() => {
                 soundManager.playClick();
-                const nextZoom = Math.max(MIN_ZOOM, zoomLevel - 0.25);
+                const nextZoom = Math.max(minZoom, zoomLevel - 0.25);
                 const ratio = nextZoom / zoomLevel;
                 const cx = viewportSize.w / 2;
                 const cy = viewportSize.h / 2;
@@ -1079,23 +1112,24 @@ export const PixelParadiseView: React.FC<PixelParadiseViewProps> = ({
           if (isSearchOpen) setIsSearchOpen(false);
         }}
       >
-        {/* Interactive Corner Minimap (Bottom-Right inside Map) */}
+        {/* Interactive Corner Minimap (16:9 matching world map) */}
         <div
-          className="hidden sm:block absolute bottom-3 right-3 z-30 w-40 h-28 rounded-xl bg-[#2b1807]/88 border-2 border-[#a16207] shadow-2xl overflow-hidden cursor-pointer group"
+          className="hidden sm:block absolute bottom-3 right-3 z-30 w-44 aspect-video rounded-xl bg-[#2b1807]/88 border-2 border-[#a16207] shadow-2xl overflow-hidden cursor-pointer group"
           onPointerDown={(e) => {
             e.stopPropagation();
             const rect = e.currentTarget.getBoundingClientRect();
             const xPct = ((e.clientX - rect.left) / rect.width) * 100;
             const yPct = ((e.clientY - rect.top) / rect.height) * 100;
             setIsFollowingCamera(false);
-            focusOnCoordinates(xPct, yPct, Math.max(1.0, zoomLevel));
+            focusOnCoordinates(xPct, yPct, Math.max(minZoom * 1.35, zoomLevel));
           }}
           title="點擊小地圖快速移動視角（可拖曳地圖自由探索）"
         >
           <img
             src={currentSeasonBg}
             alt="Minimap"
-            className="w-full h-full object-cover opacity-80 pointer-events-none"
+            referrerPolicy="no-referrer"
+            className="w-full h-full object-fill opacity-85 pointer-events-none"
           />
           {/* Live Companion Dots on Minimap */}
           {companions.map((c) => (
@@ -1123,14 +1157,14 @@ export const PixelParadiseView: React.FC<PixelParadiseViewProps> = ({
           />
         </div>
 
-        {/* Expanded Pan & Zoom World Layer (145% x 145% playable terrain) */}
+        {/* Expanded Pan & Zoom World Layer (True 16:9 panoramic pixel world) */}
         <div
           className={`absolute top-0 left-0 origin-top-left ${
             isDragging ? '' : 'transition-transform duration-300 ease-out'
           }`}
           style={{
-            width: `${WORLD_SCALE * 100}%`,
-            height: `${WORLD_SCALE * 100}%`,
+            width: `${worldBaseSize.w}px`,
+            height: `${worldBaseSize.h}px`,
             transform: `translate3d(${panOffset.x}px, ${panOffset.y}px, 0) scale(${zoomLevel})`,
           }}
         >
@@ -1138,7 +1172,8 @@ export const PixelParadiseView: React.FC<PixelParadiseViewProps> = ({
           <img
             src={currentSeasonBg}
             alt="Pixel Paradise Map"
-            className="w-full h-full object-cover select-none pointer-events-none absolute inset-0 image-rendering-pixelated"
+            referrerPolicy="no-referrer"
+            className="w-full h-full object-fill select-none pointer-events-none absolute inset-0 image-rendering-pixelated"
             style={{
               imageRendering: 'pixelated',
             }}
