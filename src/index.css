@@ -130,19 +130,24 @@
   animation-play-state: paused;
 }
 
+.custom-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(161, 136, 127, 0.42) transparent;
+}
 .custom-scrollbar::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  width: 6px;
+  height: 6px;
 }
 .custom-scrollbar::-webkit-scrollbar-track {
   background: transparent;
 }
 .custom-scrollbar::-webkit-scrollbar-thumb {
-  background: #d7ccc8;
-  border-radius: 10px;
+  background: rgba(161, 136, 127, 0.42);
+  border-radius: 9999px;
+  border: none;
 }
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: #a1887f;
+  background: rgba(141, 110, 99, 0.72);
 }
 
 /* Stardew Valley Wooden & Golden Box Shadows & Borders */
@@ -651,21 +656,31 @@
   animation: auroraWaveAlt 18s ease-in-out infinite;
 }
 
-/* Custom Scrollbar */
+/* Refined Minimal Scrollbar */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(161, 136, 127, 0.4) transparent;
+}
 ::-webkit-scrollbar {
-  width: 10px;
-  height: 10px;
+  width: 7px;
+  height: 7px;
 }
 ::-webkit-scrollbar-track {
-  background: #4a2f13;
+  background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: #ab7942;
-  border: 2px solid #331c07;
-  border-radius: 4px;
+  background: rgba(161, 136, 127, 0.4);
+  border: none;
+  border-radius: 9999px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #c99355;
+  background: rgba(141, 110, 99, 0.68);
+}
+::-webkit-scrollbar-thumb:active {
+  background: rgba(121, 85, 72, 0.85);
+}
+::-webkit-scrollbar-corner {
+  background: transparent;
 }
 
 
