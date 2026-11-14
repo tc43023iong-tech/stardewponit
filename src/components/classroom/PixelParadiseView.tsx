@@ -20,6 +20,7 @@ import {
   Sunset,
   Moon,
   Crosshair,
+  MessageCircle,
 } from 'lucide-react';
 
 // Wide panoramic 16-bit retro pixel art game world maps (Stardew Valley style, 16:9 expansive scenery)
@@ -94,13 +95,86 @@ interface CompanionState {
   swayPhase: number;
   swaySpeed: number;
   runUntil?: number;
+  pauseUntil?: number;
   wanderTimer?: number;
   isAquatic: boolean;
   speechBubble?: string;
+  speechType?: 'os' | 'dialogue' | 'action';
+  speechExpiresAt?: number;
   floatingText?: { text: string; isPositive: boolean; key: number };
   growthBonus: number;
   lastPetTime?: number;
 }
+
+// Random Inner Monologue (OS) lines tailored by context
+const LAND_INNER_OS: string[] = [
+  '（偷偷在心裡許願：今天也要被老師誇獎✨）',
+  '（草地好軟喔，好想在這裡翻個滾…🌱）',
+  '（剛剛好像有蝴蝶飛過去？算了追不到🦋）',
+  '（其實我偷偷存了不少分，準備升級農場🏡）',
+  '（嗯…晚餐吃起司還是草莓派好呢🍓）',
+  '（好想看看 1000 分的極光仙境長什麼樣子🌌）',
+  '（假裝很認真散步，其實在找四葉幸運草🍀）',
+  '（哼著只有自己聽得見的小曲子～🎵）',
+  '（今天的太陽公公心情看起來也不錯☀️）',
+  '（希望好朋友等一下會經過這裡找我玩🐾）',
+  '（舉手回答問題的勇氣 +10！我準備好了🙋）',
+  '（呼…深呼吸一下，充滿元氣繼續探險！💪）',
+];
+
+const AQUATIC_INNER_OS: string[] = [
+  '（水溫剛剛好～泡在水裡最舒服了💧）',
+  '（水面下面好像有閃亮亮的魚影游過去🐟）',
+  '（踢水踢水～看我划得這麼優雅🏊）',
+  '（游累了再去岸邊曬太陽休息一下吧🏖️）',
+  '（湖面亮晶晶的，好像灑滿星星✨）',
+];
+
+const SEASON_INNER_OS: Record<ParadiseSeason, string[]> = {
+  spring: [
+    '（聞到淡淡的櫻花香…春天真是太棒了🌸）',
+    '（好想吃剛採下來的甜美草莓呀🍓）',
+    '（春風吹得眼睛瞇瞇的，好舒服～🌿）',
+  ],
+  summer: [
+    '（大熱天最想咬一口冰涼粉嫩甜瓜了🍈）',
+    '（向日葵開得比我還要精神呢🌻）',
+    '（聽說湖邊吹來的風特別涼爽喔🌊）',
+  ],
+  autumn: [
+    '（踩在金黃落葉上的聲音好好聽呀🍂）',
+    '（不知道今年秋天會不會種出巨型南瓜🎃）',
+    '（秋風涼涼的，最適合大家一起野餐啦🧺）',
+  ],
+  winter: [
+    '（呼～吹出白白的霧氣了，好像小雲朵☁️）',
+    '（雪地裡的水晶果閃閃發光呢❄️）',
+    '（好想喝一碗熱呼呼的玉米濃湯🍲）',
+  ],
+};
+
+const NIGHT_INNER_OS: string[] = [
+  '（星星一閃一閃的，數到第 28 顆了🌟）',
+  '（螢火蟲飛過身邊！好夢幻喔✨）',
+  '（夜晚的樂園安安靜靜的，心情好平靜🌙）',
+];
+
+const SUNSET_INNER_OS: string[] = [
+  '（夕陽把天空塗成橘子汽水的顏色了🍊）',
+  '（黃昏的光線照過來，影子拉得好長喔🌆）',
+];
+
+// Two-companion random mini-story pairs
+const MINI_STORY_ENCOUNTERS: Array<{ lineA: string; lineB: string }> = [
+  { lineA: '喂～你有帶草莓小點心嗎？🍓', lineB: '（糟糕…剛剛路上偷吃光了💦）' },
+  { lineA: '你看那朵雲像不像大南瓜？☁️', lineB: '我覺得比較像蓬鬆的綿羊欸🐑' },
+  { lineA: '猜拳！誰輸誰去幫忙澆花✌️', lineB: '（又出慢了…好啦我去提水桶🪣）' },
+  { lineA: '今天表現超讚的喔！👍', lineB: '嘿嘿，我們一起衝向滿級吧！✨' },
+  { lineA: '噓…老師是不是在看我們？👀', lineB: '（趕快站直裝作在欣賞風景🌲）' },
+  { lineA: '這條小徑通往哪裡呀？🗺️', lineB: '不管啦，跟著感覺去探險吧！🌟' },
+  { lineA: '你剛剛跑好快！💨', lineB: '（其實只是看到好吃的鬆餅🥞）' },
+  { lineA: '一起在這裡發呆一下好嗎？🍀', lineB: '好呀，微風吹過來超舒服～🍃' },
+];
 
 interface PixelParadiseViewProps {
   students: Student[];
@@ -191,6 +265,21 @@ export const PixelParadiseView: React.FC<PixelParadiseViewProps> = ({
 
   // Mute audio in paradise
   const [isAudioMuted, setIsAudioMuted] = useState<boolean>(soundManager.isMuted);
+
+  // Random inner thoughts (OS) & mini-stories toggle
+  const [showStories, setShowStories] = useState<boolean>(true);
+  const seasonRef = useRef<ParadiseSeason>(season);
+  const timeOfDayRef = useRef<ParadiseTimeOfDay>(timeOfDay);
+  const showStoriesRef = useRef<boolean>(showStories);
+  useEffect(() => {
+    seasonRef.current = season;
+  }, [season]);
+  useEffect(() => {
+    timeOfDayRef.current = timeOfDay;
+  }, [timeOfDay]);
+  useEffect(() => {
+    showStoriesRef.current = showStories;
+  }, [showStories]);
 
   // Measure viewport dimensions smoothly
   useEffect(() => {
@@ -471,7 +560,10 @@ export const PixelParadiseView: React.FC<PixelParadiseViewProps> = ({
             facing,
             speed: 0.96,
             runUntil: Date.now() + 4200,
+            pauseUntil: undefined,
             speechBubble: runBubble,
+            speechType: 'action',
+            speechExpiresAt: Date.now() + 3500,
           };
         }
         return c;
@@ -500,13 +592,43 @@ export const PixelParadiseView: React.FC<PixelParadiseViewProps> = ({
           let targetY = c.targetY;
           let wanderTimer = (c.wanderTimer ?? 35) - 1;
           let speechBubble = c.speechBubble;
+          let speechType = c.speechType;
+          let speechExpiresAt = c.speechExpiresAt;
+          let pauseUntil = c.pauseUntil;
           const swayPhase = (c.swayPhase || 0) + (c.swaySpeed || 0.1);
+
+          // Auto-expire timed speech/OS bubbles
+          if (speechExpiresAt && now > speechExpiresAt) {
+            speechBubble = undefined;
+            speechType = undefined;
+            speechExpiresAt = undefined;
+          }
+
+          // Clear finished story pause
+          if (pauseUntil && now >= pauseUntil) {
+            pauseUntil = undefined;
+          }
 
           // Check if running sprint finished
           if (action === 'running' && c.runUntil && now > c.runUntil) {
             action = c.isAquatic ? 'swimming' : 'walking';
             speed = 0.28;
             speechBubble = undefined;
+            speechType = undefined;
+            speechExpiresAt = undefined;
+          }
+
+          // If pausing for a mini-story encounter, stand still and keep facing partner
+          if (pauseUntil && now < pauseUntil && action !== 'running') {
+            return {
+              ...c,
+              action: c.isAquatic ? 'swimming' : 'idle',
+              swayPhase,
+              speechBubble,
+              speechType,
+              speechExpiresAt,
+              pauseUntil,
+            };
           }
 
           // Pick a new organic destination across the world when timer expires
@@ -520,17 +642,21 @@ export const PixelParadiseView: React.FC<PixelParadiseViewProps> = ({
               action = c.isAquatic ? 'swimming' : 'walking';
               speed = 0.24 + Math.random() * 0.18;
 
-              if (Math.random() < 0.12) {
+              if (!speechBubble && Math.random() < 0.1) {
                 speechBubble = ['🌾', '✨', '🐾', '🌸', '🎵', '🍀', '🍎', '💖', '🦋'][
                   Math.floor(Math.random() * 9)
                 ];
-              } else {
-                speechBubble = undefined;
+                speechType = 'action';
+                speechExpiresAt = now + 2600;
               }
             } else {
               wanderTimer = Math.floor(Math.random() * 28) + 18; // Short 0.9s - 2.3s rest
               action = c.isAquatic ? 'swimming' : 'idle';
-              speechBubble = Math.random() < 0.25 ? '💤' : undefined;
+              if (!speechBubble && Math.random() < 0.22) {
+                speechBubble = '💤';
+                speechType = 'action';
+                speechExpiresAt = now + 2200;
+              }
             }
           }
 
@@ -575,6 +701,9 @@ export const PixelParadiseView: React.FC<PixelParadiseViewProps> = ({
               swayPhase,
               wanderTimer,
               speechBubble,
+              speechType,
+              speechExpiresAt,
+              pauseUntil,
             };
           } else {
             // Arrived smoothly -> trigger next roam quickly so no one gets stuck
@@ -594,6 +723,9 @@ export const PixelParadiseView: React.FC<PixelParadiseViewProps> = ({
               swayPhase,
               wanderTimer: nextWait,
               speechBubble,
+              speechType,
+              speechExpiresAt,
+              pauseUntil,
             };
           }
         })
@@ -601,6 +733,138 @@ export const PixelParadiseView: React.FC<PixelParadiseViewProps> = ({
     }, 50);
 
     return () => clearInterval(moveInterval);
+  }, []);
+
+  const companionsRef = useRef<CompanionState[]>(companions);
+  useEffect(() => {
+    companionsRef.current = companions;
+  }, [companions]);
+
+  // Autonomous Mini-Stories & Inner Monologue (OS) Scheduler
+  useEffect(() => {
+    const replyTimeouts: number[] = [];
+
+    const triggerStoryOrOS = () => {
+      if (!showStoriesRef.current) return;
+      const snapshot = companionsRef.current;
+      if (snapshot.length === 0) return;
+
+      const now = Date.now();
+      const activeSeason = seasonRef.current;
+      const activeTod = timeOfDayRef.current;
+
+      const activeBubbles = snapshot.filter(
+        (c) => c.speechBubble && (!c.speechExpiresAt || c.speechExpiresAt > now)
+      );
+      if (activeBubbles.length >= 3) return;
+
+      const eligible = snapshot.filter(
+        (c) =>
+          c.action !== 'running' &&
+          c.action !== 'celebrating' &&
+          (!c.pauseUntil || now >= c.pauseUntil) &&
+          (!c.speechBubble || (c.speechExpiresAt && now > c.speechExpiresAt))
+      );
+      if (eligible.length === 0) return;
+
+      // 40% chance for a two-companion nearby encounter mini-story
+      if (eligible.length >= 2 && activeBubbles.length <= 1 && Math.random() < 0.4) {
+        let pair: [CompanionState, CompanionState] | null = null;
+        for (let i = 0; i < eligible.length && !pair; i++) {
+          for (let j = i + 1; j < eligible.length; j++) {
+            const dist = Math.hypot(eligible[i].x - eligible[j].x, eligible[i].y - eligible[j].y);
+            if (dist < 16) {
+              pair = [eligible[i], eligible[j]];
+              break;
+            }
+          }
+        }
+
+        if (pair) {
+          const [compA, compB] = pair;
+          const encounter =
+            MINI_STORY_ENCOUNTERS[Math.floor(Math.random() * MINI_STORY_ENCOUNTERS.length)];
+          const isOsReply = encounter.lineB.startsWith('（');
+
+          setCompanions((prev) =>
+            prev.map((c) => {
+              if (c.id === compA.id) {
+                return {
+                  ...c,
+                  facing: compB.x < compA.x ? 'left' : 'right',
+                  pauseUntil: now + 3800,
+                  speechBubble: encounter.lineA,
+                  speechType: 'dialogue',
+                  speechExpiresAt: now + 3800,
+                };
+              }
+              if (c.id === compB.id) {
+                return {
+                  ...c,
+                  facing: compA.x < compB.x ? 'left' : 'right',
+                  pauseUntil: now + 3800,
+                };
+              }
+              return c;
+            })
+          );
+
+          const tid = window.setTimeout(() => {
+            if (!showStoriesRef.current) return;
+            const replyNow = Date.now();
+            setCompanions((prev) =>
+              prev.map((c) =>
+                c.id === compB.id
+                  ? {
+                      ...c,
+                      speechBubble: encounter.lineB,
+                      speechType: isOsReply ? 'os' : 'dialogue',
+                      speechExpiresAt: replyNow + 3400,
+                    }
+                  : c
+              )
+            );
+          }, 1250);
+          replyTimeouts.push(tid);
+          return;
+        }
+      }
+
+      // Solo random Inner-Thought OS (內心話 OS) tailored by environment & season
+      const chosen = eligible[Math.floor(Math.random() * eligible.length)];
+      const pool: string[] = [
+        ...(chosen.isAquatic ? AQUATIC_INNER_OS : LAND_INNER_OS),
+        ...(SEASON_INNER_OS[activeSeason] || []),
+      ];
+      if (activeTod === 'night') {
+        pool.push(...NIGHT_INNER_OS);
+      } else if (activeTod === 'sunset') {
+        pool.push(...SUNSET_INNER_OS);
+      }
+      const quote = pool[Math.floor(Math.random() * pool.length)];
+
+      setCompanions((prev) =>
+        prev.map((c) =>
+          c.id === chosen.id
+            ? {
+                ...c,
+                speechBubble: quote,
+                speechType: 'os',
+                speechExpiresAt: now + 4600,
+              }
+            : c
+        )
+      );
+    };
+
+    const initialTimer = window.setTimeout(triggerStoryOrOS, 1200);
+    const storyInterval = window.setInterval(triggerStoryOrOS, 3800);
+
+    return () => {
+      window.clearTimeout(initialTimer);
+      window.clearInterval(storyInterval);
+      replyTimeouts.forEach((tid) => window.clearTimeout(tid));
+    };
   }, []);
 
   // Optional live camera follow ONLY when teacher explicitly toggles Follow Mode
@@ -626,6 +890,8 @@ export const PixelParadiseView: React.FC<PixelParadiseViewProps> = ({
           return {
             ...c,
             speechBubble: randomQuote,
+            speechType: 'action',
+            speechExpiresAt: Date.now() + 3500,
             lastPetTime: Date.now(),
             floatingText: {
               text: '💖',
@@ -1013,6 +1279,33 @@ export const PixelParadiseView: React.FC<PixelParadiseViewProps> = ({
             <span className="hidden sm:inline">名字標籤</span>
           </button>
 
+          {/* Toggle Mini-Stories & Inner OS */}
+          <button
+            onClick={() => {
+              soundManager.playClick();
+              const next = !showStories;
+              setShowStories(next);
+              if (!next) {
+                setCompanions((prev) =>
+                  prev.map((c) =>
+                    c.speechType === 'os' || c.speechType === 'dialogue'
+                      ? { ...c, speechBubble: undefined, speechType: undefined, speechExpiresAt: undefined, pauseUntil: undefined }
+                      : c
+                  )
+                );
+              }
+            }}
+            className={`px-2.5 py-1 text-xs font-bold rounded-xl border flex items-center gap-1.5 transition-all cursor-pointer ${
+              showStories
+                ? 'bg-amber-600 border-amber-400 text-white shadow-xs'
+                : 'bg-[#5A3818] border-[#8B5A2B] text-stone-300'
+            }`}
+            title="開啟/隱藏隨機內心話 OS 與角色互動小劇情"
+          >
+            <MessageCircle className="w-3.5 h-3.5" />
+            <span className="hidden sm:inline">💭 劇情</span>
+          </button>
+
           {/* Zoom & Overview controls */}
           <div className="flex items-center bg-[#1b0f04] p-0.5 rounded-xl border border-[#7a481c]">
             <button
@@ -1276,10 +1569,33 @@ export const PixelParadiseView: React.FC<PixelParadiseViewProps> = ({
                   </div>
                 )}
 
-                {/* Cute speech thought */}
+                {/* Mini-story dialogue / Inner-thought OS bubble */}
                 {comp.speechBubble && !comp.floatingText && (
-                  <div className="absolute -top-11 left-1/2 -translate-x-1/2 text-xs font-bold text-stone-800 bg-white/95 border border-stone-800 rounded-full px-2 py-0.5 shadow-md animate-pulse z-30 whitespace-nowrap">
-                    {comp.speechBubble}
+                  <div
+                    className={`absolute left-1/2 -translate-x-1/2 -translate-y-full pointer-events-none z-40 w-max max-w-[210px] text-center animate-in fade-in zoom-in-95 duration-200 ${
+                      showNameTags ? '-top-8' : '-top-2'
+                    }`}
+                  >
+                    <div
+                      className={`px-2.5 py-1 text-[11px] font-bold leading-snug shadow-lg break-words ${
+                        comp.speechType === 'os'
+                          ? 'bg-[#FFFDF7]/95 border border-dashed border-amber-800/65 text-[#4A2E25] rounded-2xl'
+                          : comp.speechType === 'dialogue'
+                          ? 'bg-[#FFFBEB]/95 border-2 border-[#8B5A2B] text-[#451A03] rounded-xl'
+                          : 'bg-white/95 border border-stone-700 text-stone-800 rounded-full'
+                      }`}
+                    >
+                      {comp.speechType === 'os' && <span className="mr-1 text-[10px] opacity-80">💭</span>}
+                      <span>{comp.speechBubble}</span>
+                    </div>
+                    {comp.speechType === 'os' ? (
+                      <div className="flex flex-col items-center mt-0.5 gap-0.5">
+                        <span className="w-1.5 h-1.5 rounded-full bg-[#FFFDF7]/95 border border-amber-800/50" />
+                        <span className="w-1 h-1 rounded-full bg-[#FFFDF7]/95 border border-amber-800/50" />
+                      </div>
+                    ) : (
+                      <div className="mx-auto w-2 h-2 rotate-45 -mt-1 bg-[#FFFBEB] border-r-2 border-b-2 border-[#8B5A2B]" />
+                    )}
                   </div>
                 )}
 
@@ -1425,7 +1741,7 @@ export const PixelParadiseView: React.FC<PixelParadiseViewProps> = ({
                   </button>
                 )}
               </div>
-              <p className="text-[11px] text-stone-500 font-bold mt-0.5 flex items-center gap-1.5">
+              <p className="text-[11px] text-stone-500 font-bold mt-0.5 flex items-center flex-wrap gap-1.5">
                 <span>
                   {focusedCompanion.action === 'swimming'
                     ? '🏊 正在湖裡暢游'
@@ -1437,6 +1753,14 @@ export const PixelParadiseView: React.FC<PixelParadiseViewProps> = ({
                 </span>
                 <span>·</span>
                 <span className="text-[#2E7D32]">體型成長 +{Math.round(focusedCompanion.growthBonus * 100)}%</span>
+                {focusedCompanion.speechBubble && (
+                  <>
+                    <span>·</span>
+                    <span className="text-amber-800 bg-amber-100/80 px-1.5 py-0.5 rounded-md border border-amber-200">
+                      {focusedCompanion.speechType === 'os' ? '💭' : '💬'} {focusedCompanion.speechBubble}
+                    </span>
+                  </>
+                )}
               </p>
             </div>
           </div>

@@ -366,7 +366,7 @@ export const PokemonClassView: React.FC<PokemonClassViewProps> = ({
       if (!targetIds.has(s.id)) return s;
 
       const newHistoryItem: PointHistoryItem = {
-        id: historyId,
+        id: `${historyId}_${s.id}`,
         timestamp,
         studentId: s.id,
         studentName: s.name,
@@ -421,7 +421,9 @@ export const PokemonClassView: React.FC<PokemonClassViewProps> = ({
       const newPoints = s.points - delta;
       const newPos = isPositive ? Math.max(0, (s.posPoints || 0) - delta) : s.posPoints || 0;
       const newNeg = !isPositive ? Math.max(0, (s.negPoints || 0) - Math.abs(delta)) : s.negPoints || 0;
-      const newHistory = (s.history || []).filter((h) => h.id !== historyId);
+      const newHistory = (s.history || []).filter(
+        (h) => h.id !== historyId && h.id !== `${historyId}_${s.id}`
+      );
 
       return {
         ...s,
@@ -748,8 +750,11 @@ export const PokemonClassView: React.FC<PokemonClassViewProps> = ({
 
             <div className="flex-1 overflow-hidden relative">
               <div className="animate-marquee gap-8 items-center text-xs font-bold">
-                {allEvents.map((ev) => (
-                  <span key={ev.id} className="inline-flex items-center gap-1.5 whitespace-nowrap">
+                {allEvents.map((ev, idx) => (
+                  <span
+                    key={`${ev.id || 'ev'}_${ev.studentId || 's'}_${ev.timestamp || 0}_${idx}`}
+                    className="inline-flex items-center gap-1.5 whitespace-nowrap"
+                  >
                     <span className="font-black text-[#5D4037]">{ev.studentName}</span>
                     <span
                       className={`font-mono font-black px-1.5 py-0.5 rounded-md ${
