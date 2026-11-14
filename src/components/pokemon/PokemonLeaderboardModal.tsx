@@ -151,7 +151,7 @@ export const PokemonLeaderboardModal: React.FC<PokemonLeaderboardModalProps> = (
                   <div className="flex items-center gap-1.5 text-xs">
                     <span className="text-emerald-700 font-bold">+{student.posPoints || 0}</span>
                     <span className="text-stone-300">/</span>
-                    <span className="text-rose-700 font-bold">-{student.negPoints || 0}</span>
+                    <span className="text-rose-700 font-bold">-{Math.abs(student.negPoints || 0)}</span>
                   </div>
                   <div className="font-mono font-black text-xl text-[#2E7D32] min-w-[60px] text-right">
                     {student.points} 分

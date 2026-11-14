@@ -50,7 +50,14 @@ export default function App() {
       if (saved) {
         const parsed = JSON.parse(saved);
         if (Array.isArray(parsed) && parsed.length > 0) {
-          return parsed;
+          return parsed.map((cls: ClassroomClass) => ({
+            ...cls,
+            students: (cls.students || []).map((st: Student) => ({
+              ...st,
+              posPoints: Math.max(0, st.posPoints || 0),
+              negPoints: Math.abs(st.negPoints || 0),
+            })),
+          }));
         }
       }
     } catch {
@@ -219,8 +226,8 @@ export default function App() {
             if (!targetIds.has(st.id)) return st;
 
             const newTotal = st.points + delta;
-            const newPos = delta > 0 ? st.posPoints + delta : st.posPoints;
-            const newNeg = delta < 0 ? st.negPoints + delta : st.negPoints;
+            const newPos = delta > 0 ? Math.max(0, st.posPoints || 0) + delta : Math.max(0, st.posPoints || 0);
+            const newNeg = delta < 0 ? Math.abs(st.negPoints || 0) + Math.abs(delta) : Math.abs(st.negPoints || 0);
 
             const historyEntry: PointHistoryItem = {
               id: `hist_${now}_${st.id}_${Math.random().toString(36).substring(2, 6)}`,
@@ -284,8 +291,8 @@ export default function App() {
             );
             const isPos = delta > 0;
             const revertedPoints = st.points - delta;
-            const revertedPos = isPos ? Math.max(0, (st.posPoints || 0) - delta) : st.posPoints || 0;
-            const revertedNeg = !isPos ? Math.max(0, (st.negPoints || 0) - Math.abs(delta)) : st.negPoints || 0;
+            const revertedPos = isPos ? Math.max(0, (st.posPoints || 0) - delta) : Math.max(0, st.posPoints || 0);
+            const revertedNeg = !isPos ? Math.max(0, Math.abs(st.negPoints || 0) - Math.abs(delta)) : Math.abs(st.negPoints || 0);
             updatedSt = {
               ...st,
               points: revertedPoints,

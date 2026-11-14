@@ -157,7 +157,7 @@ export const PokemonQuickBatchModal: React.FC<PokemonQuickBatchModalProps> = ({
                           referrerPolicy="no-referrer"
                         />
                         <div className="flex flex-col truncate">
-                          <span className="font-black text-base truncate">{student.name}</span>
+                          <span className="font-black text-lg sm:text-xl truncate text-[#4A2E25]">{student.name}</span>
                           <span className="text-xs text-stone-400 font-bold">
                             #{student.rollNo} · 現有 {student.points} 分
                           </span>

@@ -100,10 +100,10 @@ export const PointsModal: React.FC<PointsModalProps> = ({
           <div className="bg-[#5a3818] text-[#ffebb3] px-4 py-3 border-b-4 border-[#361f0d] flex justify-between items-center shrink-0 shadow-md">
             <div className="flex items-center gap-2.5">
               <span className="text-2xl">📜</span>
-              <h3 className="font-pixel text-sm sm:text-base text-[#ffd700] flex items-center gap-2">
+              <h3 className="font-pixel text-sm sm:text-base text-[#ffd700] flex items-center gap-2 flex-wrap">
                 <span>小黑板歷史紀錄 & 成長軌跡</span>
-                <span className="text-[#fed7aa]">- 【{primaryStudent.name}】</span>
-                <span className="text-[10px] bg-[#3b1f0b] text-[#ffd700] px-2 py-0.5 rounded border border-[#8b5a2b]">
+                <span className="font-sans text-xl sm:text-2xl font-black text-[#fed7aa]">- 【{primaryStudent.name}】</span>
+                <span className="text-xs bg-[#3b1f0b] text-[#ffd700] px-2 py-0.5 rounded border border-[#8b5a2b]">
                   #{primaryStudent.rollNo}
                 </span>
               </h3>
@@ -144,7 +144,7 @@ export const PointsModal: React.FC<PointsModalProps> = ({
                 </div>
                 <div className="bg-rose-50 p-2 rounded-lg border border-rose-200 text-center">
                   <div className="text-[10px] font-bold text-rose-800">⚠️ 違紀扣分</div>
-                  <div className="text-sm font-black text-rose-600 font-mono">-{primaryStudent.negPoints || 0}</div>
+                  <div className="text-sm font-black text-rose-600 font-mono">-{Math.abs(primaryStudent.negPoints || 0)}</div>
                 </div>
                 <div className="bg-stone-50 p-2 rounded-lg border border-stone-200 text-center">
                   <div className="text-[10px] font-bold text-stone-600">📝 紀錄筆數</div>
@@ -334,27 +334,27 @@ export const PointsModal: React.FC<PointsModalProps> = ({
         {/* Top Header: Student info & Direct Inline Custom Points Input */}
         <div className="bg-[#5a3818] text-[#ffebb3] px-3 sm:px-4 py-2.5 border-b-4 border-[#361f0d] flex flex-wrap items-center justify-between gap-3 shadow-md">
           {/* Left: Student Avatar + Name + RollNo */}
-          <div className="flex items-center gap-2.5 min-w-0">
+          <div className="flex items-center gap-3 min-w-0">
             {!isBatch && primaryStudent ? (
-              <div className="shrink-0 p-0.5 rounded-xl bg-amber-50/20 border-2 border-[#8b5a2b] shadow-xs">
-                <AvatarRenderer avatar={primaryStudent.avatar} name={primaryStudent.name} size={40} />
+              <div className="shrink-0 p-1 rounded-xl bg-amber-50/20 border-2 border-[#8b5a2b] shadow-xs">
+                <AvatarRenderer avatar={primaryStudent.avatar} name={primaryStudent.name} size={52} />
               </div>
             ) : (
-              <div className="w-10 h-10 rounded-xl bg-amber-500/20 border-2 border-amber-600 flex items-center justify-center shrink-0">
-                <PixelSprite name="star_full" size={24} />
+              <div className="w-12 h-12 rounded-xl bg-amber-500/20 border-2 border-amber-600 flex items-center justify-center shrink-0">
+                <PixelSprite name="star_full" size={28} />
               </div>
             )}
 
             <div className="min-w-0">
-              <div className="flex items-center gap-2">
-                <h3 className="font-pixel text-xs sm:text-sm text-[#ffd700] truncate">
+              <div className="flex items-center gap-2 flex-wrap">
+                <h3 className="font-black text-2xl sm:text-3xl text-[#ffd700] tracking-wide drop-shadow-sm leading-tight">
                   {isBatch
                     ? `批次評分 (${students.length}人)`
-                    : `【${primaryStudent?.name}】`}
+                    : primaryStudent?.name}
                 </h3>
                 {!isBatch && primaryStudent && (
                   <>
-                    <span className="font-pixel text-[10px] bg-[#3b1f0b] text-[#fed7aa] px-1.5 py-0.5 rounded border border-[#8b5a2b] shrink-0">
+                    <span className="font-mono text-xs sm:text-sm font-black bg-[#3b1f0b] text-[#fed7aa] px-2 py-0.5 rounded border border-[#8b5a2b] shrink-0">
                       #{primaryStudent.rollNo}
                     </span>
 
@@ -362,7 +362,7 @@ export const PointsModal: React.FC<PointsModalProps> = ({
                     <button
                       type="button"
                       onClick={() => setShowHistoryModal(true)}
-                      className="px-2 py-0.5 rounded-lg bg-amber-500/30 hover:bg-amber-500/50 text-[#ffd700] border border-amber-400 font-pixel text-[10px] flex items-center gap-1 active:scale-95 transition-all cursor-pointer ml-1"
+                      className="px-2.5 py-1 rounded-lg bg-amber-500/30 hover:bg-amber-500/50 text-[#ffd700] border border-amber-400 font-pixel text-[10px] flex items-center gap-1 active:scale-95 transition-all cursor-pointer ml-1"
                       title="點擊查看加減分明細，可擦除該分數紀錄 ✏️"
                     >
                       <span>✏️</span>
@@ -371,15 +371,20 @@ export const PointsModal: React.FC<PointsModalProps> = ({
                   </>
                 )}
               </div>
-              {!isBatch && primaryStudent && (
-                <div className="text-[11px] font-bold text-[#fed7aa] mt-0.5 flex items-center gap-1.5">
+              {!isBatch && primaryStudent ? (
+                <div className="text-xs sm:text-sm font-bold text-[#fed7aa] mt-1 flex items-center gap-2">
                   <span>目前得分：</span>
-                  <span className="text-[#ffd700] font-pixel text-[10px]">
+                  <span className="text-[#ffd700] font-mono font-black text-sm sm:text-base">
                     {primaryStudent.points} 分
                   </span>
-                  <span className="text-[10px] text-stone-300">
-                    (+{primaryStudent.posPoints || 0} / -{primaryStudent.negPoints || 0})
+                  <span className="text-xs text-stone-200">
+                    (+{primaryStudent.posPoints || 0} / -{Math.abs(primaryStudent.negPoints || 0)})
                   </span>
+                </div>
+              ) : (
+                <div className="text-xs sm:text-sm font-bold text-[#fed7aa] mt-1">
+                  {students.slice(0, 6).map((s) => s.name).join('、')}
+                  {students.length > 6 ? ` 等 ${students.length} 人` : ''}
                 </div>
               )}
             </div>

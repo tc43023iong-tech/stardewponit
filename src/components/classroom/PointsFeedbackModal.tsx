@@ -102,29 +102,29 @@ export const PointsFeedbackModal: React.FC<PointsFeedbackModalProps> = ({
         {/* 2. Target Student(s) Display */}
         <div className="flex flex-col items-center justify-center my-3">
           {!isBatch && primaryStudent ? (
-            <div className="flex items-center gap-3 bg-white/80 px-4 py-2 rounded-xl border border-stone-200 shadow-sm">
+            <div className="flex items-center gap-3.5 bg-white/85 px-5 py-2.5 rounded-xl border border-stone-200 shadow-sm">
               <div className="p-1 rounded-xl bg-[#faeed1] border-2 border-[#8b5a2b] shadow-xs">
-                <AvatarRenderer avatar={primaryStudent.avatar} name={primaryStudent.name} size={54} />
+                <AvatarRenderer avatar={primaryStudent.avatar} name={primaryStudent.name} size={60} />
               </div>
               <div className="text-left">
-                <span className="text-[11px] font-pixel text-stone-500 block">
+                <span className="text-xs sm:text-sm font-pixel font-bold text-stone-500 block">
                   #{primaryStudent.rollNo} 學號
                 </span>
-                <h3 className="font-extrabold text-lg text-[#3d240d] leading-tight">
+                <h3 className="font-black text-2xl sm:text-3xl text-[#3d240d] leading-tight tracking-tight">
                   {primaryStudent.name}
                 </h3>
               </div>
             </div>
           ) : (
-            <div className="flex flex-col items-center bg-white/80 px-4 py-2 rounded-xl border border-stone-200 shadow-sm w-full">
-              <div className="flex items-center -space-x-3 mb-1">
+            <div className="flex flex-col items-center bg-white/85 px-4 py-2.5 rounded-xl border border-stone-200 shadow-sm w-full">
+              <div className="flex items-center -space-x-3 mb-1.5">
                 {students.slice(0, 5).map((s) => (
                   <div key={s.id} className="p-0.5 rounded-full bg-white border-2 border-[#8b5a2b] shadow-xs">
-                    <AvatarRenderer avatar={s.avatar} name={s.name} size={36} />
+                    <AvatarRenderer avatar={s.avatar} name={s.name} size={40} />
                   </div>
                 ))}
               </div>
-              <span className="font-bold text-sm text-[#3d240d]">
+              <span className="font-black text-lg sm:text-xl text-[#3d240d]">
                 {students[0]?.name} 等共 {students.length} 位同學
               </span>
             </div>

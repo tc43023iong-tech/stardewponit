@@ -113,8 +113,8 @@ export function normalizeImportedClasses(
     className: cls.className || `班級 ${cIdx + 1}`,
     students: (cls.students || []).map((st: any, idx: number): Student => {
       const points = typeof st.points === 'number' ? st.points : 0;
-      const posPoints = typeof st.posPoints === 'number' ? st.posPoints : points > 0 ? points : 0;
-      const negPoints = typeof st.negPoints === 'number' ? st.negPoints : points < 0 ? Math.abs(points) : 0;
+      const posPoints = typeof st.posPoints === 'number' ? Math.max(0, st.posPoints) : points > 0 ? points : 0;
+      const negPoints = typeof st.negPoints === 'number' ? Math.abs(st.negPoints) : points < 0 ? Math.abs(points) : 0;
       const stardewAvatar = st.stardewAvatar || st.avatar || undefined;
       const avatar = st.avatar || stardewAvatar || undefined;
       const cardBg = resolveStudentCardBackground(st);
@@ -178,8 +178,8 @@ export function normalizeImportedCsv(
     if (!name) continue;
 
     const points = pointsIdx !== -1 ? parseInt(cols[pointsIdx], 10) || 0 : parseInt(cols[2], 10) || 0;
-    const posPoints = posIdx !== -1 ? parseInt(cols[posIdx], 10) || 0 : points > 0 ? points : 0;
-    const negPoints = negIdx !== -1 ? parseInt(cols[negIdx], 10) || 0 : points < 0 ? Math.abs(points) : 0;
+    const posPoints = posIdx !== -1 ? Math.max(0, parseInt(cols[posIdx], 10) || 0) : points > 0 ? points : 0;
+    const negPoints = negIdx !== -1 ? Math.abs(parseInt(cols[negIdx], 10) || 0) : points < 0 ? Math.abs(points) : 0;
 
     const pokemonId = pokeIdIdx !== -1 && cols[pokeIdIdx] ? parseInt(cols[pokeIdIdx], 10) : undefined;
     const pokemonAvatar = pokeAvatarIdx !== -1 && cols[pokeAvatarIdx] ? cols[pokeAvatarIdx].trim() : undefined;
@@ -256,8 +256,8 @@ export function buildClassroomExportBundle(classes: ClassroomClass[]) {
           rollNo: s.rollNo,
           name: s.name,
           points: s.points,
-          posPoints: s.posPoints || 0,
-          negPoints: s.negPoints || 0,
+          posPoints: Math.max(0, s.posPoints || 0),
+          negPoints: Math.abs(s.negPoints || 0),
           groupId: s.groupId,
           pokemonId: s.pokemonId || 25,
           pokemonAvatar: s.pokemonAvatar || '',

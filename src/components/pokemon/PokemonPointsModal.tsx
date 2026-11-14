@@ -79,10 +79,10 @@ export const PokemonPointsModal: React.FC<PokemonPointsModalProps> = ({
           <div className="bg-gradient-to-r from-[#8D6E63] to-[#6D4C41] py-4 px-6 md:px-8 flex justify-between items-center shrink-0 border-b-3 border-[#5D4037]">
             <div className="flex items-center gap-3 text-white">
               <span className="text-2xl">📜</span>
-              <h2 className="text-xl md:text-2xl font-black tracking-tight flex items-center gap-2">
+              <h2 className="text-xl md:text-2xl font-black tracking-tight flex items-center gap-2 flex-wrap">
                 <span>小黑板歷史紀錄 & 成長軌跡</span>
-                <span className="text-amber-200">- {singleStudent.name}</span>
-                <span className="font-mono text-xs px-2.5 py-0.5 rounded-full bg-white/20 text-white border border-white/30">
+                <span className="text-amber-200 text-2xl md:text-3xl font-black">- {singleStudent.name}</span>
+                <span className="font-mono text-sm px-2.5 py-0.5 rounded-full bg-white/20 text-white border border-white/30">
                   #{singleStudent.rollNo}
                 </span>
               </h2>
@@ -125,7 +125,7 @@ export const PokemonPointsModal: React.FC<PokemonPointsModalProps> = ({
                 </div>
                 <div className="bg-[#FFF1F2] p-2 rounded-xl border border-rose-200 text-center">
                   <div className="text-[10px] font-bold text-rose-800">⚠️ 違紀扣分</div>
-                  <div className="text-base font-black text-rose-600 font-mono">-{singleStudent.negPoints || 0}</div>
+                  <div className="text-base font-black text-rose-600 font-mono">-{Math.abs(singleStudent.negPoints || 0)}</div>
                 </div>
                 <div className="bg-stone-50 p-2 rounded-xl border border-stone-200 text-center">
                   <div className="text-[10px] font-bold text-stone-600">📝 紀錄筆數</div>
@@ -321,7 +321,7 @@ export const PokemonPointsModal: React.FC<PokemonPointsModalProps> = ({
           <div className="flex items-center gap-3.5">
             {singleStudent ? (
               <>
-                <div className="w-12 h-12 rounded-2xl bg-white border-2 border-[#D7CCC8] p-1 flex items-center justify-center shadow-xs">
+                <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-white border-2 border-[#D7CCC8] p-1 flex items-center justify-center shadow-xs shrink-0">
                   <img
                     src={resolveStudentAvatar(singleStudent)}
                     alt={singleStudent.name}
@@ -330,11 +330,11 @@ export const PokemonPointsModal: React.FC<PokemonPointsModalProps> = ({
                   />
                 </div>
                 <div>
-                  <div className="flex items-center gap-2">
-                    <h2 className="text-2xl font-black tracking-tight text-[#5D4037]">
+                  <div className="flex items-center gap-2.5 flex-wrap">
+                    <h2 className="text-3xl sm:text-4xl font-black tracking-tight text-[#4A2E25] leading-none">
                       {singleStudent.name}
                     </h2>
-                    <span className="font-mono text-xs px-2 py-0.5 rounded-full bg-white border border-[#D7CCC8] text-[#8D6E63]">
+                    <span className="font-mono text-sm font-black px-2.5 py-0.5 rounded-full bg-white border border-[#D7CCC8] text-[#8D6E63]">
                       #{singleStudent.rollNo}
                     </span>
 
@@ -349,25 +349,26 @@ export const PokemonPointsModal: React.FC<PokemonPointsModalProps> = ({
                       <span>歷程明細 ({singleStudent.history?.length || 0})</span>
                     </button>
                   </div>
-                  <p className="text-xs font-bold text-[#8D6E63] flex items-center gap-2 mt-0.5">
+                  <p className="text-sm font-bold text-[#8D6E63] flex items-center gap-2 mt-1.5">
                     <span>目前得分：</span>
-                    <span className="font-mono font-black text-sm text-[#2E7D32]">
+                    <span className="font-mono font-black text-base text-[#2E7D32]">
                       {singleStudent.points} 分
                     </span>
-                    <span>(正分 +{singleStudent.posPoints || 0} / 扣分 -{singleStudent.negPoints || 0})</span>
+                    <span>(正分 +{singleStudent.posPoints || 0} / 扣分 -{Math.abs(singleStudent.negPoints || 0)})</span>
                   </p>
                 </div>
               </>
             ) : (
               <div>
-                <h2 className="text-2xl font-black tracking-tight flex items-center gap-2">
+                <h2 className="text-2xl sm:text-3xl font-black tracking-tight flex items-center gap-2 flex-wrap">
                   <span>⚡ 批次評分</span>
-                  <span className="text-xs bg-[#FEF3C7] text-[#92400E] border border-[#F59E0B] font-black rounded-full px-3 py-0.5">
+                  <span className="text-sm bg-[#FEF3C7] text-[#92400E] border border-[#F59E0B] font-black rounded-full px-3 py-0.5">
                     已選取 {students.length} 位學生
                   </span>
                 </h2>
-                <p className="text-xs font-bold text-[#8D6E63] mt-0.5">
-                  所有選中的學生將同步套用相同的評分項目 🌱
+                <p className="text-sm font-black text-[#5D4037] mt-1">
+                  {students.slice(0, 6).map((s) => s.name).join('、')}
+                  {students.length > 6 ? ` 等 ${students.length} 人` : ''}
                 </p>
               </div>
             )}

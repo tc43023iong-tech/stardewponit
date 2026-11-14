@@ -143,13 +143,13 @@ export const PokemonPointsFeedbackModal: React.FC<PokemonPointsFeedbackModalProp
           {/* Student roll number and name */}
           <div className="flex items-center justify-center gap-2 mt-1">
             <span
-              className={`text-xs font-black px-2.5 py-0.5 rounded-full border shadow-xs ${
+              className={`text-sm font-black px-2.5 py-0.5 rounded-full border shadow-xs ${
                 isDark ? 'bg-slate-800 text-slate-300 border-slate-700' : 'bg-white text-[#8D6E63] border-[#D7CCC8]'
               }`}
             >
               #{student.rollNo}
             </span>
-            <h3 className={`font-black text-2xl sm:text-3xl tracking-tight ${isDark ? 'text-slate-100' : 'text-[#5D4037]'}`}>
+            <h3 className={`font-black text-3xl sm:text-4xl tracking-tight ${isDark ? 'text-slate-100' : 'text-[#5D4037]'}`}>
               {student.name}
             </h3>
           </div>

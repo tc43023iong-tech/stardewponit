@@ -243,7 +243,7 @@ export const PokemonStudentCard: React.FC<PokemonStudentCardProps> = ({
           >
             <span className="text-xs leading-none">{isNegKingMode ? '⚡' : '🎉'}</span>
             <span className="text-lg font-black leading-none tabular-nums">
-              {isNegKingMode ? `-${student.negPoints || 0}` : student.points}
+              {isNegKingMode ? `-${Math.abs(student.negPoints || 0)}` : student.points}
             </span>
           </div>
         </div>
@@ -331,7 +331,7 @@ export const PokemonStudentCard: React.FC<PokemonStudentCardProps> = ({
             }`}
           >
             <span className="font-extrabold text-[9px] opacity-75 leading-none mb-0.5">🩹 要注意</span>
-            <span className="font-black text-lg leading-tight tabular-nums">-{student.negPoints || 0}</span>
+            <span className="font-black text-lg leading-tight tabular-nums">-{Math.abs(student.negPoints || 0)}</span>
           </div>
         </div>
       </div>
