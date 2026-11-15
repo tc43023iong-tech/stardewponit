@@ -38,24 +38,26 @@ export const FarmShowcaseView: React.FC<FarmShowcaseViewProps> = ({
               🌾 星露谷班級豐收田園 (Classroom Farm)
             </h3>
             <p className="text-xs text-stone-700 font-bold">
-              每湊夠 100 分即解鎖全新 16-bit 農莊背景（100 → 1000 分共 10 種專屬背景）！點擊學生卡片即可進入實景農場、動物圖鑑與植物圖鑑！
+              每湊夠 50 分即解鎖全新 16-bit 農莊背景（50 → 1000 分共 20 種專屬背景）！點擊學生卡片即可進入實景農場、動物圖鑑與植物圖鑑！
             </p>
           </div>
         </div>
 
-        {/* 1000分 10-Background Progression Scale Legend */}
+        {/* 1000分 50-Point Progression Scale Legend */}
         <div className="flex items-center gap-1.5 text-[11px] font-bold text-[#5a3818] flex-wrap bg-[#f5e0b7] px-3 py-1.5 rounded-lg border border-[#c4a675]">
-          <span className="text-rose-800">🌧️ &lt;0荒蕪</span>
+          <span className="text-rose-800">🌧️ &lt;0烏鴉荒地</span>
           <span aria-hidden="true">·</span>
-          <span>🪵 0木屋</span>
+          <span>🪵 0起點</span>
+          <span aria-hidden="true">→</span>
+          <span>💠 50藍花</span>
           <span aria-hidden="true">→</span>
           <span>🌻 100向日葵</span>
           <span aria-hidden="true">→</span>
           <span>🏡 200紅屋牧場</span>
           <span aria-hidden="true">→</span>
-          <span>🍎 300水車果園</span>
+          <span>🍎 300果園</span>
           <span aria-hidden="true">→</span>
-          <span>🌿 400玻璃溫室</span>
+          <span>🌿 400溫室</span>
           <span aria-hidden="true">→</span>
           <span>🔮 500紫晶</span>
           <span aria-hidden="true">→</span>
@@ -67,7 +69,7 @@ export const FarmShowcaseView: React.FC<FarmShowcaseViewProps> = ({
           <span aria-hidden="true">→</span>
           <span>👑 900金宮</span>
           <span aria-hidden="true">→</span>
-          <span className="text-amber-900 font-black">✨ 1000極光仙境</span>
+          <span className="text-amber-900 font-black">✨ 1000極光 (每50分換1張!)</span>
         </div>
       </div>
 
@@ -120,16 +122,25 @@ export const FarmShowcaseView: React.FC<FarmShowcaseViewProps> = ({
                   </span>
                 </div>
 
-                {/* Pasture Foreground: Student Companion Sprite + Tier Crop Sprite (Zero blocky SVGs) */}
+                {/* Pasture Foreground: Negative score -> ONLY a lone crow; positive -> Companion + Tier Crop */}
                 <div className="relative z-10 flex items-end justify-center gap-3 my-auto pt-3 pointer-events-none">
-                  <div className="relative flex flex-col items-center group-hover:scale-110 transition-transform duration-200">
-                    <AvatarRenderer avatar={companionId} name={st.name} size={46} bare={true} />
-                    <div className="w-8 h-1.5 bg-black/45 rounded-full blur-[1px] -mt-1" />
-                  </div>
-                  <div className="relative flex flex-col items-center group-hover:scale-110 transition-transform duration-200">
-                    <AvatarRenderer avatar={artwork.showcaseCropId} name={crop.label} size={32} bare={true} />
-                    <div className="w-5 h-1 bg-black/40 rounded-full blur-[1px] -mt-0.5" />
-                  </div>
+                  {st.points < 0 ? (
+                    <div className="relative flex flex-col items-center group-hover:scale-110 transition-transform duration-200">
+                      <AvatarRenderer avatar="sdv_crow" name="田間烏鴉" size={44} bare={true} />
+                      <div className="w-7 h-1.5 bg-black/45 rounded-full blur-[1px] -mt-1" />
+                    </div>
+                  ) : (
+                    <>
+                      <div className="relative flex flex-col items-center group-hover:scale-110 transition-transform duration-200">
+                        <AvatarRenderer avatar={companionId} name={st.name} size={46} bare={true} />
+                        <div className="w-8 h-1.5 bg-black/45 rounded-full blur-[1px] -mt-1" />
+                      </div>
+                      <div className="relative flex flex-col items-center group-hover:scale-110 transition-transform duration-200">
+                        <AvatarRenderer avatar={artwork.showcaseCropId} name={crop.label} size={32} bare={true} />
+                        <div className="w-5 h-1 bg-black/40 rounded-full blur-[1px] -mt-0.5" />
+                      </div>
+                    </>
+                  )}
                 </div>
 
                 {/* Bottom Row: Farm Stage & Action */}

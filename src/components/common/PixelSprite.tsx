@@ -20,6 +20,7 @@ export type PixelSpriteType =
   | 'sunflower'
   | 'melon'
   | 'chicken'
+  | 'crow'
   | 'rabbit'
   | 'cow'
   | 'scarecrow'

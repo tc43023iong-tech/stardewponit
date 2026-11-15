@@ -55,6 +55,16 @@ interface WanderingAnimal {
   heartActive?: boolean;
 }
 
+const WITHERED_CROW_BLUEPRINT = {
+  id: 'sdv_crow',
+  name: '田間烏鴉 (Crow)',
+  subtitle: '等待農場放晴中',
+  quote: '嘎嘎…目前為負分陰雨期，動物夥伴都先回家躲雨了，趕快加分回到 0 分以上吧！',
+  unlockScore: -999,
+  url: 'https://stardewvalleywiki.com/mediawiki/images/en/f/fa/Crow.png',
+  spriteFallback: 'crow',
+};
+
 const SEASON_FILTERS: Array<{
   key: 'all' | '春季' | '夏季' | '秋季' | '冬季' | '傳奇四季';
   label: string;
@@ -97,8 +107,11 @@ export const StudentFarmDetailModal: React.FC<StudentFarmDetailModalProps> = ({
     ? []
     : LIVE_FARM_PLANTS_ROSTER.filter((p) => p.unlockScore <= student.points);
 
-  const activeAnimalBlueprints =
-    unlockedAnimals.length > 0 ? unlockedAnimals : [LIVE_FARM_ANIMALS_ROSTER[0]];
+  const activeAnimalBlueprints = isWithered
+    ? [WITHERED_CROW_BLUEPRINT]
+    : unlockedAnimals.length > 0
+    ? unlockedAnimals
+    : [LIVE_FARM_ANIMALS_ROSTER[0]];
 
   const defaultArtwork = getStudentFarmArtwork(student.points);
   const previewMilestone: FarmArtworkTier | undefined =
@@ -166,7 +179,7 @@ export const StudentFarmDetailModal: React.FC<StudentFarmDetailModalProps> = ({
         };
       });
     });
-  }, [student.points, activeAnimalBlueprints.length]);
+  }, [student.points, isWithered, activeAnimalBlueprints.length]);
 
   // Gentle animal walking tick simulation across the wide grass pasture
   useEffect(() => {
@@ -227,7 +240,7 @@ export const StudentFarmDetailModal: React.FC<StudentFarmDetailModalProps> = ({
     soundManager.playCorrect();
     setClickedAnimalNote(
       isWithered
-        ? `🌧️ 【${anim.name.split(' ')[0]}】淋著小雨縮成一團：「咕…好冷喔，快幫我加分讓農場放晴長出綠草吧！」`
+        ? `🐦‍⬛ 【田間烏鴉】：嘎嘎…目前為負分陰雨期，小雞與動物夥伴都先躲起來了，趕快加分回到 0 分以上吧！`
         : `💖 【${anim.name.split(' ')[0]}】歡快地叫喚了一聲：「${anim.quote}」`
     );
 
@@ -292,7 +305,7 @@ export const StudentFarmDetailModal: React.FC<StudentFarmDetailModalProps> = ({
 
   const unlockedBackgroundCount = isWithered
     ? 0
-    : FARM_BACKGROUND_MILESTONES.filter((m) => m.minPoints >= 100 && student.points >= m.minPoints)
+    : FARM_BACKGROUND_MILESTONES.filter((m) => m.minPoints >= 50 && student.points >= m.minPoints)
         .length;
 
   return (
@@ -322,8 +335,8 @@ export const StudentFarmDetailModal: React.FC<StudentFarmDetailModalProps> = ({
                 <span>{farmTier.tierName}</span>
                 <span className={isWithered ? 'text-rose-300' : 'text-[#86efac]'}>
                   {isWithered
-                    ? '· 🌧️ 陰雨荒蕪中，加油賺取正分就能重見晴空與嫩芽！'
-                    : `· 已解鎖 ${unlockedBackgroundCount}/10 張百分解鎖背景 · ${unlockedPlants.length}/16 種植物`}
+                    ? '· 🌧️ 陰雨荒蕪中（烏鴉巡田），加油賺取正分就能重見晴空與小動物！'
+                    : `· 已解鎖 ${unlockedBackgroundCount}/20 張五十分解鎖背景 · ${unlockedPlants.length}/16 種植物`}
                 </span>
               </p>
             </div>
@@ -380,7 +393,7 @@ export const StudentFarmDetailModal: React.FC<StudentFarmDetailModalProps> = ({
               <span className="tabular-nums">目前莊園積分：{student.points} 分 / 1000 分</span>
               {student.points >= 1000 ? (
                 <span className="bg-[#eab308] text-[#4a2800] text-[10px] px-2 py-0.5 rounded font-black">
-                  👑 1000分滿級傳奇！10大背景、15種動物與16種植物全解鎖！
+                  👑 1000分滿級傳奇！20大背景、15種動物與16種植物全解鎖！
                 </span>
               ) : isWithered ? (
                 <span className="text-[11px] text-rose-300 font-bold">
@@ -388,7 +401,7 @@ export const StudentFarmDetailModal: React.FC<StudentFarmDetailModalProps> = ({
                 </span>
               ) : (
                 <span className="text-[11px] text-[#fed7aa] font-bold">
-                  (動物 {unlockedAnimals.length}/15 · 植物 {unlockedPlants.length}/16 · 背景 {unlockedBackgroundCount}/10)
+                  (動物 {unlockedAnimals.length}/15 · 植物 {unlockedPlants.length}/16 · 背景 {unlockedBackgroundCount}/20)
                 </span>
               )}
             </div>
@@ -437,7 +450,7 @@ export const StudentFarmDetailModal: React.FC<StudentFarmDetailModalProps> = ({
                   : 'bg-[#6a4422] text-[#d6ba89] hover:text-white'
               }`}
             >
-              🖼️ 背景與擴建 (100~1000分)
+              🖼️ 背景與擴建 (50~1000分)
             </button>
             <button
               onClick={() => {
@@ -529,7 +542,7 @@ export const StudentFarmDetailModal: React.FC<StudentFarmDetailModalProps> = ({
                     </span>
                   ) : (
                     <span className="text-[11px] font-pixel text-[#15803d] bg-green-200/80 px-2 py-0.5 rounded border border-[#86efac]">
-                      👑 已解鎖全部 10 種滿級背景！
+                      👑 已解鎖全部 20 種滿級背景！
                     </span>
                   )}
                   <button
@@ -543,7 +556,7 @@ export const StudentFarmDetailModal: React.FC<StudentFarmDetailModalProps> = ({
                         : 'text-[#854d0e] hover:text-[#451a03]'
                     }`}
                   >
-                    查看全部背景 (100~1000) →
+                    查看全部背景 (50~1000) →
                   </button>
                 </div>
               </div>
@@ -749,17 +762,17 @@ export const StudentFarmDetailModal: React.FC<StudentFarmDetailModalProps> = ({
             </div>
           )}
 
-          {/* TAB 2: 100-POINT MILESTONE BACKGROUNDS & EXPANSION ROADMAP (0, 100, 200, ..., 1000) */}
+          {/* TAB 2: 50-POINT MILESTONE BACKGROUNDS & EXPANSION ROADMAP (0, 50, 100, ..., 1000) */}
           {activeTab === 'expansion' && (
             <div className="space-y-4">
               <div className="bg-[#ede0c2] p-3.5 rounded-xl border border-[#c4a675] text-xs text-stone-700 flex items-start gap-2.5">
                 <ImageIcon className="w-5 h-5 text-amber-700 shrink-0 mt-0.5" />
                 <div>
                   <span className="font-bold text-[#4a2800] block text-sm">
-                    🖼️ 每湊夠 100 分解鎖一張專屬農莊背景（100 → 1000 分共 10 種獨特背景）
+                    🖼️ 每湊夠 50 分解鎖一張專屬農莊背景（50 → 1000 分共 20 種獨特背景）
                   </span>
                   <p className="mt-0.5 text-xs text-[#5a3818]">
-                    從 0 分起步的原木小屋開始，每累積滿 100 分（100、200、300、400、500、600、700、800、900、1000）就會解鎖全新 16-bit 農莊風景與擴建設施！點擊任一「已解鎖」卡片即可切換至實景預覽。
+                    從 0 分起步的原木小屋開始，每累積滿 50 分（50、100、150、200 … 直至 1000 分）就會解鎖全新 16-bit 農莊風景與擴建設施！點擊任一「已解鎖」卡片即可切換至實景預覽。
                   </p>
                 </div>
               </div>
@@ -1037,7 +1050,7 @@ export const StudentFarmDetailModal: React.FC<StudentFarmDetailModalProps> = ({
         {/* Modal Bottom Footer */}
         <div className="bg-[#faeed1] px-4 py-3 border-t-2 border-[#c4a675] flex items-center justify-between gap-2">
           <span className="text-xs font-bold text-stone-600">
-            🌾 每滿 100 分解鎖新農場背景 (100~1000分) · 動物與植物圖鑑同步收錄於上方分頁
+            🌾 每滿 50 分解鎖新農場背景 (50~1000分) · 動物與植物圖鑑同步收錄於上方分頁
           </span>
           <button
             onClick={() => {

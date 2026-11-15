@@ -19,7 +19,7 @@ export const AvatarPickerModal: React.FC<AvatarPickerModalProps> = ({
   onClose,
   onSaveAvatar,
 }) => {
-  const [modalTab, setModalTab] = useState<'avatar' | 'cardBackground'>('cardBackground');
+  const [modalTab, setModalTab] = useState<'avatar' | 'cardBackground'>('avatar');
   const [selectedAvatar, setSelectedAvatar] = useState<string>(student.avatar || 'sdv_white_chicken');
   const [selectedCardBg, setSelectedCardBg] = useState<string>(student.cardBackground || 'auto');
   const [stardewSubFilter, setStardewSubFilter] = useState<'all' | 'animals' | 'villagers' | 'treasures'>('all');
@@ -168,7 +168,7 @@ export const AvatarPickerModal: React.FC<AvatarPickerModalProps> = ({
                 客製化學生風格：{student.name} (#{student.rollNo})
               </h3>
               <p className="text-[10px] text-[#fed7aa]">
-                提供 16 種星露谷像素卡片背景素材，點擊右方素材即可在此即時預覽卡片變換！
+                提供 {STARDEW_AVATARS.length} 款星露谷伙伴頭像與 16 種像素卡片背景素材，點選即可即時套用與預覽！
               </p>
             </div>
           </div>
@@ -189,20 +189,6 @@ export const AvatarPickerModal: React.FC<AvatarPickerModalProps> = ({
             <button
               onClick={() => {
                 soundManager.playClick();
-                setModalTab('cardBackground');
-              }}
-              className={`px-3 py-1.5 rounded-lg text-xs font-bold font-pixel flex items-center gap-1.5 cursor-pointer transition-colors ${
-                modalTab === 'cardBackground'
-                  ? 'bg-[#fabc3f] text-[#4a2800] shadow'
-                  : 'bg-[#6a4422] text-[#fed7aa] hover:bg-[#7c4f24]'
-              }`}
-            >
-              <Palette className="w-3.5 h-3.5" />
-              <span>🖼️ 卡片背景素材 (16款含5款全新像素素材)</span>
-            </button>
-            <button
-              onClick={() => {
-                soundManager.playClick();
                 setModalTab('avatar');
               }}
               className={`px-3 py-1.5 rounded-lg text-xs font-bold font-pixel flex items-center gap-1.5 cursor-pointer transition-colors ${
@@ -213,6 +199,20 @@ export const AvatarPickerModal: React.FC<AvatarPickerModalProps> = ({
             >
               <User className="w-3.5 h-3.5" />
               <span>🌾 星露谷伙伴頭像 ({STARDEW_AVATARS.length})</span>
+            </button>
+            <button
+              onClick={() => {
+                soundManager.playClick();
+                setModalTab('cardBackground');
+              }}
+              className={`px-3 py-1.5 rounded-lg text-xs font-bold font-pixel flex items-center gap-1.5 cursor-pointer transition-colors ${
+                modalTab === 'cardBackground'
+                  ? 'bg-[#fabc3f] text-[#4a2800] shadow'
+                  : 'bg-[#6a4422] text-[#fed7aa] hover:bg-[#7c4f24]'
+              }`}
+            >
+              <Palette className="w-3.5 h-3.5" />
+              <span>🖼️ 卡片背景素材 (16款含5款全新像素素材)</span>
             </button>
           </div>
 
