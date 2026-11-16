@@ -106,7 +106,7 @@ export const ClassHeader: React.FC<ClassHeaderProps> = ({
   };
 
   return (
-    <header className="sticky top-0 z-40 bg-[#4a2e13] border-b-4 border-[#2b1807] shadow-xl text-[#faeed1]">
+    <header className="relative z-40 bg-[#4a2e13] border-b-4 border-[#2b1807] shadow-xl text-[#faeed1]">
       {/* Upper Bar: Title, Class Selection, Tools & Audio */}
       <div className="max-w-7xl mx-auto px-3 sm:px-6 py-2.5 flex flex-wrap items-center justify-between gap-3">
         {/* Brand & Class Switcher */}
