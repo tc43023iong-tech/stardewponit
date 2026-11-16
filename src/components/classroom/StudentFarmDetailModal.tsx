@@ -65,6 +65,47 @@ const WITHERED_CROW_BLUEPRINT = {
   spriteFallback: 'crow',
 };
 
+const celebratedBadgeTiers = new Map<string, number>();
+
+const PixelFarmMasterBadge: React.FC<{ unlocked: boolean }> = ({ unlocked }) => (
+  <svg
+    width={44}
+    height={44}
+    viewBox="0 0 20 20"
+    shapeRendering="crispEdges"
+    className="shrink-0 select-none"
+    aria-hidden="true"
+  >
+    {/* Top pixel ribbon */}
+    <rect x="6" y="1" width="3" height="3" fill={unlocked ? '#dc2626' : '#78716c'} />
+    <rect x="11" y="1" width="3" height="3" fill={unlocked ? '#b91c1c' : '#57534e'} />
+    <rect x="8" y="2" width="4" height="2" fill={unlocked ? '#f59e0b' : '#a8a29e'} />
+
+    {/* Outer octagonal pixel medal rim */}
+    <rect x="5" y="4" width="10" height="2" fill={unlocked ? '#b45309' : '#57534e'} />
+    <rect x="3" y="6" width="14" height="8" fill={unlocked ? '#d97706' : '#78716c'} />
+    <rect x="5" y="14" width="10" height="3" fill={unlocked ? '#92400e' : '#44403c'} />
+    <rect x="7" y="17" width="6" height="2" fill={unlocked ? '#78350f' : '#292524'} />
+
+    {/* Bright inner gold face */}
+    <rect x="5" y="6" width="10" height="8" fill={unlocked ? '#fde047' : '#a8a29e'} />
+    <rect x="6" y="5" width="8" height="1" fill={unlocked ? '#fef08a' : '#d6d3d1'} />
+    <rect x="6" y="14" width="8" height="1" fill={unlocked ? '#f59e0b' : '#78716c'} />
+
+    {/* Left & right pixel wheat leaves */}
+    <rect x="4" y="8" width="1" height="4" fill={unlocked ? '#22c55e' : '#57534e'} />
+    <rect x="15" y="8" width="1" height="4" fill={unlocked ? '#22c55e' : '#57534e'} />
+
+    {/* Center Stardew Star / Sprout Gem */}
+    <rect x="9" y="6" width="2" height="2" fill={unlocked ? '#ffffff' : '#d6d3d1'} />
+    <rect x="7" y="8" width="6" height="2" fill={unlocked ? '#f97316' : '#78716c'} />
+    <rect x="8" y="10" width="4" height="2" fill={unlocked ? '#ea580c' : '#57534e'} />
+    <rect x="7" y="12" width="2" height="2" fill={unlocked ? '#f59e0b' : '#57534e'} />
+    <rect x="11" y="12" width="2" height="2" fill={unlocked ? '#f59e0b' : '#57534e'} />
+    <rect x="9" y="8" width="2" height="2" fill={unlocked ? '#fef9c3' : '#a8a29e'} />
+  </svg>
+);
+
 const SEASON_FILTERS: Array<{
   key: 'all' | '春季' | '夏季' | '秋季' | '冬季' | '傳奇四季';
   label: string;
@@ -91,13 +132,80 @@ export const StudentFarmDetailModal: React.FC<StudentFarmDetailModalProps> = ({
   >('all');
   const [previewMinPoints, setPreviewMinPoints] = useState<number | null>(null);
   const [isFullscreen, setIsFullscreen] = useState<boolean>(false);
+  const [justUnlockedBadge, setJustUnlockedBadge] = useState<boolean>(false);
   const modalContainerRef = useRef<HTMLDivElement>(null);
 
   const farmTier = getFarmTier(student.points);
   const cropInfo = getCropGrowth(student.points);
   const isWithered = student.points < 0;
-  const maxGoal = 1000;
+  const maxGoal = 1250;
   const progressPercent = Math.min(100, Math.round((Math.max(0, student.points) / maxGoal) * 100));
+
+  // 50-point multiple achievement badge ("農場達人") calculations
+  const badgeTier = student.points >= 50 ? Math.floor(student.points / 50) : 0;
+  const isExactMultipleOf50 = student.points >= 50 && student.points % 50 === 0;
+  const nextBadgeMilestone = (badgeTier + 1) * 50;
+  const pointsTowardNextBadge = student.points >= 0 ? student.points % 50 : 0;
+  const badgeCyclePercent = isExactMultipleOf50
+    ? 100
+    : Math.min(100, Math.round((pointsTowardNextBadge / 50) * 100));
+
+  const prevBadgeRef = useRef<{ studentId: string; tier: number }>({
+    studentId: student.id,
+    tier: badgeTier,
+  });
+
+  // Play special achievement unlock sound on modal mount (if exact 50-pt multiple not yet celebrated)
+  useEffect(() => {
+    if (isExactMultipleOf50 && celebratedBadgeTiers.get(student.id) !== badgeTier) {
+      celebratedBadgeTiers.set(student.id, badgeTier);
+      setJustUnlockedBadge(true);
+      const sfxTimer = setTimeout(() => {
+        soundManager.playAchievementUnlock();
+      }, 260);
+      const animTimer = setTimeout(() => {
+        setJustUnlockedBadge(false);
+      }, 3600);
+      return () => {
+        clearTimeout(sfxTimer);
+        clearTimeout(animTimer);
+      };
+    }
+  }, [student.id]);
+
+  // Play special achievement unlock sound & burst animation when crossing a 50-point multiple live
+  useEffect(() => {
+    const prev = prevBadgeRef.current;
+    if (prev.studentId !== student.id) {
+      prevBadgeRef.current = { studentId: student.id, tier: badgeTier };
+      return;
+    }
+
+    if (badgeTier > prev.tier && badgeTier >= 1) {
+      celebratedBadgeTiers.set(student.id, badgeTier);
+      setJustUnlockedBadge(true);
+      const sfxTimer = setTimeout(() => {
+        soundManager.playAchievementUnlock();
+      }, 180);
+      const animTimer = setTimeout(() => {
+        setJustUnlockedBadge(false);
+      }, 3600);
+      prevBadgeRef.current = { studentId: student.id, tier: badgeTier };
+      return () => {
+        clearTimeout(sfxTimer);
+        clearTimeout(animTimer);
+      };
+    }
+
+    if (badgeTier < prev.tier) {
+      if (badgeTier === 0) {
+        celebratedBadgeTiers.delete(student.id);
+      } else {
+        celebratedBadgeTiers.set(student.id, badgeTier);
+      }
+    }
+    prevBadgeRef.current = { studentId: student.id, tier: badgeTier };
+  }, [student.id, student.points, badgeTier]);
 
   // Filter animals and plants unlocked by student's current score
   const unlockedAnimals = isWithered
@@ -336,7 +444,7 @@ export const StudentFarmDetailModal: React.FC<StudentFarmDetailModalProps> = ({
                 <span className={isWithered ? 'text-rose-300' : 'text-[#86efac]'}>
                   {isWithered
                     ? '· 🌧️ 陰雨荒蕪中（烏鴉巡田），加油賺取正分就能重見晴空與小動物！'
-                    : `· 已解鎖 ${unlockedBackgroundCount}/20 張五十分解鎖背景 · ${unlockedPlants.length}/16 種植物`}
+                    : `· 已解鎖 ${unlockedBackgroundCount}/25 張五十分解鎖背景 · ${unlockedPlants.length}/16 種植物`}
                 </span>
               </p>
             </div>
@@ -385,15 +493,15 @@ export const StudentFarmDetailModal: React.FC<StudentFarmDetailModalProps> = ({
           </div>
         </div>
 
-        {/* 1000分 Score HUD Progress Bar & 4 Tab Switchers */}
+        {/* 1250分 Score HUD Progress Bar & 4 Tab Switchers */}
         <div className="bg-[#4a2e13] px-4 py-2 text-[#ffebb3] border-b-2 border-[#2b1807] flex flex-col gap-2">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div className="flex items-center gap-2 font-pixel text-xs text-[#ffd700]">
               <span aria-hidden="true">🪙</span>
-              <span className="tabular-nums">目前莊園積分：{student.points} 分 / 1000 分</span>
-              {student.points >= 1000 ? (
+              <span className="tabular-nums">目前莊園積分：{student.points} 分 / 1250 分</span>
+              {student.points >= 1250 ? (
                 <span className="bg-[#eab308] text-[#4a2800] text-[10px] px-2 py-0.5 rounded font-black">
-                  👑 1000分滿級傳奇！20大背景、15種動物與16種植物全解鎖！
+                  💎 1250分宇宙巔峰傳奇！25大豪華背景、15種動物與16種植物全解鎖！
                 </span>
               ) : isWithered ? (
                 <span className="text-[11px] text-rose-300 font-bold">
@@ -401,17 +509,17 @@ export const StudentFarmDetailModal: React.FC<StudentFarmDetailModalProps> = ({
                 </span>
               ) : (
                 <span className="text-[11px] text-[#fed7aa] font-bold">
-                  (動物 {unlockedAnimals.length}/15 · 植物 {unlockedPlants.length}/16 · 背景 {unlockedBackgroundCount}/20)
+                  (動物 {unlockedAnimals.length}/15 · 植物 {unlockedPlants.length}/16 · 背景 {unlockedBackgroundCount}/25)
                 </span>
               )}
             </div>
 
-            {/* Progress bar to 1000分 */}
+            {/* Progress bar to 1250分 */}
             <div className="flex items-center gap-3 flex-1 min-w-[180px] max-w-sm">
               <div className="w-full bg-[#2b1807] h-3.5 rounded-full overflow-hidden border border-[#8b5a2b] relative shadow-inner">
                 <div
                   className={`h-full transition-all duration-700 ${
-                    student.points >= 1000
+                    student.points >= 1250
                       ? 'bg-gradient-to-r from-amber-300 via-yellow-400 to-amber-500 animate-pulse'
                       : 'bg-gradient-to-r from-lime-400 to-emerald-500'
                   }`}
@@ -450,7 +558,7 @@ export const StudentFarmDetailModal: React.FC<StudentFarmDetailModalProps> = ({
                   : 'bg-[#6a4422] text-[#d6ba89] hover:text-white'
               }`}
             >
-              🖼️ 背景與擴建 (50~1000分)
+              🖼️ 背景與擴建 (50~1250分)
             </button>
             <button
               onClick={() => {
@@ -542,7 +650,7 @@ export const StudentFarmDetailModal: React.FC<StudentFarmDetailModalProps> = ({
                     </span>
                   ) : (
                     <span className="text-[11px] font-pixel text-[#15803d] bg-green-200/80 px-2 py-0.5 rounded border border-[#86efac]">
-                      👑 已解鎖全部 20 種滿級背景！
+                      💎 已解鎖全部 25 種滿級豪華背景！
                     </span>
                   )}
                   <button
@@ -556,9 +664,132 @@ export const StudentFarmDetailModal: React.FC<StudentFarmDetailModalProps> = ({
                         : 'text-[#854d0e] hover:text-[#451a03]'
                     }`}
                   >
-                    查看全部背景 (50~1000) →
+                    查看全部背景 (50~1250) →
                   </button>
                 </div>
+              </div>
+
+              {/* Dynamic Achievement Badge Display Area ("成就徽章" · 50分倍數解鎖發光「農場達人」) */}
+              <div
+                className={`border-2 px-3.5 py-2.5 rounded-xl flex flex-wrap items-center justify-between gap-3 transition-all duration-300 ${
+                  badgeTier >= 1
+                    ? justUnlockedBadge
+                      ? 'bg-gradient-to-r from-[#fef9c3] via-[#fef08a] to-[#fde68a] border-[#d97706] shadow-lg ring-2 ring-[#facc15]'
+                      : 'bg-gradient-to-r from-[#fffbeb] via-[#fef9c3] to-[#fef3c7] border-[#ca8a04] shadow-sm'
+                    : 'bg-[#ede0c2]/85 border-[#c4a675]'
+                }`}
+              >
+                <div className="flex items-center gap-3 min-w-0 flex-1">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (badgeTier >= 1) {
+                        soundManager.playAchievementUnlock();
+                        setJustUnlockedBadge(true);
+                        setTimeout(() => setJustUnlockedBadge(false), 1800);
+                      } else {
+                        soundManager.playTick();
+                      }
+                    }}
+                    title={
+                      badgeTier >= 1
+                        ? '點擊重溫「農場達人」成就獲得音效！'
+                        : '總分達 50 分倍數即可點亮徽章'
+                    }
+                    className={`relative p-1.5 shrink-0 cursor-pointer transition-transform active:scale-95 ${
+                      badgeTier >= 1
+                        ? `pixel-badge-master-frame ${justUnlockedBadge ? 'animate-pixel-badge-unlock' : ''}`
+                        : 'border-2 border-[#a8a29e] bg-[#e7e5e4]/80 opacity-75'
+                    }`}
+                  >
+                    <PixelFarmMasterBadge unlocked={badgeTier >= 1} />
+                    {badgeTier >= 1 && (
+                      <>
+                        <span
+                          aria-hidden="true"
+                          className="absolute -top-2 -left-1.5 text-[11px] text-amber-500 animate-pixel-sparkle pointer-events-none"
+                        >
+                          ✦
+                        </span>
+                        <span
+                          aria-hidden="true"
+                          className="absolute -bottom-1.5 -right-1.5 text-[11px] text-yellow-500 animate-pixel-sparkle pointer-events-none"
+                          style={{ animationDelay: '0.6s' }}
+                        >
+                          ✦
+                        </span>
+                      </>
+                    )}
+                  </button>
+
+                  <div className="min-w-0 flex-1">
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <span className="font-pixel text-[11px] font-bold text-[#5a3818]">
+                        🏅 成就徽章
+                      </span>
+                      {badgeTier >= 1 ? (
+                        <>
+                          <span className="font-pixel text-[11px] px-2 py-0.5 bg-[#5a3818] text-[#fde047] border border-[#b45309] shadow-xs">
+                            ✨ 農場達人 Lv.{badgeTier}
+                          </span>
+                          {isExactMultipleOf50 && (
+                            <span className="text-[11px] font-bold px-2 py-0.5 rounded bg-amber-500 text-white shadow-xs animate-pulse">
+                              🎉 達成 {student.points} 分滿格里程碑！
+                            </span>
+                          )}
+                          {justUnlockedBadge && (
+                            <span className="text-[11px] font-black text-[#b45309]">
+                              🎊 新徽章解鎖！
+                            </span>
+                          )}
+                        </>
+                      ) : (
+                        <span className="font-pixel text-[10px] px-2 py-0.5 bg-stone-300/80 text-stone-700 border border-stone-400">
+                          🔒 農場達人（未解鎖）
+                        </span>
+                      )}
+                    </div>
+
+                    <p className="text-xs font-bold mt-1 text-[#78350f]">
+                      {isWithered ? (
+                        <span className="text-rose-800">
+                          🌧️ 負分期間徽章暫時休眠中，回到 0 分以上並達到 50 分倍數即可點亮「農場達人」徽章！
+                        </span>
+                      ) : badgeTier >= 1 ? (
+                        <span>
+                          已於 <strong className="text-[#92400e]">{badgeTier * 50} 分</strong> 解鎖發光像素「農場達人」徽章（點擊左側徽章可重溫獲得音效）
+                        </span>
+                      ) : (
+                        <span>
+                          總分達到 <strong className="text-[#92400e]">50 分倍數</strong>（50、100、150...）即點亮發光像素「農場達人」徽章，目前還差{' '}
+                          <strong className="text-[#b45309]">{50 - student.points} 分</strong>！
+                        </span>
+                      )}
+                    </p>
+                  </div>
+                </div>
+
+                {/* Mini 50-point cycle progress indicator */}
+                {!isWithered && (
+                  <div className="flex flex-col items-end gap-1 shrink-0 min-w-[140px]">
+                    <div className="flex items-center justify-between w-full text-[10px] font-pixel font-bold text-[#78350f] gap-2">
+                      <span>{badgeTier >= 1 ? `下一階 ${nextBadgeMilestone} 分` : '解鎖進度 50 分'}</span>
+                      <span className="tabular-nums">
+                        {isExactMultipleOf50 ? '50/50' : `${pointsTowardNextBadge}/50`}
+                      </span>
+                    </div>
+                    <div className="w-full h-2.5 bg-[#3b1f0b] border border-[#8b5a2b] overflow-hidden">
+                      <div
+                        className={`h-full transition-all duration-500 ${
+                          badgeTier >= 1
+                            ? 'bg-gradient-to-r from-amber-300 via-yellow-400 to-amber-500'
+                            : 'bg-gradient-to-r from-lime-400 to-emerald-500'
+                        }`}
+                        style={{ width: `${badgeCyclePercent}%` }}
+                      />
+                    </div>
+                  </div>
+                )}
               </div>
 
               {/* Animal & Decor Interaction Dialogue Notice */}
@@ -657,7 +888,9 @@ export const StudentFarmDetailModal: React.FC<StudentFarmDetailModalProps> = ({
                       }
                       title={`${crop.label}（點擊查看）`}
                     >
-                      <AvatarRenderer avatar={crop.id} name={crop.label} size={28} bare={true} />
+                      <div className={isWithered && crop.id === 'sdv_crow' ? 'animate-crow-hop-flap' : ''}>
+                        <AvatarRenderer avatar={crop.id} name={crop.label} size={28} bare={true} />
+                      </div>
                     </button>
                   ))}
                   <button
@@ -711,19 +944,32 @@ export const StudentFarmDetailModal: React.FC<StudentFarmDetailModalProps> = ({
                           transform: `scaleX(${anim.direction})`,
                         }}
                       >
-                        <AvatarRenderer avatar={anim.id} name={anim.name} size={54} bare={true} />
+                        <div className={isWithered || anim.id === 'sdv_crow' ? 'animate-crow-hop-flap' : ''}>
+                          <AvatarRenderer avatar={anim.id} name={anim.name} size={54} bare={true} />
+                        </div>
                       </div>
 
-                      <div className="w-9 h-2 bg-black/30 rounded-full blur-[1px] -mt-1.5 pointer-events-none" />
+                      <div
+                        className={`w-9 h-2 bg-black/30 rounded-full blur-[1px] -mt-1.5 pointer-events-none ${
+                          isWithered || anim.id === 'sdv_crow' ? 'animate-crow-shadow' : ''
+                        }`}
+                      />
                     </div>
                   ))}
 
-                  {/* 1000分 Celebration Banner */}
-                  {student.points >= 1000 && (
+                  {/* 1250分 Celebration Banner */}
+                  {student.points >= 1250 ? (
                     <div className="absolute bottom-3 right-3 bg-[#2b1807]/90 border-2 border-[#fbbf24] px-3 py-1.5 rounded-xl shadow-lg flex items-center gap-2 pointer-events-none">
                       <Sparkles className="w-4 h-4 text-[#fde047]" />
                       <span className="font-pixel text-[11px] text-[#fde047] font-bold">
-                        👑 1000分傳奇仙境 · 全圖鑑全員大團圓！
+                        💎 1250分永恆宇宙神殿 · 25大豪華背景全制霸！
+                      </span>
+                    </div>
+                  ) : student.points >= 1000 && (
+                    <div className="absolute bottom-3 right-3 bg-[#2b1807]/90 border-2 border-[#fbbf24] px-3 py-1.5 rounded-xl shadow-lg flex items-center gap-2 pointer-events-none">
+                      <Sparkles className="w-4 h-4 text-[#fde047]" />
+                      <span className="font-pixel text-[11px] text-[#fde047] font-bold">
+                        👑 突破 1000 分傳奇！向 1250 分宇宙殿堂邁進！
                       </span>
                     </div>
                   )}
@@ -762,17 +1008,17 @@ export const StudentFarmDetailModal: React.FC<StudentFarmDetailModalProps> = ({
             </div>
           )}
 
-          {/* TAB 2: 50-POINT MILESTONE BACKGROUNDS & EXPANSION ROADMAP (0, 50, 100, ..., 1000) */}
+          {/* TAB 2: 50-POINT MILESTONE BACKGROUNDS & EXPANSION ROADMAP (0, 50, 100, ..., 1250) */}
           {activeTab === 'expansion' && (
             <div className="space-y-4">
               <div className="bg-[#ede0c2] p-3.5 rounded-xl border border-[#c4a675] text-xs text-stone-700 flex items-start gap-2.5">
                 <ImageIcon className="w-5 h-5 text-amber-700 shrink-0 mt-0.5" />
                 <div>
                   <span className="font-bold text-[#4a2800] block text-sm">
-                    🖼️ 每湊夠 50 分解鎖一張專屬農莊背景（50 → 1000 分共 20 種獨特背景）
+                    🖼️ 每湊夠 50 分解鎖一張專屬農莊背景（50 → 1250 分共 25 種獨特豪華背景）
                   </span>
                   <p className="mt-0.5 text-xs text-[#5a3818]">
-                    從 0 分起步的原木小屋開始，每累積滿 50 分（50、100、150、200 … 直至 1000 分）就會解鎖全新 16-bit 農莊風景與擴建設施！點擊任一「已解鎖」卡片即可切換至實景預覽。
+                    從 0 分起步的原木小屋開始，每累積滿 50 分（50、100、150 … 1000 … 直至超豪華 1250 分宇宙神殿）就會解鎖全新 16-bit 農莊風景與擴建設施！點擊任一「已解鎖」卡片即可切換至實景預覽。
                   </p>
                 </div>
               </div>
@@ -1050,7 +1296,7 @@ export const StudentFarmDetailModal: React.FC<StudentFarmDetailModalProps> = ({
         {/* Modal Bottom Footer */}
         <div className="bg-[#faeed1] px-4 py-3 border-t-2 border-[#c4a675] flex items-center justify-between gap-2">
           <span className="text-xs font-bold text-stone-600">
-            🌾 每滿 50 分解鎖新農場背景 (50~1000分) · 動物與植物圖鑑同步收錄於上方分頁
+            🌾 每滿 50 分解鎖新農場背景 (50~1250分) · 動物與植物圖鑑同步收錄於上方分頁
           </span>
           <button
             onClick={() => {

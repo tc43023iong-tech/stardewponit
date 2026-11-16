@@ -16,7 +16,8 @@ import {
   Upload, 
   RotateCcw,
   Sprout,
-  Plus
+  Plus,
+  Wind
 } from 'lucide-react';
 import { FESTIVAL_CALENDAR } from './FestivalCelebrationOverlay';
 
@@ -48,6 +49,8 @@ interface ClassHeaderProps {
   isTimeAuto?: boolean;
   effectsEnabled?: boolean;
   onToggleEffects?: () => void;
+  isAmbientEnabled?: boolean;
+  onToggleAmbient?: () => void;
 }
 
 export const ClassHeader: React.FC<ClassHeaderProps> = ({
@@ -78,6 +81,8 @@ export const ClassHeader: React.FC<ClassHeaderProps> = ({
   isTimeAuto = true,
   effectsEnabled = true,
   onToggleEffects,
+  isAmbientEnabled = true,
+  onToggleAmbient,
 }) => {
   const [showAddClassModal, setShowAddClassModal] = useState(false);
   const [newClassName, setNewClassName] = useState('');
@@ -327,6 +332,45 @@ export const ClassHeader: React.FC<ClassHeaderProps> = ({
           >
             <Music className="w-3.5 h-3.5" />
           </button>
+
+          {/* Nature Ambient Soundscape Toggle (鳥鳴 / 潺潺流水 / 黃昏微風 / 夜晚蟲鳴) */}
+          {onToggleAmbient && (
+            <button
+              type="button"
+              onClick={onToggleAmbient}
+              className={`px-2 py-1 text-xs border cursor-pointer rounded transition-all active:scale-95 flex items-center gap-1 ${
+                isAmbientEnabled && !isMuted
+                  ? 'bg-[#2e5927] border-[#559945] text-[#bbf7d0]'
+                  : 'bg-[#5a3818] border-[#8b5a2b] text-stone-400'
+              }`}
+              title={
+                isAmbientEnabled
+                  ? `自然環境音開啟中（目前：${
+                      timeOfDay === 'dawn'
+                        ? '🌅 清晨鳥鳴'
+                        : timeOfDay === 'sunset'
+                        ? '🌇 黃昏晚風與夕蟬'
+                        : timeOfDay === 'night'
+                        ? '🌙 夜晚蟲鳴與蛙聲'
+                        : '☀️ 白晝潺潺流水'
+                    }，依晨昏時段自動切換 — 點擊關閉）`
+                  : '自然環境音已關閉（鳥鳴／潺潺流水／蟲鳴 — 點擊開啟）'
+              }
+            >
+              <Wind className="w-3.5 h-3.5" />
+              <span className="hidden xl:inline font-bold text-[11px]">
+                {isAmbientEnabled
+                  ? timeOfDay === 'dawn'
+                    ? '鳥鳴'
+                    : timeOfDay === 'sunset'
+                    ? '晚風'
+                    : timeOfDay === 'night'
+                    ? '蟲鳴'
+                    : '流水'
+                  : '環境音關'}
+              </span>
+            </button>
+          )}
 
           {/* Paradise Mode Button "😆" Placed immediately to the right of Music button as requested */}
           {onToggleParadise && (

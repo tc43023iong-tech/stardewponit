@@ -20,6 +20,11 @@ import observatory850Bg from '../assets/images/farm_850_observatory_179473749866
 import legendary900Bg from '../assets/images/student_farm_legendary_1794665063858.jpg';
 import skygarden950Bg from '../assets/images/farm_950_skygarden_1794737498817.jpg';
 import celestial1000Bg from '../assets/images/student_farm_1000_celestial_1794666233761.jpg';
+import palace1050Bg from '../assets/images/farm_1050_palace_1794831909649.jpg';
+import skydynasty1100Bg from '../assets/images/farm_1100_skydynasty_1794831911252.jpg';
+import stardust1150Bg from '../assets/images/farm_1150_stardust_1794831911890.jpg';
+import imperial1200Bg from '../assets/images/farm_1200_imperial_1794831912502.jpg';
+import eternal1250Bg from '../assets/images/farm_1250_eternal_1794831913248.jpg';
 
 export interface FarmArtworkTier {
   level: number;
@@ -327,12 +332,88 @@ export const FARM_BACKGROUND_MILESTONES: FarmArtworkTier[] = [
   {
     level: 20,
     minPoints: 1000,
-    nextPoints: null,
+    nextPoints: 1050,
     bgUrl: celestial1000Bg,
     icon: '✨',
     showcaseCropId: 'sdv_stardrop',
     showcaseLabel: '星露極光仙境',
-    description: '達成 1000 分滿分傳奇！極光映照水晶宮殿與七彩瀑布，20 張專屬背景全解鎖！',
+    description: '達成 1000 分傳奇！極光映照水晶宮殿與七彩瀑布，繼續邁向 1250 分終極殿堂！',
+    unlockedCrops: [
+      { id: 'sdv_stardrop', label: '星之果實' },
+      { id: 'sdv_starfruit', label: '奢華楊桃' },
+      { id: 'sdv_ancient_fruit', label: '遠古水果' },
+      { id: 'sdv_sweet_gem_berry', label: '寶石甜莓' },
+    ],
+  },
+  {
+    level: 21,
+    minPoints: 1050,
+    nextPoints: 1100,
+    bgUrl: palace1050Bg,
+    icon: '🏯',
+    showcaseCropId: 'sdv_starfruit',
+    showcaseLabel: '翡翠水晶宮殿莊園',
+    description: '突破 1050 分！翡翠白玉宮殿與金色圓頂矗立雙層瀑布之上，配備稜鏡溫室與黃金作物雕像！',
+    unlockedCrops: [
+      { id: 'sdv_starfruit', label: '奢華楊桃' },
+      { id: 'sdv_ancient_fruit', label: '遠古水果' },
+      { id: 'sdv_stardrop', label: '星之果實' },
+    ],
+  },
+  {
+    level: 22,
+    minPoints: 1100,
+    nextPoints: 1150,
+    bgUrl: skydynasty1100Bg,
+    icon: '🪽',
+    showcaseCropId: 'sdv_ancient_fruit',
+    showcaseLabel: '浮空聖殿天宮莊',
+    description: '突破 1100 分！飛翼白玉水橋凌駕金色雲海，彩虹水晶橋連接天空浮空聖殿與梯田果園！',
+    unlockedCrops: [
+      { id: 'sdv_ancient_fruit', label: '遠古水果' },
+      { id: 'sdv_starfruit', label: '奢華楊桃' },
+      { id: 'sdv_stardrop', label: '星之果實' },
+    ],
+  },
+  {
+    level: 23,
+    minPoints: 1150,
+    nextPoints: 1200,
+    bgUrl: stardust1150Bg,
+    icon: '🌌',
+    showcaseCropId: 'sdv_sweet_gem_berry',
+    showcaseLabel: '星辰銀河皇冠莊園',
+    description: '突破 1150 分！紫金星雲與巨型銀河星環低垂天際，彩繪玻璃尖塔與發光水晶果林輝煌壯麗！',
+    unlockedCrops: [
+      { id: 'sdv_sweet_gem_berry', label: '寶石甜莓' },
+      { id: 'sdv_crystal_fruit', label: '冬日水晶果' },
+      { id: 'sdv_stardrop', label: '星之果實' },
+    ],
+  },
+  {
+    level: 24,
+    minPoints: 1200,
+    nextPoints: 1250,
+    bgUrl: imperial1200Bg,
+    icon: '🏛️',
+    showcaseCropId: 'sdv_starfruit',
+    showcaseLabel: '萬國朝聖黃金帝國',
+    description: '突破 1200 分！雙座黃金大鐘樓與三層凱旋大理石階梯氣勢磅礴，太陽神金雕噴泉閃耀夕陽！',
+    unlockedCrops: [
+      { id: 'sdv_starfruit', label: '奢華楊桃' },
+      { id: 'sdv_ancient_fruit', label: '遠古水果' },
+      { id: 'sdv_stardrop', label: '星之果實' },
+    ],
+  },
+  {
+    level: 25,
+    minPoints: 1250,
+    nextPoints: null,
+    bgUrl: eternal1250Bg,
+    icon: '💎',
+    showcaseCropId: 'sdv_stardrop',
+    showcaseLabel: '永恆神話宇宙神殿',
+    description: '達成 1250 分至高宇宙傳奇！七彩極光行星與稜鏡瀑布環繞水晶神殿，25 張豪華農莊背景全解鎖！',
     unlockedCrops: [
       { id: 'sdv_stardrop', label: '星之果實' },
       { id: 'sdv_starfruit', label: '奢華楊桃' },
@@ -360,7 +441,7 @@ export function getStudentFarmArtwork(points: number): FarmArtworkTier {
     return WITHERED_FARM_ARTWORK;
   }
 
-  // Pick the highest milestone unlocked at 50-point steps (0, 50, 100, ..., 1000)
+  // Pick the highest milestone unlocked at 50-point steps (0, 50, 100, ..., 1250)
   for (let i = FARM_BACKGROUND_MILESTONES.length - 1; i >= 0; i--) {
     if (points >= FARM_BACKGROUND_MILESTONES[i].minPoints) {
       return FARM_BACKGROUND_MILESTONES[i];

@@ -16,6 +16,7 @@ import {
   VolumeX,
   Search,
   Heart,
+  Sunrise,
   Sun,
   Sunset,
   Moon,
@@ -28,12 +29,24 @@ import autumnBg from '../../assets/images/paradise_wide_autumn_1794664724856.jpg
 import springBg from '../../assets/images/paradise_wide_spring_1794664721186.jpg';
 import summerBg from '../../assets/images/paradise_wide_summer_1794664723512.jpg';
 import winterBg from '../../assets/images/paradise_wide_winter_1794664724169.jpg';
+import sakuraBg from '../../assets/images/paradise_wide_sakura_1794831906929.jpg';
+import starlightBg from '../../assets/images/paradise_wide_starlight_1794831907811.jpg';
+import tropicalBg from '../../assets/images/paradise_wide_tropical_1794831908752.jpg';
+import skycastleBg from '../../assets/images/paradise_wide_skycastle_1794831909789.jpg';
 
 import { PointsFeedbackModal, PointsFeedbackData } from './PointsFeedbackModal';
 
 import { pokemonSound } from '../../utils/pokemonAudio';
 
-export type ParadiseSeason = 'autumn' | 'spring' | 'summer' | 'winter';
+export type ParadiseSeason =
+  | 'autumn'
+  | 'spring'
+  | 'summer'
+  | 'winter'
+  | 'sakura'
+  | 'starlight'
+  | 'tropical'
+  | 'skycastle';
 export type ParadiseTimeOfDay = 'day' | 'dawn' | 'sunset' | 'night';
 
 // World expansion multiplier & native 16:9 panoramic aspect ratio
@@ -151,6 +164,26 @@ const SEASON_INNER_OS: Record<ParadiseSeason, string[]> = {
     '（雪地裡的水晶果閃閃發光呢❄️）',
     '（好想喝一碗熱呼呼的玉米濃湯🍲）',
   ],
+  sakura: [
+    '（整片粉紅櫻花吹雪太浪漫了吧🌸）',
+    '（紅橋那邊的茶屋好像有賣三色糰子🍡）',
+    '（櫻花花瓣飄進池塘裡像粉紅小船一樣✨）',
+  ],
+  starlight: [
+    '（頭頂上的極光好像在跳舞耶🌌）',
+    '（紫色的水晶樹會微微發光，好神奇🔮）',
+    '（夜晚的星光市集熱鬧又夢幻✨）',
+  ],
+  tropical: [
+    '（薑島的海風吹起來好消暑喔🏝️）',
+    '（沙灘上的椰子樹跟鳳梨田超壯觀🍍）',
+    '（好想划著小木船去珊瑚礁探險🌊）',
+  ],
+  skycastle: [
+    '（站在軟綿綿的雲海上看風景太幸福了☁️）',
+    '（黃金涼亭的噴泉水聲好療癒呀⛲）',
+    '（這裡就是傳說中的天空植物園嗎🌈）',
+  ],
 };
 
 const NIGHT_INNER_OS: string[] = [
@@ -190,6 +223,7 @@ interface PixelParadiseViewProps {
   onClose?: () => void;
   isFullScreenMode?: boolean;
   initialTimeOfDay?: ParadiseTimeOfDay;
+  onTimeOfDayChange?: (tod: ParadiseTimeOfDay) => void;
 }
 
 export const PixelParadiseView: React.FC<PixelParadiseViewProps> = ({
@@ -199,6 +233,7 @@ export const PixelParadiseView: React.FC<PixelParadiseViewProps> = ({
   onChangeAvatar,
   onClose,
   initialTimeOfDay = 'day',
+  onTimeOfDayChange,
 }) => {
   // Season state: automatically initialized and switched according to current calendar month
   const [season, setSeason] = useState<ParadiseSeason>(() => getSeasonByMonth());
@@ -1045,7 +1080,7 @@ export const PixelParadiseView: React.FC<PixelParadiseViewProps> = ({
     setIsSearchOpen(false);
   };
 
-  // Select appropriate 16-bit pixel art map image by season
+  // Select appropriate 16-bit pixel art map image by scene/season
   const currentSeasonBg = useMemo(() => {
     switch (season) {
       case 'spring':
@@ -1054,6 +1089,14 @@ export const PixelParadiseView: React.FC<PixelParadiseViewProps> = ({
         return summerBg;
       case 'winter':
         return winterBg;
+      case 'sakura':
+        return sakuraBg;
+      case 'starlight':
+        return starlightBg;
+      case 'tropical':
+        return tropicalBg;
+      case 'skycastle':
+        return skycastleBg;
       case 'autumn':
       default:
         return autumnBg;
@@ -1068,6 +1111,14 @@ export const PixelParadiseView: React.FC<PixelParadiseViewProps> = ({
         return '☀️';
       case 'winter':
         return '❄️';
+      case 'sakura':
+        return '🌸';
+      case 'starlight':
+        return '✨';
+      case 'tropical':
+        return '🌺';
+      case 'skycastle':
+        return '☁️';
       case 'autumn':
       default:
         return '🍂';
@@ -1097,14 +1148,6 @@ export const PixelParadiseView: React.FC<PixelParadiseViewProps> = ({
       String(s.rollNo).includes(studentSearch)
   );
 
-  // Minimap viewport indicator box percentage
-  const worldRenderedW = worldBaseSize.w * zoomLevel;
-  const worldRenderedH = worldBaseSize.h * zoomLevel;
-  const viewBoxLeftPct = Math.max(0, Math.min(100, (-panOffset.x / worldRenderedW) * 100));
-  const viewBoxTopPct = Math.max(0, Math.min(100, (-panOffset.y / worldRenderedH) * 100));
-  const viewBoxWidthPct = Math.min(100, (viewportSize.w / worldRenderedW) * 100);
-  const viewBoxHeightPct = Math.min(100, (viewportSize.h / worldRenderedH) * 100);
-
   return (
     <div
       ref={containerRef}
@@ -1116,9 +1159,9 @@ export const PixelParadiseView: React.FC<PixelParadiseViewProps> = ({
           <span className="text-xl animate-bounce">😆</span>
           <div className="flex flex-col">
             <span className="font-pixel text-xs sm:text-sm text-[#FFEBB3] tracking-wide flex items-center gap-2">
-              <span>夥伴像素樂園 · {className}</span>
+              <span>{className}</span>
               <span className="text-[10px] bg-[#533010] px-2 py-0.5 rounded text-amber-200 border border-[#7a481c]">
-                {students.length} 位星露谷夥伴 · 廣闊探險大地圖
+                {students.length} 位星露谷夥伴
               </span>
             </span>
           </div>
@@ -1179,14 +1222,14 @@ export const PixelParadiseView: React.FC<PixelParadiseViewProps> = ({
             )}
           </div>
 
-          {/* Season Selector (春夏秋冬) */}
-          <div className="flex items-center bg-[#1b0f04] p-1 rounded-xl border border-[#7a481c]">
+          {/* Scene & Season Background Selector (8 rich panoramic maps) */}
+          <div className="flex items-center bg-[#1b0f04] p-1 rounded-xl border border-[#7a481c] flex-wrap gap-0.5">
             <button
               onClick={() => {
                 soundManager.playClick();
                 setSeason('spring');
               }}
-              className={`px-2 py-1 text-xs font-bold rounded-lg transition-all cursor-pointer ${
+              className={`px-2 py-1 text-xs font-bold rounded-lg transition-all cursor-pointer whitespace-nowrap shrink-0 ${
                 season === 'spring' ? 'bg-[#EC4899] text-white shadow-xs' : 'text-stone-300 hover:text-white'
               }`}
               title="切換至春天 (🌸 櫻花繽紛 · 像素地圖)"
@@ -1198,7 +1241,7 @@ export const PixelParadiseView: React.FC<PixelParadiseViewProps> = ({
                 soundManager.playClick();
                 setSeason('summer');
               }}
-              className={`px-2 py-1 text-xs font-bold rounded-lg transition-all cursor-pointer ${
+              className={`px-2 py-1 text-xs font-bold rounded-lg transition-all cursor-pointer whitespace-nowrap shrink-0 ${
                 season === 'summer' ? 'bg-[#16A34A] text-white shadow-xs' : 'text-stone-300 hover:text-white'
               }`}
               title="切換至夏天 (☀️ 綠意陽光 · 像素地圖)"
@@ -1210,7 +1253,7 @@ export const PixelParadiseView: React.FC<PixelParadiseViewProps> = ({
                 soundManager.playClick();
                 setSeason('autumn');
               }}
-              className={`px-2 py-1 text-xs font-bold rounded-lg transition-all cursor-pointer ${
+              className={`px-2 py-1 text-xs font-bold rounded-lg transition-all cursor-pointer whitespace-nowrap shrink-0 ${
                 season === 'autumn' ? 'bg-[#D97706] text-white shadow-xs ring-1 ring-amber-300' : 'text-stone-300 hover:text-white'
               }`}
               title="切換至秋天 (🍂 金黃楓林 · 像素地圖)"
@@ -1222,41 +1265,114 @@ export const PixelParadiseView: React.FC<PixelParadiseViewProps> = ({
                 soundManager.playClick();
                 setSeason('winter');
               }}
-              className={`px-2 py-1 text-xs font-bold rounded-lg transition-all cursor-pointer ${
+              className={`px-2 py-1 text-xs font-bold rounded-lg transition-all cursor-pointer whitespace-nowrap shrink-0 ${
                 season === 'winter' ? 'bg-[#0284C7] text-white shadow-xs' : 'text-stone-300 hover:text-white'
               }`}
               title="切換至冬天 (❄️ 銀白雪景 · 像素地圖)"
             >
               ❄️ 冬
             </button>
+            <button
+              onClick={() => {
+                soundManager.playClick();
+                setSeason('sakura');
+              }}
+              className={`px-2 py-1 text-xs font-bold rounded-lg transition-all cursor-pointer whitespace-nowrap shrink-0 ${
+                season === 'sakura' ? 'bg-[#F43F5E] text-white shadow-xs' : 'text-stone-300 hover:text-white'
+              }`}
+              title="切換至櫻花神社 (🏯 和風櫻吹雪公園)"
+            >
+              🏯 櫻花谷
+            </button>
+            <button
+              onClick={() => {
+                soundManager.playClick();
+                setSeason('starlight');
+              }}
+              className={`px-2 py-1 text-xs font-bold rounded-lg transition-all cursor-pointer whitespace-nowrap shrink-0 ${
+                season === 'starlight' ? 'bg-[#7C3AED] text-white shadow-xs' : 'text-stone-300 hover:text-white'
+              }`}
+              title="切換至星光魔法谷 (🌌 極光星夜結晶市集)"
+            >
+              🌌 星光谷
+            </button>
+            <button
+              onClick={() => {
+                soundManager.playClick();
+                setSeason('tropical');
+              }}
+              className={`px-2 py-1 text-xs font-bold rounded-lg transition-all cursor-pointer whitespace-nowrap shrink-0 ${
+                season === 'tropical' ? 'bg-[#0D9488] text-white shadow-xs' : 'text-stone-300 hover:text-white'
+              }`}
+              title="切換至薑島度假村 (🏝️ 碧海椰林熱帶沙灘)"
+            >
+              🏝️ 薑島
+            </button>
+            <button
+              onClick={() => {
+                soundManager.playClick();
+                setSeason('skycastle');
+              }}
+              className={`px-2 py-1 text-xs font-bold rounded-lg transition-all cursor-pointer whitespace-nowrap shrink-0 ${
+                season === 'skycastle' ? 'bg-[#0EA5E9] text-white shadow-xs' : 'text-stone-300 hover:text-white'
+              }`}
+              title="切換至雲端空中花園 (☁️ 浮空大理石雲海花園)"
+            >
+              ☁️ 雲端園
+            </button>
           </div>
 
           {/* Time of Day Lighting Toggle */}
           <div className="hidden sm:flex items-center bg-[#1b0f04] p-1 rounded-xl border border-[#7a481c]">
             <button
-              onClick={() => setTimeOfDay('day')}
+              onClick={() => {
+                soundManager.playClick();
+                setTimeOfDay('dawn');
+                onTimeOfDayChange?.('dawn');
+              }}
+              className={`p-1 text-xs rounded-lg cursor-pointer ${
+                timeOfDay === 'dawn' ? 'bg-rose-400 text-stone-900 shadow-xs' : 'text-stone-300 hover:text-white'
+              }`}
+              title="清晨微光 (鳥鳴)"
+            >
+              <Sunrise className="w-3.5 h-3.5" />
+            </button>
+            <button
+              onClick={() => {
+                soundManager.playClick();
+                setTimeOfDay('day');
+                onTimeOfDayChange?.('day');
+              }}
               className={`p-1 text-xs rounded-lg cursor-pointer ${
                 timeOfDay === 'day' ? 'bg-amber-500 text-stone-900 shadow-xs' : 'text-stone-300 hover:text-white'
               }`}
-              title="暖陽白晝"
+              title="暖陽白晝 (流水)"
             >
               <Sun className="w-3.5 h-3.5" />
             </button>
             <button
-              onClick={() => setTimeOfDay('sunset')}
+              onClick={() => {
+                soundManager.playClick();
+                setTimeOfDay('sunset');
+                onTimeOfDayChange?.('sunset');
+              }}
               className={`p-1 text-xs rounded-lg cursor-pointer ${
                 timeOfDay === 'sunset' ? 'bg-orange-600 text-white shadow-xs' : 'text-stone-300 hover:text-white'
               }`}
-              title="夕陽暮色"
+              title="夕陽暮色 (晚風與夕蟬)"
             >
               <Sunset className="w-3.5 h-3.5" />
             </button>
             <button
-              onClick={() => setTimeOfDay('night')}
+              onClick={() => {
+                soundManager.playClick();
+                setTimeOfDay('night');
+                onTimeOfDayChange?.('night');
+              }}
               className={`p-1 text-xs rounded-lg cursor-pointer ${
                 timeOfDay === 'night' ? 'bg-indigo-600 text-white shadow-xs' : 'text-stone-300 hover:text-white'
               }`}
-              title="螢火星夜"
+              title="螢火星夜 (蟲鳴與蛙聲)"
             >
               <Moon className="w-3.5 h-3.5" />
             </button>
@@ -1405,51 +1521,6 @@ export const PixelParadiseView: React.FC<PixelParadiseViewProps> = ({
           if (isSearchOpen) setIsSearchOpen(false);
         }}
       >
-        {/* Interactive Corner Minimap (16:9 matching world map) */}
-        <div
-          className="hidden sm:block absolute bottom-3 right-3 z-30 w-44 aspect-video rounded-xl bg-[#2b1807]/88 border-2 border-[#a16207] shadow-2xl overflow-hidden cursor-pointer group"
-          onPointerDown={(e) => {
-            e.stopPropagation();
-            const rect = e.currentTarget.getBoundingClientRect();
-            const xPct = ((e.clientX - rect.left) / rect.width) * 100;
-            const yPct = ((e.clientY - rect.top) / rect.height) * 100;
-            setIsFollowingCamera(false);
-            focusOnCoordinates(xPct, yPct, Math.max(minZoom * 1.35, zoomLevel));
-          }}
-          title="點擊小地圖快速移動視角（可拖曳地圖自由探索）"
-        >
-          <img
-            src={currentSeasonBg}
-            alt="Minimap"
-            referrerPolicy="no-referrer"
-            className="w-full h-full object-fill opacity-85 pointer-events-none"
-          />
-          {/* Live Companion Dots on Minimap */}
-          {companions.map((c) => (
-            <div
-              key={`dot-${c.id}`}
-              className={`absolute w-1.5 h-1.5 rounded-full pointer-events-none ${
-                c.id === focusedCompanionId
-                  ? 'bg-amber-300 ring-2 ring-white z-20 scale-150'
-                  : c.isAquatic
-                  ? 'bg-cyan-300'
-                  : 'bg-lime-300'
-              }`}
-              style={{ left: `${c.x}%`, top: `${c.y}%`, transform: 'translate(-50%, -50%)' }}
-            />
-          ))}
-          {/* Current Viewport Frame */}
-          <div
-            className="absolute border-2 border-white/90 bg-white/10 pointer-events-none shadow-inner"
-            style={{
-              left: `${viewBoxLeftPct}%`,
-              top: `${viewBoxTopPct}%`,
-              width: `${viewBoxWidthPct}%`,
-              height: `${viewBoxHeightPct}%`,
-            }}
-          />
-        </div>
-
         {/* Expanded Pan & Zoom World Layer (True 16:9 panoramic pixel world) */}
         <div
           className={`absolute top-0 left-0 origin-top-left ${

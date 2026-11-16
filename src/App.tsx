@@ -89,6 +89,8 @@ export default function App() {
   // Sound & Music state
   const [isMuted, setIsMuted] = useState(soundManager.isMuted);
   const [isMusicPlaying, setIsMusicPlaying] = useState(soundManager.isMusicPlaying);
+  const [isAmbientEnabled, setIsAmbientEnabled] = useState(soundManager.isAmbientEnabled);
+  const [paradiseTimeOfDay, setParadiseTimeOfDay] = useState<'dawn' | 'day' | 'sunset' | 'night' | null>(null);
 
   // Monthly Festival Celebration state (auto-determined by real month or manually selected)
   const [festivalForcedMonth, setFestivalForcedMonth] = useState<number | null>(() => {
@@ -193,6 +195,26 @@ export default function App() {
   const handleToggleMusic = () => {
     const active = soundManager.toggleMusic();
     setIsMusicPlaying(active);
+  };
+
+  const handleToggleAmbient = () => {
+    soundManager.playClick();
+    const active = soundManager.toggleAmbient();
+    setIsAmbientEnabled(active);
+    const activeTod = activeTab === 'paradise' && paradiseTimeOfDay ? paradiseTimeOfDay : timeOfDay;
+    const todLabel =
+      activeTod === 'dawn'
+        ? '🌅 清晨鳥鳴與微風'
+        : activeTod === 'sunset'
+        ? '🌇 黃昏晚風與夕蟬'
+        : activeTod === 'night'
+        ? '🌙 夜晚蟲鳴與蛙聲'
+        : '☀️ 白晝潺潺流水';
+    showStardewToast(
+      active
+        ? `🌿 已開啟星露谷自然環境音（目前聲軌：${todLabel}）`
+        : '🔇 已關閉星露谷自然環境音效。'
+    );
   };
 
   const currentClass = classes.find((c) => c.id === currentClassId) || classes[0];
@@ -471,8 +493,31 @@ export default function App() {
     localStorage.setItem('stardew_theme_manual_locked', 'true');
   };
 
+  // Clear Paradise local override when switching away from Paradise or toggling global timeOfDay
+  useEffect(() => {
+    if (activeTab !== 'paradise') {
+      setParadiseTimeOfDay(null);
+    }
+  }, [activeTab]);
+
+  // Automatically sync Stardew ambient nature soundscape with appMode & effective timeOfDay
+  const effectiveAmbientTimeOfDay =
+    activeTab === 'paradise' && paradiseTimeOfDay ? paradiseTimeOfDay : timeOfDay;
+
+  useEffect(() => {
+    if (appMode === 'stardew' && !isMuted && isAmbientEnabled) {
+      soundManager.startAmbient(effectiveAmbientTimeOfDay);
+    } else {
+      soundManager.stopAmbient();
+    }
+    return () => {
+      soundManager.stopAmbient();
+    };
+  }, [appMode, effectiveAmbientTimeOfDay, isMuted, isAmbientEnabled]);
+
   const handleToggleTimeOfDay = () => {
     soundManager.playClick();
+    setParadiseTimeOfDay(null);
     const cycle: ('auto' | 'dawn' | 'day' | 'sunset' | 'night')[] = ['auto', 'dawn', 'day', 'sunset', 'night'];
     const currentMode = isTimeAuto ? 'auto' : timeOfDay;
     const currentIndex = cycle.indexOf(currentMode);
@@ -729,11 +774,13 @@ export default function App() {
         }}
         activeFestivalMonth={festivalForcedMonth}
         onOpenFestivalSelector={() => setIsFestivalSelectorOpen(true)}
-        timeOfDay={timeOfDay}
+        timeOfDay={effectiveAmbientTimeOfDay}
         onToggleTimeOfDay={handleToggleTimeOfDay}
         isTimeAuto={isTimeAuto}
         effectsEnabled={effectsEnabled}
         onToggleEffects={handleToggleEffects}
+        isAmbientEnabled={isAmbientEnabled}
+        onToggleAmbient={handleToggleAmbient}
       />
 
       {/* View Content Body */}
@@ -786,6 +833,7 @@ export default function App() {
             onChangeAvatar={(st) => setAvatarPickerStudent(st)}
             onClose={() => setActiveTab('students')}
             initialTimeOfDay={timeOfDay}
+            onTimeOfDayChange={(tod) => setParadiseTimeOfDay(tod)}
           />
         )}
       </main>
@@ -843,17 +891,21 @@ export default function App() {
         />
       )}
 
-      {inspectFarmStudent && (
-        <StudentFarmDetailModal
-          student={inspectFarmStudent}
-          onClose={() => setInspectFarmStudent(null)}
-          onQuickAdd={handleQuickAdd}
-          onOpenPointsModal={(st) => {
-            setInspectFarmStudent(null);
-            setPointsModalStudents([st]);
-          }}
-        />
-      )}
+      {inspectFarmStudent && (() => {
+        const liveInspectFarmStudent =
+          currentClass.students.find((s) => s.id === inspectFarmStudent.id) || inspectFarmStudent;
+        return (
+          <StudentFarmDetailModal
+            student={liveInspectFarmStudent}
+            onClose={() => setInspectFarmStudent(null)}
+            onQuickAdd={handleQuickAdd}
+            onOpenPointsModal={(st) => {
+              setInspectFarmStudent(null);
+              setPointsModalStudents([st]);
+            }}
+          />
+        );
+      })()}
     </div>
   );
 }
