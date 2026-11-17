@@ -249,8 +249,8 @@ export const StudentCard: React.FC<StudentCardProps> = ({
           </div>
         </div>
 
-        {/* Bottom Actions: "⭐ 評分", "🎨 風格", "🏡" */}
-        <div className="pt-1.5 border-t border-[#dfcca4] flex items-center gap-2">
+        {/* Bottom Actions: "⭐ 評分", "🎨 風格", "🏡", "🏠" */}
+        <div className="pt-1.5 border-t border-[#dfcca4] flex items-center gap-1.5">
           <button
             type="button"
             onClick={(e) => {
@@ -258,11 +258,11 @@ export const StudentCard: React.FC<StudentCardProps> = ({
               soundManager.playClick();
               onOpenPointsModal(student);
             }}
-            className="pixel-btn-gold flex-1 py-1.5 px-2 text-xs font-bold rounded-lg flex items-center justify-center gap-1 cursor-pointer shadow-md active:scale-95 transition-all"
+            className="pixel-btn-gold flex-1 min-w-0 py-1.5 px-1.5 text-xs font-bold rounded-lg flex items-center justify-center gap-1 cursor-pointer shadow-md active:scale-95 transition-all"
             title="開啟課堂加扣分評定"
           >
-            <Star className="w-3.5 h-3.5 fill-[#633300]" />
-            <span>評分</span>
+            <Star className="w-3.5 h-3.5 fill-[#633300] shrink-0" />
+            <span className="truncate">評分</span>
           </button>
 
           <button
@@ -286,7 +286,7 @@ export const StudentCard: React.FC<StudentCardProps> = ({
                 soundManager.playCorrect();
                 onOpenFarmDetail(student);
               }}
-              className="pixel-btn-green py-1.5 px-2 text-xs font-bold rounded-lg flex items-center justify-center cursor-pointer shadow-md active:scale-95 transition-all text-white shrink-0"
+              className="pixel-btn-green py-1.5 px-1.5 text-xs font-bold rounded-lg flex items-center justify-center cursor-pointer shadow-md active:scale-95 transition-all text-white shrink-0"
               title="走進該同學的專屬農場，觀賞漫步動物與植物"
             >
               <span>🏡</span>
@@ -301,7 +301,7 @@ export const StudentCard: React.FC<StudentCardProps> = ({
                 soundManager.playCorrect();
                 onOpenRoomDetail(student);
               }}
-              className="bg-[#b45309] hover:bg-[#92400e] border-2 border-[#78350f] py-1.5 px-2 text-xs font-bold rounded-lg flex items-center justify-center cursor-pointer shadow-md active:scale-95 transition-all text-white shrink-0"
+              className="bg-[#b45309] hover:bg-[#92400e] border-2 border-[#78350f] py-1.5 px-1.5 text-xs font-bold rounded-lg flex items-center justify-center cursor-pointer shadow-md active:scale-95 transition-all text-white shrink-0"
               title="走進該同學的專屬溫馨房間（每50分升級裝潢！）"
             >
               <span>🏠</span>

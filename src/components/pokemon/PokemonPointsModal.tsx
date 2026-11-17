@@ -73,7 +73,17 @@ export const PokemonPointsModal: React.FC<PokemonPointsModalProps> = ({
     const range = Math.max(1, maxVal - minVal);
 
     return (
-      <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-5 bg-black/60 backdrop-blur-sm animate-fade-in select-none">
+      <div
+        onMouseDown={(e) => {
+          e.currentTarget.dataset.backdropDown = e.target === e.currentTarget ? '1' : '0';
+        }}
+        onClick={(e) => {
+          if (e.target === e.currentTarget && e.currentTarget.dataset.backdropDown === '1') {
+            setShowHistoryModal(false);
+          }
+        }}
+        className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-5 bg-black/60 backdrop-blur-sm animate-fade-in select-none"
+      >
         <div className="bg-[#FFFDF9] rounded-[2.5rem] border-4 border-[#8D6E63] shadow-2xl max-w-5xl w-full max-h-[92vh] flex flex-col overflow-hidden text-[#5D4037]">
           {/* Header */}
           <div className="bg-gradient-to-r from-[#8D6E63] to-[#6D4C41] py-4 px-6 md:px-8 flex justify-between items-center shrink-0 border-b-3 border-[#5D4037]">
@@ -314,7 +324,17 @@ export const PokemonPointsModal: React.FC<PokemonPointsModalProps> = ({
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-5 bg-black/60 backdrop-blur-sm animate-fade-in select-none">
+    <div
+      onMouseDown={(e) => {
+        e.currentTarget.dataset.backdropDown = e.target === e.currentTarget ? '1' : '0';
+      }}
+      onClick={(e) => {
+        if (e.target === e.currentTarget && e.currentTarget.dataset.backdropDown === '1') {
+          onClose();
+        }
+      }}
+      className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-5 bg-black/60 backdrop-blur-sm animate-fade-in select-none"
+    >
       <div className="bg-[#FFFDF9] rounded-[2.5rem] border-4 border-[#8D6E63] shadow-2xl max-w-4xl w-full max-h-[92vh] flex flex-col overflow-hidden text-[#5D4037]">
         {/* Top Header */}
         <div className="bg-[#FFF3E0] py-3.5 px-6 md:px-8 flex justify-between items-center border-b-3 border-[#D7CCC8] shrink-0">

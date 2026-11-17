@@ -69,7 +69,17 @@ export const PokemonQuickBatchModal: React.FC<PokemonQuickBatchModalProps> = ({
   const nonZeroCount = Object.values(deltas).filter((v) => v !== 0).length;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in">
+    <div
+      onMouseDown={(e) => {
+        e.currentTarget.dataset.backdropDown = e.target === e.currentTarget ? '1' : '0';
+      }}
+      onClick={(e) => {
+        if (e.target === e.currentTarget && e.currentTarget.dataset.backdropDown === '1') {
+          onClose();
+        }
+      }}
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in"
+    >
       <div className="bg-[#FFFDF9] rounded-3xl border-4 border-[#8D6E63] shadow-2xl max-w-4xl w-full max-h-[90vh] flex flex-col overflow-hidden text-[#5D4037]">
         {/* Header */}
         <div className="bg-[#FFF3E0] py-4 px-6 md:px-8 flex justify-between items-center border-b-3 border-[#D7CCC8] shrink-0">

@@ -109,7 +109,7 @@ export const ClassHeader: React.FC<ClassHeaderProps> = ({
   return (
     <header className="relative z-40 bg-[#4a2e13] border-b-4 border-[#2b1807] shadow-xl text-[#faeed1]">
       {/* Upper Bar: Title, Class Selection, Tools & Audio */}
-      <div className="max-w-7xl mx-auto px-3 sm:px-6 py-2.5 flex flex-wrap items-center justify-between gap-3">
+      <div className="max-w-[1560px] mx-auto px-3 sm:px-6 py-2.5 flex flex-wrap items-center justify-between gap-3">
         {/* Brand & Class Switcher */}
         <div className="flex items-center gap-3">
           <div className="flex items-center gap-2 bg-[#6b421d] px-2.5 py-1.5 border-2 border-[#8b5a2b] shadow-inner">
@@ -409,7 +409,8 @@ export const ClassHeader: React.FC<ClassHeaderProps> = ({
       </div>
 
       {/* Navigation Tabs Bar */}
-      <nav className="bg-[#3b230d] border-t border-[#251406] px-3 sm:px-6 flex items-center gap-1 sm:gap-2 overflow-x-auto py-1">
+      <nav className="bg-[#3b230d] border-t border-[#251406]">
+        <div className="max-w-[1560px] mx-auto px-3 sm:px-6 flex items-center gap-1 sm:gap-2 overflow-x-auto py-1">
         <button
           onClick={() => {
             soundManager.playClick();
@@ -499,6 +500,7 @@ export const ClassHeader: React.FC<ClassHeaderProps> = ({
           <span className="text-base leading-none">😆</span>
           <span>夥伴樂園</span>
         </button>
+        </div>
       </nav>
 
       {/* Add New Class Modal */}

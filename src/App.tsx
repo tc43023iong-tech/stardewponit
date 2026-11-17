@@ -791,7 +791,7 @@ export default function App() {
         className={`flex-1 w-full mx-auto relative z-10 ${
           activeTab === 'paradise'
             ? 'max-w-none px-1.5 sm:px-3 py-1.5 flex flex-col'
-            : 'max-w-7xl p-3 sm:p-6'
+            : 'max-w-[1560px] p-3 sm:p-6'
         }`}
       >
         {activeTab === 'students' && (

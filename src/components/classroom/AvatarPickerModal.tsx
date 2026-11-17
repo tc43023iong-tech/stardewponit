@@ -157,7 +157,18 @@ export const AvatarPickerModal: React.FC<AvatarPickerModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/75 flex items-center justify-center p-2 sm:p-4 backdrop-blur-xs">
+    <div
+      onMouseDown={(e) => {
+        e.currentTarget.dataset.backdropDown = e.target === e.currentTarget ? '1' : '0';
+      }}
+      onClick={(e) => {
+        if (e.target === e.currentTarget && e.currentTarget.dataset.backdropDown === '1') {
+          soundManager.playClick();
+          onClose();
+        }
+      }}
+      className="fixed inset-0 z-50 bg-black/75 flex items-center justify-center p-2 sm:p-4 backdrop-blur-xs"
+    >
       <div className="pixel-wood-box max-w-5xl w-full flex flex-col overflow-hidden text-[#4a2800] max-h-[94vh] shadow-2xl">
         {/* Header */}
         <div className="bg-[#6a4422] text-[#ffebb3] px-4 py-2.5 border-b-4 border-[#361f0d] flex items-center justify-between">

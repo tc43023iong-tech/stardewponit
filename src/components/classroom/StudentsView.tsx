@@ -219,7 +219,7 @@ export const StudentsView: React.FC<StudentsViewProps> = ({
           <p className="font-pixel text-xs text-[#5a3818]">無符合條件的學生</p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3">
           {filteredStudents.map((st) => (
             <StudentCard
               key={st.id}

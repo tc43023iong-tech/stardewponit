@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useRef } from 'react';
 import { Student } from '../../types/classroom';
 import {
   resolvePokemonAvatar,
@@ -203,6 +203,7 @@ export const PokemonAvatarPickerModal: React.FC<PokemonAvatarPickerModalProps> =
     url: string;
     description: string;
   } | null>(null);
+  const previewBackdropMouseDown = useRef(false);
 
   // All known avatar IDs
   const allIds = useMemo(() => {
@@ -387,7 +388,17 @@ export const PokemonAvatarPickerModal: React.FC<PokemonAvatarPickerModalProps> =
   };
 
   return (
-    <div className="fixed inset-0 z-[200] flex items-center justify-center p-2 sm:p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-300">
+    <div
+      onMouseDown={(e) => {
+        e.currentTarget.dataset.backdropDown = e.target === e.currentTarget ? '1' : '0';
+      }}
+      onClick={(e) => {
+        if (e.target === e.currentTarget && e.currentTarget.dataset.backdropDown === '1') {
+          onClose();
+        }
+      }}
+      className="fixed inset-0 z-[200] flex items-center justify-center p-2 sm:p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-300"
+    >
       <div className="bg-[#FFFDF9] w-full max-w-7xl h-full max-h-[94vh] rounded-[2.5rem] overflow-hidden flex flex-col shadow-2xl border-[5px] border-[#8D6E63] relative">
         {/* Top Header */}
         <div className="bg-gradient-to-r from-[#FFF3E0] via-[#FFE0B2] to-[#FFF3E0] px-5 sm:px-8 py-3 shrink-0 shadow-sm relative z-10 border-b-2 border-[#D7CCC8]">
@@ -960,7 +971,15 @@ export const PokemonAvatarPickerModal: React.FC<PokemonAvatarPickerModalProps> =
       {/* Preview Modal */}
       {previewItem && (
         <div
-          onClick={() => setPreviewItem(null)}
+          onMouseDown={(e) => {
+            previewBackdropMouseDown.current = e.target === e.currentTarget;
+          }}
+          onClick={(e) => {
+            if (previewBackdropMouseDown.current && e.target === e.currentTarget) {
+              setPreviewItem(null);
+            }
+            previewBackdropMouseDown.current = false;
+          }}
           className="fixed inset-0 z-[250] flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm animate-fade-in"
         >
           <div

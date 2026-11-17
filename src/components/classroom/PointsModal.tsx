@@ -94,7 +94,18 @@ export const PointsModal: React.FC<PointsModalProps> = ({
     const range = Math.max(1, maxVal - minVal);
 
     return (
-      <div className="fixed inset-0 z-50 bg-black/75 flex items-center justify-center p-2 sm:p-4 backdrop-blur-xs animate-in fade-in duration-150 select-none">
+      <div
+        onMouseDown={(e) => {
+          e.currentTarget.dataset.backdropDown = e.target === e.currentTarget ? '1' : '0';
+        }}
+        onClick={(e) => {
+          if (e.target === e.currentTarget && e.currentTarget.dataset.backdropDown === '1') {
+            soundManager.playClick();
+            setShowHistoryModal(false);
+          }
+        }}
+        className="fixed inset-0 z-50 bg-black/75 flex items-center justify-center p-2 sm:p-4 backdrop-blur-xs animate-in fade-in duration-150 select-none"
+      >
         <div className="pixel-wood-box max-w-5xl w-full max-h-[92vh] flex flex-col overflow-hidden text-[#4a2800] shadow-2xl">
           {/* Header */}
           <div className="bg-[#5a3818] text-[#ffebb3] px-4 py-3 border-b-4 border-[#361f0d] flex justify-between items-center shrink-0 shadow-md">
@@ -329,7 +340,18 @@ export const PointsModal: React.FC<PointsModalProps> = ({
   }
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/75 flex items-center justify-center p-2 sm:p-4 backdrop-blur-xs animate-in fade-in duration-150 select-none">
+    <div
+      onMouseDown={(e) => {
+        e.currentTarget.dataset.backdropDown = e.target === e.currentTarget ? '1' : '0';
+      }}
+      onClick={(e) => {
+        if (e.target === e.currentTarget && e.currentTarget.dataset.backdropDown === '1') {
+          soundManager.playClick();
+          onClose();
+        }
+      }}
+      className="fixed inset-0 z-50 bg-black/75 flex items-center justify-center p-2 sm:p-4 backdrop-blur-xs animate-in fade-in duration-150 select-none"
+    >
       <div className="pixel-wood-box max-w-5xl w-full h-[90vh] max-h-[92vh] flex flex-col overflow-hidden text-[#4a2800] shadow-2xl">
         {/* Top Header: Student info & Direct Inline Custom Points Input */}
         <div className="bg-[#5a3818] text-[#ffebb3] px-3 sm:px-4 py-2.5 border-b-4 border-[#361f0d] flex flex-wrap items-center justify-between gap-3 shadow-md">
