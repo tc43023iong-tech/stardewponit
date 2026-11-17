@@ -24,8 +24,7 @@ export const AvatarRenderer: React.FC<AvatarRendererProps> = ({
     setImgError(false);
   }, [avatar]);
 
-  // Support legacy 'sunflower' alias cleanly
-  const normalizedAvatar = avatar === 'sunflower' ? 'sdv_sunflower' : avatar;
+  const normalizedAvatar = avatar;
 
   // If avatar is an external URL
   if (

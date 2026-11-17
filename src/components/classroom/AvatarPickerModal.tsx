@@ -356,7 +356,7 @@ export const AvatarPickerModal: React.FC<AvatarPickerModalProps> = ({
                 </div>
               </div>
 
-              <div className="flex flex-wrap items-center gap-1.5">
+              <div className="flex flex-wrap items-center gap-1">
                 {STARDEW_AVATAR_CATEGORIES.map((sub) => (
                   <button
                     key={sub.id}
@@ -365,7 +365,7 @@ export const AvatarPickerModal: React.FC<AvatarPickerModalProps> = ({
                       soundManager.playClick();
                       setStardewSubFilter(sub.id);
                     }}
-                    className={`px-2 py-1 text-[11px] font-bold rounded-md cursor-pointer border whitespace-nowrap shrink-0 transition-colors ${
+                    className={`px-2 py-0.5 text-[10px] font-bold rounded-md cursor-pointer border whitespace-nowrap shrink-0 transition-colors ${
                       stardewSubFilter === sub.id
                         ? 'bg-[#6a4422] text-[#ffebb3] border-[#361f0d] shadow-xs'
                         : 'bg-[#fdfbf7] text-stone-700 border-[#c4a675] hover:bg-[#ffeec2]'
@@ -380,6 +380,48 @@ export const AvatarPickerModal: React.FC<AvatarPickerModalProps> = ({
             {filteredStardewAvatars.length === 0 ? (
               <div className="text-center py-10 text-stone-500 font-bold text-xs">
                 找不到符合「{searchQuery}」的星露谷伙伴，請嘗試其他關鍵字。
+              </div>
+            ) : stardewSubFilter === 'all' ? (
+              <div className="space-y-5">
+                {STARDEW_AVATAR_CATEGORIES.filter((cat) => cat.id !== 'all').map((cat) => {
+                  const groupItems = filteredStardewAvatars.filter((av) => av.category === cat.id);
+                  if (groupItems.length === 0) return null;
+                  return (
+                    <section key={cat.id} className="space-y-2">
+                      <div className="flex items-center justify-between px-3 py-1.5 bg-[#ede0c2] border-2 border-[#b88b4a] rounded-lg shadow-xs">
+                        <h4 className="font-pixel text-xs font-bold text-[#4a2800] flex items-center gap-1.5">
+                          <span>{cat.label}</span>
+                        </h4>
+                        <span className="text-[10px] font-pixel font-bold px-2 py-0.5 bg-[#faeed1] text-[#854d0e] border border-[#c4a675] rounded tabular-nums">
+                          {groupItems.length} 款
+                        </span>
+                      </div>
+                      <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 gap-2.5">
+                        {groupItems.map((av) => (
+                          <button
+                            key={av.id}
+                            onClick={() => handlePickAvatar(av.id)}
+                            className={`p-2 rounded-xl flex flex-col items-center border-2 transition-all cursor-pointer relative group ${
+                              selectedAvatar === av.id
+                                ? 'bg-[#ffeec2] border-[#fabc3f] ring-3 ring-[#fabc3f] scale-102 shadow-md'
+                                : 'bg-white hover:bg-amber-50/70 border-[#c4a675] shadow-xs'
+                            }`}
+                          >
+                            <AvatarRenderer avatar={av.id} name={av.name} size={48} />
+                            <span className="text-[11px] font-bold text-[#5a3818] mt-1 text-center truncate w-full">
+                              {av.name.split(' ')[0]}
+                            </span>
+                            {av.role && (
+                              <span className="text-[9px] text-stone-500 truncate w-full text-center font-bold">
+                                {av.role}
+                              </span>
+                            )}
+                          </button>
+                        ))}
+                      </div>
+                    </section>
+                  );
+                })}
               </div>
             ) : (
               <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 gap-2.5">

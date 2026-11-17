@@ -1,10 +1,11 @@
 export type StardewAvatarCategory =
   | 'animals'
+  | 'fish'
   | 'villagers'
+  | 'special'
   | 'treasures'
   | 'cooking'
   | 'ingredients'
-  | 'fish'
   | 'crops'
   | 'foraging'
   | 'artifacts'
@@ -12,8 +13,18 @@ export type StardewAvatarCategory =
   | 'animal_products'
   | 'artisan'
   | 'resources'
-  | 'fossils'
-  | 'special';
+  | 'furniture_seats'
+  | 'furniture_tables'
+  | 'furniture_beds'
+  | 'decor_rugs'
+  | 'decor_lighting'
+  | 'decor_plants'
+  | 'decor_wall'
+  | 'furniture_special'
+  | 'decor_floors'
+  | 'clothes_hats'
+  | 'clothes_shoes'
+  | 'rings';
 
 export interface StardewAvatarItem {
   id: string;
@@ -30,12 +41,12 @@ export const STARDEW_AVATAR_CATEGORIES: Array<{
 }> = [
   { id: 'all', label: '🌟 全部' },
   { id: 'animals', label: '🐾 農場動物' },
+  { id: 'fish', label: '🐟 魚類圖鑑' },
   { id: 'villagers', label: '🏡 小鎮村民' },
   { id: 'special', label: '✨ 特殊角色' },
-  { id: 'treasures', label: '💎 珍寶與神魚' },
+  { id: 'treasures', label: '💎 傳奇珍寶' },
   { id: 'cooking', label: '🍳 烹飪菜品' },
   { id: 'ingredients', label: '🥬 烹飪原料' },
-  { id: 'fish', label: '🐟 魚類圖鑑' },
   { id: 'crops', label: '🌾 作物與花' },
   { id: 'foraging', label: '🍄 採集與海灘' },
   { id: 'artifacts', label: '🏺 古物典藏' },
@@ -43,10 +54,21 @@ export const STARDEW_AVATAR_CATEGORIES: Array<{
   { id: 'animal_products', label: '🥛 動物產品' },
   { id: 'artisan', label: '🍷 加工品' },
   { id: 'resources', label: '🪵 資源與雜項' },
-  { id: 'fossils', label: '🦴 薑島化石' },
+  { id: 'furniture_seats', label: '🪑 傢俬座椅' },
+  { id: 'furniture_tables', label: '🪵 傢俬桌子' },
+  { id: 'furniture_beds', label: '🛏️ 櫃床魚缸' },
+  { id: 'decor_rugs', label: '🧶 裝飾地毯' },
+  { id: 'decor_lighting', label: '🪔 燈與壁爐' },
+  { id: 'decor_plants', label: '🪴 裝飾植物' },
+  { id: 'decor_wall', label: '🖼️ 畫作窗飾' },
+  { id: 'furniture_special', label: '📺 電視與擺設' },
+  { id: 'decor_floors', label: '🧱 地板壁紙' },
+  { id: 'clothes_hats', label: '👒 帽子頭飾' },
+  { id: 'clothes_shoes', label: '🥾 鞋靴' },
+  { id: 'rings', label: '💍 飾品戒指' },
 ];
 
-// Complete 507 Stardew Valley Official Wiki PNG Avatar Roster
+// Curated 791 Stardew Valley Avatar Roster
 export const STARDEW_AVATARS: StardewAvatarItem[] = [
   {
     "id": "sdv_white_chicken",
@@ -172,7 +194,7 @@ export const STARDEW_AVATARS: StardewAvatarItem[] = [
     "id": "sdv_cat",
     "name": "慵懶三花貓 (Cat)",
     "category": "animals",
-    "url": "https://stardewvalleywiki.com/mediawiki/images/en/0/05/Cat.png",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/2/29/Cat.gif",
     "sprite": "cat",
     "role": "農場撒嬌寵物"
   },
@@ -180,7 +202,7 @@ export const STARDEW_AVATARS: StardewAvatarItem[] = [
     "id": "sdv_dog",
     "name": "忠實柴犬 (Dog)",
     "category": "animals",
-    "url": "https://stardewvalleywiki.com/mediawiki/images/en/3/35/Dog.png",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/9/99/Dog.gif",
     "sprite": "dog",
     "role": "看門搖尾巴"
   },
@@ -204,7 +226,7 @@ export const STARDEW_AVATARS: StardewAvatarItem[] = [
     "id": "sdv_butterfly",
     "name": "彩色彩蝶 (Butterfly)",
     "category": "animals",
-    "url": "https://stardewvalleywiki.com/mediawiki/images/en/1/10/Butterfly.png",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/6/6c/ButterflyAnimated.gif",
     "sprite": "chicken",
     "role": "花間起舞"
   },
@@ -462,7 +484,7 @@ export const STARDEW_AVATARS: StardewAvatarItem[] = [
     "category": "villagers",
     "url": "https://stardewvalleywiki.com/mediawiki/images/en/4/4e/Sandy.png",
     "sprite": "junimo",
-    "role": "綠洲商店老闆娘"
+    "role": "綠洲綠洲商店闆娘"
   },
   {
     "id": "sdv_marlon",
@@ -498,7 +520,7 @@ export const STARDEW_AVATARS: StardewAvatarItem[] = [
   },
   {
     "id": "sdv_professor_snail",
-    "name": "斯奈爾教授 (Professor Snail)",
+    "name": "斯奈爾教授 (Prof. Snail)",
     "category": "villagers",
     "url": "https://stardewvalleywiki.com/mediawiki/images/en/d/d4/Professor_Snail.png",
     "sprite": "junimo",
@@ -542,7 +564,7 @@ export const STARDEW_AVATARS: StardewAvatarItem[] = [
     "category": "villagers",
     "url": "https://stardewvalleywiki.com/mediawiki/images/en/4/46/Governor.png",
     "sprite": "junimo",
-    "role": "夏日宴會評審"
+    "role": "夏日夏威夷宴會評審"
   },
   {
     "id": "sdv_bouncer",
@@ -556,7 +578,7 @@ export const STARDEW_AVATARS: StardewAvatarItem[] = [
     "id": "sdv_henchman",
     "name": "女巫心腹 (Henchman)",
     "category": "villagers",
-    "url": "https://stardewvalleywiki.com/mediawiki/images/en/9/96/Henchman.png",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/2/21/Henchman_Portrait_1.png",
     "sprite": "junimo",
     "role": "哥布林守門人"
   },
@@ -564,7 +586,7 @@ export const STARDEW_AVATARS: StardewAvatarItem[] = [
     "id": "sdv_fizz",
     "name": "特使菲茲 (Fizz)",
     "category": "villagers",
-    "url": "https://stardewvalleywiki.com/mediawiki/images/en/9/94/Fizz.png",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/a/a3/Fizz_00.png",
     "sprite": "junimo",
     "role": "齊先生高級特工"
   },
@@ -579,7 +601,7 @@ export const STARDEW_AVATARS: StardewAvatarItem[] = [
   {
     "id": "sdv_legend_fish",
     "name": "春日傳奇魚王 (Legend)",
-    "category": "treasures",
+    "category": "fish",
     "url": "https://stardewvalleywiki.com/mediawiki/images/en/1/10/Legend.png",
     "sprite": "chicken",
     "role": "雨天山林湖之王"
@@ -587,7 +609,7 @@ export const STARDEW_AVATARS: StardewAvatarItem[] = [
   {
     "id": "sdv_crimsonfish",
     "name": "夏日緋紅魚 (Crimsonfish)",
-    "category": "treasures",
+    "category": "fish",
     "url": "https://stardewvalleywiki.com/mediawiki/images/en/d/dc/Crimsonfish.png",
     "sprite": "chicken",
     "role": "東碼頭海中巨怪"
@@ -595,7 +617,7 @@ export const STARDEW_AVATARS: StardewAvatarItem[] = [
   {
     "id": "sdv_angler",
     "name": "秋日鮟鱇魚 (Angler)",
-    "category": "treasures",
+    "category": "fish",
     "url": "https://stardewvalleywiki.com/mediawiki/images/en/b/bf/Angler.png",
     "sprite": "chicken",
     "role": "木橋小瀑布之王"
@@ -603,7 +625,7 @@ export const STARDEW_AVATARS: StardewAvatarItem[] = [
   {
     "id": "sdv_glacierfish",
     "name": "冬日冰川魚 (Glacierfish)",
-    "category": "treasures",
+    "category": "fish",
     "url": "https://stardewvalleywiki.com/mediawiki/images/en/f/fd/Glacierfish.png",
     "sprite": "chicken",
     "role": "箭頭島極寒霸主"
@@ -611,7 +633,7 @@ export const STARDEW_AVATARS: StardewAvatarItem[] = [
   {
     "id": "sdv_mutant_carp",
     "name": "變種巨鯉魚 (Mutant Carp)",
-    "category": "treasures",
+    "category": "fish",
     "url": "https://stardewvalleywiki.com/mediawiki/images/en/c/cb/Mutant_Carp.png",
     "sprite": "chicken",
     "role": "下水道綠光魚"
@@ -619,7 +641,7 @@ export const STARDEW_AVATARS: StardewAvatarItem[] = [
   {
     "id": "sdv_lava_eel",
     "name": "熔岩鰻魚 (Lava Eel)",
-    "category": "treasures",
+    "category": "fish",
     "url": "https://stardewvalleywiki.com/mediawiki/images/en/1/12/Lava_Eel.png",
     "sprite": "chicken",
     "role": "礦坑100層紅光鰻"
@@ -627,15 +649,15 @@ export const STARDEW_AVATARS: StardewAvatarItem[] = [
   {
     "id": "sdv_void_salmon",
     "name": "虛空鮭魚 (Void Salmon)",
-    "category": "treasures",
-    "url": "https://stardewvalleywiki.com/mediawiki/images/en/a/ad/Void_Salmon.png",
+    "category": "fish",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/e/e0/Void_Salmon.png",
     "sprite": "chicken",
     "role": "女巫沼澤神秘鮭魚"
   },
   {
     "id": "sdv_midnight_carp",
     "name": "午夜鯉魚 (Midnight Carp)",
-    "category": "treasures",
+    "category": "fish",
     "url": "https://stardewvalleywiki.com/mediawiki/images/en/3/33/Midnight_Carp.png",
     "sprite": "chicken",
     "role": "深夜湖泊發光鯉"
@@ -643,7 +665,7 @@ export const STARDEW_AVATARS: StardewAvatarItem[] = [
   {
     "id": "sdv_blobfish",
     "name": "水滴魚 (Blobfish)",
-    "category": "treasures",
+    "category": "fish",
     "url": "https://stardewvalleywiki.com/mediawiki/images/en/7/7f/Blobfish.png",
     "sprite": "rabbit",
     "role": "深海夜市呆萌魚"
@@ -651,7 +673,7 @@ export const STARDEW_AVATARS: StardewAvatarItem[] = [
   {
     "id": "sdv_spook_fish",
     "name": "幽靈魚 (Spook Fish)",
-    "category": "treasures",
+    "category": "fish",
     "url": "https://stardewvalleywiki.com/mediawiki/images/en/8/8c/Spook_Fish.png",
     "sprite": "chicken",
     "role": "深海潛水艇發光怪"
@@ -659,7 +681,7 @@ export const STARDEW_AVATARS: StardewAvatarItem[] = [
   {
     "id": "sdv_stingray",
     "name": "刺魟魚 (Stingray)",
-    "category": "treasures",
+    "category": "fish",
     "url": "https://stardewvalleywiki.com/mediawiki/images/en/3/3a/Stingray.png",
     "sprite": "chicken",
     "role": "海盜洞穴珍稀魟"
@@ -667,7 +689,7 @@ export const STARDEW_AVATARS: StardewAvatarItem[] = [
   {
     "id": "sdv_octopus",
     "name": "巨型章魚 (Octopus)",
-    "category": "treasures",
+    "category": "fish",
     "url": "https://stardewvalleywiki.com/mediawiki/images/en/5/5a/Octopus.png",
     "sprite": "chicken",
     "role": "難度100超難釣章魚"
@@ -675,7 +697,7 @@ export const STARDEW_AVATARS: StardewAvatarItem[] = [
   {
     "id": "sdv_rainbow_trout",
     "name": "彩虹鱒魚 (Rainbow Trout)",
-    "category": "treasures",
+    "category": "fish",
     "url": "https://stardewvalleywiki.com/mediawiki/images/en/1/14/Rainbow_Trout.png",
     "sprite": "chicken",
     "role": "有機率產出五彩碎片"
@@ -683,7 +705,7 @@ export const STARDEW_AVATARS: StardewAvatarItem[] = [
   {
     "id": "sdv_sturgeon",
     "name": "傳奇鱘魚 (Sturgeon)",
-    "category": "treasures",
+    "category": "fish",
     "url": "https://stardewvalleywiki.com/mediawiki/images/en/4/42/Sturgeon.png",
     "sprite": "chicken",
     "role": "魚子醬珍貴魚種"
@@ -691,7 +713,7 @@ export const STARDEW_AVATARS: StardewAvatarItem[] = [
   {
     "id": "sdv_lobster",
     "name": "鮮紅龍蝦 (Lobster)",
-    "category": "treasures",
+    "category": "fish",
     "url": "https://stardewvalleywiki.com/mediawiki/images/en/9/9f/Lobster.png",
     "sprite": "chicken",
     "role": "蟹籠頂級美味"
@@ -699,7 +721,7 @@ export const STARDEW_AVATARS: StardewAvatarItem[] = [
   {
     "id": "sdv_crab",
     "name": "海濱螃蟹 (Crab)",
-    "category": "treasures",
+    "category": "fish",
     "url": "https://stardewvalleywiki.com/mediawiki/images/en/6/63/Crab.png",
     "sprite": "rabbit",
     "role": "製作美味蟹餅"
@@ -724,7 +746,7 @@ export const STARDEW_AVATARS: StardewAvatarItem[] = [
     "id": "sdv_golden_pumpkin",
     "name": "百萬黃金南瓜 (Golden Pumpkin)",
     "category": "treasures",
-    "url": "https://stardewvalleywiki.com/mediawiki/images/en/4/46/Golden_Pumpkin.png",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/9/94/Golden_Pumpkin.png",
     "sprite": "coin_gold",
     "role": "萬靈節迷宮終極大獎"
   },
@@ -732,7 +754,7 @@ export const STARDEW_AVATARS: StardewAvatarItem[] = [
     "id": "sdv_pearl",
     "name": "深海夜市珍珠 (Pearl)",
     "category": "treasures",
-    "url": "https://stardewvalleywiki.com/mediawiki/images/en/7/73/Pearl.png",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/f/f4/Pearl.png",
     "sprite": "gem_diamond",
     "role": "美人魚的餽贈"
   },
@@ -790,7 +812,7 @@ export const STARDEW_AVATARS: StardewAvatarItem[] = [
     "category": "treasures",
     "url": "https://stardewvalleywiki.com/mediawiki/images/en/6/64/Pumpkin.png",
     "sprite": "sunflower",
-    "role": "秋季巨型作物"
+    "role": "農場巨大作物"
   },
   {
     "id": "sdv_hot_pepper",
@@ -810,7 +832,7 @@ export const STARDEW_AVATARS: StardewAvatarItem[] = [
   },
   {
     "id": "sdv_cauliflower",
-    "name": "巨大花椰菜 (Cauliflower)",
+    "name": "巨大甘藍花 (Cauliflower)",
     "category": "treasures",
     "url": "https://stardewvalleywiki.com/mediawiki/images/en/a/aa/Cauliflower.png",
     "sprite": "sunflower",
@@ -892,7 +914,7 @@ export const STARDEW_AVATARS: StardewAvatarItem[] = [
     "id": "sdv_iridium_bar",
     "name": "純銥金錠 (Iridium Bar)",
     "category": "treasures",
-    "url": "https://stardewvalleywiki.com/mediawiki/images/en/c/c4/Iridium_Bar.png",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/f/f3/Iridium_Bar.png",
     "sprite": "gem_diamond",
     "role": "極品工具升級"
   },
@@ -908,7 +930,7 @@ export const STARDEW_AVATARS: StardewAvatarItem[] = [
     "id": "sdv_galaxy_sword",
     "name": "銀河之劍 (Galaxy Sword)",
     "category": "treasures",
-    "url": "https://stardewvalleywiki.com/mediawiki/images/en/4/44/Galaxy_Sword.png",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/3/30/Galaxy_Sword.png",
     "sprite": "gem_diamond",
     "role": "沙漠三石柱召喚神兵"
   },
@@ -916,7 +938,7 @@ export const STARDEW_AVATARS: StardewAvatarItem[] = [
     "id": "sdv_infinity_blade",
     "name": "無限之刃 (Infinity Blade)",
     "category": "treasures",
-    "url": "https://stardewvalleywiki.com/mediawiki/images/en/4/40/Infinity_Blade.png",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/e/eb/Infinity_Blade.png",
     "sprite": "gem_diamond",
     "role": "火山鍛造終極神劍"
   },
@@ -924,7 +946,7 @@ export const STARDEW_AVATARS: StardewAvatarItem[] = [
     "id": "sdv_return_scepter",
     "name": "回歸權杖 (Return Scepter)",
     "category": "treasures",
-    "url": "https://stardewvalleywiki.com/mediawiki/images/en/f/f3/Return_Scepter.png",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/3/38/Return_Scepter.png",
     "sprite": "coin_gold",
     "role": "瞬間傳送回農舍門口"
   },
@@ -932,7 +954,7 @@ export const STARDEW_AVATARS: StardewAvatarItem[] = [
     "id": "sdv_horse_flute",
     "name": "召喚馬笛 (Horse Flute)",
     "category": "treasures",
-    "url": "https://stardewvalleywiki.com/mediawiki/images/en/5/53/Horse_Flute.png",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/1/13/Horse_Flute.png",
     "sprite": "coin_gold",
     "role": "吹響即刻召喚愛馬"
   },
@@ -940,7 +962,7 @@ export const STARDEW_AVATARS: StardewAvatarItem[] = [
     "id": "sdv_magic_candy",
     "name": "魔法搖滾糖 (Magic Rock Candy)",
     "category": "treasures",
-    "url": "https://stardewvalleywiki.com/mediawiki/images/en/2/25/Magic_Rock_Candy.png",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/2/2f/Magic_Rock_Candy.png",
     "sprite": "star_full",
     "role": "全屬性頂級狂暴增益"
   },
@@ -966,7 +988,14 @@ export const STARDEW_AVATARS: StardewAvatarItem[] = [
     "category": "treasures",
     "url": "https://stardewvalleywiki.com/mediawiki/images/en/f/f2/Spicy_Eel.png",
     "sprite": "coin_gold",
-    "role": "下礦跑速加運氣神料理"
+    "role": "下礦跑速＋運氣神料理"
+  },
+  {
+    "id": "sunflower",
+    "name": "盛開向日葵 (Sunflower)",
+    "category": "treasures",
+    "sprite": "sunflower",
+    "role": "夏日燦爛陽光"
   },
   {
     "id": "sdv_fried_egg",
@@ -1947,7 +1976,7 @@ export const STARDEW_AVATARS: StardewAvatarItem[] = [
   {
     "id": "sdv_tuna",
     "name": "金槍魚 (Tuna)",
-    "category": "ingredients",
+    "category": "fish",
     "url": "https://stardewvalleywiki.com/mediawiki/images/en/c/c5/Tuna.png",
     "sprite": "sunflower",
     "role": "海洋金槍魚"
@@ -1955,7 +1984,7 @@ export const STARDEW_AVATARS: StardewAvatarItem[] = [
   {
     "id": "sdv_sardine",
     "name": "沙丁魚 (Sardine)",
-    "category": "ingredients",
+    "category": "fish",
     "url": "https://stardewvalleywiki.com/mediawiki/images/en/0/04/Sardine.png",
     "sprite": "sunflower",
     "role": "海洋小沙丁"
@@ -1963,7 +1992,7 @@ export const STARDEW_AVATARS: StardewAvatarItem[] = [
   {
     "id": "sdv_bream",
     "name": "鯛魚 (Bream)",
-    "category": "ingredients",
+    "category": "fish",
     "url": "https://stardewvalleywiki.com/mediawiki/images/en/8/82/Bream.png",
     "sprite": "sunflower",
     "role": "夜間河流鯛魚"
@@ -1971,7 +2000,7 @@ export const STARDEW_AVATARS: StardewAvatarItem[] = [
   {
     "id": "sdv_largemouth_bass",
     "name": "大嘴鱸魚 (Largemouth Bass)",
-    "category": "ingredients",
+    "category": "fish",
     "url": "https://stardewvalleywiki.com/mediawiki/images/en/1/11/Largemouth_Bass.png",
     "sprite": "sunflower",
     "role": "湖泊大嘴鱸"
@@ -1979,7 +2008,7 @@ export const STARDEW_AVATARS: StardewAvatarItem[] = [
   {
     "id": "sdv_salmon",
     "name": "鮭魚 (Salmon)",
-    "category": "ingredients",
+    "category": "fish",
     "url": "https://stardewvalleywiki.com/mediawiki/images/en/e/e0/Salmon.png",
     "sprite": "sunflower",
     "role": "秋日河流鮭魚"
@@ -1987,7 +2016,7 @@ export const STARDEW_AVATARS: StardewAvatarItem[] = [
   {
     "id": "sdv_flounder",
     "name": "比目魚 (Flounder)",
-    "category": "ingredients",
+    "category": "fish",
     "url": "https://stardewvalleywiki.com/mediawiki/images/en/8/85/Flounder.png",
     "sprite": "sunflower",
     "role": "春夏比目魚"
@@ -1995,7 +2024,7 @@ export const STARDEW_AVATARS: StardewAvatarItem[] = [
   {
     "id": "sdv_carp",
     "name": "鯉魚 (Carp)",
-    "category": "ingredients",
+    "category": "fish",
     "url": "https://stardewvalleywiki.com/mediawiki/images/en/a/a8/Carp.png",
     "sprite": "sunflower",
     "role": "湖泊普通鯉魚"
@@ -2003,7 +2032,7 @@ export const STARDEW_AVATARS: StardewAvatarItem[] = [
   {
     "id": "sdv_sunfish",
     "name": "太陽魚 (Sunfish)",
-    "category": "ingredients",
+    "category": "fish",
     "url": "https://stardewvalleywiki.com/mediawiki/images/en/5/56/Sunfish.png",
     "sprite": "sunflower",
     "role": "河流太陽魚"
@@ -2011,7 +2040,7 @@ export const STARDEW_AVATARS: StardewAvatarItem[] = [
   {
     "id": "sdv_eel",
     "name": "鰻魚 (Eel)",
-    "category": "ingredients",
+    "category": "fish",
     "url": "https://stardewvalleywiki.com/mediawiki/images/en/9/91/Eel.png",
     "sprite": "sunflower",
     "role": "雨夜海洋鰻魚"
@@ -2019,7 +2048,7 @@ export const STARDEW_AVATARS: StardewAvatarItem[] = [
   {
     "id": "sdv_squid",
     "name": "魷魚 (Squid)",
-    "category": "ingredients",
+    "category": "fish",
     "url": "https://stardewvalleywiki.com/mediawiki/images/en/8/81/Squid.png",
     "sprite": "sunflower",
     "role": "冬夜海洋魷魚"
@@ -2059,7 +2088,7 @@ export const STARDEW_AVATARS: StardewAvatarItem[] = [
   {
     "id": "sdv_clam",
     "name": "蛤 (Clam)",
-    "category": "ingredients",
+    "category": "fish",
     "url": "https://stardewvalleywiki.com/mediawiki/images/en/e/ed/Clam.png",
     "sprite": "sunflower",
     "role": "海洋蛤蜊"
@@ -2067,7 +2096,7 @@ export const STARDEW_AVATARS: StardewAvatarItem[] = [
   {
     "id": "sdv_crayfish",
     "name": "小龍蝦 (Crayfish)",
-    "category": "ingredients",
+    "category": "fish",
     "url": "https://stardewvalleywiki.com/mediawiki/images/en/5/53/Crayfish.png",
     "sprite": "sunflower",
     "role": "淡水小龍蝦"
@@ -2075,7 +2104,7 @@ export const STARDEW_AVATARS: StardewAvatarItem[] = [
   {
     "id": "sdv_cockle",
     "name": "蚌 (Cockle)",
-    "category": "ingredients",
+    "category": "fish",
     "url": "https://stardewvalleywiki.com/mediawiki/images/en/a/ad/Cockle.png",
     "sprite": "sunflower",
     "role": "海洋小蚌"
@@ -2083,7 +2112,7 @@ export const STARDEW_AVATARS: StardewAvatarItem[] = [
   {
     "id": "sdv_shrimp",
     "name": "蝦 (Shrimp)",
-    "category": "ingredients",
+    "category": "fish",
     "url": "https://stardewvalleywiki.com/mediawiki/images/en/9/91/Shrimp.png",
     "sprite": "sunflower",
     "role": "海洋鮮蝦"
@@ -2091,7 +2120,7 @@ export const STARDEW_AVATARS: StardewAvatarItem[] = [
   {
     "id": "sdv_snail",
     "name": "蝸牛 (Snail)",
-    "category": "ingredients",
+    "category": "fish",
     "url": "https://stardewvalleywiki.com/mediawiki/images/en/d/d2/Snail.png",
     "sprite": "sunflower",
     "role": "淡水蝸牛"
@@ -2099,7 +2128,7 @@ export const STARDEW_AVATARS: StardewAvatarItem[] = [
   {
     "id": "sdv_periwinkle",
     "name": "玉黍螺 (Periwinkle)",
-    "category": "ingredients",
+    "category": "fish",
     "url": "https://stardewvalleywiki.com/mediawiki/images/en/1/1d/Periwinkle.png",
     "sprite": "sunflower",
     "role": "淡水玉黍螺"
@@ -2619,7 +2648,7 @@ export const STARDEW_AVATARS: StardewAvatarItem[] = [
   {
     "id": "sdv_sea_urchin",
     "name": "海膽 (Sea Urchin)",
-    "category": "foraging",
+    "category": "fish",
     "url": "https://stardewvalleywiki.com/mediawiki/images/en/e/e7/Sea_Urchin.png",
     "sprite": "clover",
     "role": "海灘紫海膽"
@@ -2627,7 +2656,7 @@ export const STARDEW_AVATARS: StardewAvatarItem[] = [
   {
     "id": "sdv_rainbow_shell",
     "name": "彩虹貝殼 (Rainbow Shell)",
-    "category": "foraging",
+    "category": "fish",
     "url": "https://stardewvalleywiki.com/mediawiki/images/en/3/3d/Rainbow_Shell.png",
     "sprite": "clover",
     "role": "夏日彩虹貝"
@@ -2635,7 +2664,7 @@ export const STARDEW_AVATARS: StardewAvatarItem[] = [
   {
     "id": "sdv_nautilus_shell",
     "name": "鸚鵡螺殼 (Nautilus Shell)",
-    "category": "foraging",
+    "category": "fish",
     "url": "https://stardewvalleywiki.com/mediawiki/images/en/a/a4/Nautilus_Shell.png",
     "sprite": "clover",
     "role": "冬日鸚鵡螺"
@@ -2643,7 +2672,7 @@ export const STARDEW_AVATARS: StardewAvatarItem[] = [
   {
     "id": "sdv_oyster",
     "name": "牡蠣 (Oyster)",
-    "category": "foraging",
+    "category": "fish",
     "url": "https://stardewvalleywiki.com/mediawiki/images/en/5/54/Oyster.png",
     "sprite": "clover",
     "role": "海灘牡蠣"
@@ -2651,7 +2680,7 @@ export const STARDEW_AVATARS: StardewAvatarItem[] = [
   {
     "id": "sdv_mussel",
     "name": "貽貝 (Mussel)",
-    "category": "foraging",
+    "category": "fish",
     "url": "https://stardewvalleywiki.com/mediawiki/images/en/a/aa/Mussel.png",
     "sprite": "clover",
     "role": "海灘貽貝"
@@ -3993,86 +4022,6 @@ export const STARDEW_AVATARS: StardewAvatarItem[] = [
     "role": "金色神秘盒子"
   },
   {
-    "id": "sdv_fossilized_skull",
-    "name": "薑島化石頭骨 (Fossilized Skull)",
-    "category": "fossils",
-    "url": "https://stardewvalleywiki.com/mediawiki/images/en/7/72/Fossilized_Skull.png",
-    "sprite": "dinosaur",
-    "role": "薑島化石"
-  },
-  {
-    "id": "sdv_fossilized_spine",
-    "name": "薑島化石脊椎 (Fossilized Spine)",
-    "category": "fossils",
-    "url": "https://stardewvalleywiki.com/mediawiki/images/en/5/5c/Fossilized_Spine.png",
-    "sprite": "dinosaur",
-    "role": "薑島化石"
-  },
-  {
-    "id": "sdv_fossilized_ribs",
-    "name": "薑島化石肋骨 (Fossilized Ribs)",
-    "category": "fossils",
-    "url": "https://stardewvalleywiki.com/mediawiki/images/en/f/fc/Fossilized_Ribs.png",
-    "sprite": "dinosaur",
-    "role": "薑島化石"
-  },
-  {
-    "id": "sdv_fossilized_leg",
-    "name": "薑島化石腿骨 (Fossilized Leg)",
-    "category": "fossils",
-    "url": "https://stardewvalleywiki.com/mediawiki/images/en/0/09/Fossilized_Leg.png",
-    "sprite": "dinosaur",
-    "role": "薑島化石"
-  },
-  {
-    "id": "sdv_fossilized_tail",
-    "name": "薑島化石尾巴 (Fossilized Tail)",
-    "category": "fossils",
-    "url": "https://stardewvalleywiki.com/mediawiki/images/en/3/3a/Fossilized_Tail.png",
-    "sprite": "dinosaur",
-    "role": "薑島化石"
-  },
-  {
-    "id": "sdv_snake_skull",
-    "name": "蛇頭骨 (Snake Skull)",
-    "category": "fossils",
-    "url": "https://stardewvalleywiki.com/mediawiki/images/en/2/25/Snake_Skull.png",
-    "sprite": "dinosaur",
-    "role": "薑島蛇化石"
-  },
-  {
-    "id": "sdv_mummified_frog",
-    "name": "木乃伊青蛙 (Mummified Frog)",
-    "category": "fossils",
-    "url": "https://stardewvalleywiki.com/mediawiki/images/en/e/e9/Mummified_Frog.png",
-    "sprite": "dinosaur",
-    "role": "薑島木乃伊"
-  },
-  {
-    "id": "sdv_mummified_bat",
-    "name": "木乃伊蝙蝠 (Mummified Bat)",
-    "category": "fossils",
-    "url": "https://stardewvalleywiki.com/mediawiki/images/en/6/6f/Mummified_Bat.png",
-    "sprite": "dinosaur",
-    "role": "薑島木乃伊"
-  },
-  {
-    "id": "sdv_junimo",
-    "name": "祝尼魔 (Junimo)",
-    "category": "special",
-    "url": "https://stardewvalleywiki.com/mediawiki/images/en/3/30/Junimo.png",
-    "sprite": "junimo",
-    "role": "森林綠色小精靈"
-  },
-  {
-    "id": "sdv_witch",
-    "name": "女巫 (Witch)",
-    "category": "special",
-    "url": "https://stardewvalleywiki.com/mediawiki/images/en/e/e6/Witch.png",
-    "sprite": "junimo",
-    "role": "黑暗女巫"
-  },
-  {
     "id": "sdv_trash_bear",
     "name": "垃圾熊 (Trash Bear)",
     "category": "special",
@@ -4089,19 +4038,2363 @@ export const STARDEW_AVATARS: StardewAvatarItem[] = [
     "role": "海邊老水手"
   },
   {
-    "id": "sdv_gourmand_frog",
-    "name": "美食蛙 (Gourmand Frog)",
-    "category": "special",
-    "url": "https://stardewvalleywiki.com/mediawiki/images/en/0/0c/Gourmand_Frog.png",
-    "sprite": "junimo",
-    "role": "薑島美食蛙"
+    "id": "sdv_oak_chair",
+    "name": "橡木椅 (Oak Chair)",
+    "category": "furniture_seats",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/2/2a/Oak_Chair.png",
+    "sprite": "chest_closed",
+    "role": "橡木座椅"
   },
   {
-    "id": "sdv_bear",
-    "name": "森林熊 (Bear)",
-    "category": "special",
-    "url": "https://stardewvalleywiki.com/mediawiki/images/en/a/a4/Bear.png",
-    "sprite": "junimo",
-    "role": "愛楓糖漿的大熊"
+    "id": "sdv_walnut_chair",
+    "name": "胡桃木椅 (Walnut Chair)",
+    "category": "furniture_seats",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/3/3f/Walnut_Chair.png",
+    "sprite": "chest_closed",
+    "role": "胡桃木座椅"
+  },
+  {
+    "id": "sdv_birch_chair",
+    "name": "樺木椅 (Birch Chair)",
+    "category": "furniture_seats",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/0/0a/Birch_Chair.png",
+    "sprite": "chest_closed",
+    "role": "樺木座椅"
+  },
+  {
+    "id": "sdv_mahogany_chair",
+    "name": "桃花心木椅 (Mahogany Chair)",
+    "category": "furniture_seats",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/e/ea/Mahogany_Chair.png",
+    "sprite": "chest_closed",
+    "role": "桃花心木座椅"
+  },
+  {
+    "id": "sdv_country_chair",
+    "name": "鄉村椅 (Country Chair)",
+    "category": "furniture_seats",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/3/3a/Country_Chair.png",
+    "sprite": "chest_closed",
+    "role": "鄉村風座椅"
+  },
+  {
+    "id": "sdv_breakfast_chair",
+    "name": "早餐椅 (Breakfast Chair)",
+    "category": "furniture_seats",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/b/b6/Breakfast_Chair.png",
+    "sprite": "chest_closed",
+    "role": "早餐座椅"
+  },
+  {
+    "id": "sdv_crystal_chair",
+    "name": "水晶椅 (Crystal Chair)",
+    "category": "furniture_seats",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/1/10/Crystal_Chair.png",
+    "sprite": "chest_closed",
+    "role": "水晶座椅"
+  },
+  {
+    "id": "sdv_blue_diner_chair",
+    "name": "藍色餐椅 (Blue Diner Chair)",
+    "category": "furniture_seats",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/0/08/Blue_Diner_Chair.png",
+    "sprite": "chest_closed",
+    "role": "藍色餐廳椅"
+  },
+  {
+    "id": "sdv_red_diner_chair",
+    "name": "紅色餐椅 (Red Diner Chair)",
+    "category": "furniture_seats",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/d/dd/Red_Diner_Chair.png",
+    "sprite": "chest_closed",
+    "role": "紅色餐廳椅"
+  },
+  {
+    "id": "sdv_pink_office_chair",
+    "name": "粉色辦公椅 (Pink Office Chair)",
+    "category": "furniture_seats",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/e/e7/Pink_Office_Chair.png",
+    "sprite": "chest_closed",
+    "role": "粉色辦公椅"
+  },
+  {
+    "id": "sdv_purple_office_chair",
+    "name": "紫色辦公椅 (Purple Office Chair)",
+    "category": "furniture_seats",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/5/56/Purple_Office_Chair.png",
+    "sprite": "chest_closed",
+    "role": "紫色辦公椅"
+  },
+  {
+    "id": "sdv_blue_stool",
+    "name": "藍色凳子 (Blue Stool)",
+    "category": "furniture_seats",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/3/32/Blue_Stool.png",
+    "sprite": "chest_closed",
+    "role": "藍色小凳"
+  },
+  {
+    "id": "sdv_metal_chair",
+    "name": "金屬椅 (Metal Chair)",
+    "category": "furniture_seats",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/a/ae/Metal_Chair.png",
+    "sprite": "chest_closed",
+    "role": "金屬座椅"
+  },
+  {
+    "id": "sdv_brown_armchair",
+    "name": "棕色扶手椅 (Brown Armchair)",
+    "category": "furniture_seats",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/c/cf/Brown_Armchair.png",
+    "sprite": "chest_closed",
+    "role": "棕色扶手椅"
+  },
+  {
+    "id": "sdv_brown_couch",
+    "name": "棕色沙發 (Brown Couch)",
+    "category": "furniture_seats",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/a/a6/Brown_Couch.png",
+    "sprite": "chest_closed",
+    "role": "棕色沙發"
+  },
+  {
+    "id": "sdv_dark_couch",
+    "name": "深色沙發 (Dark Couch)",
+    "category": "furniture_seats",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/a/ad/Dark_Couch.png",
+    "sprite": "chest_closed",
+    "role": "深色沙發"
+  },
+  {
+    "id": "sdv_red_couch",
+    "name": "紅色沙發 (Red Couch)",
+    "category": "furniture_seats",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/e/ea/Red_Couch.png",
+    "sprite": "chest_closed",
+    "role": "紅色沙發"
+  },
+  {
+    "id": "sdv_green_couch",
+    "name": "綠色沙發 (Green Couch)",
+    "category": "furniture_seats",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/5/55/Green_Couch.png",
+    "sprite": "chest_closed",
+    "role": "綠色沙發"
+  },
+  {
+    "id": "sdv_yellow_couch",
+    "name": "黃色沙發 (Yellow Couch)",
+    "category": "furniture_seats",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/d/d4/Yellow_Couch.png",
+    "sprite": "chest_closed",
+    "role": "黃色沙發"
+  },
+  {
+    "id": "sdv_blue_couch",
+    "name": "藍色沙發 (Blue Couch)",
+    "category": "furniture_seats",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/2/21/Blue_Couch.png",
+    "sprite": "chest_closed",
+    "role": "藍色沙發"
+  },
+  {
+    "id": "sdv_large_brown_couch",
+    "name": "大棕色沙發 (Large Brown Couch)",
+    "category": "furniture_seats",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/5/50/Large_Brown_Couch.png",
+    "sprite": "chest_closed",
+    "role": "大型棕色沙發"
+  },
+  {
+    "id": "sdv_wizard_couch",
+    "name": "巫師沙發 (Wizard Couch)",
+    "category": "furniture_seats",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/2/22/Wizard_Couch.png",
+    "sprite": "chest_closed",
+    "role": "巫師風沙發"
+  },
+  {
+    "id": "sdv_oak_table",
+    "name": "橡木桌 (Oak Table)",
+    "category": "furniture_tables",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/1/15/Oak_Table.png",
+    "sprite": "chest_closed",
+    "role": "橡木桌"
+  },
+  {
+    "id": "sdv_walnut_table",
+    "name": "胡桃木桌 (Walnut Table)",
+    "category": "furniture_tables",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/6/6f/Walnut_Table.png",
+    "sprite": "chest_closed",
+    "role": "胡桃木桌"
+  },
+  {
+    "id": "sdv_birch_table",
+    "name": "樺木桌 (Birch Table)",
+    "category": "furniture_tables",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/9/95/Birch_Table.png",
+    "sprite": "chest_closed",
+    "role": "樺木桌"
+  },
+  {
+    "id": "sdv_mahogany_table",
+    "name": "桃花心木桌 (Mahogany Table)",
+    "category": "furniture_tables",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/9/9c/Mahogany_Table.png",
+    "sprite": "chest_closed",
+    "role": "桃花心木桌"
+  },
+  {
+    "id": "sdv_modern_table",
+    "name": "現代桌 (Modern Table)",
+    "category": "furniture_tables",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/7/72/Modern_Table.png",
+    "sprite": "chest_closed",
+    "role": "現代風桌"
+  },
+  {
+    "id": "sdv_coffee_table",
+    "name": "咖啡桌 (Coffee Table)",
+    "category": "furniture_tables",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/d/d6/Coffee_Table.png",
+    "sprite": "chest_closed",
+    "role": "客廳咖啡桌"
+  },
+  {
+    "id": "sdv_puzzle_table",
+    "name": "拼圖桌 (Puzzle Table)",
+    "category": "furniture_tables",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/e/e1/Puzzle_Table.png",
+    "sprite": "chest_closed",
+    "role": "拼圖桌"
+  },
+  {
+    "id": "sdv_luau_table",
+    "name": "盧奧桌 (Luau Table)",
+    "category": "furniture_tables",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/5/55/Luau_Table.png",
+    "sprite": "chest_closed",
+    "role": "盧奧節桌"
+  },
+  {
+    "id": "sdv_dark_table",
+    "name": "深色桌 (Dark Table)",
+    "category": "furniture_tables",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/6/6d/Dark_Table.png",
+    "sprite": "chest_closed",
+    "role": "深色桌"
+  },
+  {
+    "id": "sdv_candy_table",
+    "name": "糖果桌 (Candy Table)",
+    "category": "furniture_tables",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/c/ce/Candy_Table.png",
+    "sprite": "chest_closed",
+    "role": "糖果桌"
+  },
+  {
+    "id": "sdv_tea_table",
+    "name": "茶桌 (Tea Table)",
+    "category": "furniture_tables",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/2/2f/Tea_Table.png",
+    "sprite": "chest_closed",
+    "role": "茶几桌"
+  },
+  {
+    "id": "sdv_festive_dining_table",
+    "name": "節日餐桌 (Festive Dining Table)",
+    "category": "furniture_tables",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/5/51/Festive_Dining_Table.png",
+    "sprite": "chest_closed",
+    "role": "節日餐桌"
+  },
+  {
+    "id": "sdv_winter_dining_table",
+    "name": "冬季餐桌 (Winter Dining Table)",
+    "category": "furniture_tables",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/d/de/Winter_Dining_Table.png",
+    "sprite": "chest_closed",
+    "role": "冬季餐桌"
+  },
+  {
+    "id": "sdv_pub_table",
+    "name": "酒吧桌 (Pub Table)",
+    "category": "furniture_tables",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/3/34/Pub_Table.png",
+    "sprite": "chest_closed",
+    "role": "酒吧高桌"
+  },
+  {
+    "id": "sdv_oak_end_table",
+    "name": "橡木邊桌 (Oak End Table)",
+    "category": "furniture_tables",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/a/a8/Oak_End_Table.png",
+    "sprite": "chest_closed",
+    "role": "橡木邊桌"
+  },
+  {
+    "id": "sdv_walnut_end_table",
+    "name": "胡桃木邊桌 (Walnut End Table)",
+    "category": "furniture_tables",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/5/5a/Walnut_End_Table.png",
+    "sprite": "chest_closed",
+    "role": "胡桃木邊桌"
+  },
+  {
+    "id": "sdv_birch_end_table",
+    "name": "樺木邊桌 (Birch End Table)",
+    "category": "furniture_tables",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/6/6a/Birch_End_Table.png",
+    "sprite": "chest_closed",
+    "role": "樺木邊桌"
+  },
+  {
+    "id": "sdv_mahogany_end_table",
+    "name": "桃花心木邊桌 (Mahogany End Table)",
+    "category": "furniture_tables",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/6/63/Mahogany_End_Table.png",
+    "sprite": "chest_closed",
+    "role": "桃花心木邊桌"
+  },
+  {
+    "id": "sdv_modern_end_table",
+    "name": "現代邊桌 (Modern End Table)",
+    "category": "furniture_tables",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/9/94/Modern_End_Table.png",
+    "sprite": "chest_closed",
+    "role": "現代邊桌"
+  },
+  {
+    "id": "sdv_oak_dresser",
+    "name": "橡木梳妝台 (Oak Dresser)",
+    "category": "furniture_beds",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/3/37/Oak_Dresser.png",
+    "sprite": "chest_closed",
+    "role": "橡木梳妝台"
+  },
+  {
+    "id": "sdv_walnut_dresser",
+    "name": "胡桃木梳妝台 (Walnut Dresser)",
+    "category": "furniture_beds",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/b/be/Walnut_Dresser.png",
+    "sprite": "chest_closed",
+    "role": "胡桃木梳妝台"
+  },
+  {
+    "id": "sdv_birch_dresser",
+    "name": "樺木梳妝台 (Birch Dresser)",
+    "category": "furniture_beds",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/1/18/Birch_Dresser.png",
+    "sprite": "chest_closed",
+    "role": "樺木梳妝台"
+  },
+  {
+    "id": "sdv_mahogany_dresser",
+    "name": "桃花心木梳妝台 (Mahogany Dresser)",
+    "category": "furniture_beds",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/0/00/Mahogany_Dresser.png",
+    "sprite": "chest_closed",
+    "role": "桃花心木梳妝台"
+  },
+  {
+    "id": "sdv_dark_bookcase",
+    "name": "深色書櫃 (Dark Bookcase)",
+    "category": "furniture_beds",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/c/cd/Dark_Bookcase.png",
+    "sprite": "chest_closed",
+    "role": "深色書櫃"
+  },
+  {
+    "id": "sdv_modern_bookcase",
+    "name": "現代書櫃 (Modern Bookcase)",
+    "category": "furniture_beds",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/8/88/Modern_Bookcase.png",
+    "sprite": "chest_closed",
+    "role": "現代書櫃"
+  },
+  {
+    "id": "sdv_birch_double_bed",
+    "name": "樺木雙人床 (Birch Double Bed)",
+    "category": "furniture_beds",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/3/33/Birch_Double_Bed.png",
+    "sprite": "chest_closed",
+    "role": "樺木雙人床"
+  },
+  {
+    "id": "sdv_pirate_double_bed",
+    "name": "海盜雙人床 (Pirate Double Bed)",
+    "category": "furniture_beds",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/a/ac/Pirate_Double_Bed.png",
+    "sprite": "chest_closed",
+    "role": "海盜雙人床"
+  },
+  {
+    "id": "sdv_tropical_bed",
+    "name": "熱帶床 (Tropical Bed)",
+    "category": "furniture_beds",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/5/51/Tropical_Bed.png",
+    "sprite": "chest_closed",
+    "role": "熱帶單人床"
+  },
+  {
+    "id": "sdv_tropical_double_bed",
+    "name": "熱帶雙人床 (Tropical Double Bed)",
+    "category": "furniture_beds",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/c/c6/Tropical_Double_Bed.png",
+    "sprite": "chest_closed",
+    "role": "熱帶雙人床"
+  },
+  {
+    "id": "sdv_starry_double_bed",
+    "name": "星空雙人床 (Starry Double Bed)",
+    "category": "furniture_beds",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/a/a6/Starry_Double_Bed.png",
+    "sprite": "chest_closed",
+    "role": "星空雙人床"
+  },
+  {
+    "id": "sdv_strawberry_double_bed",
+    "name": "草莓雙人床 (Strawberry Double Bed)",
+    "category": "furniture_beds",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/3/35/Strawberry_Double_Bed.png",
+    "sprite": "chest_closed",
+    "role": "草莓雙人床"
+  },
+  {
+    "id": "sdv_modern_double_bed",
+    "name": "現代雙人床 (Modern Double Bed)",
+    "category": "furniture_beds",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/8/8d/Modern_Double_Bed.png",
+    "sprite": "chest_closed",
+    "role": "現代雙人床"
+  },
+  {
+    "id": "sdv_small_fish_tank",
+    "name": "小魚缸 (Small Fish Tank)",
+    "category": "furniture_beds",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/7/79/Small_Fish_Tank.png",
+    "sprite": "chest_closed",
+    "role": "小型魚缸"
+  },
+  {
+    "id": "sdv_modern_fish_tank",
+    "name": "現代魚缸 (Modern Fish Tank)",
+    "category": "furniture_beds",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/1/1a/Modern_Fish_Tank.png",
+    "sprite": "chest_closed",
+    "role": "現代魚缸"
+  },
+  {
+    "id": "sdv_large_fish_tank",
+    "name": "大魚缸 (Large Fish Tank)",
+    "category": "furniture_beds",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/9/94/Large_Fish_Tank.png",
+    "sprite": "chest_closed",
+    "role": "大型魚缸"
+  },
+  {
+    "id": "sdv_deluxe_fish_tank",
+    "name": "豪華魚缸 (Deluxe Fish Tank)",
+    "category": "furniture_beds",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/4/46/Deluxe_Fish_Tank.png",
+    "sprite": "chest_closed",
+    "role": "豪華魚缸"
+  },
+  {
+    "id": "sdv_aquatic_sanctuary",
+    "name": "水生庇護缸 (Aquatic Sanctuary)",
+    "category": "furniture_beds",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/1/14/Aquatic_Sanctuary.png",
+    "sprite": "chest_closed",
+    "role": "水生庇護缸"
+  },
+  {
+    "id": "sdv_blossom_rug",
+    "name": "花朵地毯 (Blossom Rug)",
+    "category": "decor_rugs",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/6/67/Blossom_Rug.png",
+    "sprite": "chest_open",
+    "role": "花朵地毯"
+  },
+  {
+    "id": "sdv_bone_rug",
+    "name": "骨頭地毯 (Bone Rug)",
+    "category": "decor_rugs",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/f/f5/Bone_Rug.png",
+    "sprite": "chest_open",
+    "role": "骨頭地毯"
+  },
+  {
+    "id": "sdv_bouquet_rug",
+    "name": "花束地毯 (Bouquet Rug)",
+    "category": "decor_rugs",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/f/f0/Bouquet_Rug.png",
+    "sprite": "chest_open",
+    "role": "花束地毯"
+  },
+  {
+    "id": "sdv_burlap_rug",
+    "name": "麻布地毯 (Burlap Rug)",
+    "category": "decor_rugs",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/4/49/Burlap_Rug.png",
+    "sprite": "chest_open",
+    "role": "麻布地毯"
+  },
+  {
+    "id": "sdv_dark_rug",
+    "name": "深色地毯 (Dark Rug)",
+    "category": "decor_rugs",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/e/e8/Dark_Rug.png",
+    "sprite": "chest_open",
+    "role": "深色地毯"
+  },
+  {
+    "id": "sdv_fruit_salad_rug",
+    "name": "水果沙拉地毯 (Fruit Salad Rug)",
+    "category": "decor_rugs",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/7/7c/Fruit_Salad_Rug.png",
+    "sprite": "chest_open",
+    "role": "水果沙拉地毯"
+  },
+  {
+    "id": "sdv_funky_rug",
+    "name": "放克地毯 (Funky Rug)",
+    "category": "decor_rugs",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/6/63/Funky_Rug.png",
+    "sprite": "chest_open",
+    "role": "放克地毯"
+  },
+  {
+    "id": "sdv_green_cottage_rug",
+    "name": "綠色小屋地毯 (Green Cottage Rug)",
+    "category": "decor_rugs",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/5/58/Green_Cottage_Rug.png",
+    "sprite": "chest_open",
+    "role": "綠色小屋地毯"
+  },
+  {
+    "id": "sdv_red_cottage_rug",
+    "name": "紅色小屋地毯 (Red Cottage Rug)",
+    "category": "decor_rugs",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/9/9b/Red_Cottage_Rug.png",
+    "sprite": "chest_open",
+    "role": "紅色小屋地毯"
+  },
+  {
+    "id": "sdv_icy_rug",
+    "name": "冰霜地毯 (Icy Rug)",
+    "category": "decor_rugs",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/6/68/Icy_Rug.png",
+    "sprite": "chest_open",
+    "role": "冰霜地毯"
+  },
+  {
+    "id": "sdv_large_green_rug",
+    "name": "大綠地毯 (Large Green Rug)",
+    "category": "decor_rugs",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/7/73/Large_Green_Rug.png",
+    "sprite": "chest_open",
+    "role": "大型綠地毯"
+  },
+  {
+    "id": "sdv_large_cottage_rug",
+    "name": "大小屋地毯 (Large Cottage Rug)",
+    "category": "decor_rugs",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/7/7c/Large_Cottage_Rug.png",
+    "sprite": "chest_open",
+    "role": "大型小屋地毯"
+  },
+  {
+    "id": "sdv_large_red_rug",
+    "name": "大紅地毯 (Large Red Rug)",
+    "category": "decor_rugs",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/1/1b/Large_Red_Rug.png",
+    "sprite": "chest_open",
+    "role": "大型紅地毯"
+  },
+  {
+    "id": "sdv_light_green_rug",
+    "name": "淺綠地毯 (Light Green Rug)",
+    "category": "decor_rugs",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/e/ec/Light_Green_Rug.png",
+    "sprite": "chest_open",
+    "role": "淺綠地毯"
+  },
+  {
+    "id": "sdv_monster_rug",
+    "name": "怪物地毯 (Monster Rug)",
+    "category": "decor_rugs",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/7/74/Monster_Rug.png",
+    "sprite": "chest_open",
+    "role": "怪物地毯"
+  },
+  {
+    "id": "sdv_mystic_rug",
+    "name": "神秘地毯 (Mystic Rug)",
+    "category": "decor_rugs",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/b/bb/Mystic_Rug.png",
+    "sprite": "chest_open",
+    "role": "神秘地毯"
+  },
+  {
+    "id": "sdv_nautical_rug",
+    "name": "航海地毯 (Nautical Rug)",
+    "category": "decor_rugs",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/f/f1/Nautical_Rug.png",
+    "sprite": "chest_open",
+    "role": "航海地毯"
+  },
+  {
+    "id": "sdv_oceanic_rug",
+    "name": "海洋地毯 (Oceanic Rug)",
+    "category": "decor_rugs",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/f/f2/Oceanic_Rug.png",
+    "sprite": "chest_open",
+    "role": "海洋地毯"
+  },
+  {
+    "id": "sdv_old_world_rug",
+    "name": "舊世界地毯 (Old World Rug)",
+    "category": "decor_rugs",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/a/a3/Old_World_Rug.png",
+    "sprite": "chest_open",
+    "role": "舊世界地毯"
+  },
+  {
+    "id": "sdv_patchwork_rug",
+    "name": "拼布地毯 (Patchwork Rug)",
+    "category": "decor_rugs",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/b/b3/Patchwork_Rug.png",
+    "sprite": "chest_open",
+    "role": "拼布地毯"
+  },
+  {
+    "id": "sdv_pirate_rug",
+    "name": "海盜地毯 (Pirate Rug)",
+    "category": "decor_rugs",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/a/ad/Pirate_Rug.png",
+    "sprite": "chest_open",
+    "role": "海盜地毯"
+  },
+  {
+    "id": "sdv_red_rug",
+    "name": "紅地毯 (Red Rug)",
+    "category": "decor_rugs",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/9/91/Red_Rug.png",
+    "sprite": "chest_open",
+    "role": "紅色地毯"
+  },
+  {
+    "id": "sdv_snowy_rug",
+    "name": "雪地地毯 (Snowy Rug)",
+    "category": "decor_rugs",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/4/48/Snowy_Rug.png",
+    "sprite": "chest_open",
+    "role": "雪地地毯"
+  },
+  {
+    "id": "sdv_woodcut_rug",
+    "name": "伐木地毯 (Woodcut Rug)",
+    "category": "decor_rugs",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/1/12/Woodcut_Rug.png",
+    "sprite": "chest_open",
+    "role": "伐木地毯"
+  },
+  {
+    "id": "sdv_floral_rug",
+    "name": "花卉地毯 (Floral Rug)",
+    "category": "decor_rugs",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/6/6c/Floral_Rug.png",
+    "sprite": "chest_open",
+    "role": "花卉地毯"
+  },
+  {
+    "id": "sdv_box_lamp",
+    "name": "盒子燈 (Box Lamp)",
+    "category": "decor_lighting",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/e/ed/Box_Lamp.png",
+    "sprite": "star_full",
+    "role": "盒子燈"
+  },
+  {
+    "id": "sdv_candle_lamp",
+    "name": "蠟燭燈 (Candle Lamp)",
+    "category": "decor_lighting",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/f/f4/Candle_Lamp.png",
+    "sprite": "star_full",
+    "role": "蠟燭燈"
+  },
+  {
+    "id": "sdv_classic_lamp",
+    "name": "經典燈 (Classic Lamp)",
+    "category": "decor_lighting",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/2/20/Classic_Lamp.png",
+    "sprite": "star_full",
+    "role": "經典台燈"
+  },
+  {
+    "id": "sdv_country_lamp",
+    "name": "鄉村燈 (Country Lamp)",
+    "category": "decor_lighting",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/f/fd/Country_Lamp.png",
+    "sprite": "star_full",
+    "role": "鄉村台燈"
+  },
+  {
+    "id": "sdv_modern_lamp",
+    "name": "現代燈 (Modern Lamp)",
+    "category": "decor_lighting",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/0/04/Modern_Lamp.png",
+    "sprite": "star_full",
+    "role": "現代台燈"
+  },
+  {
+    "id": "sdv_ornate_lamp",
+    "name": "華麗燈 (Ornate Lamp)",
+    "category": "decor_lighting",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/7/7d/Ornate_Lamp.png",
+    "sprite": "star_full",
+    "role": "華麗台燈"
+  },
+  {
+    "id": "sdv_brick_fireplace",
+    "name": "磚壁爐 (Brick Fireplace)",
+    "category": "decor_lighting",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/9/97/Brick_Fireplace.png",
+    "sprite": "star_full",
+    "role": "磚砌壁爐"
+  },
+  {
+    "id": "sdv_stone_fireplace",
+    "name": "石壁爐 (Stone Fireplace)",
+    "category": "decor_lighting",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/c/c2/Stone_Fireplace.png",
+    "sprite": "star_full",
+    "role": "石砌壁爐"
+  },
+  {
+    "id": "sdv_stove_fireplace",
+    "name": "火爐壁爐 (Stove Fireplace)",
+    "category": "decor_lighting",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/6/66/Stove_Fireplace.png",
+    "sprite": "star_full",
+    "role": "火爐壁爐"
+  },
+  {
+    "id": "sdv_iridium_fireplace",
+    "name": "銥金壁爐 (Iridium Fireplace)",
+    "category": "decor_lighting",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/3/35/Iridium_Fireplace.png",
+    "sprite": "star_full",
+    "role": "銥金壁爐"
+  },
+  {
+    "id": "sdv_elegant_fireplace",
+    "name": "優雅壁爐 (Elegant Fireplace)",
+    "category": "decor_lighting",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/9/94/Elegant_Fireplace.png",
+    "sprite": "star_full",
+    "role": "優雅壁爐"
+  },
+  {
+    "id": "sdv_torch",
+    "name": "火炬 (Torch)",
+    "category": "decor_lighting",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/b/b2/Torch.png",
+    "sprite": "star_full",
+    "role": "戶外火炬"
+  },
+  {
+    "id": "sdv_campfire",
+    "name": "營火 (Campfire)",
+    "category": "decor_lighting",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/0/01/Campfire.png",
+    "sprite": "star_full",
+    "role": "戶外營火"
+  },
+  {
+    "id": "sdv_gold_brazier",
+    "name": "金火盆 (Gold Brazier)",
+    "category": "decor_lighting",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/b/b7/Gold_Brazier.png",
+    "sprite": "star_full",
+    "role": "金色火盆"
+  },
+  {
+    "id": "sdv_wooden_brazier",
+    "name": "木火盆 (Wooden Brazier)",
+    "category": "decor_lighting",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/3/34/Wooden_Brazier.png",
+    "sprite": "star_full",
+    "role": "木製火盆"
+  },
+  {
+    "id": "sdv_stone_brazier",
+    "name": "石火盆 (Stone Brazier)",
+    "category": "decor_lighting",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/1/1a/Stone_Brazier.png",
+    "sprite": "star_full",
+    "role": "石製火盆"
+  },
+  {
+    "id": "sdv_barrel_brazier",
+    "name": "木桶火盆 (Barrel Brazier)",
+    "category": "decor_lighting",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/7/78/Barrel_Brazier.png",
+    "sprite": "star_full",
+    "role": "木桶火盆"
+  },
+  {
+    "id": "sdv_skull_brazier",
+    "name": "骷髏火盆 (Skull Brazier)",
+    "category": "decor_lighting",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/e/e6/Skull_Brazier.png",
+    "sprite": "star_full",
+    "role": "骷髏火盆"
+  },
+  {
+    "id": "sdv_carved_brazier",
+    "name": "雕刻火盆 (Carved Brazier)",
+    "category": "decor_lighting",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/3/3c/Carved_Brazier.png",
+    "sprite": "star_full",
+    "role": "雕刻火盆"
+  },
+  {
+    "id": "sdv_house_plant",
+    "name": "室內植物 (House Plant)",
+    "category": "decor_plants",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/6/6e/House_Plant.png",
+    "sprite": "sunflower",
+    "role": "室內盆栽"
+  },
+  {
+    "id": "sdv_bonsai_tree",
+    "name": "盆景樹 (Bonsai Tree)",
+    "category": "decor_plants",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/b/b4/Bonsai_Tree.png",
+    "sprite": "sunflower",
+    "role": "盆景"
+  },
+  {
+    "id": "sdv_indoor_palm",
+    "name": "室內棕櫚 (Indoor Palm)",
+    "category": "decor_plants",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/a/a9/Indoor_Palm.png",
+    "sprite": "sunflower",
+    "role": "室內棕櫚"
+  },
+  {
+    "id": "sdv_long_cactus",
+    "name": "長仙人掌 (Long Cactus)",
+    "category": "decor_plants",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/2/27/Long_Cactus.png",
+    "sprite": "sunflower",
+    "role": "長仙人掌"
+  },
+  {
+    "id": "sdv_long_palm",
+    "name": "長棕櫚 (Long Palm)",
+    "category": "decor_plants",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/5/51/Long_Palm.png",
+    "sprite": "sunflower",
+    "role": "長棕櫚"
+  },
+  {
+    "id": "sdv_small_plant",
+    "name": "小植物 (Small Plant)",
+    "category": "decor_plants",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/f/f3/Small_Plant.png",
+    "sprite": "sunflower",
+    "role": "小盆栽"
+  },
+  {
+    "id": "sdv_tall_house_plant",
+    "name": "高身植物 (Tall House Plant)",
+    "category": "decor_plants",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/9/97/Tall_House_Plant.png",
+    "sprite": "sunflower",
+    "role": "高身盆栽"
+  },
+  {
+    "id": "sdv_table_plant",
+    "name": "桌上植物 (Table Plant)",
+    "category": "decor_plants",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/4/43/Table_Plant.png",
+    "sprite": "sunflower",
+    "role": "桌上盆栽"
+  },
+  {
+    "id": "sdv_tree_column",
+    "name": "樹柱 (Tree Column)",
+    "category": "decor_plants",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/9/9a/Tree_Column.png",
+    "sprite": "sunflower",
+    "role": "樹形柱"
+  },
+  {
+    "id": "sdv_deluxe_tree",
+    "name": "豪華樹 (Deluxe Tree)",
+    "category": "decor_plants",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/5/58/Deluxe_Tree.png",
+    "sprite": "sunflower",
+    "role": "豪華裝飾樹"
+  },
+  {
+    "id": "sdv_exotic_tree",
+    "name": "異國樹 (Exotic Tree)",
+    "category": "decor_plants",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/1/11/Exotic_Tree.png",
+    "sprite": "sunflower",
+    "role": "異國裝飾樹"
+  },
+  {
+    "id": "sdv_garden_pot",
+    "name": "花盆 (Garden Pot)",
+    "category": "decor_plants",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/2/2c/Garden_Pot.png",
+    "sprite": "sunflower",
+    "role": "園藝花盆"
+  },
+  {
+    "id": "sdv_jack_o_lantern",
+    "name": "南瓜燈 (Jack-O-Lantern)",
+    "category": "decor_plants",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/1/17/Jack-O-Lantern.png",
+    "sprite": "sunflower",
+    "role": "萬靈節南瓜燈"
+  },
+  {
+    "id": "sdv_grave_stone",
+    "name": "墓碑 (Grave Stone)",
+    "category": "decor_plants",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/f/fe/Grave_Stone.png",
+    "sprite": "sunflower",
+    "role": "墓碑裝飾"
+  },
+  {
+    "id": "sdv_tub_o_flowers",
+    "name": "花桶 (Tub o' Flowers)",
+    "category": "decor_plants",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/d/d9/Tub_o%27_Flowers.png",
+    "sprite": "sunflower",
+    "role": "花桶裝飾"
+  },
+  {
+    "id": "sdv_my_first_painting",
+    "name": "我的第一幅畫 (My First Painting)",
+    "category": "decor_wall",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/b/b3/My_First_Painting.png",
+    "sprite": "scroll",
+    "role": "名畫"
+  },
+  {
+    "id": "sdv_foliage_print",
+    "name": "葉子版畫 (Foliage Print)",
+    "category": "decor_wall",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/b/b7/Foliage_Print.png",
+    "sprite": "scroll",
+    "role": "夜市版畫"
+  },
+  {
+    "id": "sdv_icy_banner",
+    "name": "冰霜橫幅 (Icy Banner)",
+    "category": "decor_wall",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/b/ba/Icy_Banner.png",
+    "sprite": "scroll",
+    "role": "夜市橫幅"
+  },
+  {
+    "id": "sdv_ornate_window",
+    "name": "華麗窗戶 (Ornate Window)",
+    "category": "decor_wall",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/4/46/Ornate_Window.png",
+    "sprite": "scroll",
+    "role": "華麗窗戶"
+  },
+  {
+    "id": "sdv_small_window",
+    "name": "小窗戶 (Small Window)",
+    "category": "decor_wall",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/3/3b/Small_Window.png",
+    "sprite": "scroll",
+    "role": "小窗戶"
+  },
+  {
+    "id": "sdv_porthole",
+    "name": "舷窗 (Porthole)",
+    "category": "decor_wall",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/f/f7/Porthole.png",
+    "sprite": "scroll",
+    "role": "圓形舷窗"
+  },
+  {
+    "id": "sdv_calendar",
+    "name": "牆上日曆 (Calendar)",
+    "category": "decor_wall",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/1/15/Calendar.png",
+    "sprite": "scroll",
+    "role": "牆上日曆"
+  },
+  {
+    "id": "sdv_ceiling_flags",
+    "name": "天花板旗 (Ceiling Flags)",
+    "category": "decor_wall",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/a/a6/Ceiling_Flags.png",
+    "sprite": "scroll",
+    "role": "天花板旗幟"
+  },
+  {
+    "id": "sdv_budget_tv",
+    "name": "預算電視 (Budget TV)",
+    "category": "furniture_special",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/f/f9/Budget_TV.png",
+    "sprite": "trophy",
+    "role": "預算電視"
+  },
+  {
+    "id": "sdv_plasma_tv",
+    "name": "等離子電視 (Plasma TV)",
+    "category": "furniture_special",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/b/be/Plasma_TV.png",
+    "sprite": "trophy",
+    "role": "等離子電視"
+  },
+  {
+    "id": "sdv_tropical_tv",
+    "name": "熱帶電視 (Tropical TV)",
+    "category": "furniture_special",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/0/00/Tropical_TV.png",
+    "sprite": "trophy",
+    "role": "熱帶電視"
+  },
+  {
+    "id": "sdv_retro_tv",
+    "name": "復古電視 (Retro TV)",
+    "category": "furniture_special",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/4/46/Retro_TV.png",
+    "sprite": "trophy",
+    "role": "復古電視"
+  },
+  {
+    "id": "sdv_catalogue",
+    "name": "目錄 (Catalogue)",
+    "category": "furniture_special",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/4/49/Catalogue.png",
+    "sprite": "trophy",
+    "role": "皮埃爾目錄"
+  },
+  {
+    "id": "sdv_furniture_catalogue",
+    "name": "傢俬目錄 (Furniture Catalogue)",
+    "category": "furniture_special",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/e/e8/Furniture_Catalogue.png",
+    "sprite": "trophy",
+    "role": "傢俬目錄"
+  },
+  {
+    "id": "sdv_retro_catalogue",
+    "name": "復古目錄 (Retro Catalogue)",
+    "category": "furniture_special",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/4/41/Retro_Catalogue.png",
+    "sprite": "trophy",
+    "role": "復古目錄"
+  },
+  {
+    "id": "sdv_junimo_catalogue",
+    "name": "祝尼魔目錄 (Junimo Catalogue)",
+    "category": "furniture_special",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/7/7f/Junimo_Catalogue.png",
+    "sprite": "trophy",
+    "role": "祝尼魔目錄"
+  },
+  {
+    "id": "sdv_wizard_catalogue",
+    "name": "巫師目錄 (Wizard Catalogue)",
+    "category": "furniture_special",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/e/ed/Wizard_Catalogue.png",
+    "sprite": "trophy",
+    "role": "巫師目錄"
+  },
+  {
+    "id": "sdv_trash_catalogue",
+    "name": "垃圾目錄 (Trash Catalogue)",
+    "category": "furniture_special",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/4/47/Trash_Catalogue.png",
+    "sprite": "trophy",
+    "role": "垃圾目錄"
+  },
+  {
+    "id": "sdv_mini_jukebox",
+    "name": "迷你點唱機 (Mini-Jukebox)",
+    "category": "furniture_special",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/0/02/Mini-Jukebox.png",
+    "sprite": "trophy",
+    "role": "迷你點唱機"
+  },
+  {
+    "id": "sdv_sewing_machine",
+    "name": "縫紉機 (Sewing Machine)",
+    "category": "furniture_special",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/e/e0/Sewing_Machine.png",
+    "sprite": "trophy",
+    "role": "縫紉機"
+  },
+  {
+    "id": "sdv_workbench",
+    "name": "工作台 (Workbench)",
+    "category": "furniture_special",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/e/ea/Workbench.png",
+    "sprite": "trophy",
+    "role": "工作台"
+  },
+  {
+    "id": "sdv_mini_fridge",
+    "name": "迷你冰箱 (Mini-Fridge)",
+    "category": "furniture_special",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/4/4d/Mini-Fridge.png",
+    "sprite": "trophy",
+    "role": "迷你冰箱"
+  },
+  {
+    "id": "sdv_mini_shipping_bin",
+    "name": "迷你出貨箱 (Mini-Shipping Bin)",
+    "category": "furniture_special",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/1/1c/Mini-Shipping_Bin.png",
+    "sprite": "trophy",
+    "role": "迷你出貨箱"
+  },
+  {
+    "id": "sdv_junimo_chest",
+    "name": "祝尼魔箱子 (Junimo Chest)",
+    "category": "furniture_special",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/b/bc/Junimo_Chest.png",
+    "sprite": "trophy",
+    "role": "祝尼魔箱子"
+  },
+  {
+    "id": "sdv_stone_chest",
+    "name": "石箱子 (Stone Chest)",
+    "category": "furniture_special",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/1/1b/Stone_Chest.png",
+    "sprite": "trophy",
+    "role": "石製箱子"
+  },
+  {
+    "id": "sdv_chest",
+    "name": "普通箱子 (Chest)",
+    "category": "furniture_special",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/b/b3/Chest.png",
+    "sprite": "trophy",
+    "role": "木箱子"
+  },
+  {
+    "id": "sdv_scarecrow",
+    "name": "稻草人 (Scarecrow)",
+    "category": "furniture_special",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/7/75/Scarecrow.png",
+    "sprite": "trophy",
+    "role": "田間稻草人"
+  },
+  {
+    "id": "sdv_deluxe_scarecrow",
+    "name": "豪華稻草人 (Deluxe Scarecrow)",
+    "category": "furniture_special",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/5/59/Deluxe_Scarecrow.png",
+    "sprite": "trophy",
+    "role": "豪華稻草人"
+  },
+  {
+    "id": "sdv_lawn_flamingo",
+    "name": "草坪火烈鳥 (Lawn Flamingo)",
+    "category": "furniture_special",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/c/c1/Lawn_Flamingo.png",
+    "sprite": "trophy",
+    "role": "草坪火烈鳥"
+  },
+  {
+    "id": "sdv_big_green_cane",
+    "name": "大綠手杖糖 (Big Green Cane)",
+    "category": "furniture_special",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/5/53/Big_Green_Cane.png",
+    "sprite": "trophy",
+    "role": "聖誕手杖裝飾"
+  },
+  {
+    "id": "sdv_big_red_cane",
+    "name": "大紅手杖糖 (Big Red Cane)",
+    "category": "furniture_special",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/3/3a/Big_Red_Cane.png",
+    "sprite": "trophy",
+    "role": "聖誕手杖裝飾"
+  },
+  {
+    "id": "sdv_green_canes",
+    "name": "綠色手杖糖 (Green Canes)",
+    "category": "furniture_special",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/4/41/Green_Canes.png",
+    "sprite": "trophy",
+    "role": "聖誕手杖裝飾"
+  },
+  {
+    "id": "sdv_red_canes",
+    "name": "紅色手杖糖 (Red Canes)",
+    "category": "furniture_special",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/f/f8/Red_Canes.png",
+    "sprite": "trophy",
+    "role": "聖誕手杖裝飾"
+  },
+  {
+    "id": "sdv_mixed_cane",
+    "name": "混合手杖糖 (Mixed Cane)",
+    "category": "furniture_special",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/5/52/Mixed_Cane.png",
+    "sprite": "trophy",
+    "role": "聖誕手杖裝飾"
+  },
+  {
+    "id": "sdv_ornamental_hay_bale",
+    "name": "裝飾乾草捆 (Ornamental Hay Bale)",
+    "category": "furniture_special",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/9/99/Ornamental_Hay_Bale.png",
+    "sprite": "trophy",
+    "role": "乾草捆裝飾"
+  },
+  {
+    "id": "sdv_log_section",
+    "name": "原木段 (Log Section)",
+    "category": "furniture_special",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/7/78/Log_Section.png",
+    "sprite": "trophy",
+    "role": "原木段裝飾"
+  },
+  {
+    "id": "sdv_singing_stone",
+    "name": "唱歌石 (Singing Stone)",
+    "category": "furniture_special",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/5/5a/Singing_Stone.png",
+    "sprite": "trophy",
+    "role": "唱歌的石頭"
+  },
+  {
+    "id": "sdv_stone_junimo",
+    "name": "石祝尼魔 (Stone Junimo)",
+    "category": "furniture_special",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/3/31/Stone_Junimo.png",
+    "sprite": "trophy",
+    "role": "石祝尼魔"
+  },
+  {
+    "id": "sdv_stone_owl",
+    "name": "石貓頭鷹 (Stone Owl)",
+    "category": "furniture_special",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/7/7c/Stone_Owl.png",
+    "sprite": "trophy",
+    "role": "石貓頭鷹"
+  },
+  {
+    "id": "sdv_stone_parrot",
+    "name": "石鸚鵡 (Stone Parrot)",
+    "category": "furniture_special",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/a/a2/Stone_Parrot.png",
+    "sprite": "trophy",
+    "role": "石鸚鵡"
+  },
+  {
+    "id": "sdv_stone_frog",
+    "name": "石青蛙 (Stone Frog)",
+    "category": "furniture_special",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/c/c3/Stone_Frog.png",
+    "sprite": "trophy",
+    "role": "石青蛙"
+  },
+  {
+    "id": "sdv_stone_cairn",
+    "name": "石堆 (Stone Cairn)",
+    "category": "furniture_special",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/d/d6/Stone_Cairn.png",
+    "sprite": "trophy",
+    "role": "石堆裝飾"
+  },
+  {
+    "id": "sdv_bear_statue",
+    "name": "熊雕像 (Bear Statue)",
+    "category": "furniture_special",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/4/43/Bear_Statue.png",
+    "sprite": "trophy",
+    "role": "熊雕像"
+  },
+  {
+    "id": "sdv_junimo_kart_arcade_system",
+    "name": "祝尼魔卡丁車街機 (Junimo Kart Arcade System)",
+    "category": "furniture_special",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/e/e6/Junimo_Kart_Arcade_System.png",
+    "sprite": "trophy",
+    "role": "街機遊戲機"
+  },
+  {
+    "id": "sdv_prairie_king_arcade_system",
+    "name": "草原之王街機 (Prairie King Arcade System)",
+    "category": "furniture_special",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/e/eb/Prairie_King_Arcade_System.png",
+    "sprite": "trophy",
+    "role": "街機遊戲機"
+  },
+  {
+    "id": "sdv_wood_floor",
+    "name": "木地板 (Wood Floor)",
+    "category": "decor_floors",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/5/58/Wood_Floor.png",
+    "sprite": "well",
+    "role": "木地板"
+  },
+  {
+    "id": "sdv_rustic_plank_floor",
+    "name": "鄉村木板地板 (Rustic Plank Floor)",
+    "category": "decor_floors",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/9/9e/Rustic_Plank_Floor.png",
+    "sprite": "well",
+    "role": "鄉村木板地板"
+  },
+  {
+    "id": "sdv_stone_floor",
+    "name": "石地板 (Stone Floor)",
+    "category": "decor_floors",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/4/4e/Stone_Floor.png",
+    "sprite": "well",
+    "role": "石地板"
+  },
+  {
+    "id": "sdv_stone_walkway_floor",
+    "name": "石板路地板 (Stone Walkway Floor)",
+    "category": "decor_floors",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/5/51/Stone_Walkway_Floor.png",
+    "sprite": "well",
+    "role": "石板路地板"
+  },
+  {
+    "id": "sdv_brick_floor",
+    "name": "磚地板 (Brick Floor)",
+    "category": "decor_floors",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/2/29/Brick_Floor.png",
+    "sprite": "well",
+    "role": "磚地板"
+  },
+  {
+    "id": "sdv_wood_path",
+    "name": "木小路 (Wood Path)",
+    "category": "decor_floors",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/e/e3/Wood_Path.png",
+    "sprite": "well",
+    "role": "木小路"
+  },
+  {
+    "id": "sdv_gravel_path",
+    "name": "礫石小路 (Gravel Path)",
+    "category": "decor_floors",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/1/15/Gravel_Path.png",
+    "sprite": "well",
+    "role": "礫石小路"
+  },
+  {
+    "id": "sdv_cobblestone_path",
+    "name": "鵝卵石小路 (Cobblestone Path)",
+    "category": "decor_floors",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/9/90/Cobblestone_Path.png",
+    "sprite": "well",
+    "role": "鵝卵石小路"
+  },
+  {
+    "id": "sdv_stepping_stone_path",
+    "name": "踏石小路 (Stepping Stone Path)",
+    "category": "decor_floors",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/1/1b/Stepping_Stone_Path.png",
+    "sprite": "well",
+    "role": "踏石小路"
+  },
+  {
+    "id": "sdv_crystal_path",
+    "name": "水晶小路 (Crystal Path)",
+    "category": "decor_floors",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/9/9b/Crystal_Path.png",
+    "sprite": "well",
+    "role": "水晶小路"
+  },
+  {
+    "id": "sdv_straw_floor",
+    "name": "稻草地板 (Straw Floor)",
+    "category": "decor_floors",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/8/85/Straw_Floor.png",
+    "sprite": "well",
+    "role": "稻草地板"
+  },
+  {
+    "id": "sdv_weathered_floor",
+    "name": "風化地板 (Weathered Floor)",
+    "category": "decor_floors",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/2/2a/Weathered_Floor.png",
+    "sprite": "well",
+    "role": "風化地板"
+  },
+  {
+    "id": "sdv_crystal_floor",
+    "name": "水晶地板 (Crystal Floor)",
+    "category": "decor_floors",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/a/a4/Crystal_Floor.png",
+    "sprite": "well",
+    "role": "水晶地板"
+  },
+  {
+    "id": "sdv_good_ol_cap",
+    "name": "老式棒球帽 (Good Ol' Cap)",
+    "category": "clothes_hats",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/1/1e/Good_Ol%27_Cap.png",
+    "sprite": "fashion_rabbit",
+    "role": "農夫棒球帽"
+  },
+  {
+    "id": "sdv_trucker_hat",
+    "name": "卡車司機帽 (Trucker Hat)",
+    "category": "clothes_hats",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/2/2f/Trucker_Hat.png",
+    "sprite": "fashion_rabbit",
+    "role": "卡車帽"
+  },
+  {
+    "id": "sdv_official_cap",
+    "name": "官方帽 (Official Cap)",
+    "category": "clothes_hats",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/b/b4/Official_Cap.png",
+    "sprite": "fashion_rabbit",
+    "role": "官方棒球帽"
+  },
+  {
+    "id": "sdv_lucky_bow",
+    "name": "幸運蝴蝶結 (Lucky Bow)",
+    "category": "clothes_hats",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/7/71/Lucky_Bow.png",
+    "sprite": "fashion_rabbit",
+    "role": "幸運蝴蝶結"
+  },
+  {
+    "id": "sdv_polka_bow",
+    "name": "波點蝴蝶結 (Polka Bow)",
+    "category": "clothes_hats",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/b/b6/Polka_Bow.png",
+    "sprite": "fashion_rabbit",
+    "role": "波點蝴蝶結"
+  },
+  {
+    "id": "sdv_bowler_hat",
+    "name": "圓頂禮帽 (Bowler Hat)",
+    "category": "clothes_hats",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/e/e1/Bowler_Hat.png",
+    "sprite": "fashion_rabbit",
+    "role": "圓頂禮帽"
+  },
+  {
+    "id": "sdv_top_hat",
+    "name": "大禮帽 (Top Hat)",
+    "category": "clothes_hats",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/8/8d/Top_Hat.png",
+    "sprite": "fashion_rabbit",
+    "role": "大禮帽"
+  },
+  {
+    "id": "sdv_sombrero",
+    "name": "墨西哥帽 (Sombrero)",
+    "category": "clothes_hats",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/1/1c/Sombrero.png",
+    "sprite": "fashion_rabbit",
+    "role": "墨西哥寬邊帽"
+  },
+  {
+    "id": "sdv_cowboy_hat",
+    "name": "牛仔帽 (Cowboy Hat)",
+    "category": "clothes_hats",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/9/99/Cowboy_Hat.png",
+    "sprite": "fashion_rabbit",
+    "role": "牛仔帽"
+  },
+  {
+    "id": "sdv_magic_cowboy_hat",
+    "name": "魔法牛仔帽 (Magic Cowboy Hat)",
+    "category": "clothes_hats",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/6/60/Magic_Cowboy_Hat.png",
+    "sprite": "fashion_rabbit",
+    "role": "魔法牛仔帽"
+  },
+  {
+    "id": "sdv_magic_turban",
+    "name": "魔法頭巾 (Magic Turban)",
+    "category": "clothes_hats",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/6/65/Magic_Turban.png",
+    "sprite": "fashion_rabbit",
+    "role": "魔法頭巾"
+  },
+  {
+    "id": "sdv_golden_helmet",
+    "name": "黃金頭盔 (Golden Helmet)",
+    "category": "clothes_hats",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/c/c6/Golden_Helmet.png",
+    "sprite": "fashion_rabbit",
+    "role": "黃金頭盔"
+  },
+  {
+    "id": "sdv_deluxe_pirate_hat",
+    "name": "豪華海盜帽 (Deluxe Pirate Hat)",
+    "category": "clothes_hats",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/c/cb/Deluxe_Pirate_Hat.png",
+    "sprite": "fashion_rabbit",
+    "role": "豪華海盜帽"
+  },
+  {
+    "id": "sdv_fashion_hat",
+    "name": "時尚帽 (Fashion Hat)",
+    "category": "clothes_hats",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/6/69/Fashion_Hat.png",
+    "sprite": "fashion_rabbit",
+    "role": "時尚帽子"
+  },
+  {
+    "id": "sdv_earmuffs",
+    "name": "耳罩 (Earmuffs)",
+    "category": "clothes_hats",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/c/ca/Earmuffs.png",
+    "sprite": "fashion_rabbit",
+    "role": "冬日耳罩"
+  },
+  {
+    "id": "sdv_tiara",
+    "name": "皇冠頭飾 (Tiara)",
+    "category": "clothes_hats",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/6/6c/Tiara.png",
+    "sprite": "fashion_rabbit",
+    "role": "公主頭飾"
+  },
+  {
+    "id": "sdv_santa_hat",
+    "name": "聖誕帽 (Santa Hat)",
+    "category": "clothes_hats",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/e/e6/Santa_Hat.png",
+    "sprite": "fashion_rabbit",
+    "role": "聖誕老人帽"
+  },
+  {
+    "id": "sdv_straw_hat",
+    "name": "草帽 (Straw Hat)",
+    "category": "clothes_hats",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/b/b2/Straw_Hat.png",
+    "sprite": "fashion_rabbit",
+    "role": "農夫草帽"
+  },
+  {
+    "id": "sdv_sailor_s_cap",
+    "name": "水手帽 (Sailor's Cap)",
+    "category": "clothes_hats",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/4/45/Sailor%27s_Cap.png",
+    "sprite": "fashion_rabbit",
+    "role": "水手帽"
+  },
+  {
+    "id": "sdv_hard_hat",
+    "name": "安全帽 (Hard Hat)",
+    "category": "clothes_hats",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/0/08/Hard_Hat.png",
+    "sprite": "fashion_rabbit",
+    "role": "工地安全帽"
+  },
+  {
+    "id": "sdv_stocking_cap",
+    "name": "毛線帽 (Stocking Cap)",
+    "category": "clothes_hats",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/9/9b/Stocking_Cap.png",
+    "sprite": "fashion_rabbit",
+    "role": "毛線長帽"
+  },
+  {
+    "id": "sdv_cat_ears",
+    "name": "貓耳朵 (Cat Ears)",
+    "category": "clothes_hats",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/a/ab/Cat_Ears.png",
+    "sprite": "fashion_rabbit",
+    "role": "貓耳頭飾"
+  },
+  {
+    "id": "sdv_mouse_ears",
+    "name": "鼠耳朵 (Mouse Ears)",
+    "category": "clothes_hats",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/0/05/Mouse_Ears.png",
+    "sprite": "fashion_rabbit",
+    "role": "鼠耳頭飾"
+  },
+  {
+    "id": "sdv_cowpoke_hat",
+    "name": "牧牛帽 (Cowpoke Hat)",
+    "category": "clothes_hats",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/4/4e/Cowpoke_Hat.png",
+    "sprite": "fashion_rabbit",
+    "role": "牧牛帽"
+  },
+  {
+    "id": "sdv_cowgal_hat",
+    "name": "女牛仔帽 (Cowgal Hat)",
+    "category": "clothes_hats",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/e/e7/Cowgal_Hat.png",
+    "sprite": "fashion_rabbit",
+    "role": "女牛仔帽"
+  },
+  {
+    "id": "sdv_hunter_s_cap",
+    "name": "獵人帽 (Hunter's Cap)",
+    "category": "clothes_hats",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/c/c9/Hunter%27s_Cap.png",
+    "sprite": "fashion_rabbit",
+    "role": "獵人帽"
+  },
+  {
+    "id": "sdv_watermelon_band",
+    "name": "西瓜頭帶 (Watermelon Band)",
+    "category": "clothes_hats",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/b/b7/Watermelon_Band.png",
+    "sprite": "fashion_rabbit",
+    "role": "西瓜頭帶"
+  },
+  {
+    "id": "sdv_mushroom_cap",
+    "name": "蘑菇帽 (Mushroom Cap)",
+    "category": "clothes_hats",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/7/71/Mushroom_Cap.png",
+    "sprite": "fashion_rabbit",
+    "role": "蘑菇帽"
+  },
+  {
+    "id": "sdv_living_hat",
+    "name": "活帽子 (Living Hat)",
+    "category": "clothes_hats",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/9/95/Living_Hat.png",
+    "sprite": "fashion_rabbit",
+    "role": "傳說活帽子"
+  },
+  {
+    "id": "sdv_squid_kid_s_hat",
+    "name": "烏賊帽 (Squid Kid's Hat)",
+    "category": "clothes_hats",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/2/24/Squid_Kid%27s_Hat.png",
+    "sprite": "fashion_rabbit",
+    "role": "烏賊小子帽"
+  },
+  {
+    "id": "sdv_butterfly_bow",
+    "name": "蝴蝶結髮飾 (Butterfly Bow)",
+    "category": "clothes_hats",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/0/01/Butterfly_Bow.png",
+    "sprite": "fashion_rabbit",
+    "role": "蝴蝶髮飾"
+  },
+  {
+    "id": "sdv_sou_wester",
+    "name": "西南風帽 (Sou'wester)",
+    "category": "clothes_hats",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/f/f0/Sou%27wester.png",
+    "sprite": "fashion_rabbit",
+    "role": "漁夫雨帽"
+  },
+  {
+    "id": "sdv_blue_bonnet",
+    "name": "藍色禮帽 (Blue Bonnet)",
+    "category": "clothes_hats",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/b/ba/Blue_Bonnet.png",
+    "sprite": "fashion_rabbit",
+    "role": "藍色軟帽"
+  },
+  {
+    "id": "sdv_white_turban",
+    "name": "白色頭巾 (White Turban)",
+    "category": "clothes_hats",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/6/60/White_Turban.png",
+    "sprite": "fashion_rabbit",
+    "role": "白色頭巾"
+  },
+  {
+    "id": "sdv_elegant_turban",
+    "name": "優雅頭巾 (Elegant Turban)",
+    "category": "clothes_hats",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/3/3d/Elegant_Turban.png",
+    "sprite": "fashion_rabbit",
+    "role": "優雅頭巾"
+  },
+  {
+    "id": "sdv_chef_hat",
+    "name": "廚師帽 (Chef Hat)",
+    "category": "clothes_hats",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/3/3b/Chef_Hat.png",
+    "sprite": "fashion_rabbit",
+    "role": "廚師高帽"
+  },
+  {
+    "id": "sdv_floppy_beanie",
+    "name": "軟毛線帽 (Floppy Beanie)",
+    "category": "clothes_hats",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/0/0d/Floppy_Beanie.png",
+    "sprite": "fashion_rabbit",
+    "role": "軟毛線帽"
+  },
+  {
+    "id": "sdv_beanie",
+    "name": "毛線便帽 (Beanie)",
+    "category": "clothes_hats",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/5/51/Beanie.png",
+    "sprite": "fashion_rabbit",
+    "role": "毛線便帽"
+  },
+  {
+    "id": "sdv_cloth_headband",
+    "name": "布頭帶 (Cloth Headband)",
+    "category": "clothes_hats",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/d/da/Cloth_Headband.png",
+    "sprite": "fashion_rabbit",
+    "role": "布頭帶"
+  },
+  {
+    "id": "sdv_colorful_headband",
+    "name": "彩色頭帶 (Colorful Headband)",
+    "category": "clothes_hats",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/2/23/Colorful_Headband.png",
+    "sprite": "fashion_rabbit",
+    "role": "彩色頭帶"
+  },
+  {
+    "id": "sdv_governor_s_hat",
+    "name": "州長帽 (Governor's Hat)",
+    "category": "clothes_hats",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/2/2e/Governor%27s_Hat.png",
+    "sprite": "fashion_rabbit",
+    "role": "州長帽"
+  },
+  {
+    "id": "sdv_goggles",
+    "name": "護目鏡 (Goggles)",
+    "category": "clothes_hats",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/1/1a/Goggles.png",
+    "sprite": "fashion_rabbit",
+    "role": "護目鏡"
+  },
+  {
+    "id": "sdv_forager_s_hat",
+    "name": "採集者帽 (Forager's Hat)",
+    "category": "clothes_hats",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/3/30/Forager%27s_Hat.png",
+    "sprite": "fashion_rabbit",
+    "role": "採集者帽"
+  },
+  {
+    "id": "sdv_warrior_helmet",
+    "name": "戰士頭盔 (Warrior Helmet)",
+    "category": "clothes_hats",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/6/68/Warrior_Helmet.png",
+    "sprite": "fashion_rabbit",
+    "role": "戰士頭盔"
+  },
+  {
+    "id": "sdv_cool_cap",
+    "name": "酷帽 (Cool Cap)",
+    "category": "clothes_hats",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/6/69/Cool_Cap.png",
+    "sprite": "fashion_rabbit",
+    "role": "酷炫棒球帽"
+  },
+  {
+    "id": "sdv_sunglasses",
+    "name": "太陽眼鏡 (Sunglasses)",
+    "category": "clothes_hats",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/9/92/Sunglasses.png",
+    "sprite": "fashion_rabbit",
+    "role": "太陽眼鏡"
+  },
+  {
+    "id": "sdv_leprechaun_hat",
+    "name": "小妖精帽 (Leprechaun Hat)",
+    "category": "clothes_hats",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/4/49/Leprechaun_Hat.png",
+    "sprite": "fashion_rabbit",
+    "role": "小妖精帽"
+  },
+  {
+    "id": "sdv_witch_hat",
+    "name": "女巫帽 (Witch Hat)",
+    "category": "clothes_hats",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/1/18/Witch_Hat.png",
+    "sprite": "fashion_rabbit",
+    "role": "女巫尖帽"
+  },
+  {
+    "id": "sdv_party_hat",
+    "name": "紅色派對帽 (Party Hat)",
+    "category": "clothes_hats",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/6/69/Party_Hat.png",
+    "sprite": "fashion_rabbit",
+    "role": "紅色派對帽"
+  },
+  {
+    "id": "sdv_arcane_hat",
+    "name": "奧術帽 (Arcane Hat)",
+    "category": "clothes_hats",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/c/c7/Arcane_Hat.png",
+    "sprite": "fashion_rabbit",
+    "role": "奧術帽"
+  },
+  {
+    "id": "sdv_star_helmet",
+    "name": "星星頭盔 (Star Helmet)",
+    "category": "clothes_hats",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/2/2a/Star_Helmet.png",
+    "sprite": "fashion_rabbit",
+    "role": "星星頭盔"
+  },
+  {
+    "id": "sdv_pirate_hat",
+    "name": "海盜帽 (Pirate Hat)",
+    "category": "clothes_hats",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/0/04/Pirate_Hat.png",
+    "sprite": "fashion_rabbit",
+    "role": "海盜帽"
+  },
+  {
+    "id": "sdv_frog_hat",
+    "name": "青蛙帽 (Frog Hat)",
+    "category": "clothes_hats",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/d/d1/Frog_Hat.png",
+    "sprite": "fashion_rabbit",
+    "role": "青蛙帽"
+  },
+  {
+    "id": "sdv_small_cap",
+    "name": "小帽 (Small Cap)",
+    "category": "clothes_hats",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/1/1a/Small_Cap.png",
+    "sprite": "fashion_rabbit",
+    "role": "小棒球帽"
+  },
+  {
+    "id": "sdv_blue_cowboy_hat",
+    "name": "藍牛仔帽 (Blue Cowboy Hat)",
+    "category": "clothes_hats",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/7/73/Blue_Cowboy_Hat.png",
+    "sprite": "fashion_rabbit",
+    "role": "藍色牛仔帽"
+  },
+  {
+    "id": "sdv_red_cowboy_hat",
+    "name": "紅牛仔帽 (Red Cowboy Hat)",
+    "category": "clothes_hats",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/f/fc/Red_Cowboy_Hat.png",
+    "sprite": "fashion_rabbit",
+    "role": "紅色牛仔帽"
+  },
+  {
+    "id": "sdv_cone_hat",
+    "name": "錐形帽 (Cone Hat)",
+    "category": "clothes_hats",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/d/d5/Cone_Hat.png",
+    "sprite": "fashion_rabbit",
+    "role": "錐形帽"
+  },
+  {
+    "id": "sdv_paper_hat",
+    "name": "紙帽 (Paper Hat)",
+    "category": "clothes_hats",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/5/5f/Paper_Hat.png",
+    "sprite": "fashion_rabbit",
+    "role": "報紙紙帽"
+  },
+  {
+    "id": "sdv_garbage_hat",
+    "name": "垃圾帽 (Garbage Hat)",
+    "category": "clothes_hats",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/a/a9/Garbage_Hat.png",
+    "sprite": "fashion_rabbit",
+    "role": "垃圾桶蓋帽"
+  },
+  {
+    "id": "sdv_radioactive_goggles",
+    "name": "放射護目鏡 (Radioactive Goggles)",
+    "category": "clothes_hats",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/4/4d/Radioactive_Goggles.png",
+    "sprite": "fashion_rabbit",
+    "role": "放射護目鏡"
+  },
+  {
+    "id": "sdv_swashbuckler_hat",
+    "name": "水手大副帽 (Swashbuckler Hat)",
+    "category": "clothes_hats",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/c/c4/Swashbuckler_Hat.png",
+    "sprite": "fashion_rabbit",
+    "role": "大副帽"
+  },
+  {
+    "id": "sdv_qi_mask",
+    "name": "齊先生面具 (Qi Mask)",
+    "category": "clothes_hats",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/d/dd/Qi_Mask.png",
+    "sprite": "fashion_rabbit",
+    "role": "齊先生面具"
+  },
+  {
+    "id": "sdv_abigail_s_bow",
+    "name": "阿比蓋爾蝴蝶結 (Abigail's Bow)",
+    "category": "clothes_hats",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/0/02/Abigail%27s_Bow.png",
+    "sprite": "fashion_rabbit",
+    "role": "阿比蓋爾蝴蝶結"
+  },
+  {
+    "id": "sdv_jester_hat",
+    "name": "小丑帽 (Jester Hat)",
+    "category": "clothes_hats",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/9/9b/Jester_Hat.png",
+    "sprite": "fashion_rabbit",
+    "role": "小丑帽"
+  },
+  {
+    "id": "sdv_pageboy_cap",
+    "name": "報童帽 (Pageboy Cap)",
+    "category": "clothes_hats",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/4/4b/Pageboy_Cap.png",
+    "sprite": "fashion_rabbit",
+    "role": "報童帽"
+  },
+  {
+    "id": "sdv_fishing_hat",
+    "name": "漁夫帽 (Fishing Hat)",
+    "category": "clothes_hats",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/d/d8/Fishing_Hat.png",
+    "sprite": "fashion_rabbit",
+    "role": "釣魚帽"
+  },
+  {
+    "id": "sdv_pink_bow",
+    "name": "粉色蝴蝶結 (Pink Bow)",
+    "category": "clothes_hats",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/4/4e/Pink_Bow.png",
+    "sprite": "fashion_rabbit",
+    "role": "粉色蝴蝶結"
+  },
+  {
+    "id": "sdv_panda_hat",
+    "name": "熊貓帽 (Panda Hat)",
+    "category": "clothes_hats",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/3/3a/Panda_Hat.png",
+    "sprite": "fashion_rabbit",
+    "role": "熊貓帽"
+  },
+  {
+    "id": "sdv_totem_mask",
+    "name": "圖騰面具 (Totem Mask)",
+    "category": "clothes_hats",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/c/cc/Totem_Mask.png",
+    "sprite": "fashion_rabbit",
+    "role": "圖騰面具"
+  },
+  {
+    "id": "sdv_knight_s_helmet",
+    "name": "騎士頭盔 (Knight's Helmet)",
+    "category": "clothes_hats",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/6/62/Knight%27s_Helmet.png",
+    "sprite": "fashion_rabbit",
+    "role": "騎士頭盔"
+  },
+  {
+    "id": "sdv_sneakers",
+    "name": "運動鞋 (Sneakers)",
+    "category": "clothes_shoes",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/a/ad/Sneakers.png",
+    "sprite": "farmer",
+    "role": "運動鞋"
+  },
+  {
+    "id": "sdv_rubber_boots",
+    "name": "橡膠靴 (Rubber Boots)",
+    "category": "clothes_shoes",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/e/e8/Rubber_Boots.png",
+    "sprite": "farmer",
+    "role": "橡膠靴"
+  },
+  {
+    "id": "sdv_leather_boots",
+    "name": "皮靴 (Leather Boots)",
+    "category": "clothes_shoes",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/f/fd/Leather_Boots.png",
+    "sprite": "farmer",
+    "role": "皮靴"
+  },
+  {
+    "id": "sdv_work_boots",
+    "name": "工作靴 (Work Boots)",
+    "category": "clothes_shoes",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/5/53/Work_Boots.png",
+    "sprite": "farmer",
+    "role": "工作靴"
+  },
+  {
+    "id": "sdv_combat_boots",
+    "name": "戰鬥靴 (Combat Boots)",
+    "category": "clothes_shoes",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/6/63/Combat_Boots.png",
+    "sprite": "farmer",
+    "role": "戰鬥靴"
+  },
+  {
+    "id": "sdv_tundra_boots",
+    "name": "苔原靴 (Tundra Boots)",
+    "category": "clothes_shoes",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/9/93/Tundra_Boots.png",
+    "sprite": "farmer",
+    "role": "苔原靴"
+  },
+  {
+    "id": "sdv_thermal_boots",
+    "name": "保暖靴 (Thermal Boots)",
+    "category": "clothes_shoes",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/4/4e/Thermal_Boots.png",
+    "sprite": "farmer",
+    "role": "保暖靴"
+  },
+  {
+    "id": "sdv_dark_boots",
+    "name": "深色靴 (Dark Boots)",
+    "category": "clothes_shoes",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/8/8d/Dark_Boots.png",
+    "sprite": "farmer",
+    "role": "深色靴"
+  },
+  {
+    "id": "sdv_firewalker_boots",
+    "name": "火焰行者靴 (Firewalker Boots)",
+    "category": "clothes_shoes",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/f/fa/Firewalker_Boots.png",
+    "sprite": "farmer",
+    "role": "火焰行者靴"
+  },
+  {
+    "id": "sdv_genie_shoes",
+    "name": "精靈鞋 (Genie Shoes)",
+    "category": "clothes_shoes",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/9/98/Genie_Shoes.png",
+    "sprite": "farmer",
+    "role": "精靈鞋"
+  },
+  {
+    "id": "sdv_space_boots",
+    "name": "太空靴 (Space Boots)",
+    "category": "clothes_shoes",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/6/6e/Space_Boots.png",
+    "sprite": "farmer",
+    "role": "太空靴"
+  },
+  {
+    "id": "sdv_cowboy_boots",
+    "name": "牛仔靴 (Cowboy Boots)",
+    "category": "clothes_shoes",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/1/15/Cowboy_Boots.png",
+    "sprite": "farmer",
+    "role": "牛仔靴"
+  },
+  {
+    "id": "sdv_emily_s_magic_boots",
+    "name": "艾米麗魔法靴 (Emily's Magic Boots)",
+    "category": "clothes_shoes",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/a/ac/Emily%27s_Magic_Boots.png",
+    "sprite": "farmer",
+    "role": "艾米麗魔法靴"
+  },
+  {
+    "id": "sdv_leprechaun_shoes",
+    "name": "小妖精鞋 (Leprechaun Shoes)",
+    "category": "clothes_shoes",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/e/e0/Leprechaun_Shoes.png",
+    "sprite": "farmer",
+    "role": "小妖精鞋"
+  },
+  {
+    "id": "sdv_cinderclown_shoes",
+    "name": "灰姑娘鞋 (Cinderclown Shoes)",
+    "category": "clothes_shoes",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/9/94/Cinderclown_Shoes.png",
+    "sprite": "farmer",
+    "role": "灰姑娘小丑鞋"
+  },
+  {
+    "id": "sdv_mermaid_boots",
+    "name": "美人魚靴 (Mermaid Boots)",
+    "category": "clothes_shoes",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/9/98/Mermaid_Boots.png",
+    "sprite": "farmer",
+    "role": "美人魚靴"
+  },
+  {
+    "id": "sdv_dragonscale_boots",
+    "name": "龍鱗靴 (Dragonscale Boots)",
+    "category": "clothes_shoes",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/f/fb/Dragonscale_Boots.png",
+    "sprite": "farmer",
+    "role": "龍鱗靴"
+  },
+  {
+    "id": "sdv_crystal_shoes",
+    "name": "水晶鞋 (Crystal Shoes)",
+    "category": "clothes_shoes",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/6/69/Crystal_Shoes.png",
+    "sprite": "farmer",
+    "role": "水晶鞋"
+  },
+  {
+    "id": "sdv_glow_ring",
+    "name": "光輝戒指 (Glow Ring)",
+    "category": "rings",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/0/01/Glow_Ring.png",
+    "sprite": "gem_diamond",
+    "role": "夜間發光"
+  },
+  {
+    "id": "sdv_small_glow_ring",
+    "name": "小光輝戒指 (Small Glow Ring)",
+    "category": "rings",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/6/6c/Small_Glow_Ring.png",
+    "sprite": "gem_diamond",
+    "role": "微微發光"
+  },
+  {
+    "id": "sdv_magnet_ring",
+    "name": "磁鐵戒指 (Magnet Ring)",
+    "category": "rings",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/0/04/Magnet_Ring.png",
+    "sprite": "gem_diamond",
+    "role": "吸引物品"
+  },
+  {
+    "id": "sdv_small_magnet_ring",
+    "name": "小磁鐵戒指 (Small Magnet Ring)",
+    "category": "rings",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/2/25/Small_Magnet_Ring.png",
+    "sprite": "gem_diamond",
+    "role": "小範圍吸引"
+  },
+  {
+    "id": "sdv_glowstone_ring",
+    "name": "光輝石戒指 (Glowstone Ring)",
+    "category": "rings",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/6/65/Glowstone_Ring.png",
+    "sprite": "gem_diamond",
+    "role": "光加磁力"
+  },
+  {
+    "id": "sdv_iridium_band",
+    "name": "銥金指環 (Iridium Band)",
+    "category": "rings",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/7/77/Iridium_Band.png",
+    "sprite": "gem_diamond",
+    "role": "全能指環"
+  },
+  {
+    "id": "sdv_vampire_ring",
+    "name": "吸血鬼戒指 (Vampire Ring)",
+    "category": "rings",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/a/a8/Vampire_Ring.png",
+    "sprite": "gem_diamond",
+    "role": "吸血回復"
+  },
+  {
+    "id": "sdv_savage_ring",
+    "name": "野蠻戒指 (Savage Ring)",
+    "category": "rings",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/5/55/Savage_Ring.png",
+    "sprite": "gem_diamond",
+    "role": "擊殺加速"
+  },
+  {
+    "id": "sdv_ring_of_yoba",
+    "name": "約巴戒指 (Ring of Yoba)",
+    "category": "rings",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/2/21/Ring_of_Yoba.png",
+    "sprite": "gem_diamond",
+    "role": "約巴庇護"
+  },
+  {
+    "id": "sdv_burglar_s_ring",
+    "name": "盜賊戒指 (Burglar's Ring)",
+    "category": "rings",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/8/8b/Burglar%27s_Ring.png",
+    "sprite": "gem_diamond",
+    "role": "雙倍掉落"
+  },
+  {
+    "id": "sdv_slime_charmer_ring",
+    "name": "史萊姆剋星戒指 (Slime Charmer Ring)",
+    "category": "rings",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/5/51/Slime_Charmer_Ring.png",
+    "sprite": "gem_diamond",
+    "role": "史萊姆不傷你"
+  },
+  {
+    "id": "sdv_warrior_ring",
+    "name": "戰士戒指 (Warrior Ring)",
+    "category": "rings",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/1/13/Warrior_Ring.png",
+    "sprite": "gem_diamond",
+    "role": "戰士能量"
+  },
+  {
+    "id": "sdv_thorns_ring",
+    "name": "荊棘戒指 (Thorns Ring)",
+    "category": "rings",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/5/5b/Thorns_Ring.png",
+    "sprite": "gem_diamond",
+    "role": "荊棘反傷"
+  },
+  {
+    "id": "sdv_lucky_ring",
+    "name": "幸運戒指 (Lucky Ring)",
+    "category": "rings",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/4/4c/Lucky_Ring.png",
+    "sprite": "gem_diamond",
+    "role": "幸運加成"
+  },
+  {
+    "id": "sdv_hot_java_ring",
+    "name": "熱爪哇戒指 (Hot Java Ring)",
+    "category": "rings",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/a/af/Hot_Java_Ring.png",
+    "sprite": "gem_diamond",
+    "role": "咖啡掉落"
+  },
+  {
+    "id": "sdv_protection_ring",
+    "name": "保護戒指 (Protection Ring)",
+    "category": "rings",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/1/16/Protection_Ring.png",
+    "sprite": "gem_diamond",
+    "role": "無敵延長"
+  },
+  {
+    "id": "sdv_soul_sapper_ring",
+    "name": "靈魂虹吸戒指 (Soul Sapper Ring)",
+    "category": "rings",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/c/c8/Soul_Sapper_Ring.png",
+    "sprite": "gem_diamond",
+    "role": "靈魂虹吸"
+  },
+  {
+    "id": "sdv_phoenix_ring",
+    "name": "鳳凰戒指 (Phoenix Ring)",
+    "category": "rings",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/e/e3/Phoenix_Ring.png",
+    "sprite": "gem_diamond",
+    "role": "每日復活一次"
+  },
+  {
+    "id": "sdv_napalm_ring",
+    "name": "凝固汽油戒指 (Napalm Ring)",
+    "category": "rings",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/8/82/Napalm_Ring.png",
+    "sprite": "gem_diamond",
+    "role": "怪物爆炸"
+  },
+  {
+    "id": "sdv_crabshell_ring",
+    "name": "蟹殼戒指 (Crabshell Ring)",
+    "category": "rings",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/e/eb/Crabshell_Ring.png",
+    "sprite": "gem_diamond",
+    "role": "防禦加成"
+  },
+  {
+    "id": "sdv_sturdy_ring",
+    "name": "堅固戒指 (Sturdy Ring)",
+    "category": "rings",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/7/7e/Sturdy_Ring.png",
+    "sprite": "gem_diamond",
+    "role": "負面減半"
+  },
+  {
+    "id": "sdv_jukebox_ring",
+    "name": "點唱機戒指 (Jukebox Ring)",
+    "category": "rings",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/1/13/Jukebox_Ring.png",
+    "sprite": "gem_diamond",
+    "role": "隨機音樂"
+  },
+  {
+    "id": "sdv_amethyst_ring",
+    "name": "紫水晶戒指 (Amethyst Ring)",
+    "category": "rings",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/f/f9/Amethyst_Ring.png",
+    "sprite": "gem_diamond",
+    "role": "擊退加成"
+  },
+  {
+    "id": "sdv_topaz_ring",
+    "name": "黃水晶戒指 (Topaz Ring)",
+    "category": "rings",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/8/8a/Topaz_Ring.png",
+    "sprite": "gem_diamond",
+    "role": "防禦加成"
+  },
+  {
+    "id": "sdv_aquamarine_ring",
+    "name": "海藍寶石戒指 (Aquamarine Ring)",
+    "category": "rings",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/8/8d/Aquamarine_Ring.png",
+    "sprite": "gem_diamond",
+    "role": "暴擊加成"
+  },
+  {
+    "id": "sdv_jade_ring",
+    "name": "翡翠戒指 (Jade Ring)",
+    "category": "rings",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/d/d8/Jade_Ring.png",
+    "sprite": "gem_diamond",
+    "role": "暴擊傷害"
+  },
+  {
+    "id": "sdv_emerald_ring",
+    "name": "祖母綠戒指 (Emerald Ring)",
+    "category": "rings",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/8/8a/Emerald_Ring.png",
+    "sprite": "gem_diamond",
+    "role": "速度加成"
+  },
+  {
+    "id": "sdv_ruby_ring",
+    "name": "紅寶石戒指 (Ruby Ring)",
+    "category": "rings",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/d/d3/Ruby_Ring.png",
+    "sprite": "gem_diamond",
+    "role": "攻擊加成"
+  },
+  {
+    "id": "sdv_immunity_band",
+    "name": "免疫指環 (Immunity Band)",
+    "category": "rings",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/0/09/Immunity_Band.png",
+    "sprite": "gem_diamond",
+    "role": "免疫加成"
+  },
+  {
+    "id": "sdv_combined_ring",
+    "name": "合成戒指 (Combined Ring)",
+    "category": "rings",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/b/b3/Combined_Ring.png",
+    "sprite": "gem_diamond",
+    "role": "合成戒指"
+  },
+  {
+    "id": "sdv_wedding_ring",
+    "name": "結婚戒指 (Wedding Ring)",
+    "category": "rings",
+    "url": "https://stardewvalleywiki.com/mediawiki/images/en/f/fe/Wedding_Ring.png",
+    "sprite": "gem_diamond",
+    "role": "求婚戒指"
   }
 ];

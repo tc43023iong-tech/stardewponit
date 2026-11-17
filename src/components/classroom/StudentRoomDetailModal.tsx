@@ -291,7 +291,7 @@ export const StudentRoomDetailModal: React.FC<StudentRoomDetailModalProps> = ({
   const handleFurnitureBadgeClick = (item: RoomFurnitureBlueprint, isUnlocked: boolean) => {
     if (isUnlocked) {
       soundManager.playCollect();
-      setClickedNote(`🛋️ 【${item.name}】（${item.style}）：${item.quote}`);
+      setClickedNote(`【${item.name}】（${item.style}）：${item.quote}`);
     } else {
       soundManager.playTick();
       const needed = item.unlockScore - student.points;
@@ -858,10 +858,10 @@ export const StudentRoomDetailModal: React.FC<StudentRoomDetailModalProps> = ({
               <div className="bg-[#fffbeb] p-3 rounded-xl border border-[#f59e0b] text-xs text-stone-700 flex flex-wrap items-center justify-between gap-2">
                 <div>
                   <span className="font-bold text-[#78350f] block text-sm">
-                    🛋️ 星露谷 16 件夢幻房間家具圖鑑（0 ~ 1250 分逐步解鎖收藏）
+                    星露谷 16 件夢幻房間家具圖鑑（0 ~ 1250 分逐步解鎖收藏）
                   </span>
                   <span className="text-xs text-[#92400e]">
-                    隨著房間積分提升，從拼布木床、紅磚壁爐、立式鋼琴到銀河天球儀與水晶鋼琴陸續搬進你的小屋！
+                    隨著房間積分提升，從橡木椅、茶桌、復古電視與磚壁爐，到星空雙人床、水生庇護缸與傢俬目錄陸續搬進你的小屋！
                   </span>
                 </div>
                 <span className="font-pixel text-xs font-bold bg-white text-[#78350f] px-3 py-1 rounded-lg border border-[#f59e0b] shrink-0 tabular-nums">
@@ -890,8 +890,8 @@ export const StudentRoomDetailModal: React.FC<StudentRoomDetailModalProps> = ({
                           : 'bg-[#ede0c2]/60 border-[#c4a675] opacity-75'
                       }`}
                     >
-                      <div className="w-12 h-12 rounded-xl bg-white border border-[#c4a675] shrink-0 shadow-xs relative flex items-center justify-center text-2xl">
-                        <span>{item.emoji}</span>
+                      <div className="p-1 rounded-xl bg-white border border-[#c4a675] shrink-0 shadow-xs relative">
+                        <AvatarRenderer avatar={item.url} name={item.name} size={48} />
                         {isUnlocked ? (
                           <div className="absolute -top-1 -right-1 bg-green-500 text-white rounded-full p-0.5 shadow">
                             <CheckCircle2 className="w-3.5 h-3.5" />
