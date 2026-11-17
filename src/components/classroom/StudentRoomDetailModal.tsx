@@ -9,6 +9,7 @@ import {
   RoomFurnitureBlueprint,
 } from '../../utils/roomArtwork';
 import { soundManager } from '../../utils/sound';
+import { UpgradeCelebrationOverlay } from './UpgradeCelebrationOverlay';
 import {
   X,
   Plus,
@@ -56,6 +57,8 @@ const INDOOR_PET_QUOTES = [
   '房間裡暖呼呼的，最喜歡在這裡看書休息了～',
 ];
 
+const celebratedRoomUpgradeTiers = new Map<string, number>();
+
 export const StudentRoomDetailModal: React.FC<StudentRoomDetailModalProps> = ({
   student,
   onClose,
@@ -67,11 +70,61 @@ export const StudentRoomDetailModal: React.FC<StudentRoomDetailModalProps> = ({
   const [clickedNote, setClickedNote] = useState<string | null>(null);
   const [previewMinPoints, setPreviewMinPoints] = useState<number | null>(null);
   const [isFullscreen, setIsFullscreen] = useState<boolean>(false);
+  const [celebrationMilestone, setCelebrationMilestone] = useState<number | null>(null);
   const modalContainerRef = useRef<HTMLDivElement>(null);
 
   const isDusty = student.points < 0;
   const maxGoal = 1250;
   const progressPercent = Math.min(100, Math.round((Math.max(0, student.points) / maxGoal) * 100));
+
+  const roomTier = student.points >= 50 ? Math.floor(student.points / 50) : 0;
+  const isExactMultipleOf50 = student.points >= 50 && student.points % 50 === 0;
+  const prevRoomTierRef = useRef<{ studentId: string; tier: number }>({
+    studentId: student.id,
+    tier: roomTier,
+  });
+
+  // Trigger room upgrade celebration + particle burst on modal mount if at an uncelebrated multiple of 50
+  useEffect(() => {
+    setCelebrationMilestone(null);
+    if (isExactMultipleOf50 && celebratedRoomUpgradeTiers.get(student.id) !== roomTier) {
+      celebratedRoomUpgradeTiers.set(student.id, roomTier);
+      const timer = setTimeout(() => {
+        soundManager.playAchievementUnlock();
+        setCelebrationMilestone(roomTier * 50);
+      }, 260);
+      return () => clearTimeout(timer);
+    }
+  }, [student.id]);
+
+  // Trigger room upgrade celebration + particle burst when crossing a 50-point multiple live
+  useEffect(() => {
+    const prev = prevRoomTierRef.current;
+    if (prev.studentId !== student.id) {
+      prevRoomTierRef.current = { studentId: student.id, tier: roomTier };
+      return;
+    }
+
+    if (roomTier > prev.tier && roomTier >= 1) {
+      celebratedRoomUpgradeTiers.set(student.id, roomTier);
+      const targetMilestone = roomTier * 50;
+      prevRoomTierRef.current = { studentId: student.id, tier: roomTier };
+      const timer = setTimeout(() => {
+        soundManager.playAchievementUnlock();
+        setCelebrationMilestone(targetMilestone);
+      }, 1360);
+      return () => clearTimeout(timer);
+    }
+
+    if (roomTier < prev.tier) {
+      if (roomTier === 0) {
+        celebratedRoomUpgradeTiers.delete(student.id);
+      } else {
+        celebratedRoomUpgradeTiers.set(student.id, roomTier);
+      }
+    }
+    prevRoomTierRef.current = { studentId: student.id, tier: roomTier };
+  }, [student.id, student.points, roomTier]);
 
   const defaultArtwork = getStudentRoomArtwork(student.points);
   const previewMilestone: RoomArtworkTier | undefined =
@@ -895,6 +948,24 @@ export const StudentRoomDetailModal: React.FC<StudentRoomDetailModalProps> = ({
             返回名冊
           </button>
         </div>
+
+        {/* Celebratory Particle Burst + "恭喜升級！" Modal on 50-point Milestones */}
+        {celebrationMilestone !== null && (() => {
+          const unlockedRoomArt = getStudentRoomArtwork(celebrationMilestone);
+          return (
+            <UpgradeCelebrationOverlay
+              isOpen={true}
+              mode="room"
+              studentName={student.name}
+              milestonePoints={celebrationMilestone}
+              unlockedTitle={`${unlockedRoomArt.roomTitle}（${unlockedRoomArt.roomScaleLabel}）`}
+              unlockedSubtitle={`${unlockedRoomArt.description} 新解鎖：${unlockedRoomArt.furnitureName}！`}
+              unlockedIcon={unlockedRoomArt.icon}
+              unlockedImageUrl={unlockedRoomArt.bgUrl}
+              onClose={() => setCelebrationMilestone(null)}
+            />
+          );
+        })()}
       </div>
     </div>
   );

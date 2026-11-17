@@ -853,5 +853,79 @@ html.stardew-mode::-webkit-scrollbar-corner,
   animation: pixelSparkleTwinkle 1.4s ease-in-out infinite;
 }
 
+/* Farm & Room 50-Point Upgrade Particle Burst & Celebration Modal */
+@keyframes upgradeParticleBurst {
+  0% {
+    opacity: 0;
+    transform: translate3d(0, 0, 0) scale(0.3) rotate(0deg);
+  }
+  12% {
+    opacity: 1;
+    transform: translate3d(calc(var(--tx, 0px) * 0.28), calc(var(--ty, 0px) * 0.28), 0)
+      scale(calc(var(--sc, 1) * 1.15)) rotate(calc(var(--rot, 0deg) * 0.3));
+  }
+  75% {
+    opacity: 0.95;
+    transform: translate3d(calc(var(--tx, 0px) * 0.9), calc(var(--ty, 0px) * 0.9 + 18px), 0)
+      scale(var(--sc, 1)) rotate(calc(var(--rot, 0deg) * 0.85));
+  }
+  100% {
+    opacity: 0;
+    transform: translate3d(var(--tx, 0px), calc(var(--ty, 0px) + 46px), 0)
+      scale(0.35) rotate(var(--rot, 0deg));
+  }
+}
 
+@keyframes upgradeRingExpand {
+  0% {
+    opacity: 0.95;
+    transform: scale(0.25);
+  }
+  65% {
+    opacity: 0.55;
+    transform: scale(1.35);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.85);
+  }
+}
 
+@keyframes upgradeModalPop {
+  0% {
+    opacity: 0;
+    transform: scale(0.68) translateY(20px);
+  }
+  55% {
+    opacity: 1;
+    transform: scale(1.04) translateY(-4px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.animate-upgrade-particle {
+  will-change: transform, opacity;
+  animation: upgradeParticleBurst var(--dur, 1.45s) cubic-bezier(0.16, 1, 0.3, 1) var(--delay, 0s) both;
+}
+
+.animate-upgrade-ring {
+  will-change: transform, opacity;
+  animation: upgradeRingExpand 0.95s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.animate-upgrade-modal-pop {
+  will-change: transform, opacity;
+  animation: upgradeModalPop 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-upgrade-particle,
+  .animate-upgrade-ring,
+  .animate-upgrade-modal-pop {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}

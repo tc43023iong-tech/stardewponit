@@ -33,6 +33,8 @@ import sakuraBg from '../../assets/images/paradise_wide_sakura_1794831906929.jpg
 import starlightBg from '../../assets/images/paradise_wide_starlight_1794831907811.jpg';
 import tropicalBg from '../../assets/images/paradise_wide_tropical_1794831908752.jpg';
 import skycastleBg from '../../assets/images/paradise_wide_skycastle_1794831909789.jpg';
+import englishbookBg from '../../assets/images/paradise_wide_englishbook_1794919908315.jpg';
+import pinyinBg from '../../assets/images/paradise_wide_pinyin_1794919908584.jpg';
 
 import { PointsFeedbackModal, PointsFeedbackData } from './PointsFeedbackModal';
 
@@ -46,7 +48,9 @@ export type ParadiseSeason =
   | 'sakura'
   | 'starlight'
   | 'tropical'
-  | 'skycastle';
+  | 'skycastle'
+  | 'englishbook'
+  | 'pinyin';
 export type ParadiseTimeOfDay = 'day' | 'dawn' | 'sunset' | 'night';
 
 // World expansion multiplier & native 16:9 panoramic aspect ratio
@@ -183,6 +187,16 @@ const SEASON_INNER_OS: Record<ParadiseSeason, string[]> = {
     '（站在軟綿綿的雲海上看風景太幸福了☁️）',
     '（黃金涼亭的噴泉水聲好療癒呀⛲）',
     '（這裡就是傳說中的天空植物園嗎🌈）',
+  ],
+  englishbook: [
+    '（哇！我竟然住進了立體英文繪本裡面📖）',
+    '（前面廣場有巨大的 ABC 積木和鋼筆噴泉呢✒️）',
+    '（今天來學幾個新單字吧：Apple、Starlight、Adventure！🌟）',
+  ],
+  pinyin: [
+    '（歡迎來到普通話拼音世界～b p m f 排排站！🏮）',
+    '（走過一聲二聲三聲四聲彩虹橋去蓮花池看鯉魚🌈）',
+    '（唸對聲調的話，小紅燈籠好像會變得更亮喔✨）',
   ],
 };
 
@@ -1097,6 +1111,10 @@ export const PixelParadiseView: React.FC<PixelParadiseViewProps> = ({
         return tropicalBg;
       case 'skycastle':
         return skycastleBg;
+      case 'englishbook':
+        return englishbookBg;
+      case 'pinyin':
+        return pinyinBg;
       case 'autumn':
       default:
         return autumnBg;
@@ -1119,6 +1137,10 @@ export const PixelParadiseView: React.FC<PixelParadiseViewProps> = ({
         return '🌺';
       case 'skycastle':
         return '☁️';
+      case 'englishbook':
+        return '📖';
+      case 'pinyin':
+        return '🏮';
       case 'autumn':
       default:
         return '🍂';
@@ -1222,7 +1244,7 @@ export const PixelParadiseView: React.FC<PixelParadiseViewProps> = ({
             )}
           </div>
 
-          {/* Scene & Season Background Selector (8 rich panoramic maps) */}
+          {/* Scene & Season Background Selector (10 rich panoramic maps) */}
           <div className="flex items-center bg-[#1b0f04] p-1 rounded-xl border border-[#7a481c] flex-wrap gap-0.5">
             <button
               onClick={() => {
@@ -1319,6 +1341,30 @@ export const PixelParadiseView: React.FC<PixelParadiseViewProps> = ({
               title="切換至雲端空中花園 (☁️ 浮空大理石雲海花園)"
             >
               ☁️ 雲端園
+            </button>
+            <button
+              onClick={() => {
+                soundManager.playClick();
+                setSeason('englishbook');
+              }}
+              className={`px-2 py-1 text-xs font-bold rounded-lg transition-all cursor-pointer whitespace-nowrap shrink-0 ${
+                season === 'englishbook' ? 'bg-[#B45309] text-white shadow-xs ring-1 ring-amber-300' : 'text-stone-300 hover:text-white'
+              }`}
+              title="切換至住在英文書裡 (📖 立體英文故事書奇幻小鎮)"
+            >
+              📖 英文書裡
+            </button>
+            <button
+              onClick={() => {
+                soundManager.playClick();
+                setSeason('pinyin');
+              }}
+              className={`px-2 py-1 text-xs font-bold rounded-lg transition-all cursor-pointer whitespace-nowrap shrink-0 ${
+                season === 'pinyin' ? 'bg-[#DC2626] text-white shadow-xs ring-1 ring-rose-300' : 'text-stone-300 hover:text-white'
+              }`}
+              title="切換至住在普通話拼音裡面 (🏮 b p m f 四聲調國風書院)"
+            >
+              🏮 拼音世界
             </button>
           </div>
 

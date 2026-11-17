@@ -14,6 +14,7 @@ import {
   FarmArtworkTier,
 } from '../../utils/farmArtwork';
 import { soundManager } from '../../utils/sound';
+import { UpgradeCelebrationOverlay } from './UpgradeCelebrationOverlay';
 import {
   X,
   Plus,
@@ -136,6 +137,7 @@ export const StudentFarmDetailModal: React.FC<StudentFarmDetailModalProps> = ({
   const [previewMinPoints, setPreviewMinPoints] = useState<number | null>(null);
   const [isFullscreen, setIsFullscreen] = useState<boolean>(false);
   const [justUnlockedBadge, setJustUnlockedBadge] = useState<boolean>(false);
+  const [celebrationMilestone, setCelebrationMilestone] = useState<number | null>(null);
   const modalContainerRef = useRef<HTMLDivElement>(null);
 
   const farmTier = getFarmTier(student.points);
@@ -158,13 +160,15 @@ export const StudentFarmDetailModal: React.FC<StudentFarmDetailModalProps> = ({
     tier: badgeTier,
   });
 
-  // Play special achievement unlock sound on modal mount (if exact 50-pt multiple not yet celebrated)
+  // Play special achievement unlock sound & celebratory upgrade popup on modal mount (if exact 50-pt multiple not yet celebrated)
   useEffect(() => {
+    setCelebrationMilestone(null);
     if (isExactMultipleOf50 && celebratedBadgeTiers.get(student.id) !== badgeTier) {
       celebratedBadgeTiers.set(student.id, badgeTier);
       setJustUnlockedBadge(true);
       const sfxTimer = setTimeout(() => {
         soundManager.playAchievementUnlock();
+        setCelebrationMilestone(badgeTier * 50);
       }, 260);
       const animTimer = setTimeout(() => {
         setJustUnlockedBadge(false);
@@ -176,7 +180,7 @@ export const StudentFarmDetailModal: React.FC<StudentFarmDetailModalProps> = ({
     }
   }, [student.id]);
 
-  // Play special achievement unlock sound & burst animation when crossing a 50-point multiple live
+  // Play special achievement unlock sound, burst particles & show "恭喜升級！" popup when crossing a 50-point multiple live
   useEffect(() => {
     const prev = prevBadgeRef.current;
     if (prev.studentId !== student.id) {
@@ -187,12 +191,14 @@ export const StudentFarmDetailModal: React.FC<StudentFarmDetailModalProps> = ({
     if (badgeTier > prev.tier && badgeTier >= 1) {
       celebratedBadgeTiers.set(student.id, badgeTier);
       setJustUnlockedBadge(true);
+      const targetMilestone = badgeTier * 50;
       const sfxTimer = setTimeout(() => {
         soundManager.playAchievementUnlock();
-      }, 180);
+        setCelebrationMilestone(targetMilestone);
+      }, 1360);
       const animTimer = setTimeout(() => {
         setJustUnlockedBadge(false);
-      }, 3600);
+      }, 4200);
       prevBadgeRef.current = { studentId: student.id, tier: badgeTier };
       return () => {
         clearTimeout(sfxTimer);
@@ -1325,6 +1331,24 @@ export const StudentFarmDetailModal: React.FC<StudentFarmDetailModalProps> = ({
             返回名冊
           </button>
         </div>
+
+        {/* Celebratory Particle Burst + "恭喜升級！" Modal on 50-point Milestones */}
+        {celebrationMilestone !== null && (() => {
+          const unlockedArt = getStudentFarmArtwork(celebrationMilestone);
+          return (
+            <UpgradeCelebrationOverlay
+              isOpen={true}
+              mode="farm"
+              studentName={student.name}
+              milestonePoints={celebrationMilestone}
+              unlockedTitle={unlockedArt.showcaseLabel}
+              unlockedSubtitle={unlockedArt.description}
+              unlockedIcon={unlockedArt.icon}
+              unlockedImageUrl={unlockedArt.bgUrl}
+              onClose={() => setCelebrationMilestone(null)}
+            />
+          );
+        })()}
       </div>
     </div>
   );
