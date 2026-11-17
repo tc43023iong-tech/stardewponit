@@ -1,4 +1,5 @@
 import React from 'react';
+import { renderExtendedStardewSprite } from './StardewExtendedSprites';
 
 export type PixelSpriteType = 
   | 'mayor'
@@ -48,6 +49,16 @@ export const PixelSprite: React.FC<PixelSpriteProps> = ({
   animate = false,
 }) => {
   const pixelSize = typeof size === 'number' ? `${size}px` : size;
+
+  const extendedSprite = renderExtendedStardewSprite({
+    name,
+    pixelSize,
+    className,
+    animate,
+  });
+  if (extendedSprite) {
+    return <>{extendedSprite}</>;
+  }
 
   switch (name) {
     case 'player1':

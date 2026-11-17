@@ -1,12 +1,16 @@
 import React, { useState, useMemo } from 'react';
 import { Student } from '../../types/classroom';
-import { STARDEW_AVATARS } from '../../data/classroomData';
+import {
+  STARDEW_AVATARS,
+  STARDEW_AVATAR_CATEGORIES,
+  StardewAvatarCategory,
+} from '../../data/classroomData';
 import { STUDENT_CARD_BACKGROUND_OPTIONS, CardBackgroundOption } from '../../data/classroomThemes';
 import { CARD_PIXEL_BG_IMAGES } from '../../data/scenicBackgrounds';
 import { AvatarRenderer } from './AvatarRenderer';
 import { StudentCard } from './StudentCard';
 import { soundManager } from '../../utils/sound';
-import { X, Shuffle, Check, Search, Sparkles, Palette, User, Eye, Flame, Trees, Sparkle } from 'lucide-react';
+import { X, Shuffle, Check, Search, Sparkles, Palette, User, Eye } from 'lucide-react';
 
 interface AvatarPickerModalProps {
   student: Student;
@@ -22,7 +26,7 @@ export const AvatarPickerModal: React.FC<AvatarPickerModalProps> = ({
   const [modalTab, setModalTab] = useState<'avatar' | 'cardBackground'>('avatar');
   const [selectedAvatar, setSelectedAvatar] = useState<string>(student.avatar || 'sdv_white_chicken');
   const [selectedCardBg, setSelectedCardBg] = useState<string>(student.cardBackground || 'auto');
-  const [stardewSubFilter, setStardewSubFilter] = useState<'all' | 'animals' | 'villagers' | 'treasures'>('all');
+  const [stardewSubFilter, setStardewSubFilter] = useState<'all' | StardewAvatarCategory>('all');
   const [searchQuery, setSearchQuery] = useState<string>('');
 
   const handlePickAvatar = (avatarValue: string) => {
@@ -62,19 +66,34 @@ export const AvatarPickerModal: React.FC<AvatarPickerModalProps> = ({
     onClose();
   };
 
+  // Category item counts for filter chips
+  const categoryCounts = useMemo(() => {
+    const counts: Record<string, number> = { all: STARDEW_AVATARS.length };
+    for (const item of STARDEW_AVATARS) {
+      counts[item.category] = (counts[item.category] || 0) + 1;
+    }
+    return counts;
+  }, []);
+
   // Filter Stardew avatars
   const filteredStardewAvatars = useMemo(() => {
+    const q = searchQuery.trim().toLowerCase();
     return STARDEW_AVATARS.filter((a) => {
       const matchSub = stardewSubFilter === 'all' || a.category === stardewSubFilter;
       const matchSearch =
-        searchQuery === '' ||
-        a.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        (a.role && a.role.toLowerCase().includes(searchQuery.toLowerCase()));
+        q === '' ||
+        a.name.toLowerCase().includes(q) ||
+        a.id.toLowerCase().includes(q) ||
+        (a.role && a.role.toLowerCase().includes(q));
       return matchSub && matchSearch;
     });
   }, [stardewSubFilter, searchQuery]);
 
-  const currentAvatarItem = STARDEW_AVATARS.find((a) => a.id === selectedAvatar);
+  const currentAvatarItem =
+    STARDEW_AVATARS.find((a) => a.id === selectedAvatar) ||
+    (selectedAvatar === 'sunflower'
+      ? STARDEW_AVATARS.find((a) => a.id === 'sdv_sunflower')
+      : undefined);
   const currentCardBgItem = STUDENT_CARD_BACKGROUND_OPTIONS.find((b) => b.id === selectedCardBg);
 
   // Live Student Object for Instant Card Preview
@@ -320,40 +339,41 @@ export const AvatarPickerModal: React.FC<AvatarPickerModalProps> = ({
         {modalTab === 'avatar' && (
           <div className="p-3 sm:p-4 bg-[#faeed1] overflow-y-auto max-h-[64vh]">
             {/* Sub Filters & Search */}
-            <div className="flex flex-wrap items-center justify-between gap-2 mb-3">
-              <div className="flex flex-wrap items-center gap-1.5">
-                {[
-                  { id: 'all', label: `全部 (${STARDEW_AVATARS.length})` },
-                  { id: 'animals', label: '🌾 農場動物 (15+種)' },
-                  { id: 'villagers', label: '🏡 小鎮村民 (40+位)' },
-                  { id: 'treasures', label: '💎 傳奇珍寶與神魚' },
-                ].map((sub) => (
-                  <button
-                    key={sub.id}
-                    onClick={() => {
-                      soundManager.playClick();
-                      setStardewSubFilter(sub.id as any);
-                    }}
-                    className={`px-2.5 py-1 text-xs font-bold rounded-md cursor-pointer border ${
-                      stardewSubFilter === sub.id
-                        ? 'bg-[#6a4422] text-[#ffebb3] border-[#361f0d]'
-                        : 'bg-[#faeed1] text-stone-700 border-[#c4a675] hover:bg-[#ffeec2]'
-                    }`}
-                  >
-                    {sub.label}
-                  </button>
-                ))}
+            <div className="flex flex-col gap-2.5 mb-3">
+              <div className="flex items-center justify-between gap-2 flex-wrap">
+                <span className="text-[11px] font-bold text-[#5a3818]">
+                  共收錄 {STARDEW_AVATARS.length} 款星露谷官方圖鑑頭像（目前顯示 {filteredStardewAvatars.length} 款）
+                </span>
+                <div className="relative min-w-[180px] max-w-[260px] flex-1 sm:flex-none">
+                  <Search className="w-3.5 h-3.5 text-stone-400 absolute left-2.5 top-2" />
+                  <input
+                    type="text"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    placeholder="搜尋中文/英文名稱或分類..."
+                    className="w-full bg-[#fdfbf7] border border-[#8b5a2b] pl-8 pr-2.5 py-1 text-xs rounded-lg focus:outline-none font-bold text-[#4a2800]"
+                  />
+                </div>
               </div>
 
-              <div className="relative min-w-[150px] max-w-[210px] flex-1 sm:flex-none">
-                <Search className="w-3.5 h-3.5 text-stone-400 absolute left-2.5 top-2.5" />
-                <input
-                  type="text"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder="搜尋頭像..."
-                  className="w-full bg-[#fdfbf7] border border-[#8b5a2b] pl-8 pr-2.5 py-1 text-xs rounded-lg focus:outline-none font-bold text-[#4a2800]"
-                />
+              <div className="flex flex-wrap items-center gap-1.5">
+                {STARDEW_AVATAR_CATEGORIES.map((sub) => (
+                  <button
+                    key={sub.id}
+                    type="button"
+                    onClick={() => {
+                      soundManager.playClick();
+                      setStardewSubFilter(sub.id);
+                    }}
+                    className={`px-2 py-1 text-[11px] font-bold rounded-md cursor-pointer border whitespace-nowrap shrink-0 transition-colors ${
+                      stardewSubFilter === sub.id
+                        ? 'bg-[#6a4422] text-[#ffebb3] border-[#361f0d] shadow-xs'
+                        : 'bg-[#fdfbf7] text-stone-700 border-[#c4a675] hover:bg-[#ffeec2]'
+                    }`}
+                  >
+                    {sub.label} ({categoryCounts[sub.id] || 0})
+                  </button>
+                ))}
               </div>
             </div>
 

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { PixelSprite } from '../common/PixelSprite';
 import { STARDEW_AVATARS } from '../../data/classroomData';
 
@@ -19,34 +19,52 @@ export const AvatarRenderer: React.FC<AvatarRendererProps> = ({
 }) => {
   const [imgError, setImgError] = useState(false);
 
+  // Reset image error state whenever avatar prop changes
+  useEffect(() => {
+    setImgError(false);
+  }, [avatar]);
+
+  // Support legacy 'sunflower' alias cleanly
+  const normalizedAvatar = avatar === 'sunflower' ? 'sdv_sunflower' : avatar;
+
   // If avatar is an external URL
-  if (avatar && (avatar.startsWith('http://') || avatar.startsWith('https://')) && !imgError) {
+  if (
+    normalizedAvatar &&
+    (normalizedAvatar.startsWith('http://') || normalizedAvatar.startsWith('https://')) &&
+    !imgError
+  ) {
     if (bare) {
       return (
-        <div 
+        <div
           className={`relative flex items-center justify-center shrink-0 drop-shadow-sm select-none ${className}`}
           style={{ width: size, height: size }}
         >
           <img
-            src={avatar}
+            src={normalizedAvatar}
             alt={name}
             referrerPolicy="no-referrer"
+            loading="lazy"
+            decoding="async"
             className="w-full h-full object-contain filter drop-shadow-xs pointer-events-none"
+            style={{ imageRendering: 'pixelated' }}
             onError={() => setImgError(true)}
           />
         </div>
       );
     }
     return (
-      <div 
+      <div
         className={`relative rounded-xl overflow-hidden bg-amber-50/90 border-2 border-[#8b5a2b] flex items-center justify-center shrink-0 shadow-sm ${className}`}
         style={{ width: size, height: size }}
       >
         <img
-          src={avatar}
+          src={normalizedAvatar}
           alt={name}
           referrerPolicy="no-referrer"
+          loading="lazy"
+          decoding="async"
           className="w-full h-full object-contain p-0.5"
+          style={{ imageRendering: 'pixelated' }}
           onError={() => setImgError(true)}
         />
       </div>
@@ -54,11 +72,11 @@ export const AvatarRenderer: React.FC<AvatarRendererProps> = ({
   }
 
   // Check if avatar maps to a known item in STARDEW_AVATARS that has a URL
-  const matchedItem = STARDEW_AVATARS.find((a) => a.id === avatar);
+  const matchedItem = STARDEW_AVATARS.find((a) => a.id === normalizedAvatar);
   if (matchedItem?.url && !imgError) {
     if (bare) {
       return (
-        <div 
+        <div
           className={`relative flex items-center justify-center shrink-0 drop-shadow-sm select-none ${className}`}
           style={{ width: size, height: size }}
         >
@@ -66,14 +84,17 @@ export const AvatarRenderer: React.FC<AvatarRendererProps> = ({
             src={matchedItem.url}
             alt={name}
             referrerPolicy="no-referrer"
+            loading="lazy"
+            decoding="async"
             className="w-full h-full object-contain filter drop-shadow-xs pointer-events-none"
+            style={{ imageRendering: 'pixelated' }}
             onError={() => setImgError(true)}
           />
         </div>
       );
     }
     return (
-      <div 
+      <div
         className={`relative rounded-xl overflow-hidden bg-amber-50/90 border-2 border-[#8b5a2b] flex items-center justify-center shrink-0 shadow-sm ${className}`}
         style={{ width: size, height: size }}
       >
@@ -81,7 +102,10 @@ export const AvatarRenderer: React.FC<AvatarRendererProps> = ({
           src={matchedItem.url}
           alt={name}
           referrerPolicy="no-referrer"
+          loading="lazy"
+          decoding="async"
           className="w-full h-full object-contain p-0.5"
+          style={{ imageRendering: 'pixelated' }}
           onError={() => setImgError(true)}
         />
       </div>
@@ -89,7 +113,7 @@ export const AvatarRenderer: React.FC<AvatarRendererProps> = ({
   }
 
   // Otherwise treat as PixelSprite
-  const spriteName = matchedItem?.sprite || avatar || 'junimo';
+  const spriteName = matchedItem?.sprite || normalizedAvatar || 'junimo';
   if (bare) {
     return (
       <div
