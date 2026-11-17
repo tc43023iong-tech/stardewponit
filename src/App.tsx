@@ -886,6 +886,7 @@ export default function App() {
 
       {isRandomPickerOpen && (
         <RandomPickerModal
+          classId={currentClassId}
           students={currentClass.students}
           onClose={() => setIsRandomPickerOpen(false)}
           onOpenPointsForStudent={(st) => {
