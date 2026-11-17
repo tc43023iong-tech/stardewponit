@@ -21,7 +21,9 @@ import { StudentsView } from './components/classroom/StudentsView';
 import { LeaderboardView } from './components/classroom/LeaderboardView';
 import { HistoryView } from './components/classroom/HistoryView';
 import { FarmShowcaseView } from './components/classroom/FarmShowcaseView';
+import { RoomShowcaseView } from './components/classroom/RoomShowcaseView';
 import { StudentFarmDetailModal } from './components/classroom/StudentFarmDetailModal';
+import { StudentRoomDetailModal } from './components/classroom/StudentRoomDetailModal';
 import { PointsModal } from './components/classroom/PointsModal';
 import { TimerModal } from './components/classroom/TimerModal';
 import { RandomPickerModal } from './components/classroom/RandomPickerModal';
@@ -85,6 +87,7 @@ export default function App() {
   const [pointsFeedback, setPointsFeedback] = useState<PointsFeedbackData | null>(null);
   const [avatarPickerStudent, setAvatarPickerStudent] = useState<Student | null>(null);
   const [inspectFarmStudent, setInspectFarmStudent] = useState<Student | null>(null);
+  const [inspectRoomStudent, setInspectRoomStudent] = useState<Student | null>(null);
 
   // Sound & Music state
   const [isMuted, setIsMuted] = useState(soundManager.isMuted);
@@ -799,6 +802,7 @@ export default function App() {
             onChangeAvatar={(st) => setAvatarPickerStudent(st)}
             onBatchAdd={handleBatchAdd}
             onOpenFarmDetail={(st) => setInspectFarmStudent(st)}
+            onOpenRoomDetail={(st) => setInspectRoomStudent(st)}
           />
         )}
 
@@ -807,6 +811,22 @@ export default function App() {
             students={currentClass.students}
             onOpenPointsModal={(st) => setPointsModalStudents([st])}
             onQuickAdd={handleQuickAdd}
+            onSwitchToRoom={(st) => {
+              setActiveTab('room');
+              setInspectRoomStudent(st);
+            }}
+          />
+        )}
+
+        {activeTab === 'room' && (
+          <RoomShowcaseView
+            students={currentClass.students}
+            onOpenPointsModal={(st) => setPointsModalStudents([st])}
+            onQuickAdd={handleQuickAdd}
+            onSwitchToFarm={(st) => {
+              setActiveTab('farm');
+              setInspectFarmStudent(st);
+            }}
           />
         )}
 
@@ -902,6 +922,30 @@ export default function App() {
             onOpenPointsModal={(st) => {
               setInspectFarmStudent(null);
               setPointsModalStudents([st]);
+            }}
+            onSwitchToRoom={(st) => {
+              setInspectFarmStudent(null);
+              setInspectRoomStudent(st);
+            }}
+          />
+        );
+      })()}
+
+      {inspectRoomStudent && (() => {
+        const liveInspectRoomStudent =
+          currentClass.students.find((s) => s.id === inspectRoomStudent.id) || inspectRoomStudent;
+        return (
+          <StudentRoomDetailModal
+            student={liveInspectRoomStudent}
+            onClose={() => setInspectRoomStudent(null)}
+            onQuickAdd={handleQuickAdd}
+            onOpenPointsModal={(st) => {
+              setInspectRoomStudent(null);
+              setPointsModalStudents([st]);
+            }}
+            onSwitchToFarm={(st) => {
+              setInspectRoomStudent(null);
+              setInspectFarmStudent(st);
             }}
           />
         );

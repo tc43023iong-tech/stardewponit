@@ -28,6 +28,7 @@ import {
   Shield,
   Sprout,
   Image as ImageIcon,
+  Home,
 } from 'lucide-react';
 
 interface StudentFarmDetailModalProps {
@@ -35,6 +36,7 @@ interface StudentFarmDetailModalProps {
   onClose: () => void;
   onQuickAdd: (student: Student, delta: number) => void;
   onOpenPointsModal: (student: Student) => void;
+  onSwitchToRoom?: (student: Student) => void;
 }
 
 interface WanderingAnimal {
@@ -123,6 +125,7 @@ export const StudentFarmDetailModal: React.FC<StudentFarmDetailModalProps> = ({
   onClose,
   onQuickAdd,
   onOpenPointsModal,
+  onSwitchToRoom,
 }) => {
   const [activeTab, setActiveTab] = useState<'farm' | 'expansion' | 'almanac' | 'plants'>('farm');
   const [clickedAnimalNote, setClickedAnimalNote] = useState<string | null>(null);
@@ -450,7 +453,21 @@ export const StudentFarmDetailModal: React.FC<StudentFarmDetailModalProps> = ({
             </div>
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 flex-wrap">
+            {onSwitchToRoom && (
+              <button
+                type="button"
+                onClick={() => {
+                  soundManager.playClick();
+                  onSwitchToRoom(student);
+                }}
+                className="bg-[#b45309] hover:bg-[#92400e] text-white border border-[#fbbf24] px-2.5 py-1 text-xs font-pixel font-bold rounded flex items-center gap-1 cursor-pointer active:scale-95 shadow-xs"
+                title="切換參觀該同學的室內溫馨房間"
+              >
+                <Home className="w-3.5 h-3.5" />
+                <span>溫馨房間</span>
+              </button>
+            )}
             <button
               onClick={() => onQuickAdd(student, 2)}
               className="bg-[#dcfce7] hover:bg-[#bbf7d0] text-[#15803d] border border-[#86efac] px-2.5 py-1 text-xs font-pixel font-bold rounded cursor-pointer active:scale-95 shadow-xs"

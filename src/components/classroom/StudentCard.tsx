@@ -15,6 +15,7 @@ interface StudentCardProps {
   onOpenPointsModal: (student: Student) => void;
   onChangeAvatar: (student: Student) => void;
   onOpenFarmDetail?: (student: Student) => void;
+  onOpenRoomDetail?: (student: Student) => void;
 }
 
 export const StudentCard: React.FC<StudentCardProps> = ({
@@ -24,6 +25,7 @@ export const StudentCard: React.FC<StudentCardProps> = ({
   onOpenPointsModal,
   onChangeAvatar,
   onOpenFarmDetail,
+  onOpenRoomDetail,
 }) => {
 
   // Determine mini farm animal sprite based on points
@@ -284,10 +286,25 @@ export const StudentCard: React.FC<StudentCardProps> = ({
                 soundManager.playCorrect();
                 onOpenFarmDetail(student);
               }}
-              className="pixel-btn-green py-1.5 px-2.5 text-xs font-bold rounded-lg flex items-center justify-center cursor-pointer shadow-md active:scale-95 transition-all text-white shrink-0"
-              title="走進該同學的專屬空間，觀賞漫步動物與植物"
+              className="pixel-btn-green py-1.5 px-2 text-xs font-bold rounded-lg flex items-center justify-center cursor-pointer shadow-md active:scale-95 transition-all text-white shrink-0"
+              title="走進該同學的專屬農場，觀賞漫步動物與植物"
             >
               <span>🏡</span>
+            </button>
+          )}
+
+          {onOpenRoomDetail && (
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                soundManager.playCorrect();
+                onOpenRoomDetail(student);
+              }}
+              className="bg-[#b45309] hover:bg-[#92400e] border-2 border-[#78350f] py-1.5 px-2 text-xs font-bold rounded-lg flex items-center justify-center cursor-pointer shadow-md active:scale-95 transition-all text-white shrink-0"
+              title="走進該同學的專屬溫馨房間（每50分升級裝潢！）"
+            >
+              <span>🏠</span>
             </button>
           )}
         </div>

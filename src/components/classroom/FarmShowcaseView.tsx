@@ -11,12 +11,14 @@ interface FarmShowcaseViewProps {
   students: Student[];
   onOpenPointsModal: (student: Student) => void;
   onQuickAdd: (student: Student, delta: number) => void;
+  onSwitchToRoom?: (student: Student) => void;
 }
 
 export const FarmShowcaseView: React.FC<FarmShowcaseViewProps> = ({
   students,
   onOpenPointsModal,
   onQuickAdd,
+  onSwitchToRoom,
 }) => {
   const [inspectingStudent, setInspectingStudent] = useState<Student | null>(null);
 
@@ -183,6 +185,14 @@ export const FarmShowcaseView: React.FC<FarmShowcaseViewProps> = ({
             onClose={() => setInspectingStudent(null)}
             onQuickAdd={onQuickAdd}
             onOpenPointsModal={onOpenPointsModal}
+            onSwitchToRoom={
+              onSwitchToRoom
+                ? (st) => {
+                    setInspectingStudent(null);
+                    onSwitchToRoom(st);
+                  }
+                : undefined
+            }
           />
         );
       })()}

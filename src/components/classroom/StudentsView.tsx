@@ -12,6 +12,7 @@ interface StudentsViewProps {
   onChangeAvatar: (student: Student) => void;
   onBatchAdd: (targetStudents: Student[], delta: number) => void;
   onOpenFarmDetail?: (student: Student) => void;
+  onOpenRoomDetail?: (student: Student) => void;
 }
 
 export const StudentsView: React.FC<StudentsViewProps> = ({
@@ -21,6 +22,7 @@ export const StudentsView: React.FC<StudentsViewProps> = ({
   onChangeAvatar,
   onBatchAdd,
   onOpenFarmDetail,
+  onOpenRoomDetail,
 }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [farmTierFilter, setFarmTierFilter] = useState<string>('all');
@@ -228,6 +230,7 @@ export const StudentsView: React.FC<StudentsViewProps> = ({
               onOpenPointsModal={(s) => onOpenPointsModal([s])}
               onChangeAvatar={onChangeAvatar}
               onOpenFarmDetail={onOpenFarmDetail}
+              onOpenRoomDetail={onOpenRoomDetail}
             />
           ))}
         </div>

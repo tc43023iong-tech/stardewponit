@@ -41,7 +41,7 @@ export interface PointPreset {
   icon: string;
 }
 
-export type ViewTab = 'students' | 'farm' | 'ranking' | 'history' | 'paradise';
+export type ViewTab = 'students' | 'farm' | 'room' | 'ranking' | 'history' | 'paradise';
 
 export interface ClassroomTheme {
   id: string;
