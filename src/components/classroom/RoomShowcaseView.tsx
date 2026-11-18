@@ -11,6 +11,7 @@ interface RoomShowcaseViewProps {
   onOpenPointsModal: (student: Student) => void;
   onQuickAdd: (student: Student, delta: number) => void;
   onSwitchToFarm?: (student: Student) => void;
+  onSwitchToKitchen?: (student: Student) => void;
 }
 
 export const RoomShowcaseView: React.FC<RoomShowcaseViewProps> = ({
@@ -18,6 +19,7 @@ export const RoomShowcaseView: React.FC<RoomShowcaseViewProps> = ({
   onOpenPointsModal,
   onQuickAdd,
   onSwitchToFarm,
+  onSwitchToKitchen,
 }) => {
   const [inspectingStudent, setInspectingStudent] = useState<Student | null>(null);
 
@@ -182,6 +184,14 @@ export const RoomShowcaseView: React.FC<RoomShowcaseViewProps> = ({
                 ? (st) => {
                     setInspectingStudent(null);
                     onSwitchToFarm(st);
+                  }
+                : undefined
+            }
+            onSwitchToKitchen={
+              onSwitchToKitchen
+                ? (st) => {
+                    setInspectingStudent(null);
+                    onSwitchToKitchen(st);
                   }
                 : undefined
             }

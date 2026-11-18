@@ -25,6 +25,7 @@ import {
   Home,
   Image as ImageIcon,
   Sprout,
+  ChefHat,
 } from 'lucide-react';
 
 interface StudentRoomDetailModalProps {
@@ -33,6 +34,7 @@ interface StudentRoomDetailModalProps {
   onQuickAdd: (student: Student, delta: number) => void;
   onOpenPointsModal: (student: Student) => void;
   onSwitchToFarm?: (student: Student) => void;
+  onSwitchToKitchen?: (student: Student) => void;
 }
 
 interface IndoorCompanion {
@@ -65,6 +67,7 @@ export const StudentRoomDetailModal: React.FC<StudentRoomDetailModalProps> = ({
   onQuickAdd,
   onOpenPointsModal,
   onSwitchToFarm,
+  onSwitchToKitchen,
 }) => {
   const [activeTab, setActiveTab] = useState<'room' | 'roadmap' | 'furniture'>('room');
   const [clickedNote, setClickedNote] = useState<string | null>(null);
@@ -358,6 +361,20 @@ export const StudentRoomDetailModal: React.FC<StudentRoomDetailModalProps> = ({
               >
                 <Sprout className="w-3.5 h-3.5" />
                 <span>戶外農場</span>
+              </button>
+            )}
+            {onSwitchToKitchen && (
+              <button
+                type="button"
+                onClick={() => {
+                  soundManager.playClick();
+                  onSwitchToKitchen(student);
+                }}
+                className="bg-[#c2410c] hover:bg-[#9a3412] text-white border border-[#fdba74] px-2.5 py-1 text-xs font-pixel font-bold rounded flex items-center gap-1 cursor-pointer active:scale-95 shadow-xs"
+                title="切換參觀該同學的專屬夢幻廚房"
+              >
+                <ChefHat className="w-3.5 h-3.5" />
+                <span>夢幻廚房</span>
               </button>
             )}
             <button
@@ -861,7 +878,7 @@ export const StudentRoomDetailModal: React.FC<StudentRoomDetailModalProps> = ({
                     星露谷 16 件夢幻房間家具圖鑑（0 ~ 1250 分逐步解鎖收藏）
                   </span>
                   <span className="text-xs text-[#92400e]">
-                    隨著房間積分提升，從橡木椅、茶桌、復古電視與磚壁爐，到星空雙人床、水生庇護缸與傢俬目錄陸續搬進你的小屋！
+                    隨著房間積分提升，從橡木椅、咖啡桌、復古電視與磚壁爐，到星空雙人床、水生庇護缸與傢俬目錄陸續搬進你的小屋！
                   </span>
                 </div>
                 <span className="font-pixel text-xs font-bold bg-white text-[#78350f] px-3 py-1 rounded-lg border border-[#f59e0b] shrink-0 tabular-nums">

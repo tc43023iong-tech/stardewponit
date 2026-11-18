@@ -16,6 +16,7 @@ interface StudentCardProps {
   onChangeAvatar: (student: Student) => void;
   onOpenFarmDetail?: (student: Student) => void;
   onOpenRoomDetail?: (student: Student) => void;
+  onOpenKitchenDetail?: (student: Student) => void;
 }
 
 export const StudentCard: React.FC<StudentCardProps> = ({
@@ -26,6 +27,7 @@ export const StudentCard: React.FC<StudentCardProps> = ({
   onChangeAvatar,
   onOpenFarmDetail,
   onOpenRoomDetail,
+  onOpenKitchenDetail,
 }) => {
 
   // Determine mini farm animal sprite based on points
@@ -249,8 +251,8 @@ export const StudentCard: React.FC<StudentCardProps> = ({
           </div>
         </div>
 
-        {/* Bottom Actions: "⭐ 評分", "🎨 風格", "🏡", "🏠" */}
-        <div className="pt-1.5 border-t border-[#dfcca4] flex items-center gap-1.5">
+        {/* Bottom Actions: "⭐ 評分", "🎨", "🏡", "🏠", "🍳" */}
+        <div className="pt-1.5 border-t border-[#dfcca4] flex items-center gap-1">
           <button
             type="button"
             onClick={(e) => {
@@ -258,7 +260,7 @@ export const StudentCard: React.FC<StudentCardProps> = ({
               soundManager.playClick();
               onOpenPointsModal(student);
             }}
-            className="pixel-btn-gold flex-1 min-w-0 py-1.5 px-1.5 text-xs font-bold rounded-lg flex items-center justify-center gap-1 cursor-pointer shadow-md active:scale-95 transition-all"
+            className="pixel-btn-gold flex-1 min-w-0 py-1.5 px-1 text-xs font-bold rounded-lg flex items-center justify-center gap-1 cursor-pointer shadow-md active:scale-95 transition-all whitespace-nowrap"
             title="開啟課堂加扣分評定"
           >
             <Star className="w-3.5 h-3.5 fill-[#633300] shrink-0" />
@@ -305,6 +307,21 @@ export const StudentCard: React.FC<StudentCardProps> = ({
               title="走進該同學的專屬溫馨房間（每50分升級裝潢！）"
             >
               <span>🏠</span>
+            </button>
+          )}
+
+          {onOpenKitchenDetail && (
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                soundManager.playCorrect();
+                onOpenKitchenDetail(student);
+              }}
+              className="bg-[#c2410c] hover:bg-[#9a3412] border-2 border-[#7c2d12] py-1.5 px-1.5 text-xs font-bold rounded-lg flex items-center justify-center cursor-pointer shadow-md active:scale-95 transition-all text-white shrink-0"
+              title="走進該同學的專屬夢幻廚房（每50分升級廚房與料理！）"
+            >
+              <span>🍳</span>
             </button>
           )}
         </div>

@@ -4,7 +4,7 @@ import { soundManager } from '../../utils/sound';
 
 export interface UpgradeCelebrationOverlayProps {
   isOpen: boolean;
-  mode: 'farm' | 'room';
+  mode: 'farm' | 'room' | 'kitchen';
   studentName: string;
   milestonePoints: number;
   unlockedTitle: string;
@@ -89,7 +89,12 @@ export const UpgradeCelebrationOverlay: React.FC<UpgradeCelebrationOverlayProps>
   if (!isOpen) return null;
 
   const tierNumber = Math.max(1, Math.floor(milestonePoints / 50));
-  const modeLabel = mode === 'farm' ? '專屬農場升級' : '溫馨房間升級';
+  const modeLabel =
+    mode === 'farm'
+      ? '專屬農場升級'
+      : mode === 'kitchen'
+      ? '專屬廚房升級'
+      : '溫馨房間升級';
 
   return (
     <div

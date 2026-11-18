@@ -60,12 +60,12 @@ export const LIVE_ROOM_FURNITURE_ROSTER: RoomFurnitureBlueprint[] = [
     quote: '溫潤原木打造的經典橡木座椅，小木屋的舒適起點！',
   },
   {
-    id: 'sdv_tea_table',
-    url: 'https://stardewvalleywiki.com/mediawiki/images/en/2/2f/Tea_Table.png',
-    name: '茶桌 (Tea Table)',
+    id: 'sdv_coffee_table',
+    url: 'https://stardewvalleywiki.com/mediawiki/images/en/d/d6/Coffee_Table.png',
+    name: '咖啡桌 (Coffee Table)',
     style: '傢俬-桌子',
     unlockScore: 50,
-    quote: '泡上一壺花茶擺在原木茶幾桌上，享受悠閒的課後時光！',
+    quote: '溫潤木質客廳咖啡桌，擺上一杯熱可可享受悠閒課後時光！',
   },
   {
     id: 'sdv_retro_tv',

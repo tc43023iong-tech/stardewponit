@@ -68,7 +68,7 @@ export const STARDEW_AVATAR_CATEGORIES: Array<{
   { id: 'rings', label: '💍 飾品戒指' },
 ];
 
-// Curated 791 Stardew Valley Avatar Roster
+// Curated 790 Stardew Valley Avatar Roster
 export const STARDEW_AVATARS: StardewAvatarItem[] = [
   {
     "id": "sdv_white_chicken",
@@ -4292,14 +4292,6 @@ export const STARDEW_AVATARS: StardewAvatarItem[] = [
     "url": "https://stardewvalleywiki.com/mediawiki/images/en/c/ce/Candy_Table.png",
     "sprite": "chest_closed",
     "role": "糖果桌"
-  },
-  {
-    "id": "sdv_tea_table",
-    "name": "茶桌 (Tea Table)",
-    "category": "furniture_tables",
-    "url": "https://stardewvalleywiki.com/mediawiki/images/en/2/2f/Tea_Table.png",
-    "sprite": "chest_closed",
-    "role": "茶几桌"
   },
   {
     "id": "sdv_festive_dining_table",

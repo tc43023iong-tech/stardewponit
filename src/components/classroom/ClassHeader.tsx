@@ -18,7 +18,8 @@ import {
   Sprout,
   Plus,
   Wind,
-  Home
+  Home,
+  ChefHat
 } from 'lucide-react';
 import { FESTIVAL_CALENDAR } from './FestivalCelebrationOverlay';
 
@@ -469,6 +470,21 @@ export const ClassHeader: React.FC<ClassHeaderProps> = ({
         >
           <Home className="w-4 h-4 text-amber-300" />
           <span>溫馨房間</span>
+        </button>
+
+        <button
+          onClick={() => {
+            soundManager.playClick();
+            onSelectTab('kitchen');
+          }}
+          className={`px-3 py-1.5 text-xs sm:text-sm font-bold flex items-center gap-2 whitespace-nowrap cursor-pointer transition-all border-b-2 ${
+            activeTab === 'kitchen'
+              ? 'bg-[#5a3818] text-[#ffd700] border-[#ffd700]'
+              : 'text-[#d6ba89] border-transparent hover:text-white hover:bg-[#4a2e13]'
+          }`}
+        >
+          <ChefHat className="w-4 h-4 text-orange-300" />
+          <span>夢幻廚房</span>
         </button>
 
         <button
