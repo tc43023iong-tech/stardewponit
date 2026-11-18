@@ -23,9 +23,11 @@ import { HistoryView } from './components/classroom/HistoryView';
 import { FarmShowcaseView } from './components/classroom/FarmShowcaseView';
 import { RoomShowcaseView } from './components/classroom/RoomShowcaseView';
 import { KitchenShowcaseView } from './components/classroom/KitchenShowcaseView';
+import { BathroomShowcaseView } from './components/classroom/BathroomShowcaseView';
 import { StudentFarmDetailModal } from './components/classroom/StudentFarmDetailModal';
 import { StudentRoomDetailModal } from './components/classroom/StudentRoomDetailModal';
 import { StudentKitchenDetailModal } from './components/classroom/StudentKitchenDetailModal';
+import { StudentBathroomDetailModal } from './components/classroom/StudentBathroomDetailModal';
 import { PointsModal } from './components/classroom/PointsModal';
 import { TimerModal } from './components/classroom/TimerModal';
 import { RandomPickerModal } from './components/classroom/RandomPickerModal';
@@ -91,6 +93,7 @@ export default function App() {
   const [inspectFarmStudent, setInspectFarmStudent] = useState<Student | null>(null);
   const [inspectRoomStudent, setInspectRoomStudent] = useState<Student | null>(null);
   const [inspectKitchenStudent, setInspectKitchenStudent] = useState<Student | null>(null);
+  const [inspectBathroomStudent, setInspectBathroomStudent] = useState<Student | null>(null);
 
   // Sound & Music state
   const [isMuted, setIsMuted] = useState(soundManager.isMuted);
@@ -807,6 +810,7 @@ export default function App() {
             onOpenFarmDetail={(st) => setInspectFarmStudent(st)}
             onOpenRoomDetail={(st) => setInspectRoomStudent(st)}
             onOpenKitchenDetail={(st) => setInspectKitchenStudent(st)}
+            onOpenBathroomDetail={(st) => setInspectBathroomStudent(st)}
           />
         )}
 
@@ -822,6 +826,10 @@ export default function App() {
             onSwitchToKitchen={(st) => {
               setActiveTab('kitchen');
               setInspectKitchenStudent(st);
+            }}
+            onSwitchToBathroom={(st) => {
+              setActiveTab('bathroom');
+              setInspectBathroomStudent(st);
             }}
           />
         )}
@@ -839,6 +847,10 @@ export default function App() {
               setActiveTab('kitchen');
               setInspectKitchenStudent(st);
             }}
+            onSwitchToBathroom={(st) => {
+              setActiveTab('bathroom');
+              setInspectBathroomStudent(st);
+            }}
           />
         )}
 
@@ -854,6 +866,30 @@ export default function App() {
             onSwitchToRoom={(st) => {
               setActiveTab('room');
               setInspectRoomStudent(st);
+            }}
+            onSwitchToBathroom={(st) => {
+              setActiveTab('bathroom');
+              setInspectBathroomStudent(st);
+            }}
+          />
+        )}
+
+        {activeTab === 'bathroom' && (
+          <BathroomShowcaseView
+            students={currentClass.students}
+            onOpenPointsModal={(st) => setPointsModalStudents([st])}
+            onQuickAdd={handleQuickAdd}
+            onSwitchToFarm={(st) => {
+              setActiveTab('farm');
+              setInspectFarmStudent(st);
+            }}
+            onSwitchToRoom={(st) => {
+              setActiveTab('room');
+              setInspectRoomStudent(st);
+            }}
+            onSwitchToKitchen={(st) => {
+              setActiveTab('kitchen');
+              setInspectKitchenStudent(st);
             }}
           />
         )}
@@ -960,6 +996,10 @@ export default function App() {
               setInspectFarmStudent(null);
               setInspectKitchenStudent(st);
             }}
+            onSwitchToBathroom={(st) => {
+              setInspectFarmStudent(null);
+              setInspectBathroomStudent(st);
+            }}
           />
         );
       })()}
@@ -984,6 +1024,10 @@ export default function App() {
               setInspectRoomStudent(null);
               setInspectKitchenStudent(st);
             }}
+            onSwitchToBathroom={(st) => {
+              setInspectRoomStudent(null);
+              setInspectBathroomStudent(st);
+            }}
           />
         );
       })()}
@@ -1007,6 +1051,38 @@ export default function App() {
             onSwitchToRoom={(st) => {
               setInspectKitchenStudent(null);
               setInspectRoomStudent(st);
+            }}
+            onSwitchToBathroom={(st) => {
+              setInspectKitchenStudent(null);
+              setInspectBathroomStudent(st);
+            }}
+          />
+        );
+      })()}
+
+      {inspectBathroomStudent && (() => {
+        const liveInspectBathroomStudent =
+          currentClass.students.find((s) => s.id === inspectBathroomStudent.id) || inspectBathroomStudent;
+        return (
+          <StudentBathroomDetailModal
+            student={liveInspectBathroomStudent}
+            onClose={() => setInspectBathroomStudent(null)}
+            onQuickAdd={handleQuickAdd}
+            onOpenPointsModal={(st) => {
+              setInspectBathroomStudent(null);
+              setPointsModalStudents([st]);
+            }}
+            onSwitchToFarm={(st) => {
+              setInspectBathroomStudent(null);
+              setInspectFarmStudent(st);
+            }}
+            onSwitchToRoom={(st) => {
+              setInspectBathroomStudent(null);
+              setInspectRoomStudent(st);
+            }}
+            onSwitchToKitchen={(st) => {
+              setInspectBathroomStudent(null);
+              setInspectKitchenStudent(st);
             }}
           />
         );

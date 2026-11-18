@@ -17,6 +17,7 @@ interface StudentCardProps {
   onOpenFarmDetail?: (student: Student) => void;
   onOpenRoomDetail?: (student: Student) => void;
   onOpenKitchenDetail?: (student: Student) => void;
+  onOpenBathroomDetail?: (student: Student) => void;
 }
 
 export const StudentCard: React.FC<StudentCardProps> = ({
@@ -28,6 +29,7 @@ export const StudentCard: React.FC<StudentCardProps> = ({
   onOpenFarmDetail,
   onOpenRoomDetail,
   onOpenKitchenDetail,
+  onOpenBathroomDetail,
 }) => {
 
   // Determine mini farm animal sprite based on points
@@ -318,10 +320,25 @@ export const StudentCard: React.FC<StudentCardProps> = ({
                 soundManager.playCorrect();
                 onOpenKitchenDetail(student);
               }}
-              className="bg-[#c2410c] hover:bg-[#9a3412] border-2 border-[#7c2d12] py-1.5 px-1.5 text-xs font-bold rounded-lg flex items-center justify-center cursor-pointer shadow-md active:scale-95 transition-all text-white shrink-0"
+              className="bg-[#c2410c] hover:bg-[#9a3412] border-2 border-[#7c2d12] py-1.5 px-1 text-xs font-bold rounded-lg flex items-center justify-center cursor-pointer shadow-md active:scale-95 transition-all text-white shrink-0"
               title="走進該同學的專屬夢幻廚房（每50分升級廚房與料理！）"
             >
               <span>🍳</span>
+            </button>
+          )}
+
+          {onOpenBathroomDetail && (
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                soundManager.playCorrect();
+                onOpenBathroomDetail(student);
+              }}
+              className="bg-[#0284c7] hover:bg-[#0369a1] border-2 border-[#0c4a6e] py-1.5 px-1 text-xs font-bold rounded-lg flex items-center justify-center cursor-pointer shadow-md active:scale-95 transition-all text-white shrink-0"
+              title="走進該同學的專屬夢幻洗手間（每50分升級浴室與浴具！）"
+            >
+              <span>🛁</span>
             </button>
           )}
         </div>

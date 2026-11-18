@@ -3,6 +3,7 @@ import { Student } from '../../types/classroom';
 import { AvatarRenderer } from './AvatarRenderer';
 import {
   getStudentKitchenArtwork,
+  getStudentKitchenwareTier,
   KITCHEN_BACKGROUND_MILESTONES,
   LIVE_KITCHEN_DISH_ROSTER,
   KitchenArtworkTier,
@@ -10,6 +11,7 @@ import {
 } from '../../utils/kitchenArtwork';
 import { soundManager } from '../../utils/sound';
 import { UpgradeCelebrationOverlay } from './UpgradeCelebrationOverlay';
+import { PixelKitchenwareUpgradeFX } from './PixelKitchenwareDisplay';
 import {
   X,
   Plus,
@@ -26,6 +28,8 @@ import {
   Image as ImageIcon,
   Sprout,
   Home,
+  BookOpen,
+  Bath,
 } from 'lucide-react';
 
 interface StudentKitchenDetailModalProps {
@@ -35,6 +39,7 @@ interface StudentKitchenDetailModalProps {
   onOpenPointsModal: (student: Student) => void;
   onSwitchToFarm?: (student: Student) => void;
   onSwitchToRoom?: (student: Student) => void;
+  onSwitchToBathroom?: (student: Student) => void;
 }
 
 interface KitchenCompanion {
@@ -55,7 +60,7 @@ interface KitchenCompanion {
 const KITCHEN_COMPANION_QUOTES = [
   '今天要煮什麼美味料理呢？香味已經飄滿整間教室啦！',
   '把食材洗乾淨再下鍋，就能做出三星完美美味喔！',
-  '好期待下一個 50 分解鎖的夢幻主題大廚房！✨',
+  '好期待下一個 50 分解鎖的夢幻主題大廚房與高級廚具！✨',
   '爐火正旺、鍋子閃閃發亮，我們是最棒的黃金拍檔廚師！',
 ];
 
@@ -68,12 +73,17 @@ export const StudentKitchenDetailModal: React.FC<StudentKitchenDetailModalProps>
   onOpenPointsModal,
   onSwitchToFarm,
   onSwitchToRoom,
+  onSwitchToBathroom,
 }) => {
   const [activeTab, setActiveTab] = useState<'kitchen' | 'roadmap' | 'dishes'>('kitchen');
+  const [dishFilter, setDishFilter] = useState<'all' | 'unlocked' | 'locked'>('all');
+  const [selectedRecipeDish, setSelectedRecipeDish] = useState<KitchenDishBlueprint | null>(null);
   const [clickedNote, setClickedNote] = useState<string | null>(null);
   const [previewMinPoints, setPreviewMinPoints] = useState<number | null>(null);
   const [isFullscreen, setIsFullscreen] = useState<boolean>(false);
   const [celebrationMilestone, setCelebrationMilestone] = useState<number | null>(null);
+  const [kitchenwareFxActive, setKitchenwareFxActive] = useState<boolean>(false);
+  const [kitchenwareFxPoints, setKitchenwareFxPoints] = useState<number>(0);
   const modalContainerRef = useRef<HTMLDivElement>(null);
 
   const isSooty = student.points < 0;
@@ -87,20 +97,39 @@ export const StudentKitchenDetailModal: React.FC<StudentKitchenDetailModalProps>
     tier: kitchenTier,
   });
 
-  // Trigger kitchen upgrade celebration + particle burst on modal mount if at an uncelebrated multiple of 50
+  const kitchenwareTier = getStudentKitchenwareTier(student.points);
+
+  const triggerKitchenwareAnimation = (pts: number) => {
+    setKitchenwareFxPoints(pts);
+    setKitchenwareFxActive(false);
+    requestAnimationFrame(() => {
+      setKitchenwareFxActive(true);
+    });
+  };
+
+  useEffect(() => {
+    if (!kitchenwareFxActive) return;
+    const t = setTimeout(() => setKitchenwareFxActive(false), 3800);
+    return () => clearTimeout(t);
+  }, [kitchenwareFxActive]);
+
+  // Trigger kitchen & kitchenware upgrade celebration on modal mount if at an uncelebrated multiple of 50
   useEffect(() => {
     setCelebrationMilestone(null);
+    setSelectedRecipeDish(null);
     if (isExactMultipleOf50 && celebratedKitchenUpgradeTiers.get(student.id) !== kitchenTier) {
       celebratedKitchenUpgradeTiers.set(student.id, kitchenTier);
+      const milestonePts = kitchenTier * 50;
       const timer = setTimeout(() => {
         soundManager.playAchievementUnlock();
-        setCelebrationMilestone(kitchenTier * 50);
+        triggerKitchenwareAnimation(milestonePts);
+        setCelebrationMilestone(milestonePts);
       }, 260);
       return () => clearTimeout(timer);
     }
   }, [student.id]);
 
-  // Trigger kitchen upgrade celebration + particle burst when crossing a 50-point multiple live
+  // Trigger kitchen & kitchenware upgrade animation + celebration modal when crossing a 50-point multiple live
   useEffect(() => {
     const prev = prevKitchenTierRef.current;
     if (prev.studentId !== student.id) {
@@ -114,6 +143,7 @@ export const StudentKitchenDetailModal: React.FC<StudentKitchenDetailModalProps>
       prevKitchenTierRef.current = { studentId: student.id, tier: kitchenTier };
       const timer = setTimeout(() => {
         soundManager.playAchievementUnlock();
+        triggerKitchenwareAnimation(targetMilestone);
         setCelebrationMilestone(targetMilestone);
       }, 1360);
       return () => clearTimeout(timer);
@@ -150,6 +180,13 @@ export const StudentKitchenDetailModal: React.FC<StudentKitchenDetailModalProps>
     ? []
     : LIVE_KITCHEN_DISH_ROSTER.filter((d) => d.unlockScore <= student.points);
 
+  const filteredDishes = LIVE_KITCHEN_DISH_ROSTER.filter((dish) => {
+    const isUnlocked = !isSooty && student.points >= dish.unlockScore;
+    if (dishFilter === 'unlocked') return isUnlocked;
+    if (dishFilter === 'locked') return !isUnlocked;
+    return true;
+  });
+
   const companionAvatarId = student.stardewAvatar || student.avatar || 'sdv_white_chicken';
 
   const buildKitchenCompanions = (): KitchenCompanion[] => {
@@ -176,10 +213,10 @@ export const StudentKitchenDetailModal: React.FC<StudentKitchenDetailModalProps>
         id: companionAvatarId,
         name: `${student.name} 的主廚夥伴`,
         quote: KITCHEN_COMPANION_QUOTES[student.points % KITCHEN_COMPANION_QUOTES.length],
-        x: 36,
-        y: 74,
-        targetX: 36,
-        targetY: 74,
+        x: 34,
+        y: 72,
+        targetX: 34,
+        targetY: 72,
         direction: 1,
         isWalking: false,
         pauseTimer: 6,
@@ -191,11 +228,11 @@ export const StudentKitchenDetailModal: React.FC<StudentKitchenDetailModalProps>
       list.push({
         id: 'junimo',
         name: '祝尼魔試吃員',
-        quote: '哇～這間雙爐廚房端出來的鬆餅與水果塔太香啦！🍎',
-        x: 62,
-        y: 76,
-        targetX: 62,
-        targetY: 76,
+        quote: '哇～這間廚房的鍋鏟和烤爐越來越豪華，做出的鬆餅太香啦！🍎',
+        x: 60,
+        y: 74,
+        targetX: 60,
+        targetY: 74,
         direction: -1,
         isWalking: false,
         pauseTimer: 9,
@@ -207,11 +244,11 @@ export const StudentKitchenDetailModal: React.FC<StudentKitchenDetailModalProps>
       list.push({
         id: 'sdv_golden_chicken',
         name: '金雞甜點師',
-        quote: '咕咕～每日現採黃金雞蛋保證讓你的烘焙料理發光發亮！✨',
-        x: 76,
-        y: 72,
-        targetX: 76,
-        targetY: 72,
+        quote: '咕咕～每日現採黃金雞蛋保證讓你的料理圖鑑全解鎖！✨',
+        x: 74,
+        y: 70,
+        targetX: 74,
+        targetY: 70,
         direction: -1,
         isWalking: false,
         pauseTimer: 11,
@@ -253,8 +290,8 @@ export const StudentKitchenDetailModal: React.FC<StudentKitchenDetailModalProps>
             if (pauseTimer > 0) {
               pauseTimer -= 1;
             } else {
-              targetX = Math.floor(Math.random() * 72) + 14;
-              targetY = Math.floor(Math.random() * 18) + 66;
+              targetX = Math.floor(Math.random() * 68) + 14;
+              targetY = Math.floor(Math.random() * 18) + 62;
               isWalking = true;
             }
           }
@@ -290,16 +327,21 @@ export const StudentKitchenDetailModal: React.FC<StudentKitchenDetailModalProps>
     }, 3200);
   };
 
-  const handleDishBadgeClick = (item: KitchenDishBlueprint, isUnlocked: boolean) => {
+  const handleCookDishPreview = (item: KitchenDishBlueprint, isUnlocked: boolean) => {
+    setSelectedRecipeDish(item);
     if (isUnlocked) {
       soundManager.playCollect();
-      setClickedNote(`🍲 【${item.name}】（${item.style}）：${item.quote}`);
+      setClickedNote(`🍲 使用【${kitchenwareTier.ovenName}】成功料理出「${item.name}」！（${item.buffEffect}）`);
+      setCompanions((prev) => prev.map((c) => ({ ...c, heartActive: true })));
+      setTimeout(() => {
+        setCompanions((prev) => prev.map((c) => ({ ...c, heartActive: false })));
+      }, 1200);
     } else {
       soundManager.playTick();
       const needed = item.unlockScore - student.points;
-      setClickedNote(`🔒 【${item.name}】將於 ${item.unlockScore} 分解鎖食譜，目前還差 ${needed} 分！`);
+      setClickedNote(`🔒 【${item.name}】製作配方將於 ${item.unlockScore} 分解鎖，目前還差 ${needed} 分！`);
     }
-    setTimeout(() => setClickedNote(null), 3200);
+    setTimeout(() => setClickedNote(null), 3400);
   };
 
   const toggleFullscreen = () => {
@@ -353,7 +395,7 @@ export const StudentKitchenDetailModal: React.FC<StudentKitchenDetailModalProps>
                 <span className={isSooty ? 'text-rose-300' : 'text-[#86efac]'}>
                   {isSooty
                     ? '· 🕸️ 冷清舊灶間，加分回到 0 分以上即可重新生火烹飪！'
-                    : `· 已解鎖 ${unlockedKitchensCount}/25 間 50 分升級廚房 · ${unlockedDishes.length}/16 道星露谷食譜`}
+                    : `· 廚具 ${kitchenwareTier.ovenTierLabel} · 廚房 ${unlockedKitchensCount}/25 · 食譜 ${unlockedDishes.length}/${LIVE_KITCHEN_DISH_ROSTER.length}`}
                 </span>
               </p>
             </div>
@@ -386,6 +428,20 @@ export const StudentKitchenDetailModal: React.FC<StudentKitchenDetailModalProps>
               >
                 <Home className="w-3.5 h-3.5" />
                 <span>房間</span>
+              </button>
+            )}
+            {onSwitchToBathroom && (
+              <button
+                type="button"
+                onClick={() => {
+                  soundManager.playClick();
+                  onSwitchToBathroom(student);
+                }}
+                className="bg-[#0284c7] hover:bg-[#0369a1] text-white border border-[#7dd3fc] px-2.5 py-1 text-xs font-pixel font-bold rounded flex items-center gap-1 cursor-pointer active:scale-95 shadow-xs"
+                title="切換參觀該同學的專屬夢幻洗手間"
+              >
+                <Bath className="w-3.5 h-3.5" />
+                <span>洗手間</span>
               </button>
             )}
             <button
@@ -438,7 +494,7 @@ export const StudentKitchenDetailModal: React.FC<StudentKitchenDetailModalProps>
               <span className="tabular-nums">目前廚房積分：{student.points} 分 / 1250 分</span>
               {student.points >= 1250 ? (
                 <span className="bg-[#eab308] text-[#4a2800] text-[10px] px-2 py-0.5 rounded font-black">
-                  💎 1250分永恆星果宇宙廚神殿！25間豪華廚房與16道經典名菜全解鎖！
+                  💎 1250分永恆星果宇宙廚神殿！25間豪華廚房與{LIVE_KITCHEN_DISH_ROSTER.length}道食譜全解鎖！
                 </span>
               ) : isSooty ? (
                 <span className="text-[11px] text-rose-300 font-bold">
@@ -446,7 +502,7 @@ export const StudentKitchenDetailModal: React.FC<StudentKitchenDetailModalProps>
                 </span>
               ) : (
                 <span className="text-[11px] text-[#fed7aa] font-bold">
-                  (每 50 分升級廚房 · 食譜 {unlockedDishes.length}/16 · 廚房 {unlockedKitchensCount}/25)
+                  (每 50 分觸發廚具進化 · 食譜 {unlockedDishes.length}/{LIVE_KITCHEN_DISH_ROSTER.length} · 廚房 {unlockedKitchensCount}/25)
                 </span>
               )}
             </div>
@@ -468,52 +524,69 @@ export const StudentKitchenDetailModal: React.FC<StudentKitchenDetailModalProps>
             </div>
           </div>
 
-          <div className="flex items-center gap-1.5 flex-wrap">
-            <button
-              onClick={() => {
-                soundManager.playClick();
-                setActiveTab('kitchen');
-              }}
-              className={`px-3 py-1 rounded-lg text-xs font-bold font-pixel cursor-pointer transition-colors whitespace-nowrap ${
-                activeTab === 'kitchen'
-                  ? 'bg-[#fabc3f] text-[#4a2800] shadow'
-                  : 'bg-[#6a4422] text-[#d6ba89] hover:text-white'
-              }`}
-            >
-              🍳 實景廚房
-            </button>
-            <button
-              onClick={() => {
-                soundManager.playClick();
-                setActiveTab('roadmap');
-              }}
-              className={`px-3 py-1 rounded-lg text-xs font-bold font-pixel cursor-pointer transition-colors whitespace-nowrap ${
-                activeTab === 'roadmap'
-                  ? 'bg-[#fabc3f] text-[#4a2800] shadow'
-                  : 'bg-[#6a4422] text-[#d6ba89] hover:text-white'
-              }`}
-            >
-              🖼️ 廚房升級圖鑑 (50~1250分)
-            </button>
-            <button
-              onClick={() => {
-                soundManager.playClick();
-                setActiveTab('dishes');
-              }}
-              className={`px-3 py-1 rounded-lg text-xs font-bold font-pixel cursor-pointer transition-colors whitespace-nowrap ${
-                activeTab === 'dishes'
-                  ? 'bg-[#fabc3f] text-[#4a2800] shadow'
-                  : 'bg-[#6a4422] text-[#d6ba89] hover:text-white'
-              }`}
-            >
-              🍲 夢幻料理圖鑑 ({unlockedDishes.length}/16)
-            </button>
+          <div className="flex items-center justify-between gap-2 flex-wrap">
+            <div className="flex items-center gap-1.5 flex-wrap">
+              <button
+                onClick={() => {
+                  soundManager.playClick();
+                  setActiveTab('kitchen');
+                }}
+                className={`px-3 py-1 rounded-lg text-xs font-bold font-pixel cursor-pointer transition-colors whitespace-nowrap ${
+                  activeTab === 'kitchen'
+                    ? 'bg-[#fabc3f] text-[#4a2800] shadow'
+                    : 'bg-[#6a4422] text-[#d6ba89] hover:text-white'
+                }`}
+              >
+                🍳 實景廚房
+              </button>
+              <button
+                onClick={() => {
+                  soundManager.playClick();
+                  setActiveTab('roadmap');
+                }}
+                className={`px-3 py-1 rounded-lg text-xs font-bold font-pixel cursor-pointer transition-colors whitespace-nowrap ${
+                  activeTab === 'roadmap'
+                    ? 'bg-[#fabc3f] text-[#4a2800] shadow'
+                    : 'bg-[#6a4422] text-[#d6ba89] hover:text-white'
+                }`}
+              >
+                🖼️ 廚房升級圖鑑 (50~1250分)
+              </button>
+              <button
+                onClick={() => {
+                  soundManager.playClick();
+                  setActiveTab('dishes');
+                }}
+                className={`px-3 py-1 rounded-lg text-xs font-bold font-pixel cursor-pointer transition-colors whitespace-nowrap ${
+                  activeTab === 'dishes'
+                    ? 'bg-[#fabc3f] text-[#4a2800] shadow'
+                    : 'bg-[#6a4422] text-[#d6ba89] hover:text-white'
+                }`}
+              >
+                📖 料理圖鑑與配方 ({unlockedDishes.length}/{LIVE_KITCHEN_DISH_ROSTER.length})
+              </button>
+            </div>
+
+            {!isSooty && (
+              <button
+                type="button"
+                onClick={() => {
+                  soundManager.playAchievementUnlock();
+                  triggerKitchenwareAnimation(Math.max(50, Math.floor(student.points / 50) * 50));
+                }}
+                className="px-2.5 py-1 rounded-lg text-[11px] font-bold bg-[#7c2d12] hover:bg-[#9a3412] text-[#fde68a] border border-[#f59e0b]/60 flex items-center gap-1 cursor-pointer active:scale-95 transition-all"
+                title="點擊觀看「烤箱變大、鍋鏟變高級」像素廚具進化特效"
+              >
+                <Sparkles className="w-3.5 h-3.5 text-[#fde047]" />
+                <span>預覽廚具升級特效</span>
+              </button>
+            )}
           </div>
         </div>
 
         {/* Modal Main Body */}
         <div className="p-3 sm:p-5 bg-[#faeed1] overflow-y-auto max-h-[76vh]">
-          {/* TAB 1: LIVING PIXEL KITCHEN INTERIOR */}
+          {/* TAB 1: LIVING PIXEL KITCHEN INTERIOR + PIXEL KITCHENWARE + UNLOCKED DISHES BAR */}
           {activeTab === 'kitchen' && (
             <div className="space-y-3">
               {/* Kitchen Status Banner */}
@@ -544,7 +617,7 @@ export const StudentKitchenDetailModal: React.FC<StudentKitchenDetailModalProps>
                         isSooty ? 'text-rose-800' : 'text-[#713f12]'
                       }`}
                     >
-                      主灶具：{kitchenArtwork.stoveName} ｜ 招牌菜：{kitchenArtwork.specialtyDish}
+                      廚具進化：{kitchenwareTier.ovenName} ＋ {kitchenwareTier.spatulaName}
                     </span>
                   </div>
                 </div>
@@ -568,7 +641,7 @@ export const StudentKitchenDetailModal: React.FC<StudentKitchenDetailModalProps>
                     </span>
                   ) : defaultArtwork.nextPoints ? (
                     <span className="text-[11px] font-pixel text-[#854d0e] bg-amber-200/80 px-2 py-0.5 rounded border border-[#ca8a04]">
-                      距 {defaultArtwork.nextPoints} 分新廚房尚需: {defaultArtwork.nextPoints - student.points} 分
+                      距 {defaultArtwork.nextPoints} 分廚具＆廚房升級尚需: {defaultArtwork.nextPoints - student.points} 分
                     </span>
                   ) : (
                     <span className="text-[11px] font-pixel text-[#15803d] bg-green-200/80 px-2 py-0.5 rounded border border-[#86efac]">
@@ -605,7 +678,7 @@ export const StudentKitchenDetailModal: React.FC<StudentKitchenDetailModalProps>
                   isSooty ? 'bg-[#1c1917]' : 'bg-[#2b1807]'
                 }`}
                 style={{
-                  height: isFullscreen ? '78vh' : '540px',
+                  height: isFullscreen ? '70vh' : '500px',
                 }}
               >
                 <img
@@ -663,6 +736,23 @@ export const StudentKitchenDetailModal: React.FC<StudentKitchenDetailModalProps>
                   </div>
                 </div>
 
+                {/* Live Pixel Kitchenware Evolution Dock (Oven Grow + Spatula Tier-Up FX) */}
+                <div className="absolute bottom-14 right-3 z-25 max-w-[92%] sm:max-w-sm pointer-events-auto">
+                  <PixelKitchenwareUpgradeFX
+                    isActive={kitchenwareFxActive}
+                    milestonePoints={kitchenwareFxPoints || Math.max(50, Math.floor(student.points / 50) * 50)}
+                    tier={kitchenwareTier}
+                    onReplay={
+                      !isSooty
+                        ? () => {
+                            soundManager.playAchievementUnlock();
+                            triggerKitchenwareAnimation(Math.max(50, Math.floor(student.points / 50) * 50));
+                          }
+                        : undefined
+                    }
+                  />
+                </div>
+
                 {/* Bottom Kitchen Gear Shelf + Recipe Encyclopedia Link */}
                 <div className="absolute bottom-3 left-3 z-25 flex items-center gap-1.5 bg-[#2b1807]/85 border-2 border-[#8b5a2b] px-2.5 py-1.5 rounded-xl shadow-xl backdrop-blur-xs max-w-[92%] overflow-x-auto">
                   <span className="text-[10px] font-bold text-[#fed7aa] mr-1 hidden sm:inline shrink-0">
@@ -692,8 +782,8 @@ export const StudentKitchenDetailModal: React.FC<StudentKitchenDetailModalProps>
                     }}
                     className="ml-1 px-2 py-1 rounded-lg bg-[#c2410c] hover:bg-[#9a3412] text-white text-[10px] font-bold flex items-center gap-1 cursor-pointer shrink-0 border border-[#fdba74]/60"
                   >
-                    <ChefHat className="w-3 h-3" />
-                    <span>料理圖鑑 ({unlockedDishes.length}/16)</span>
+                    <BookOpen className="w-3 h-3" />
+                    <span>料理與配方圖鑑 ({unlockedDishes.length}/{LIVE_KITCHEN_DISH_ROSTER.length})</span>
                   </button>
                 </div>
 
@@ -735,15 +825,6 @@ export const StudentKitchenDetailModal: React.FC<StudentKitchenDetailModalProps>
                       <div className="w-8 h-1.5 bg-black/35 rounded-full blur-[1px] -mt-1 pointer-events-none" />
                     </div>
                   ))}
-
-                  {student.points >= 1250 && (
-                    <div className="absolute bottom-3 right-3 bg-[#2b1807]/90 border-2 border-[#fbbf24] px-3 py-1.5 rounded-xl shadow-lg flex items-center gap-2 pointer-events-none">
-                      <Sparkles className="w-4 h-4 text-[#fde047]" />
-                      <span className="font-pixel text-[11px] text-[#fde047] font-bold">
-                        💎 1250分永恆星果宇宙廚神殿 · 25間夢幻廚房全制霸！
-                      </span>
-                    </div>
-                  )}
                 </div>
 
                 {/* Ambient indoor kitchen shimmer */}
@@ -761,22 +842,156 @@ export const StudentKitchenDetailModal: React.FC<StudentKitchenDetailModalProps>
                   </div>
                 )}
               </div>
+
+              {/* UNLOCKED PIXEL DISH COUNTER & RECIPE PREVIEW SHELF IN MAIN KITCHEN VIEW */}
+              <div className="bg-[#fdf6e2] border-2 border-[#a3794b] rounded-xl p-3 shadow-sm space-y-2.5">
+                <div className="flex flex-wrap items-center justify-between gap-2">
+                  <div className="flex items-center gap-2">
+                    <ChefHat className="w-4 h-4 text-[#c2410c]" />
+                    <h4 className="font-pixel text-xs font-bold text-[#4a2800]">
+                      已解鎖像素料理陳列台（點擊圖標查看製作配方！）
+                    </h4>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-[11px] font-bold text-[#9a3412] bg-[#ffedd5] px-2 py-0.5 rounded border border-[#fdba74]">
+                      已學會 {unlockedDishes.length} / {LIVE_KITCHEN_DISH_ROSTER.length} 道配方
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        soundManager.playClick();
+                        setActiveTab('dishes');
+                      }}
+                      className="text-[11px] font-bold text-[#854d0e] hover:text-[#4a2800] underline cursor-pointer"
+                    >
+                      打開完整料理圖鑑 →
+                    </button>
+                  </div>
+                </div>
+
+                {isSooty ? (
+                  <div className="bg-rose-50 border border-rose-300 rounded-lg px-3 py-2 text-xs font-bold text-rose-800">
+                    🕸️ 負分冷灶期間料理台暫時休息中，回到 0 分以上就會立即展示已解鎖的像素佳餚！
+                  </div>
+                ) : (
+                  <div className="flex items-center gap-2 overflow-x-auto pb-1">
+                    {LIVE_KITCHEN_DISH_ROSTER.map((dish) => {
+                      const isUnlocked = student.points >= dish.unlockScore;
+                      const isSelected = selectedRecipeDish?.id === dish.id;
+                      return (
+                        <button
+                          key={dish.id}
+                          type="button"
+                          onClick={() => handleCookDishPreview(dish, isUnlocked)}
+                          className={`relative shrink-0 p-1.5 rounded-xl border-2 flex flex-col items-center gap-1 transition-all cursor-pointer ${
+                            isSelected
+                              ? 'bg-[#fef08a] border-[#b45309] ring-2 ring-[#f59e0b] -translate-y-0.5 shadow-md'
+                              : isUnlocked
+                              ? 'bg-white border-[#d97706]/60 hover:border-[#b45309] hover:-translate-y-0.5 shadow-xs'
+                              : 'bg-[#ede0c2]/65 border-[#c4a675] opacity-55 grayscale-[70%]'
+                          }`}
+                          title={
+                            isUnlocked
+                              ? `${dish.name} — 點擊查看製作配方`
+                              : `🔒 需達 ${dish.unlockScore} 分解鎖 ${dish.name}`
+                          }
+                        >
+                          <AvatarRenderer avatar={dish.url} name={dish.name} size={38} bare />
+                          <span className="text-[9px] font-pixel font-bold text-[#5a3818] max-w-[60px] truncate">
+                            {dish.name.split(' ')[0]}
+                          </span>
+                          {!isUnlocked && (
+                            <span className="absolute -top-1.5 -right-1.5 bg-stone-700 text-white text-[9px] font-pixel px-1 rounded shadow flex items-center gap-0.5">
+                              <Lock className="w-2.5 h-2.5" />
+                              {dish.unlockScore}
+                            </span>
+                          )}
+                        </button>
+                      );
+                    })}
+                  </div>
+                )}
+
+                {/* Selected Dish Recipe Inspector Strip */}
+                {selectedRecipeDish && (
+                  <div className="bg-[#fffbeb] border-2 border-[#d97706] rounded-xl p-3 flex flex-wrap items-center justify-between gap-3 shadow-inner">
+                    <div className="flex items-center gap-3 min-w-0">
+                      <div className="p-1.5 bg-white rounded-xl border-2 border-[#ca8a04] shadow-xs shrink-0">
+                        <AvatarRenderer
+                          avatar={selectedRecipeDish.url}
+                          name={selectedRecipeDish.name}
+                          size={46}
+                          bare
+                        />
+                      </div>
+                      <div className="min-w-0">
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <span className="font-bold text-sm text-[#4a2800]">
+                            {selectedRecipeDish.name}
+                          </span>
+                          <span className="text-[10px] font-pixel px-2 py-0.5 rounded bg-[#ffedd5] text-[#9a3412] border border-[#fdba74]">
+                            {selectedRecipeDish.cookingUtensil}
+                          </span>
+                          <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 border border-emerald-300">
+                            {selectedRecipeDish.buffEffect}
+                          </span>
+                        </div>
+                        <p className="text-xs text-[#78350f] font-bold mt-1">
+                          作法：{selectedRecipeDish.recipeSteps}
+                        </p>
+                      </div>
+                    </div>
+
+                    {/* Pixel Ingredients Formula */}
+                    <div className="flex items-center gap-2 flex-wrap bg-white px-3 py-1.5 rounded-xl border border-[#e5c997]">
+                      <span className="text-[11px] font-bold text-[#854d0e]">製作配方：</span>
+                      {selectedRecipeDish.ingredients.map((ing) => (
+                        <div
+                          key={ing.name}
+                          className="flex items-center gap-1 bg-[#faeed1] px-2 py-0.5 rounded-lg border border-[#c4a675]"
+                        >
+                          <AvatarRenderer avatar={ing.iconUrl} name={ing.name} size={22} bare />
+                          <span className="text-[11px] font-bold text-[#4a2800]">
+                            {ing.name}×{ing.qty}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
             </div>
           )}
 
           {/* TAB 2: 50-POINT KITCHEN UPGRADE ROADMAP (0 to 1250) */}
           {activeTab === 'roadmap' && (
             <div className="space-y-4">
-              <div className="bg-[#ede0c2] p-3.5 rounded-xl border border-[#c4a675] text-xs text-stone-700 flex items-start gap-2.5">
-                <ImageIcon className="w-5 h-5 text-orange-700 shrink-0 mt-0.5" />
-                <div>
-                  <span className="font-bold text-[#4a2800] block text-sm">
-                    🍳 每湊夠 50 分全面升級擴建專屬廚房（50 → 1250 分共 25 種主題夢幻廚房）
-                  </span>
-                  <p className="mt-0.5 text-xs text-[#5a3818]">
-                    從 0 分的原木火塘起點小廚出發，每累積 50 分就會升級灶具、料理中島與全球美食風格，直至 1250 分永恆星果宇宙廚神殿！點擊任一「已解鎖」廚房即可立即進入參觀。
-                  </p>
+              <div className="bg-[#ede0c2] p-3.5 rounded-xl border border-[#c4a675] text-xs text-stone-700 flex flex-wrap items-center justify-between gap-2.5">
+                <div className="flex items-start gap-2.5">
+                  <ImageIcon className="w-5 h-5 text-orange-700 shrink-0 mt-0.5" />
+                  <div>
+                    <span className="font-bold text-[#4a2800] block text-sm">
+                      🍳 每湊夠 50 分全面升級擴建專屬廚房與廚具（50 → 1250 分共 25 種主題夢幻廚房）
+                    </span>
+                    <p className="mt-0.5 text-xs text-[#5a3818]">
+                      每跨越 50 分就會觸發「烤箱變大、鍋鏟變高級」像素廚具進化特效，並解鎖全新廚房裝潢！點擊已解鎖廚房即可立即參觀。
+                    </p>
+                  </div>
                 </div>
+                {!isSooty && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      soundManager.playAchievementUnlock();
+                      setActiveTab('kitchen');
+                      triggerKitchenwareAnimation(Math.max(50, Math.floor(student.points / 50) * 50));
+                    }}
+                    className="px-3 py-1.5 rounded-lg bg-[#c2410c] hover:bg-[#9a3412] text-white text-xs font-pixel font-bold flex items-center gap-1.5 cursor-pointer shadow active:scale-95 shrink-0"
+                  >
+                    <Sparkles className="w-3.5 h-3.5 text-[#fde047]" />
+                    <span>回廚房看廚具進化特效</span>
+                  </button>
+                )}
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
@@ -785,6 +1000,7 @@ export const StudentKitchenDetailModal: React.FC<StudentKitchenDetailModalProps>
                   const isCurrentHighest =
                     !isSooty && defaultArtwork.minPoints === milestone.minPoints;
                   const isPreviewing = kitchenArtwork.minPoints === milestone.minPoints;
+                  const milestoneWareTier = getStudentKitchenwareTier(milestone.minPoints);
 
                   return (
                     <div
@@ -813,7 +1029,7 @@ export const StudentKitchenDetailModal: React.FC<StudentKitchenDetailModalProps>
                           <span className="font-pixel text-[11px] font-bold px-2.5 py-0.5 rounded bg-[#2b1807]/90 text-[#fde047] border border-[#a16207]">
                             {milestone.minPoints === 0
                               ? '0 分起點廚房'
-                              : `${milestone.minPoints} 分廚房`}
+                              : `${milestone.minPoints} 分廚房 (${milestoneWareTier.ovenTierLabel})`}
                           </span>
 
                           {isCurrentHighest ? (
@@ -865,8 +1081,8 @@ export const StudentKitchenDetailModal: React.FC<StudentKitchenDetailModalProps>
 
                       <div className="p-2.5 text-[11px] grid grid-cols-1 sm:grid-cols-2 gap-1.5 text-[#5a3818]">
                         <div className="bg-white/75 px-2 py-1 rounded border border-stone-200 truncate">
-                          <span className="font-bold text-[#c2410c]">🔥 灶具：</span>
-                          {milestone.stoveName}
+                          <span className="font-bold text-[#c2410c]">🔥 廚具：</span>
+                          {milestoneWareTier.ovenName}
                         </div>
                         <div className="bg-white/75 px-2 py-1 rounded border border-stone-200 truncate">
                           <span className="font-bold text-[#b45309]">🍽️ 名菜：</span>
@@ -880,21 +1096,45 @@ export const StudentKitchenDetailModal: React.FC<StudentKitchenDetailModalProps>
             </div>
           )}
 
-          {/* TAB 3: 16 STARDEW DISHES ENCYCLOPEDIA */}
+          {/* TAB 3: 20 STARDEW DISHES & RECIPES ENCYCLOPEDIA */}
           {activeTab === 'dishes' && (
             <div className="space-y-4">
-              <div className="bg-[#fffbeb] p-3 rounded-xl border border-[#f59e0b] text-xs text-stone-700 flex flex-wrap items-center justify-between gap-2">
+              <div className="bg-[#fffbeb] p-3.5 rounded-xl border border-[#f59e0b] text-xs text-stone-700 flex flex-wrap items-center justify-between gap-3">
                 <div>
                   <span className="font-bold text-[#78350f] block text-sm">
-                    星露谷 16 道夢幻料理食譜圖鑑（0 ~ 1250 分逐步解鎖端上桌）
+                    📖 星露谷料理圖鑑與製作配方系統（0 ~ 1250 分逐步解鎖 {LIVE_KITCHEN_DISH_ROSTER.length} 道食譜）
                   </span>
                   <span className="text-xs text-[#92400e]">
-                    隨著廚房積分提升，從金黃煎雞蛋、香甜薄煎餅與窯烤披薩，到薑島熱帶咖喱、龍蝦濃湯與五彩魔法冰糖通通收進你的食譜！
+                    累積積分即可自動學會更多星露谷名菜的完整製作配方！點擊已解鎖料理卡還能使用【{kitchenwareTier.ovenName}】現場試做～
                   </span>
                 </div>
-                <span className="font-pixel text-xs font-bold bg-white text-[#78350f] px-3 py-1 rounded-lg border border-[#f59e0b] shrink-0 tabular-nums">
-                  已解鎖 {unlockedDishes.length} / {LIVE_KITCHEN_DISH_ROSTER.length} 道料理
-                </span>
+
+                <div className="flex items-center gap-1.5 flex-wrap">
+                  {[
+                    { id: 'all', label: `全部 (${LIVE_KITCHEN_DISH_ROSTER.length})` },
+                    { id: 'unlocked', label: `已解鎖 (${unlockedDishes.length})` },
+                    {
+                      id: 'locked',
+                      label: `待解鎖 (${LIVE_KITCHEN_DISH_ROSTER.length - unlockedDishes.length})`,
+                    },
+                  ].map((tab) => (
+                    <button
+                      key={tab.id}
+                      type="button"
+                      onClick={() => {
+                        soundManager.playClick();
+                        setDishFilter(tab.id as 'all' | 'unlocked' | 'locked');
+                      }}
+                      className={`px-2.5 py-1 rounded-lg font-pixel text-[10px] font-bold border cursor-pointer transition-colors ${
+                        dishFilter === tab.id
+                          ? 'bg-[#c2410c] text-white border-[#7c2d12] shadow-xs'
+                          : 'bg-white text-[#78350f] border-[#f59e0b] hover:bg-[#fef3c7]'
+                      }`}
+                    >
+                      {tab.label}
+                    </button>
+                  ))}
+                </div>
               </div>
 
               {clickedNote && (
@@ -904,54 +1144,91 @@ export const StudentKitchenDetailModal: React.FC<StudentKitchenDetailModalProps>
                 </div>
               )}
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
-                {LIVE_KITCHEN_DISH_ROSTER.map((item) => {
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+                {filteredDishes.map((item) => {
                   const isUnlocked = !isSooty && student.points >= item.unlockScore;
                   return (
                     <button
                       key={item.id}
                       type="button"
-                      onClick={() => handleDishBadgeClick(item, isUnlocked)}
-                      className={`p-3 rounded-xl border-2 flex items-center gap-3 transition-all text-left cursor-pointer hover:shadow-md ${
+                      onClick={() => handleCookDishPreview(item, isUnlocked)}
+                      className={`p-3.5 rounded-xl border-2 flex flex-col gap-2.5 transition-all text-left cursor-pointer hover:shadow-md ${
                         isUnlocked
                           ? 'bg-[#fdfbf7] border-[#f59e0b] shadow-sm hover:-translate-y-0.5'
-                          : 'bg-[#ede0c2]/60 border-[#c4a675] opacity-75'
+                          : 'bg-[#ede0c2]/60 border-[#c4a675] opacity-80'
                       }`}
                     >
-                      <div className="p-1 rounded-xl bg-white border border-[#c4a675] shrink-0 shadow-xs relative">
-                        <AvatarRenderer avatar={item.url} name={item.name} size={48} />
-                        {isUnlocked ? (
-                          <div className="absolute -top-1 -right-1 bg-green-500 text-white rounded-full p-0.5 shadow">
-                            <CheckCircle2 className="w-3.5 h-3.5" />
+                      <div className="flex items-start gap-3">
+                        <div className="p-1.5 rounded-xl bg-white border border-[#c4a675] shrink-0 shadow-xs relative">
+                          <AvatarRenderer avatar={item.url} name={item.name} size={50} />
+                          {isUnlocked ? (
+                            <div className="absolute -top-1 -right-1 bg-green-500 text-white rounded-full p-0.5 shadow">
+                              <CheckCircle2 className="w-3.5 h-3.5" />
+                            </div>
+                          ) : (
+                            <div className="absolute -top-1 -right-1 bg-stone-500 text-white rounded-full p-0.5 shadow">
+                              <Lock className="w-3.5 h-3.5" />
+                            </div>
+                          )}
+                        </div>
+
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center justify-between gap-2">
+                            <span className="font-bold text-sm text-[#3d240d] truncate">
+                              {item.name}
+                            </span>
+                            <span
+                              className={`text-[10px] font-pixel px-2 py-0.5 rounded font-bold shrink-0 ${
+                                isUnlocked
+                                  ? 'bg-[#fef3c7] text-[#b45309] border border-[#f59e0b]/40'
+                                  : 'bg-stone-200 text-stone-600'
+                              }`}
+                            >
+                              {item.unlockScore} 分解鎖
+                            </span>
                           </div>
-                        ) : (
-                          <div className="absolute -top-1 -right-1 bg-stone-400 text-white rounded-full p-0.5 shadow">
-                            <Lock className="w-3.5 h-3.5" />
+
+                          <div className="flex items-center gap-1.5 flex-wrap mt-1">
+                            <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-[#ffedd5] text-[#9a3412]">
+                              🔥 {item.cookingUtensil}
+                            </span>
+                            <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-800">
+                              ✨ {item.buffEffect}
+                            </span>
                           </div>
-                        )}
+
+                          <p className="text-[11px] text-stone-700 mt-1.5 leading-snug">
+                            {item.recipeSteps}
+                          </p>
+                        </div>
                       </div>
 
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center justify-between gap-1">
-                          <span className="font-bold text-xs text-[#3d240d] truncate">
-                            {item.name}
-                          </span>
-                          <span
-                            className={`text-[10px] font-pixel px-1.5 py-0.5 rounded font-bold shrink-0 ${
-                              isUnlocked
-                                ? 'bg-[#fef3c7] text-[#b45309]'
-                                : 'bg-stone-200 text-stone-600'
-                            }`}
-                          >
-                            {item.unlockScore} 分
-                          </span>
+                      {/* Recipe Ingredients Strip with Wiki Pixel PNGs */}
+                      <div className="pt-2 border-t border-[#e5d2ab] flex items-center justify-between gap-2 flex-wrap">
+                        <div className="flex items-center gap-1.5 flex-wrap">
+                          <span className="text-[10px] font-bold text-[#78350f]">配方食材：</span>
+                          {item.ingredients.map((ing) => (
+                            <div
+                              key={ing.name}
+                              className="flex items-center gap-1 bg-white px-2 py-0.5 rounded-lg border border-[#d6ba89] shadow-2xs"
+                            >
+                              <AvatarRenderer avatar={ing.iconUrl} name={ing.name} size={20} bare />
+                              <span className="text-[11px] font-bold text-[#4a2800]">
+                                {ing.name} ×{ing.qty}
+                              </span>
+                            </div>
+                          ))}
                         </div>
-                        <span className="text-[11px] font-bold text-orange-800 block truncate mt-0.5">
-                          {item.style}
+
+                        <span
+                          className={`text-[10px] font-pixel font-bold px-2 py-0.5 rounded ${
+                            isUnlocked
+                              ? 'bg-amber-100 text-amber-900'
+                              : 'bg-stone-200 text-stone-600'
+                          }`}
+                        >
+                          {isUnlocked ? '點擊試做 🍳' : `還差 ${item.unlockScore - student.points} 分`}
                         </span>
-                        <p className="text-[10px] text-stone-600 line-clamp-2 mt-0.5 leading-snug">
-                          {item.quote}
-                        </p>
                       </div>
                     </button>
                   );
@@ -964,7 +1241,7 @@ export const StudentKitchenDetailModal: React.FC<StudentKitchenDetailModalProps>
         {/* Modal Bottom Footer */}
         <div className="bg-[#faeed1] px-4 py-3 border-t-2 border-[#c4a675] flex items-center justify-between gap-2">
           <span className="text-xs font-bold text-stone-600">
-            🍳 每滿 50 分解鎖新廚房空間 (50~1250分) · 經典菜品圖鑑收錄於上方分頁
+            🍳 每滿 50 分觸發廚具升級特效（烤箱變大、鍋鏟進化）· 累積積分自動解鎖 {LIVE_KITCHEN_DISH_ROSTER.length} 道料理製作配方
           </span>
           <button
             onClick={() => {
@@ -980,17 +1257,21 @@ export const StudentKitchenDetailModal: React.FC<StudentKitchenDetailModalProps>
         {/* Celebratory Particle Burst + "恭喜升級！" Modal on 50-point Milestones */}
         {celebrationMilestone !== null && (() => {
           const unlockedKitchenArt = getStudentKitchenArtwork(celebrationMilestone);
+          const unlockedWare = getStudentKitchenwareTier(celebrationMilestone);
           return (
             <UpgradeCelebrationOverlay
               isOpen={true}
               mode="kitchen"
               studentName={student.name}
               milestonePoints={celebrationMilestone}
-              unlockedTitle={`${unlockedKitchenArt.kitchenTitle}（${unlockedKitchenArt.kitchenScaleLabel}）`}
-              unlockedSubtitle={`${unlockedKitchenArt.description} 新解鎖：${unlockedKitchenArt.specialtyDish}！`}
+              unlockedTitle={`${unlockedKitchenArt.kitchenTitle} · ${unlockedWare.ovenName}`}
+              unlockedSubtitle={`廚具全面進化！烤箱升級為「${unlockedWare.ovenName}」，鍋鏟進階成「${unlockedWare.spatulaName}」，快端出「${unlockedKitchenArt.specialtyDish}」慶祝吧！`}
               unlockedIcon={unlockedKitchenArt.icon}
               unlockedImageUrl={unlockedKitchenArt.bgUrl}
-              onClose={() => setCelebrationMilestone(null)}
+              onClose={() => {
+                setCelebrationMilestone(null);
+                triggerKitchenwareAnimation(celebrationMilestone);
+              }}
             />
           );
         })()}

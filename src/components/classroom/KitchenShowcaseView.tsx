@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Student } from '../../types/classroom';
-import { getStudentKitchenArtwork } from '../../utils/kitchenArtwork';
+import { getStudentKitchenArtwork, LIVE_KITCHEN_DISH_ROSTER } from '../../utils/kitchenArtwork';
 import { AvatarRenderer } from './AvatarRenderer';
 import { StudentKitchenDetailModal } from './StudentKitchenDetailModal';
 import { soundManager } from '../../utils/sound';
@@ -12,6 +12,7 @@ interface KitchenShowcaseViewProps {
   onQuickAdd: (student: Student, delta: number) => void;
   onSwitchToFarm?: (student: Student) => void;
   onSwitchToRoom?: (student: Student) => void;
+  onSwitchToBathroom?: (student: Student) => void;
 }
 
 export const KitchenShowcaseView: React.FC<KitchenShowcaseViewProps> = ({
@@ -20,6 +21,7 @@ export const KitchenShowcaseView: React.FC<KitchenShowcaseViewProps> = ({
   onQuickAdd,
   onSwitchToFarm,
   onSwitchToRoom,
+  onSwitchToBathroom,
 }) => {
   const [inspectingStudent, setInspectingStudent] = useState<Student | null>(null);
 
@@ -98,6 +100,11 @@ export const KitchenShowcaseView: React.FC<KitchenShowcaseViewProps> = ({
           {students.map((st) => {
             const kitchenArtwork = getStudentKitchenArtwork(st.points);
             const companionId = st.stardewAvatar || st.avatar || 'sdv_white_chicken';
+            const unlockedDishes =
+              st.points < 0
+                ? []
+                : LIVE_KITCHEN_DISH_ROSTER.filter((d) => d.unlockScore <= st.points);
+            const previewDishes = unlockedDishes.slice(-4);
 
             return (
               <div
@@ -142,8 +149,8 @@ export const KitchenShowcaseView: React.FC<KitchenShowcaseViewProps> = ({
                   </span>
                 </div>
 
-                {/* Kitchen Companion + Signature Dish */}
-                <div className="relative z-10 flex items-end justify-center gap-3 my-auto pt-4 pointer-events-none">
+                {/* Kitchen Companion + Unlocked Pixel Dishes Tray */}
+                <div className="relative z-10 flex flex-col items-center justify-end gap-1.5 my-auto pt-2 pointer-events-none">
                   {st.points < 0 ? (
                     <div className="relative flex flex-col items-center group-hover:scale-110 transition-transform duration-200">
                       <div className="animate-crow-hop-flap">
@@ -154,17 +161,22 @@ export const KitchenShowcaseView: React.FC<KitchenShowcaseViewProps> = ({
                   ) : (
                     <>
                       <div className="relative flex flex-col items-center group-hover:scale-110 transition-transform duration-200">
-                        <AvatarRenderer avatar={companionId} name={st.name} size={42} bare={true} />
+                        <AvatarRenderer avatar={companionId} name={st.name} size={38} bare={true} />
                         <div className="w-7 h-1.5 bg-black/45 rounded-full blur-[1px] -mt-1" />
                       </div>
-                      <div className="relative flex flex-col items-center group-hover:scale-110 transition-transform duration-200">
-                        <AvatarRenderer
-                          avatar={kitchenArtwork.showcaseDishId}
-                          name={kitchenArtwork.specialtyDish}
-                          size={30}
-                          bare={true}
-                        />
-                        <div className="w-5 h-1 bg-black/40 rounded-full blur-[1px] -mt-0.5" />
+                      <div className="flex items-center gap-1 bg-[#2b1807]/80 border border-[#a16207]/70 px-1.5 py-0.5 rounded-lg shadow">
+                        {previewDishes.map((dish) => (
+                          <AvatarRenderer
+                            key={dish.id}
+                            avatar={dish.url}
+                            name={dish.name}
+                            size={22}
+                            bare={true}
+                          />
+                        ))}
+                        <span className="text-[9px] font-pixel text-[#fde68a] pl-0.5">
+                          {unlockedDishes.length}/{LIVE_KITCHEN_DISH_ROSTER.length}
+                        </span>
                       </div>
                     </>
                   )}
@@ -209,6 +221,14 @@ export const KitchenShowcaseView: React.FC<KitchenShowcaseViewProps> = ({
                 ? (st) => {
                     setInspectingStudent(null);
                     onSwitchToRoom(st);
+                  }
+                : undefined
+            }
+            onSwitchToBathroom={
+              onSwitchToBathroom
+                ? (st) => {
+                    setInspectingStudent(null);
+                    onSwitchToBathroom(st);
                   }
                 : undefined
             }

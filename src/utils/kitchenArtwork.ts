@@ -42,13 +42,147 @@ export interface KitchenArtworkTier {
   isSooty?: boolean;
 }
 
+export interface KitchenIngredient {
+  name: string;
+  qty: number;
+  iconUrl: string;
+}
+
 export interface KitchenDishBlueprint {
   id: string;
   url: string;
   name: string;
   style: string;
   unlockScore: number;
+  cookingUtensil: string;
+  buffEffect: string;
+  recipeSteps: string;
+  ingredients: KitchenIngredient[];
   quote: string;
+}
+
+export interface KitchenwareVisualTier {
+  tierIndex: number;
+  minPoints: number;
+  ovenName: string;
+  spatulaName: string;
+  ovenTierLabel: string;
+  ovenScale: number; // visual scale multiplier so the oven noticeably grows as score rises
+  ovenStyle: 'sooty' | 'iron' | 'country' | 'brick' | 'copper' | 'arcane' | 'royal' | 'aurora' | 'cosmos';
+  spatulaStyle: 'wooden' | 'steel' | 'copper' | 'arcane' | 'gold' | 'iridium' | 'prismatic';
+  upgradeNote: string;
+}
+
+export const KITCHENWARE_VISUAL_TIERS: KitchenwareVisualTier[] = [
+  {
+    tierIndex: -1,
+    minPoints: -999,
+    ovenName: '積灰未點火舊鐵爐',
+    spatulaName: '缺角老木鍋鏟',
+    ovenTierLabel: '舊灶 Lv.0',
+    ovenScale: 0.8,
+    ovenStyle: 'sooty',
+    spatulaStyle: 'wooden',
+    upgradeNote: '快加分回到 0 分以上重新點亮溫暖爐火！',
+  },
+  {
+    tierIndex: 0,
+    minPoints: 0,
+    ovenName: '迷你柴火小鐵灶',
+    spatulaName: '原木初心者鍋鏟',
+    ovenTierLabel: '鐵灶 Lv.1',
+    ovenScale: 0.88,
+    ovenStyle: 'iron',
+    spatulaStyle: 'wooden',
+    upgradeNote: '樸實好用的新手小火爐，再努力湊滿 50 分就能讓烤箱長大升級！',
+  },
+  {
+    tierIndex: 1,
+    minPoints: 50,
+    ovenName: '鄉村雙層烘烤爐',
+    spatulaName: '拋光精鋼主廚鏟',
+    ovenTierLabel: '鋼灶 Lv.2',
+    ovenScale: 0.96,
+    ovenStyle: 'country',
+    spatulaStyle: 'steel',
+    upgradeNote: '烤箱長大了！升級透視玻璃烤箱門，鍋鏟也進化為閃亮精鋼主廚鏟！',
+  },
+  {
+    tierIndex: 2,
+    minPoints: 150,
+    ovenName: '高溫紅磚石窯烤爐',
+    spatulaName: '鍛銅專業料理鏟',
+    ovenTierLabel: '石窯 Lv.3',
+    ovenScale: 1.04,
+    ovenStyle: 'brick',
+    spatulaStyle: 'copper',
+    upgradeNote: '圓頂石砌窯爐火光四射，鍛銅鍋鏟導熱超快，披薩與麵包香氣翻倍！',
+  },
+  {
+    tierIndex: 3,
+    minPoints: 300,
+    ovenName: '雙排黃銅大型蒸烤爐',
+    spatulaName: '精工紅銅星紋鍋鏟',
+    ovenTierLabel: '黃銅 Lv.4',
+    ovenScale: 1.12,
+    ovenStyle: 'copper',
+    spatulaStyle: 'copper',
+    upgradeNote: '雙排大容量黃銅烤爐登場！同時蒸烤多道甜點與果醬完全不費力！',
+  },
+  {
+    tierIndex: 4,
+    minPoints: 500,
+    ovenName: '奧術紫晶煉金大烤爐',
+    spatulaName: '附魔紫晶星光鍋鏟',
+    ovenTierLabel: '魔導 Lv.5',
+    ovenScale: 1.2,
+    ovenStyle: 'arcane',
+    spatulaStyle: 'arcane',
+    upgradeNote: '紫晶符文附魔爐火！鍋鏟揮舞時會飄出奇幻紫色星塵與雙倍美味魔法！',
+  },
+  {
+    tierIndex: 5,
+    minPoints: 750,
+    ovenName: '皇家純金巨型連爐',
+    spatulaName: '皇家黃金主廚神鏟',
+    ovenTierLabel: '黃金 Lv.6',
+    ovenScale: 1.26,
+    ovenStyle: 'royal',
+    spatulaStyle: 'gold',
+    upgradeNote: '氣派純金鑲邊雙門御膳烤爐，搭配閃亮純金鍋鏟，瞬間端出五星海陸全宴！',
+  },
+  {
+    tierIndex: 6,
+    minPoints: 1000,
+    ovenName: '極光水晶稜鏡神爐',
+    spatulaName: '銥金極光幻彩鍋鏟',
+    ovenTierLabel: '銥金 Lv.7',
+    ovenScale: 1.33,
+    ovenStyle: 'aurora',
+    spatulaStyle: 'iridium',
+    upgradeNote: '突破千分！寒冰極光水晶爐能同時急凍雪酪與高溫炙燒，銥金神鏟光彩奪目！',
+  },
+  {
+    tierIndex: 7,
+    minPoints: 1250,
+    ovenName: '永恆星果宇宙究極神爐',
+    spatulaName: '五彩神話銀河金鏟',
+    ovenTierLabel: '神話 MAX',
+    ovenScale: 1.4,
+    ovenStyle: 'cosmos',
+    spatulaStyle: 'prismatic',
+    upgradeNote: '1250 分最高神廚榮耀！蘊含五彩碎片與星之果實之力的宇宙級夢幻廚具！',
+  },
+];
+
+export function getStudentKitchenwareTier(points: number): KitchenwareVisualTier {
+  if (points < 0) return KITCHENWARE_VISUAL_TIERS[0];
+  for (let i = KITCHENWARE_VISUAL_TIERS.length - 1; i >= 1; i--) {
+    if (points >= KITCHENWARE_VISUAL_TIERS[i].minPoints) {
+      return KITCHENWARE_VISUAL_TIERS[i];
+    }
+  }
+  return KITCHENWARE_VISUAL_TIERS[1];
 }
 
 export const LIVE_KITCHEN_DISH_ROSTER: KitchenDishBlueprint[] = [
@@ -58,6 +192,16 @@ export const LIVE_KITCHEN_DISH_ROSTER: KitchenDishBlueprint[] = [
     name: '煎雞蛋 (Fried Egg)',
     style: '清晨暖胃 · 基礎家常菜',
     unlockScore: 0,
+    cookingUtensil: '鑄鐵平底鍋',
+    buffEffect: '能量 +50 · 健康 +22',
+    recipeSteps: '打入新鮮農場雞蛋，小火慢煎至蛋白微脆金黃。',
+    ingredients: [
+      {
+        name: '雞蛋',
+        qty: 1,
+        iconUrl: 'https://stardewvalleywiki.com/mediawiki/images/en/2/26/Egg.png',
+      },
+    ],
     quote: '金黃微焦的太陽蛋滋滋作響，是每位小小廚師踏入廚房的第一道幸福美味！',
   },
   {
@@ -66,7 +210,22 @@ export const LIVE_KITCHEN_DISH_ROSTER: KitchenDishBlueprint[] = [
     name: '田園沙拉 (Salad)',
     style: '清爽鮮蔬 · 健康開胃菜',
     unlockScore: 50,
-    quote: '清脆韭蔥配蒲公英嫩葉淋上特調醋汁，莉亞最愛的活力鮮蔬料理！',
+    cookingUtensil: '原木沙拉碗',
+    buffEffect: '能量 +113 · 健康 +50',
+    recipeSteps: '將鮮採蒲公英葉與甘藍菜切絲冰鎮，拌入清香醋汁。',
+    ingredients: [
+      {
+        name: '蒲公英',
+        qty: 1,
+        iconUrl: 'https://stardewvalleywiki.com/mediawiki/images/en/b/b1/Dandelion.png',
+      },
+      {
+        name: '甘藍菜',
+        qty: 1,
+        iconUrl: 'https://stardewvalleywiki.com/mediawiki/images/en/d/d1/Kale.png',
+      },
+    ],
+    quote: '清脆蒲公英與嫩綠甘藍淋上特調醋汁，莉亞最愛的活力鮮蔬料理！',
   },
   {
     id: 'sdv_pancakes',
@@ -74,6 +233,21 @@ export const LIVE_KITCHEN_DISH_ROSTER: KitchenDishBlueprint[] = [
     name: '香甜薄煎餅 (Pancakes)',
     style: '金色早晨 · 蜂蜜烘焙',
     unlockScore: 100,
+    cookingUtensil: '精鋼平底鍋',
+    buffEffect: '採集 +2 · 能量 +90',
+    recipeSteps: '將小麥粉與雞蛋打勻，雙面煎至金黃蓬鬆後疊高淋蜜。',
+    ingredients: [
+      {
+        name: '小麥粉',
+        qty: 1,
+        iconUrl: 'https://stardewvalleywiki.com/mediawiki/images/en/2/2c/Wheat_Flour.png',
+      },
+      {
+        name: '雞蛋',
+        qty: 1,
+        iconUrl: 'https://stardewvalleywiki.com/mediawiki/images/en/2/26/Egg.png',
+      },
+    ],
     quote: '蓬鬆雙層金黃鬆餅淋上溫熱奶油糖漿，連採集大師都會讚不絕口！',
   },
   {
@@ -82,6 +256,26 @@ export const LIVE_KITCHEN_DISH_ROSTER: KitchenDishBlueprint[] = [
     name: '窯烤披薩 (Pizza)',
     style: '石爐焗烤 · 起司牽絲',
     unlockScore: 150,
+    cookingUtensil: '高溫紅磚石窯',
+    buffEffect: '能量 +150 · 健康 +67',
+    recipeSteps: '麵皮鋪滿多汁紅番茄與厚切奶酪，送入石窯高溫現烤。',
+    ingredients: [
+      {
+        name: '小麥粉',
+        qty: 1,
+        iconUrl: 'https://stardewvalleywiki.com/mediawiki/images/en/2/2c/Wheat_Flour.png',
+      },
+      {
+        name: '番茄',
+        qty: 1,
+        iconUrl: 'https://stardewvalleywiki.com/mediawiki/images/en/9/9d/Tomato.png',
+      },
+      {
+        name: '奶酪',
+        qty: 1,
+        iconUrl: 'https://stardewvalleywiki.com/mediawiki/images/en/a/a5/Cheese.png',
+      },
+    ],
     quote: '石砌磚窯現烤出爐的濃郁起司番茄披薩，山姆和謝恩每次必點！',
   },
   {
@@ -90,6 +284,26 @@ export const LIVE_KITCHEN_DISH_ROSTER: KitchenDishBlueprint[] = [
     name: '完美早餐 (Complete Breakfast)',
     style: '營養滿分 · 元氣套餐',
     unlockScore: 200,
+    cookingUtensil: '黃銅雙排大灶',
+    buffEffect: '耕種 +2 · 能量 +200',
+    recipeSteps: '同步煎好太陽蛋、薄煎餅與黃金薯餅，搭配鮮奶熱飲上桌。',
+    ingredients: [
+      {
+        name: '煎雞蛋',
+        qty: 1,
+        iconUrl: 'https://stardewvalleywiki.com/mediawiki/images/en/1/18/Fried_Egg.png',
+      },
+      {
+        name: '牛奶',
+        qty: 1,
+        iconUrl: 'https://stardewvalleywiki.com/mediawiki/images/en/9/92/Milk.png',
+      },
+      {
+        name: '馬鈴薯',
+        qty: 1,
+        iconUrl: 'https://stardewvalleywiki.com/mediawiki/images/en/c/c2/Potato.png',
+      },
+    ],
     quote: '太陽蛋、香煎鬆餅與香脆薯餅的夢幻組合，吃飽飽讓體力與專注力飆升！',
   },
   {
@@ -98,6 +312,31 @@ export const LIVE_KITCHEN_DISH_ROSTER: KitchenDishBlueprint[] = [
     name: '藍莓千層酥 (Blueberry Tart)',
     style: '森林漿果 · 下午茶點',
     unlockScore: 250,
+    cookingUtensil: '午茶烘焙烤模',
+    buffEffect: '能量 +125 · 健康 +56',
+    recipeSteps: '將鮮甜藍莓裹入焦糖糖粉，填入酥脆奶香塔皮烘烤。',
+    ingredients: [
+      {
+        name: '藍莓',
+        qty: 1,
+        iconUrl: 'https://stardewvalleywiki.com/mediawiki/images/en/9/9e/Blueberry.png',
+      },
+      {
+        name: '小麥粉',
+        qty: 1,
+        iconUrl: 'https://stardewvalleywiki.com/mediawiki/images/en/2/2c/Wheat_Flour.png',
+      },
+      {
+        name: '糖',
+        qty: 1,
+        iconUrl: 'https://stardewvalleywiki.com/mediawiki/images/en/a/a9/Sugar.png',
+      },
+      {
+        name: '雞蛋',
+        qty: 1,
+        iconUrl: 'https://stardewvalleywiki.com/mediawiki/images/en/2/26/Egg.png',
+      },
+    ],
     quote: '飽滿多汁的夏日藍莓搭配酥脆奶油派皮，下午茶時間最療癒的小確幸！',
   },
   {
@@ -106,6 +345,26 @@ export const LIVE_KITCHEN_DISH_ROSTER: KitchenDishBlueprint[] = [
     name: '楓糖棒 (Maple Bar)',
     style: '醇厚楓香 · 甜蜜糕點',
     unlockScore: 300,
+    cookingUtensil: '黃銅熬糖銅鍋',
+    buffEffect: '耕種 +1 · 採集 +1 · 挖礦 +1',
+    recipeSteps: '長條酥軟麵糰炸至金黃，淋滿現採濃厚琥珀楓糖漿。',
+    ingredients: [
+      {
+        name: '楓糖漿',
+        qty: 1,
+        iconUrl: 'https://stardewvalleywiki.com/mediawiki/images/en/6/6a/Maple_Syrup.png',
+      },
+      {
+        name: '糖',
+        qty: 1,
+        iconUrl: 'https://stardewvalleywiki.com/mediawiki/images/en/a/a9/Sugar.png',
+      },
+      {
+        name: '小麥粉',
+        qty: 1,
+        iconUrl: 'https://stardewvalleywiki.com/mediawiki/images/en/2/2c/Wheat_Flour.png',
+      },
+    ],
     quote: '沾滿亮晶晶濃郁楓糖漿的長條甜甜圈，咬下一口滿嘴甜蜜森林氣息！',
   },
   {
@@ -114,6 +373,31 @@ export const LIVE_KITCHEN_DISH_ROSTER: KitchenDishBlueprint[] = [
     name: '黃金南瓜派 (Pumpkin Pie)',
     style: '秋收慶典 · 香料烘焙',
     unlockScore: 350,
+    cookingUtensil: '楓香烘焙烤箱',
+    buffEffect: '能量 +225 · 健康 +101',
+    recipeSteps: '將蒸熟甜南瓜搗泥拌入牛奶與砂糖，烤成絲絨金黃派。',
+    ingredients: [
+      {
+        name: '南瓜',
+        qty: 1,
+        iconUrl: 'https://stardewvalleywiki.com/mediawiki/images/en/6/64/Pumpkin.png',
+      },
+      {
+        name: '小麥粉',
+        qty: 1,
+        iconUrl: 'https://stardewvalleywiki.com/mediawiki/images/en/2/2c/Wheat_Flour.png',
+      },
+      {
+        name: '牛奶',
+        qty: 1,
+        iconUrl: 'https://stardewvalleywiki.com/mediawiki/images/en/9/92/Milk.png',
+      },
+      {
+        name: '糖',
+        qty: 1,
+        iconUrl: 'https://stardewvalleywiki.com/mediawiki/images/en/a/a9/Sugar.png',
+      },
+    ],
     quote: '剛出爐的絲滑肉桂南瓜派，是金秋豐收祭典餐桌上最耀眼的主角！',
   },
   {
@@ -122,6 +406,26 @@ export const LIVE_KITCHEN_DISH_ROSTER: KitchenDishBlueprint[] = [
     name: '彩虹水果沙拉 (Fruit Salad)',
     style: '鮮果拼盤 · 維他命盛宴',
     unlockScore: 400,
+    cookingUtensil: '溫室水晶冷盤',
+    buffEffect: '能量 +263 · 健康 +118',
+    recipeSteps: '現摘多汁甜瓜、藍莓與杏子切塊冰鎮，淋上微酸果露。',
+    ingredients: [
+      {
+        name: '藍莓',
+        qty: 1,
+        iconUrl: 'https://stardewvalleywiki.com/mediawiki/images/en/9/9e/Blueberry.png',
+      },
+      {
+        name: '甜瓜',
+        qty: 1,
+        iconUrl: 'https://stardewvalleywiki.com/mediawiki/images/en/1/19/Melon.png',
+      },
+      {
+        name: '杏子',
+        qty: 1,
+        iconUrl: 'https://stardewvalleywiki.com/mediawiki/images/en/f/fc/Apricot.png',
+      },
+    ],
     quote: '集結藍莓、甜瓜與杏子的繽紛果香，玻璃花房裡最受歡迎的繽紛甜品！',
   },
   {
@@ -130,6 +434,26 @@ export const LIVE_KITCHEN_DISH_ROSTER: KitchenDishBlueprint[] = [
     name: '濃厚巧克力蛋糕 (Chocolate Cake)',
     style: '冬夜可可 · 經典慶祝',
     unlockScore: 450,
+    cookingUtensil: '雙門甜點烘烤爐',
+    buffEffect: '能量 +150 · 健康 +67',
+    recipeSteps: '細粉與砂糖混合濃醇蜂蜜可可烘培成海綿蛋糕體，擠上雙層巧克力花飾。',
+    ingredients: [
+      {
+        name: '小麥粉',
+        qty: 1,
+        iconUrl: 'https://stardewvalleywiki.com/mediawiki/images/en/2/2c/Wheat_Flour.png',
+      },
+      {
+        name: '糖',
+        qty: 1,
+        iconUrl: 'https://stardewvalleywiki.com/mediawiki/images/en/a/a9/Sugar.png',
+      },
+      {
+        name: '雞蛋',
+        qty: 1,
+        iconUrl: 'https://stardewvalleywiki.com/mediawiki/images/en/2/26/Egg.png',
+      },
+    ],
     quote: '綿密濃醇的雙層黑巧克力海綿蛋糕，最適合配著暖爐熱可可一起分享！',
   },
   {
@@ -138,7 +462,50 @@ export const LIVE_KITCHEN_DISH_ROSTER: KitchenDishBlueprint[] = [
     name: '秘法墨汁餃 (Squid Ink Ravioli)',
     style: '奧術秘製 · 抗減益特餐',
     unlockScore: 500,
+    cookingUtensil: '奧術紫晶煉金大鍋',
+    buffEffect: '挖礦 +1 · 免疫負面狀態',
+    recipeSteps: '以深海墨魚汁揉入細緻麵皮，包裹濃醇番茄起司燉煮入味。',
+    ingredients: [
+      {
+        name: '魷魚墨汁',
+        qty: 1,
+        iconUrl: 'https://stardewvalleywiki.com/mediawiki/images/en/a/ac/Squid_Ink.png',
+      },
+      {
+        name: '小麥粉',
+        qty: 1,
+        iconUrl: 'https://stardewvalleywiki.com/mediawiki/images/en/2/2c/Wheat_Flour.png',
+      },
+      {
+        name: '番茄',
+        qty: 1,
+        iconUrl: 'https://stardewvalleywiki.com/mediawiki/images/en/9/9d/Tomato.png',
+      },
+    ],
     quote: '閃耀神祕紫澤的手工義式餃，能讓小廚師在挑戰中抵禦一切失誤！',
+  },
+  {
+    id: 'sdv_fried_mushroom',
+    url: 'https://stardewvalleywiki.com/mediawiki/images/en/4/4a/Fried_Mushroom.png',
+    name: '金香炒蘑菇 (Fried Mushroom)',
+    style: '洞窟野味 · 蒜香快炒',
+    unlockScore: 550,
+    cookingUtensil: '岩漿炙火平鍋',
+    buffEffect: '攻擊 +2 · 能量 +135',
+    recipeSteps: '將普通蘑菇與羊肚菌切片，以大火爆炒出山林鮮甜脆香。',
+    ingredients: [
+      {
+        name: '普通蘑菇',
+        qty: 1,
+        iconUrl: 'https://stardewvalleywiki.com/mediawiki/images/en/2/2e/Common_Mushroom.png',
+      },
+      {
+        name: '紫蘑菇',
+        qty: 1,
+        iconUrl: 'https://stardewvalleywiki.com/mediawiki/images/en/4/4b/Purple_Mushroom.png',
+      },
+    ],
+    quote: '在幽深洞穴微光中快火翻炒出的濃郁野菇香氣，令所有人食指大動！',
   },
   {
     id: 'sdv_maki_roll',
@@ -146,7 +513,50 @@ export const LIVE_KITCHEN_DISH_ROSTER: KitchenDishBlueprint[] = [
     name: '和風生魚壽司 (Maki Roll)',
     style: '職人刀工 · 櫻花日料',
     unlockScore: 600,
+    cookingUtensil: '檜木壽司竹簾',
+    buffEffect: '能量 +100 · 健康 +45',
+    recipeSteps: '將晶瑩香米飯平鋪於烤海苔之上，捲入現切鮮嫩鮭魚切片。',
+    ingredients: [
+      {
+        name: '鮭魚',
+        qty: 1,
+        iconUrl: 'https://stardewvalleywiki.com/mediawiki/images/en/e/e0/Salmon.png',
+      },
+      {
+        name: '大米',
+        qty: 1,
+        iconUrl: 'https://stardewvalleywiki.com/mediawiki/images/en/d/da/Rice.png',
+      },
+    ],
     quote: '晶瑩香米捲著鮮嫩海味與清脆海苔，展現細膩如職人般的料理功力！',
+  },
+  {
+    id: 'sdv_plum_pudding',
+    url: 'https://stardewvalleywiki.com/mediawiki/images/en/a/a0/Plum_Pudding.png',
+    name: '蜜糖李子布丁 (Plum Pudding)',
+    style: '香頌茶點 · 莓果濃蜜',
+    unlockScore: 700,
+    cookingUtensil: '法式銅製布丁模',
+    buffEffect: '能量 +175 · 健康 +78',
+    recipeSteps: '甜果乾浸泡金黃花蜜後拌入麵糊細心蒸烤，切開飄散柔和果酒甜香。',
+    ingredients: [
+      {
+        name: '野生山莓',
+        qty: 1,
+        iconUrl: 'https://stardewvalleywiki.com/mediawiki/images/en/2/25/Blackberry.png',
+      },
+      {
+        name: '小麥粉',
+        qty: 1,
+        iconUrl: 'https://stardewvalleywiki.com/mediawiki/images/en/2/2c/Wheat_Flour.png',
+      },
+      {
+        name: '蜂蜜',
+        qty: 1,
+        iconUrl: 'https://stardewvalleywiki.com/mediawiki/images/en/c/c6/Honey.png',
+      },
+    ],
+    quote: '散發普羅旺斯花蜜香甜的經典歐式布丁，星月夜下品嚐最浪漫！',
   },
   {
     id: 'sdv_tropical_curry',
@@ -154,7 +564,45 @@ export const LIVE_KITCHEN_DISH_ROSTER: KitchenDishBlueprint[] = [
     name: '薑島熱帶咖喱 (Tropical Curry)',
     style: '南洋香料 · 鳳梨盛盤',
     unlockScore: 750,
+    cookingUtensil: '海島竹編熾烤灶',
+    buffEffect: '採集 +4 · 能量 +150',
+    recipeSteps: '椰奶燉煮黃金鳳梨塊與香辣紅椒，盛入整顆挖空鳳梨碗中。',
+    ingredients: [
+      {
+        name: '椰子',
+        qty: 1,
+        iconUrl: 'https://stardewvalleywiki.com/mediawiki/images/en/2/2f/Coconut.png',
+      },
+      {
+        name: '菠蘿',
+        qty: 1,
+        iconUrl: 'https://stardewvalleywiki.com/mediawiki/images/en/f/fb/Pineapple.png',
+      },
+      {
+        name: '辣椒',
+        qty: 1,
+        iconUrl: 'https://stardewvalleywiki.com/mediawiki/images/en/f/f1/Hot_Pepper.png',
+      },
+    ],
     quote: '盛裝在整顆挖空金鑽鳳梨裡的濃郁椰香咖喱，散發陽光海風的熱情！',
+  },
+  {
+    id: 'sdv_triple_shot_espresso',
+    url: 'https://stardewvalleywiki.com/mediawiki/images/en/3/36/Triple_Shot_Espresso.png',
+    name: '三倍濃縮咖啡 (Triple Shot Espresso)',
+    style: '齒輪萃取 · 速度飆升',
+    unlockScore: 850,
+    cookingUtensil: '黃銅蒸氣咖啡機',
+    buffEffect: '速度 +1 (長效提神)',
+    recipeSteps: '三份新鮮現焙咖啡豆高壓萃取濃縮精華，滑順濃郁回甘。',
+    ingredients: [
+      {
+        name: '咖啡',
+        qty: 3,
+        iconUrl: 'https://stardewvalleywiki.com/mediawiki/images/en/e/e9/Coffee.png',
+      },
+    ],
+    quote: '喝一口瞬間精神百倍、走路如飛的黃金鐘樓咖啡廳神級飲品！',
   },
   {
     id: 'sdv_lobster_bisque',
@@ -162,7 +610,45 @@ export const LIVE_KITCHEN_DISH_ROSTER: KitchenDishBlueprint[] = [
     name: '皇家龍蝦濃湯 (Lobster Bisque)',
     style: '宮廷海味 · 頂級主菜',
     unlockScore: 900,
+    cookingUtensil: '皇家純金湯鍋',
+    buffEffect: '釣魚 +3 · 能量 +225',
+    recipeSteps: '整隻鮮活龍蝦熬出紅亮蝦膏，融入特選濃純鮮奶慢火收汁。',
+    ingredients: [
+      {
+        name: '龍蝦',
+        qty: 1,
+        iconUrl: 'https://stardewvalleywiki.com/mediawiki/images/en/9/9f/Lobster.png',
+      },
+      {
+        name: '特大牛奶',
+        qty: 1,
+        iconUrl: 'https://stardewvalleywiki.com/mediawiki/images/en/6/67/Large_Milk.png',
+      },
+    ],
     quote: '威利秘傳的金黃奶油龍蝦濃湯，每一口都濃郁鮮甜得彷彿置身皇家晚宴！',
+  },
+  {
+    id: 'sdv_seafoam_pudding',
+    url: 'https://stardewvalleywiki.com/mediawiki/images/en/3/33/Seafoam_Pudding.png',
+    name: '海泡極光布丁 (Seafoam Pudding)',
+    style: '極光幻彩 · 垂釣神助',
+    unlockScore: 1000,
+    cookingUtensil: '極光水晶冰鍋',
+    buffEffect: '釣魚 +4 · 能量 +175',
+    recipeSteps: '融合比目魚鮮露與午夜魷魚墨精華，化為如極光般碧綠閃耀的綿密布丁。',
+    ingredients: [
+      {
+        name: '午夜魷魚',
+        qty: 1,
+        iconUrl: 'https://stardewvalleywiki.com/mediawiki/images/en/8/83/Midnight_Squid.png',
+      },
+      {
+        name: '魷魚墨汁',
+        qty: 1,
+        iconUrl: 'https://stardewvalleywiki.com/mediawiki/images/en/a/ac/Squid_Ink.png',
+      },
+    ],
+    quote: '閃爍北極光色澤的夢幻深海布丁，讓千分神廚成為全谷最傳奇的釣手！',
   },
   {
     id: 'sdv_pink_cake',
@@ -170,6 +656,31 @@ export const LIVE_KITCHEN_DISH_ROSTER: KitchenDishBlueprint[] = [
     name: '夢幻粉紅蛋糕 (Pink Cake)',
     style: '夢幻甜瓜 · 心心點綴',
     unlockScore: 1050,
+    cookingUtensil: '金龍雙門烘焙宮窯',
+    buffEffect: '能量 +250 · 健康 +112',
+    recipeSteps: '鮮打甜瓜果汁揉入雪白細麵糊烘烤，裱上可愛粉紅愛心糖霜。',
+    ingredients: [
+      {
+        name: '甜瓜',
+        qty: 1,
+        iconUrl: 'https://stardewvalleywiki.com/mediawiki/images/en/1/19/Melon.png',
+      },
+      {
+        name: '小麥粉',
+        qty: 1,
+        iconUrl: 'https://stardewvalleywiki.com/mediawiki/images/en/2/2c/Wheat_Flour.png',
+      },
+      {
+        name: '糖',
+        qty: 1,
+        iconUrl: 'https://stardewvalleywiki.com/mediawiki/images/en/a/a9/Sugar.png',
+      },
+      {
+        name: '雞蛋',
+        qty: 1,
+        iconUrl: 'https://stardewvalleywiki.com/mediawiki/images/en/2/26/Egg.png',
+      },
+    ],
     quote: '用多汁甜瓜製成、點綴紅心糖霜的夢幻蛋糕，海莉與賈斯的終極夢想！',
   },
   {
@@ -178,6 +689,26 @@ export const LIVE_KITCHEN_DISH_ROSTER: KitchenDishBlueprint[] = [
     name: '五彩魔法冰糖 (Magic Rock Candy)',
     style: '神話至高 · 全能料理王',
     unlockScore: 1250,
+    cookingUtensil: '永恆星果宇宙神爐',
+    buffEffect: '採礦+2 · 幸運+5 · 速度+1 · 防禦+5 · 攻擊+5',
+    recipeSteps: '將傳說五彩碎片與銀河楊桃精華於星果神壇融合結晶，凝成永恆七彩聖糖。',
+    ingredients: [
+      {
+        name: '五彩碎片',
+        qty: 1,
+        iconUrl: 'https://stardewvalleywiki.com/mediawiki/images/en/5/56/Prismatic_Shard.png',
+      },
+      {
+        name: '楊桃',
+        qty: 1,
+        iconUrl: 'https://stardewvalleywiki.com/mediawiki/images/en/d/db/Starfruit.png',
+      },
+      {
+        name: '金蛋',
+        qty: 1,
+        iconUrl: 'https://stardewvalleywiki.com/mediawiki/images/en/9/97/Golden_Egg.png',
+      },
+    ],
     quote: '匯聚五彩碎片星辰魔力的傳說結晶甜點，1250 分宇宙廚神殿堂的最高榮耀！',
   },
 ];

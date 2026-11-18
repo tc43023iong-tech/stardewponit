@@ -12,6 +12,7 @@ interface RoomShowcaseViewProps {
   onQuickAdd: (student: Student, delta: number) => void;
   onSwitchToFarm?: (student: Student) => void;
   onSwitchToKitchen?: (student: Student) => void;
+  onSwitchToBathroom?: (student: Student) => void;
 }
 
 export const RoomShowcaseView: React.FC<RoomShowcaseViewProps> = ({
@@ -20,6 +21,7 @@ export const RoomShowcaseView: React.FC<RoomShowcaseViewProps> = ({
   onQuickAdd,
   onSwitchToFarm,
   onSwitchToKitchen,
+  onSwitchToBathroom,
 }) => {
   const [inspectingStudent, setInspectingStudent] = useState<Student | null>(null);
 
@@ -192,6 +194,14 @@ export const RoomShowcaseView: React.FC<RoomShowcaseViewProps> = ({
                 ? (st) => {
                     setInspectingStudent(null);
                     onSwitchToKitchen(st);
+                  }
+                : undefined
+            }
+            onSwitchToBathroom={
+              onSwitchToBathroom
+                ? (st) => {
+                    setInspectingStudent(null);
+                    onSwitchToBathroom(st);
                   }
                 : undefined
             }
