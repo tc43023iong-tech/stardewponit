@@ -20,6 +20,18 @@ import cardMushrooms from '../assets/images/card_mushrooms_1793625426682.jpg';
 import cardJellies from '../assets/images/card_jellies_1793625439674.jpg';
 import cardOrchard from '../assets/images/card_orchard_1793625454883.jpg';
 
+// Latest 10 New Stardew Valley Pixel Card Backgrounds
+import cardSakuraShrine from '../assets/images/card_sakura_shrine_1795003418383.jpg';
+import cardAuroraGlacier from '../assets/images/card_aurora_glacier_1795003419550.jpg';
+import cardWitchSwamp from '../assets/images/card_witch_swamp_1795003420940.jpg';
+import cardCrystalWaterfall from '../assets/images/card_crystal_waterfall_1795003421510.jpg';
+import cardMermaidLagoon from '../assets/images/card_mermaid_lagoon_1795003421274.jpg';
+import cardLavenderWindmill from '../assets/images/card_lavender_windmill_1795003422861.jpg';
+import cardSkyCastle from '../assets/images/card_sky_castle_1795003422827.jpg';
+import cardCoralReef from '../assets/images/card_coral_reef_1795003423818.jpg';
+import cardStarfruitRealm from '../assets/images/card_starfruit_realm_1795003424379.jpg';
+import cardGingerCove from '../assets/images/card_ginger_cove_1795003424460.jpg';
+
 export const SCENIC_PAGE_IMAGES: Record<string, string> = {
   spring_farm: springFarmBg,
   summer_sunflower: cardSummerSunflower,
@@ -38,7 +50,7 @@ export const SCENIC_PAGE_IMAGES: Record<string, string> = {
   galaxy: cardGalaxyStars,
 };
 
-// 100% Unique, dedicated pixel art artwork for all 16 card styles
+// 100% Unique, dedicated pixel art artwork for all 26 card styles
 export const CARD_PIXEL_BG_IMAGES: Record<string, string> = {
   // 1. Seasonal & Garden
   auto: springFarmBg,
@@ -55,10 +67,22 @@ export const CARD_PIXEL_BG_IMAGES: Record<string, string> = {
   cabin: classicOverworldBg,
   galaxy: cardGalaxyStars,
 
-  // 3. New 5 Pixel Materials
+  // 3. Special 5 Pixel Materials
   desert_oasis: cardDesertOasis,
   volcano_caldera: cardVolcano,
   mushroom_cave: cardMushrooms,
   moonlight_jellies: cardJellies,
   junimo_orchard: cardOrchard,
+
+  // 4. Latest 10 New Pixel Materials
+  sakura_shrine: cardSakuraShrine,
+  aurora_glacier: cardAuroraGlacier,
+  witch_swamp: cardWitchSwamp,
+  crystal_waterfall: cardCrystalWaterfall,
+  mermaid_lagoon: cardMermaidLagoon,
+  lavender_windmill: cardLavenderWindmill,
+  sky_cloud_castle: cardSkyCastle,
+  coral_reef_palace: cardCoralReef,
+  starfruit_fairyland: cardStarfruitRealm,
+  ginger_island_cove: cardGingerCove,
 };

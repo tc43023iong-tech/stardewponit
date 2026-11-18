@@ -104,7 +104,22 @@ export const AvatarPickerModal: React.FC<AvatarPickerModalProps> = ({
   };
 
   // Filter groups for background options
-  const new5PixelAssets = STUDENT_CARD_BACKGROUND_OPTIONS.filter((o) =>
+  const latest10PixelAssets = STUDENT_CARD_BACKGROUND_OPTIONS.filter((o) =>
+    [
+      'sakura_shrine',
+      'aurora_glacier',
+      'witch_swamp',
+      'crystal_waterfall',
+      'mermaid_lagoon',
+      'lavender_windmill',
+      'sky_cloud_castle',
+      'coral_reef_palace',
+      'starfruit_fairyland',
+      'ginger_island_cove',
+    ].includes(o.id)
+  );
+
+  const biome5PixelAssets = STUDENT_CARD_BACKGROUND_OPTIONS.filter((o) =>
     ['desert_oasis', 'volcano_caldera', 'mushroom_cave', 'moonlight_jellies', 'junimo_orchard'].includes(o.id)
   );
 
@@ -188,7 +203,7 @@ export const AvatarPickerModal: React.FC<AvatarPickerModalProps> = ({
       }}
       className="fixed inset-0 z-50 bg-black/75 flex items-center justify-center p-2 sm:p-4 backdrop-blur-xs"
     >
-      <div className="pixel-wood-box max-w-5xl w-full flex flex-col overflow-hidden text-[#4a2800] max-h-[94vh] shadow-2xl">
+      <div className="pixel-wood-box max-w-[96vw] xl:max-w-[1440px] w-full flex flex-col overflow-hidden text-[#4a2800] max-h-[94vh] shadow-2xl">
         {/* Header */}
         <div className="bg-[#6a4422] text-[#ffebb3] px-4 py-2.5 border-b-4 border-[#361f0d] flex items-center justify-between">
           <div className="flex items-center gap-2">
@@ -198,7 +213,7 @@ export const AvatarPickerModal: React.FC<AvatarPickerModalProps> = ({
                 客製化學生風格：{student.name} (#{student.rollNo})
               </h3>
               <p className="text-[10px] text-[#fed7aa]">
-                提供 {STARDEW_AVATARS.length} 款星露谷伙伴頭像與 16 種像素卡片背景素材，點選即可即時套用與預覽！
+                提供 {STARDEW_AVATARS.length} 款星露谷伙伴頭像與 {STUDENT_CARD_BACKGROUND_OPTIONS.length} 種像素卡片背景素材，點選即可即時套用與預覽！
               </p>
             </div>
           </div>
@@ -242,7 +257,7 @@ export const AvatarPickerModal: React.FC<AvatarPickerModalProps> = ({
               }`}
             >
               <Palette className="w-3.5 h-3.5" />
-              <span>🖼️ 卡片背景素材 (16款含5款全新像素素材)</span>
+              <span>🖼️ 卡片背景素材 ({STUDENT_CARD_BACKGROUND_OPTIONS.length}款)</span>
             </button>
           </div>
 
@@ -292,13 +307,13 @@ export const AvatarPickerModal: React.FC<AvatarPickerModalProps> = ({
 
               {/* Right Column: Background options grouped nicely */}
               <div className="flex-1 space-y-4 min-w-0">
-                {/* GROUP 1: 5 BRAND NEW STARDEW VALLEY PIXEL ASSETS (新增 5 款星露谷風的像素背景素材) */}
+                {/* GROUP 1: LATEST 10 BRAND NEW STARDEW VALLEY PIXEL ASSETS */}
                 <div className="bg-[#fef3c7] p-3 rounded-xl border-2 border-[#ca8a04] shadow-xs">
-                  <div className="flex items-center justify-between mb-2">
+                  <div className="flex items-center justify-between mb-2 flex-wrap gap-1">
                     <div className="flex items-center gap-1.5">
                       <span className="text-base">✨</span>
                       <h4 className="font-pixel text-xs text-[#854d0e] font-black">
-                        【新增 5 款星露谷風像素背景素材】
+                        【全新新增 {latest10PixelAssets.length} 款星露谷風像素背景素材】
                       </h4>
                     </div>
                     <span className="text-[10px] font-bold text-amber-800 bg-amber-200/80 px-2 py-0.5 rounded">
@@ -306,27 +321,37 @@ export const AvatarPickerModal: React.FC<AvatarPickerModalProps> = ({
                     </span>
                   </div>
 
-                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2.5">
-                    {new5PixelAssets.map((bgOpt) => renderBackgroundCard(bgOpt, true))}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-2.5">
+                    {latest10PixelAssets.map((bgOpt) => renderBackgroundCard(bgOpt, true))}
                   </div>
                 </div>
 
-                {/* GROUP 2: 🌾 經典田園與四季風格 */}
+                {/* GROUP 2: 🏜️ 秘境生態像素系列 */}
                 <div>
                   <h4 className="font-pixel text-[11px] text-[#5a3818] font-bold mb-1.5 flex items-center gap-1">
-                    <span>🌾 經典田園與四季季節風格</span>
+                    <span>🏜️ 秘境生態與奇幻島嶼系列 ({biome5PixelAssets.length} 款)</span>
                   </h4>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2.5">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-2.5">
+                    {biome5PixelAssets.map((bgOpt) => renderBackgroundCard(bgOpt, false))}
+                  </div>
+                </div>
+
+                {/* GROUP 3: 🌾 經典田園與四季風格 */}
+                <div>
+                  <h4 className="font-pixel text-[11px] text-[#5a3818] font-bold mb-1.5 flex items-center gap-1">
+                    <span>🌾 經典田園與四季季節風格 ({seasonalAssets.length} 款)</span>
+                  </h4>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-2.5">
                     {seasonalAssets.map((bgOpt) => renderBackgroundCard(bgOpt, false))}
                   </div>
                 </div>
 
-                {/* GROUP 3: 🔮 秘境、海濱與莊園風格 */}
+                {/* GROUP 4: 🔮 魔法秘境、海濱與莊園風格 */}
                 <div>
                   <h4 className="font-pixel text-[11px] text-[#5a3818] font-bold mb-1.5 flex items-center gap-1">
-                    <span>🔮 魔法秘境、海濱與星空風格</span>
+                    <span>🔮 魔法秘境、海濱與星空風格 ({mysticFantasyAssets.length} 款)</span>
                   </h4>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2.5">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-2.5">
                     {mysticFantasyAssets.map((bgOpt) => renderBackgroundCard(bgOpt, false))}
                   </div>
                 </div>
@@ -396,7 +421,7 @@ export const AvatarPickerModal: React.FC<AvatarPickerModalProps> = ({
                           {groupItems.length} 款
                         </span>
                       </div>
-                      <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 gap-2.5">
+                      <div className="grid grid-cols-3 sm:grid-cols-5 md:grid-cols-7 lg:grid-cols-8 xl:grid-cols-10 gap-2.5">
                         {groupItems.map((av) => (
                           <button
                             key={av.id}
@@ -424,7 +449,7 @@ export const AvatarPickerModal: React.FC<AvatarPickerModalProps> = ({
                 })}
               </div>
             ) : (
-              <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 gap-2.5">
+              <div className="grid grid-cols-3 sm:grid-cols-5 md:grid-cols-7 lg:grid-cols-8 xl:grid-cols-10 gap-2.5">
                 {filteredStardewAvatars.map((av) => (
                   <button
                     key={av.id}

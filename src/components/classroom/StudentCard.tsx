@@ -139,6 +139,43 @@ export const StudentCard: React.FC<StudentCardProps> = ({
           </div>
         )}
 
+        {student.cardBackground === 'sakura_shrine' && (
+          <div className="absolute inset-0 pointer-events-none overflow-hidden">
+            <div className="absolute top-3 left-5 text-pink-200 text-xs animate-floating-drift">🌸</div>
+            <div className="absolute top-8 right-7 text-pink-300 text-xs animate-twinkle-delayed">✿</div>
+          </div>
+        )}
+
+        {student.cardBackground === 'aurora_glacier' && (
+          <div className="absolute inset-0 pointer-events-none overflow-hidden">
+            <div className="absolute top-0 inset-x-0 h-14 bg-gradient-to-b from-emerald-400/20 via-purple-400/10 to-transparent animate-pulse" />
+            <div className="absolute top-4 right-5 text-emerald-200 text-xs animate-twinkle">✦</div>
+            <div className="absolute top-10 left-5 text-cyan-200 text-xs animate-twinkle-delayed">❄</div>
+          </div>
+        )}
+
+        {student.cardBackground === 'starfruit_fairyland' && (
+          <div className="absolute inset-0 pointer-events-none overflow-hidden">
+            <div className="absolute top-3 left-6 text-amber-200 text-xs animate-twinkle">★</div>
+            <div className="absolute top-6 right-5 text-violet-200 text-xs animate-twinkle-delayed">✦</div>
+            <div className="absolute bottom-7 left-1/3 text-yellow-200 text-xs animate-floating-drift">✨</div>
+          </div>
+        )}
+
+        {student.cardBackground === 'crystal_waterfall' && (
+          <div className="absolute inset-0 pointer-events-none overflow-hidden">
+            <div className="absolute top-5 left-5 text-cyan-200 text-xs animate-twinkle">💎</div>
+            <div className="absolute bottom-6 right-6 text-purple-200 text-xs animate-twinkle-delayed">✦</div>
+          </div>
+        )}
+
+        {student.cardBackground === 'sky_cloud_castle' && (
+          <div className="absolute inset-0 pointer-events-none overflow-hidden">
+            <div className="absolute top-3 right-6 text-sky-100 text-xs animate-twinkle">✧</div>
+            <div className="absolute top-8 left-6 text-amber-100 text-xs animate-floating-drift">☁</div>
+          </div>
+        )}
+
         {/* 1000分 Rainbow Sparkles */}
         {student.points >= 1000 && (
           <div className="absolute top-2 right-10 text-sm animate-bounce drop-shadow">
