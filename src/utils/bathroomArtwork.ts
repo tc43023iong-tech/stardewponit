@@ -19,7 +19,7 @@ import bath800CoralMermaidBg from '../assets/images/bath_800_coral_mermaid_17950
 import bath850SteampunkBathBg from '../assets/images/bath_850_steampunk_bath_1795002243063.jpg';
 import bath900RoyalMarbleBg from '../assets/images/bath_900_royal_marble_1795002243549.jpg';
 import bath950CloudJacuzziBg from '../assets/images/bath_950_cloud_jacuzzi_1795002244011.jpg';
-import bath1000AuroraIceBg from '../assets/images/bath_1000_aurora_ice_1795002244543.jpg';
+import bath1000AuroraIceBg from '../assets/images/bath_1000_aurora_crystal_1795004102356.jpg';
 import bath1050JadeEmperorBg from '../assets/images/bath_1050_jade_emperor_1795002244973.jpg';
 import bath1100CelestialSwanBg from '../assets/images/bath_1100_celestial_swan_1795002245854.jpg';
 import bath1150GalaxyNebulaBg from '../assets/images/bath_1150_galaxy_nebula_1795002246249.jpg';
