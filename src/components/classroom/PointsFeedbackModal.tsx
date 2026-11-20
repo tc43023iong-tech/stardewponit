@@ -69,9 +69,9 @@ export const PointsFeedbackModal: React.FC<PointsFeedbackModalProps> = ({
         <div className="text-center mb-3">
           <div className="inline-flex items-center justify-center gap-2 mb-1">
             {isPositive ? (
-              <span className="text-3xl animate-bounce">🎉</span>
+              <PixelSprite name="star_full" size={26} className="animate-bounce" />
             ) : (
-              <span className="text-3xl animate-pulse">💪</span>
+              <HeartHandshake className="w-7 h-7 text-[#c2410c] animate-pulse" />
             )}
             <h2
               className={`font-pixel text-xl sm:text-2xl font-black tracking-wide ${
@@ -81,9 +81,9 @@ export const PointsFeedbackModal: React.FC<PointsFeedbackModalProps> = ({
               {isPositive ? '恭喜你！' : '繼續加油！'}
             </h2>
             {isPositive ? (
-              <span className="text-3xl animate-bounce">✨</span>
+              <Sparkles className="w-7 h-7 text-[#16a34a] animate-bounce" />
             ) : (
-              <span className="text-3xl animate-pulse">🌱</span>
+              <PixelSprite name="sunflower" size={26} className="animate-pulse" />
             )}
           </div>
 

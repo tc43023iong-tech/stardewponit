@@ -4,7 +4,22 @@ import { POSITIVE_PRESETS, NEGATIVE_PRESETS } from '../../data/classroomData';
 import { soundManager } from '../../utils/sound';
 import { PixelSprite } from '../common/PixelSprite';
 import { AvatarRenderer } from './AvatarRenderer';
-import { X, Plus, Minus, Send, Sparkles, AlertTriangle } from 'lucide-react';
+import {
+  X,
+  Plus,
+  Minus,
+  Send,
+  Sparkles,
+  AlertTriangle,
+  ScrollText,
+  TrendingUp,
+  PenLine,
+  Eraser,
+  BarChart3,
+  Sprout,
+  Coins,
+  FileText,
+} from 'lucide-react';
 
 interface PointsModalProps {
   students: Student[];
@@ -53,7 +68,7 @@ export const PointsModal: React.FC<PointsModalProps> = ({
       finalDelta,
       reasonText,
       'Custom Adjustment',
-      finalDelta > 0 ? '⭐' : '⚠️'
+      finalDelta > 0 ? 'star' : 'alert'
     );
     onClose();
   };
@@ -104,26 +119,30 @@ export const PointsModal: React.FC<PointsModalProps> = ({
             setShowHistoryModal(false);
           }
         }}
-        className="fixed inset-0 z-50 bg-black/75 flex items-center justify-center p-2 sm:p-4 backdrop-blur-xs animate-in fade-in duration-150 select-none"
+        className="fixed inset-0 z-[60] bg-black/75 flex items-center justify-center p-2 sm:p-4 backdrop-blur-xs animate-in fade-in duration-150 select-none"
       >
         <div className="pixel-wood-box max-w-5xl w-full max-h-[92vh] flex flex-col overflow-hidden text-[#4a2800] shadow-2xl">
           {/* Header */}
           <div className="bg-[#5a3818] text-[#ffebb3] px-4 py-3 border-b-4 border-[#361f0d] flex justify-between items-center shrink-0 shadow-md">
             <div className="flex items-center gap-2.5">
-              <span className="text-2xl">📜</span>
+              <ScrollText className="w-5 h-5 text-[#ffd700] shrink-0" />
               <h3 className="font-pixel text-sm sm:text-base text-[#ffd700] flex items-center gap-2 flex-wrap">
                 <span>小黑板歷史紀錄 & 成長軌跡</span>
-                <span className="font-sans text-xl sm:text-2xl font-black text-[#fed7aa]">- 【{primaryStudent.name}】</span>
+                <span className="font-sans text-xl sm:text-2xl font-black text-[#fed7aa]">
+                  - 【{primaryStudent.name}】
+                </span>
                 <span className="text-xs bg-[#3b1f0b] text-[#ffd700] px-2 py-0.5 rounded border border-[#8b5a2b]">
                   #{primaryStudent.rollNo}
                 </span>
               </h3>
             </div>
             <button
+              type="button"
               onClick={() => setShowHistoryModal(false)}
-              className="text-[#fed7aa] hover:text-white text-2xl font-black transition-colors cursor-pointer"
+              className="text-[#fed7aa] hover:text-white p-1 rounded transition-colors cursor-pointer"
+              aria-label="關閉"
             >
-              ✕
+              <X className="w-5 h-5" />
             </button>
           </div>
 
@@ -133,7 +152,7 @@ export const PointsModal: React.FC<PointsModalProps> = ({
             <div className="col-span-1 md:col-span-7 flex flex-col h-[340px] md:h-full overflow-hidden bg-white/90 rounded-2xl p-4 border-2 border-[#c4a675] shadow-xs">
               <div className="flex justify-between items-center mb-3 shrink-0">
                 <div className="flex items-center gap-2">
-                  <span className="text-xl">📈</span>
+                  <TrendingUp className="w-5 h-5 text-[#8b5a2b]" />
                   <span className="font-bold text-[#4a2800] text-sm sm:text-base">
                     分數起伏趨勢 (Progress Trend)
                   </span>
@@ -146,20 +165,36 @@ export const PointsModal: React.FC<PointsModalProps> = ({
               {/* Stats Bar */}
               <div className="grid grid-cols-4 gap-2 mb-3 shrink-0">
                 <div className="bg-amber-50 p-2 rounded-lg border border-amber-200 text-center">
-                  <div className="text-[10px] font-bold text-amber-800">🪙 累積總分</div>
-                  <div className="text-sm font-black text-amber-900 font-mono">{primaryStudent.points}</div>
+                  <div className="text-[10px] font-bold text-amber-800 flex items-center justify-center gap-1">
+                    <Coins className="w-3 h-3" /> 累積總分
+                  </div>
+                  <div className="text-sm font-black text-amber-900 font-mono">
+                    {primaryStudent.points}
+                  </div>
                 </div>
                 <div className="bg-emerald-50 p-2 rounded-lg border border-emerald-200 text-center">
-                  <div className="text-[10px] font-bold text-emerald-800">🌱 獎勵正分</div>
-                  <div className="text-sm font-black text-emerald-700 font-mono">+{primaryStudent.posPoints || 0}</div>
+                  <div className="text-[10px] font-bold text-emerald-800 flex items-center justify-center gap-1">
+                    <Sprout className="w-3 h-3" /> 獎勵正分
+                  </div>
+                  <div className="text-sm font-black text-emerald-700 font-mono">
+                    +{primaryStudent.posPoints || 0}
+                  </div>
                 </div>
                 <div className="bg-rose-50 p-2 rounded-lg border border-rose-200 text-center">
-                  <div className="text-[10px] font-bold text-rose-800">⚠️ 違紀扣分</div>
-                  <div className="text-sm font-black text-rose-600 font-mono">-{Math.abs(primaryStudent.negPoints || 0)}</div>
+                  <div className="text-[10px] font-bold text-rose-800 flex items-center justify-center gap-1">
+                    <AlertTriangle className="w-3 h-3" /> 違紀扣分
+                  </div>
+                  <div className="text-sm font-black text-rose-600 font-mono">
+                    -{Math.abs(primaryStudent.negPoints || 0)}
+                  </div>
                 </div>
                 <div className="bg-stone-50 p-2 rounded-lg border border-stone-200 text-center">
-                  <div className="text-[10px] font-bold text-stone-600">📝 紀錄筆數</div>
-                  <div className="text-sm font-black text-stone-700 font-mono">{primaryStudent.history?.length || 0}</div>
+                  <div className="text-[10px] font-bold text-stone-600 flex items-center justify-center gap-1">
+                    <FileText className="w-3 h-3" /> 紀錄筆數
+                  </div>
+                  <div className="text-sm font-black text-stone-700 font-mono">
+                    {primaryStudent.history?.length || 0}
+                  </div>
                 </div>
               </div>
 
@@ -167,12 +202,16 @@ export const PointsModal: React.FC<PointsModalProps> = ({
               <div className="flex-1 min-h-0 relative w-full rounded-xl bg-stone-50/80 border border-stone-200 p-2 flex flex-col justify-end">
                 {trendData.length === 0 ? (
                   <div className="absolute inset-0 flex flex-col items-center justify-center text-stone-400 font-bold gap-2">
-                    <span className="text-3xl">📊</span>
-                    <span className="text-xs">目前還沒有分數變化資料喔～</span>
+                    <BarChart3 className="w-8 h-8 opacity-60" />
+                    <span className="text-xs">目前還沒有分數變化資料喔</span>
                   </div>
                 ) : (
                   <div className="w-full h-full flex flex-col">
-                    <svg className="w-full h-full overflow-visible" viewBox="0 0 400 160" preserveAspectRatio="none">
+                    <svg
+                      className="w-full h-full overflow-visible"
+                      viewBox="0 0 400 160"
+                      preserveAspectRatio="none"
+                    >
                       <defs>
                         <linearGradient id="stardewTrendGrad" x1="0" y1="0" x2="0" y2="1">
                           <stop offset="0%" stopColor="#8b5a2b" stopOpacity="0.3" />
@@ -261,7 +300,7 @@ export const PointsModal: React.FC<PointsModalProps> = ({
             <div className="col-span-1 md:col-span-5 flex flex-col h-[380px] md:h-full overflow-hidden bg-white/80 rounded-2xl p-4 border-2 border-[#c4a675] shadow-xs">
               <div className="flex items-center justify-between mb-3 shrink-0">
                 <div className="flex items-center gap-1.5">
-                  <span className="text-xl">📝</span>
+                  <FileText className="w-4 h-4 text-[#8b5a2b]" />
                   <span className="font-bold text-[#4a2800] text-sm sm:text-base">
                     事件明細簿 (Points Log)
                   </span>
@@ -274,7 +313,7 @@ export const PointsModal: React.FC<PointsModalProps> = ({
               <div className="flex-1 overflow-y-auto pr-1 space-y-2 custom-scrollbar">
                 {historyList.length === 0 ? (
                   <div className="text-center py-20 text-stone-400 font-bold text-xs">
-                    目前還沒有紀錄喔～
+                    目前還沒有紀錄喔
                   </div>
                 ) : (
                   historyList.map((item, idx) => {
@@ -313,7 +352,7 @@ export const PointsModal: React.FC<PointsModalProps> = ({
                             className="bg-white hover:bg-rose-50 text-stone-400 hover:text-rose-600 w-7 h-7 rounded-full transition-all active:scale-90 flex items-center justify-center border border-stone-200 shadow-xs cursor-pointer group-hover:border-rose-300"
                             title="擦掉它 (擦除此條分數紀錄並相應復原總分)"
                           >
-                            <span className="text-sm">🧹</span>
+                            <Eraser className="w-3.5 h-3.5" />
                           </button>
                         </div>
                       </div>
@@ -329,9 +368,10 @@ export const PointsModal: React.FC<PointsModalProps> = ({
             <button
               type="button"
               onClick={() => setShowHistoryModal(false)}
-              className="item-wobble-hover px-8 py-2 bg-[#8b5a2b] hover:bg-[#70441e] text-[#ffd700] rounded-xl font-bold text-sm shadow-md active:scale-95 border-b-3 border-[#5a3818] cursor-pointer"
+              className="item-wobble-hover px-8 py-2 bg-[#8b5a2b] hover:bg-[#70441e] text-[#ffd700] rounded-xl font-bold text-sm shadow-md active:scale-95 border-b-3 border-[#5a3818] cursor-pointer inline-flex items-center gap-1.5"
             >
-              回去加分吧！ 🌱
+              <Sprout className="w-4 h-4" />
+              <span>回去加分吧！</span>
             </button>
           </div>
         </div>
@@ -350,7 +390,7 @@ export const PointsModal: React.FC<PointsModalProps> = ({
           onClose();
         }
       }}
-      className="fixed inset-0 z-50 bg-black/75 flex items-center justify-center p-2 sm:p-4 backdrop-blur-xs animate-in fade-in duration-150 select-none"
+      className="fixed inset-0 z-[60] bg-black/75 flex items-center justify-center p-2 sm:p-4 backdrop-blur-xs animate-in fade-in duration-150 select-none"
     >
       <div className="pixel-wood-box max-w-5xl w-full h-[90vh] max-h-[92vh] flex flex-col overflow-hidden text-[#4a2800] shadow-2xl">
         {/* Top Header: Student info & Direct Inline Custom Points Input */}
@@ -370,9 +410,7 @@ export const PointsModal: React.FC<PointsModalProps> = ({
             <div className="min-w-0">
               <div className="flex items-center gap-2 flex-wrap">
                 <h3 className="font-black text-2xl sm:text-3xl text-[#ffd700] tracking-wide drop-shadow-sm leading-tight">
-                  {isBatch
-                    ? `批次評分 (${students.length}人)`
-                    : primaryStudent?.name}
+                  {isBatch ? `批次評分 (${students.length}人)` : primaryStudent?.name}
                 </h3>
                 {!isBatch && primaryStudent && (
                   <>
@@ -380,14 +418,13 @@ export const PointsModal: React.FC<PointsModalProps> = ({
                       #{primaryStudent.rollNo}
                     </span>
 
-                    {/* ✏️ 筆的emoji按鍵：查看細節與擦除紀錄 */}
                     <button
                       type="button"
                       onClick={() => setShowHistoryModal(true)}
                       className="px-2.5 py-1 rounded-lg bg-amber-500/30 hover:bg-amber-500/50 text-[#ffd700] border border-amber-400 font-pixel text-[10px] flex items-center gap-1 active:scale-95 transition-all cursor-pointer ml-1"
-                      title="點擊查看加減分明細，可擦除該分數紀錄 ✏️"
+                      title="點擊查看加減分明細，可擦除該分數紀錄"
                     >
-                      <span>✏️</span>
+                      <PenLine className="w-3 h-3" />
                       <span>歷程明細 ({primaryStudent.history?.length || 0})</span>
                     </button>
                   </>
@@ -412,7 +449,7 @@ export const PointsModal: React.FC<PointsModalProps> = ({
             </div>
           </div>
 
-          {/* Center: Custom Score Input Box - Placed right beside student name */}
+          {/* Center: Custom Score Input Box */}
           <form
             onSubmit={handleApplyCustom}
             className="flex items-center gap-1.5 bg-[#3b1f0b] px-2.5 py-1.5 rounded-xl border-2 border-[#ca8a04] shadow-md ring-1 ring-amber-500/50 flex-wrap sm:flex-nowrap"
@@ -421,7 +458,6 @@ export const PointsModal: React.FC<PointsModalProps> = ({
               自訂分數：
             </span>
 
-            {/* +/- Mode Switch Toggle Button with wobble hover */}
             <button
               type="button"
               onClick={() => {
@@ -448,7 +484,6 @@ export const PointsModal: React.FC<PointsModalProps> = ({
               )}
             </button>
 
-            {/* Direct Number Input */}
             <input
               type="number"
               min="1"
@@ -459,7 +494,6 @@ export const PointsModal: React.FC<PointsModalProps> = ({
               placeholder="分值"
             />
 
-            {/* Optional Reason Input */}
             <input
               type="text"
               value={customReasonInput}
@@ -468,7 +502,6 @@ export const PointsModal: React.FC<PointsModalProps> = ({
               className="w-24 sm:w-32 bg-[#271306] border border-[#a3794b] text-[#ffedd5] text-xs px-2 py-1 rounded-md focus:outline-none focus:border-[#ffd700] placeholder:text-stone-400 truncate"
             />
 
-            {/* Submit Button with wobble */}
             <button
               type="submit"
               className="item-wobble-hover bg-[#ca8a04] hover:bg-[#eab308] text-[#271306] font-pixel text-xs font-black px-2.5 py-1 rounded-md flex items-center gap-1 border-2 border-[#fef08a] cursor-pointer shadow-xs active:scale-95 whitespace-nowrap"
@@ -480,6 +513,7 @@ export const PointsModal: React.FC<PointsModalProps> = ({
 
           {/* Right: Close Button */}
           <button
+            type="button"
             onClick={() => {
               soundManager.playClick();
               onClose();
@@ -491,7 +525,7 @@ export const PointsModal: React.FC<PointsModalProps> = ({
           </button>
         </div>
 
-        {/* Modal Body: Split into Left (Positive) and Right (Negative) Columns with guaranteed scrollability */}
+        {/* Modal Body */}
         <div className="flex-1 min-h-0 overflow-y-auto md:overflow-hidden p-3 sm:p-4 bg-[#f7efd8] custom-scrollbar">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4 h-full min-h-0">
             {/* Left Column: Positive presets */}
@@ -499,24 +533,24 @@ export const PointsModal: React.FC<PointsModalProps> = ({
               <div className="flex items-center justify-between pb-2 mb-2 border-b-2 border-[#bbf7d0] shrink-0">
                 <div className="flex items-center gap-1.5 font-bold text-xs sm:text-sm text-[#15803d]">
                   <Sparkles className="w-4 h-4 text-[#16a34a]" />
-                  <span>🌱 獎勵加分項目 ({POSITIVE_PRESETS.length})</span>
+                  <span>獎勵加分項目 ({POSITIVE_PRESETS.length})</span>
                 </div>
                 <span className="text-[10px] font-bold text-stone-500 bg-emerald-100/80 px-2 py-0.5 rounded-full">
                   點選直接給予獎勵
                 </span>
               </div>
 
-              {/* Scrollable list of positive presets */}
               <div className="flex-1 min-h-0 overflow-y-auto space-y-1.5 pr-1.5 custom-scrollbar">
                 {POSITIVE_PRESETS.map((preset) => (
                   <button
                     key={preset.id}
+                    type="button"
                     onClick={() => handleSelectPreset(preset)}
                     className="item-wobble-hover w-full flex items-center justify-between p-2 rounded-lg bg-[#ffffff]/90 hover:bg-[#dcfce7] border-2 border-[#bbf7d0] hover:border-[#4ade80] transition-all cursor-pointer group shadow-2xs text-left"
                   >
                     <div className="flex items-center gap-2 min-w-0 pr-1">
-                      <span className="text-xl shrink-0 group-hover:scale-115 transition-transform">
-                        {preset.icon}
+                      <span className="w-6 h-6 rounded-md bg-emerald-50 border border-emerald-200 flex items-center justify-center shrink-0">
+                        <PixelSprite name="star_full" size={14} />
                       </span>
                       <div className="min-w-0">
                         <div className="font-bold text-xs sm:text-sm text-[#14532d] truncate">
@@ -540,24 +574,24 @@ export const PointsModal: React.FC<PointsModalProps> = ({
               <div className="flex items-center justify-between pb-2 mb-2 border-b-2 border-[#fecdd3] shrink-0">
                 <div className="flex items-center gap-1.5 font-bold text-xs sm:text-sm text-[#b91c1c]">
                   <AlertTriangle className="w-4 h-4 text-[#dc2626]" />
-                  <span>⚠️ 違紀扣分項目 ({NEGATIVE_PRESETS.length})</span>
+                  <span>違紀扣分項目 ({NEGATIVE_PRESETS.length})</span>
                 </div>
                 <span className="text-[10px] font-bold text-stone-500 bg-rose-100/80 px-2 py-0.5 rounded-full">
                   點選直接扣除點數
                 </span>
               </div>
 
-              {/* Scrollable list of negative presets */}
               <div className="flex-1 min-h-0 overflow-y-auto space-y-1.5 pr-1.5 custom-scrollbar">
                 {NEGATIVE_PRESETS.map((preset) => (
                   <button
                     key={preset.id}
+                    type="button"
                     onClick={() => handleSelectPreset(preset)}
                     className="item-wobble-hover w-full flex items-center justify-between p-2 rounded-lg bg-[#ffffff]/90 hover:bg-[#fee2e2] border-2 border-[#fecdd3] hover:border-[#f87171] transition-all cursor-pointer group shadow-2xs text-left"
                   >
                     <div className="flex items-center gap-2 min-w-0 pr-1">
-                      <span className="text-xl shrink-0 group-hover:scale-115 transition-transform">
-                        {preset.icon}
+                      <span className="w-6 h-6 rounded-md bg-rose-50 border border-rose-200 flex items-center justify-center shrink-0 text-[#dc2626]">
+                        <AlertTriangle className="w-3.5 h-3.5" />
                       </span>
                       <div className="min-w-0">
                         <div className="font-bold text-xs sm:text-sm text-[#7f1d1d] truncate">
@@ -580,10 +614,12 @@ export const PointsModal: React.FC<PointsModalProps> = ({
 
         {/* Modal Footer */}
         <div className="bg-[#faeed1] px-4 py-2 border-t-2 border-[#c4a675] flex flex-wrap items-center justify-between gap-2 text-xs text-[#5a3818] shrink-0">
-          <span className="text-[11px] font-bold text-stone-600">
-            ✨ 點擊學生名字旁的 ✏️ 筆圖標可展開加減分歷史紀錄並擦除特定項目！
+          <span className="text-[11px] font-bold text-stone-600 inline-flex items-center gap-1">
+            <PenLine className="w-3.5 h-3.5 text-[#8b5a2b]" />
+            <span>點擊學生名字旁的「歷程明細」按鈕可展開加減分歷史紀錄並擦除特定項目</span>
           </span>
           <button
+            type="button"
             onClick={() => {
               soundManager.playClick();
               onClose();

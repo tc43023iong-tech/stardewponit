@@ -1222,6 +1222,183 @@ class SoundManager {
   public playBuzzer() {
     this.playPointDeduct();
   }
+
+  // Fishing cast whoosh + water bobber plop
+  public playFishingCast() {
+    this.withAudio((ctx) => {
+      const now = ctx.currentTime;
+      // Line cast whoosh
+      const swishOsc = ctx.createOscillator();
+      const swishGain = ctx.createGain();
+      swishOsc.type = 'sine';
+      swishOsc.frequency.setValueAtTime(280, now);
+      swishOsc.frequency.exponentialRampToValueAtTime(760, now + 0.14);
+      swishGain.gain.setValueAtTime(0.001, now);
+      swishGain.gain.linearRampToValueAtTime(0.14, now + 0.04);
+      swishGain.gain.exponentialRampToValueAtTime(0.001, now + 0.16);
+      swishOsc.connect(swishGain);
+      swishGain.connect(ctx.destination);
+      swishOsc.start(now);
+      swishOsc.stop(now + 0.17);
+
+      // Bobber water splash plop at ~0.26s
+      const plopT = now + 0.26;
+      const plopOsc = ctx.createOscillator();
+      const plopGain = ctx.createGain();
+      plopOsc.type = 'sine';
+      plopOsc.frequency.setValueAtTime(340, plopT);
+      plopOsc.frequency.exponentialRampToValueAtTime(920, plopT + 0.09);
+      plopGain.gain.setValueAtTime(0.001, plopT);
+      plopGain.gain.linearRampToValueAtTime(0.24, plopT + 0.015);
+      plopGain.gain.exponentialRampToValueAtTime(0.001, plopT + 0.14);
+      plopOsc.connect(plopGain);
+      plopGain.connect(ctx.destination);
+      plopOsc.start(plopT);
+      plopOsc.stop(plopT + 0.15);
+    });
+  }
+
+  // Soft underwater nibble bubble
+  public playFishingNibble() {
+    this.withAudio((ctx) => {
+      const now = ctx.currentTime;
+      [0, 0.12].forEach((offset, idx) => {
+        const t = now + offset;
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(idx === 0 ? 440 : 520, t);
+        osc.frequency.exponentialRampToValueAtTime(idx === 0 ? 640 : 760, t + 0.06);
+        gain.gain.setValueAtTime(0.001, t);
+        gain.gain.linearRampToValueAtTime(0.16, t + 0.01);
+        gain.gain.exponentialRampToValueAtTime(0.001, t + 0.08);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(t);
+        osc.stop(t + 0.09);
+      });
+    });
+  }
+
+  // Fish bite exclamation chime
+  public playFishingBite() {
+    this.withAudio((ctx) => {
+      const now = ctx.currentTime;
+      const notes = [880, 1174.66, 1567.98];
+      notes.forEach((f, idx) => {
+        const t = now + idx * 0.045;
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(f, t);
+        gain.gain.setValueAtTime(0.001, t);
+        gain.gain.linearRampToValueAtTime(0.24, t + 0.01);
+        gain.gain.exponentialRampToValueAtTime(0.001, t + 0.18);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(t);
+        osc.stop(t + 0.19);
+      });
+    });
+  }
+
+  // Pickaxe strike metallic clink on mine boulder
+  public playMineStrike() {
+    this.withAudio((ctx) => {
+      const now = ctx.currentTime;
+      // Metallic ring
+      const clinkOsc = ctx.createOscillator();
+      const clinkGain = ctx.createGain();
+      clinkOsc.type = 'triangle';
+      clinkOsc.frequency.setValueAtTime(1420, now);
+      clinkOsc.frequency.exponentialRampToValueAtTime(620, now + 0.12);
+      clinkGain.gain.setValueAtTime(0.24, now);
+      clinkGain.gain.exponentialRampToValueAtTime(0.001, now + 0.14);
+      clinkOsc.connect(clinkGain);
+      clinkGain.connect(ctx.destination);
+      clinkOsc.start(now);
+      clinkOsc.stop(now + 0.15);
+
+      // Low rock thud
+      const thudOsc = ctx.createOscillator();
+      const thudGain = ctx.createGain();
+      thudOsc.type = 'sawtooth';
+      thudOsc.frequency.setValueAtTime(160, now);
+      thudOsc.frequency.exponentialRampToValueAtTime(65, now + 0.11);
+      thudGain.gain.setValueAtTime(0.16, now);
+      thudGain.gain.exponentialRampToValueAtTime(0.001, now + 0.12);
+      thudOsc.connect(thudGain);
+      thudGain.connect(ctx.destination);
+      thudOsc.start(now);
+      thudOsc.stop(now + 0.13);
+    });
+  }
+
+  // Plain stone crumble sound
+  public playMineStone() {
+    this.withAudio((ctx) => {
+      const now = ctx.currentTime;
+      [0, 0.08].forEach((offset, idx) => {
+        const t = now + offset;
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(idx === 0 ? 190 : 140, t);
+        osc.frequency.exponentialRampToValueAtTime(75, t + 0.09);
+        gain.gain.setValueAtTime(0.16, t);
+        gain.gain.exponentialRampToValueAtTime(0.001, t + 0.1);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(t);
+        osc.stop(t + 0.11);
+      });
+    });
+  }
+
+  // Cute friendly bat flutter chirps
+  public playBatFlutter() {
+    this.withAudio((ctx) => {
+      const now = ctx.currentTime;
+      [0, 0.09, 0.18, 0.27].forEach((offset, idx) => {
+        const t = now + offset;
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'sine';
+        const base = 920 + idx * 140;
+        osc.frequency.setValueAtTime(base, t);
+        osc.frequency.exponentialRampToValueAtTime(base * 1.32, t + 0.055);
+        gain.gain.setValueAtTime(0.001, t);
+        gain.gain.linearRampToValueAtTime(0.13, t + 0.01);
+        gain.gain.exponentialRampToValueAtTime(0.001, t + 0.07);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(t);
+        osc.stop(t + 0.08);
+      });
+    });
+  }
+
+  // Sparkling crystal gem discovery sound
+  public playGemFind() {
+    this.withAudio((ctx) => {
+      const now = ctx.currentTime;
+      const notes = [783.99, 987.77, 1318.51, 1567.98, 2093.0];
+      notes.forEach((f, idx) => {
+        const t = now + idx * 0.055;
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(f, t);
+        gain.gain.setValueAtTime(0.001, t);
+        gain.gain.linearRampToValueAtTime(0.22, t + 0.012);
+        gain.gain.exponentialRampToValueAtTime(0.001, t + 0.42);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(t);
+        osc.stop(t + 0.44);
+      });
+    });
+  }
 }
 
 export const soundManager = new SoundManager();

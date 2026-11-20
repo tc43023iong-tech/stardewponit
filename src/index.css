@@ -1009,6 +1009,145 @@ html.stardew-mode::-webkit-scrollbar-corner,
   animation: kitchenSparkBurst 0.95s ease-out infinite;
 }
 
+/* Fishing & Mining Roll Call Animations */
+@keyframes bobberDrop {
+  0% {
+    transform: translate3d(-48px, -78px, 0) scale(0.8);
+    opacity: 0.4;
+  }
+  70% {
+    transform: translate3d(0, 6px, 0) scale(1.1);
+    opacity: 1;
+  }
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes bobberFloat {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-4px);
+  }
+}
+
+@keyframes bobberBite {
+  0%, 100% {
+    transform: translateY(8px) scale(0.95);
+  }
+  50% {
+    transform: translateY(15px) scale(1.06);
+  }
+}
+
+@keyframes waterRipple {
+  0% {
+    transform: scale(0.35);
+    opacity: 0.9;
+  }
+  100% {
+    transform: scale(2.4);
+    opacity: 0;
+  }
+}
+
+@keyframes fishShadowSwim {
+  0% {
+    transform: translate3d(-90px, 8px, 0) scaleX(1);
+    opacity: 0.25;
+  }
+  45% {
+    transform: translate3d(-24px, -4px, 0) scaleX(1);
+    opacity: 0.72;
+  }
+  75% {
+    transform: translate3d(8px, 2px, 0) scaleX(1);
+    opacity: 0.85;
+  }
+  100% {
+    transform: translate3d(-2px, 0px, 0) scaleX(1);
+    opacity: 0.92;
+  }
+}
+
+@keyframes pickaxeSwing {
+  0% {
+    transform: rotate(-45deg) translateY(-10px);
+  }
+  45% {
+    transform: rotate(35deg) translateY(8px);
+  }
+  75% {
+    transform: rotate(-15deg) translateY(-2px);
+  }
+  100% {
+    transform: rotate(0deg) translateY(0px);
+  }
+}
+
+@keyframes rockShake {
+  0%, 100% { transform: translateX(0); }
+  20% { transform: translateX(-6px) rotate(-2deg); }
+  40% { transform: translateX(6px) rotate(2deg); }
+  60% { transform: translateX(-5px) rotate(-1.5deg); }
+  80% { transform: translateX(4px) rotate(1deg); }
+}
+
+@keyframes batFlyUp {
+  0% {
+    transform: translate3d(0, 14px, 0) scale(0.75);
+    opacity: 0;
+  }
+  20% {
+    transform: translate3d(-10px, -12px, 0) scale(1.05);
+    opacity: 1;
+  }
+  55% {
+    transform: translate3d(16px, -42px, 0) scale(1.1);
+    opacity: 1;
+  }
+  100% {
+    transform: translate3d(-12px, -96px, 0) scale(0.85);
+    opacity: 0;
+  }
+}
+
+.animate-bobber-drop {
+  animation: bobberDrop 0.45s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+.animate-bobber-float {
+  animation: bobberFloat 1.1s ease-in-out infinite;
+}
+
+.animate-bobber-bite {
+  animation: bobberBite 0.22s ease-in-out infinite;
+}
+
+.animate-water-ripple {
+  animation: waterRipple 1.25s ease-out infinite;
+}
+
+.animate-fish-shadow {
+  animation: fishShadowSwim 1.45s ease-in-out forwards;
+}
+
+.animate-pickaxe-swing {
+  transform-origin: bottom right;
+  animation: pickaxeSwing 0.38s ease-in-out;
+}
+
+.animate-rock-shake {
+  animation: rockShake 0.36s ease-in-out;
+}
+
+.animate-bat-fly {
+  animation: batFlyUp 1.5s ease-out forwards;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .animate-upgrade-particle,
   .animate-upgrade-ring,
@@ -1016,7 +1155,15 @@ html.stardew-mode::-webkit-scrollbar-corner,
   .animate-kitchen-oven-grow,
   .animate-kitchen-spatula-shine,
   .animate-kitchen-flame,
-  .animate-kitchen-spark {
+  .animate-kitchen-spark,
+  .animate-bobber-drop,
+  .animate-bobber-float,
+  .animate-bobber-bite,
+  .animate-water-ripple,
+  .animate-fish-shadow,
+  .animate-pickaxe-swing,
+  .animate-rock-shake,
+  .animate-bat-fly {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
   }

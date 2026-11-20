@@ -126,6 +126,15 @@ export function normalizeImportedClasses(
         points,
         posPoints,
         negPoints,
+        coins: typeof st.coins === 'number' ? Math.max(0, st.coins) : 0,
+        fishCollection:
+          st.fishCollection && typeof st.fishCollection === 'object' && !Array.isArray(st.fishCollection)
+            ? st.fishCollection
+            : undefined,
+        gemCollection:
+          st.gemCollection && typeof st.gemCollection === 'object' && !Array.isArray(st.gemCollection)
+            ? st.gemCollection
+            : undefined,
         groupId: typeof st.groupId === 'number' ? st.groupId : undefined,
         pokemonId: typeof st.pokemonId === 'number' ? st.pokemonId : Math.floor(Math.random() * 150) + 1,
         pokemonAvatar: st.pokemonAvatar ? String(st.pokemonAvatar).trim() : undefined,
@@ -258,6 +267,9 @@ export function buildClassroomExportBundle(classes: ClassroomClass[]) {
           points: s.points,
           posPoints: Math.max(0, s.posPoints || 0),
           negPoints: Math.abs(s.negPoints || 0),
+          coins: Math.max(0, s.coins || 0),
+          fishCollection: s.fishCollection || {},
+          gemCollection: s.gemCollection || {},
           groupId: s.groupId,
           pokemonId: s.pokemonId || 25,
           pokemonAvatar: s.pokemonAvatar || '',

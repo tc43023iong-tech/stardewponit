@@ -29,6 +29,7 @@ import {
   Home,
   ChefHat,
   BookOpen,
+  Tv,
 } from 'lucide-react';
 
 interface StudentBathroomDetailModalProps {
@@ -39,6 +40,7 @@ interface StudentBathroomDetailModalProps {
   onSwitchToFarm?: (student: Student) => void;
   onSwitchToRoom?: (student: Student) => void;
   onSwitchToKitchen?: (student: Student) => void;
+  onSwitchToLivingRoom?: (student: Student) => void;
 }
 
 interface BathCompanion {
@@ -73,6 +75,7 @@ export const StudentBathroomDetailModal: React.FC<StudentBathroomDetailModalProp
   onSwitchToFarm,
   onSwitchToRoom,
   onSwitchToKitchen,
+  onSwitchToLivingRoom,
 }) => {
   const [activeTab, setActiveTab] = useState<'bathroom' | 'roadmap' | 'spa'>('bathroom');
   const [spaFilter, setSpaFilter] = useState<'all' | 'unlocked' | 'locked'>('all');
@@ -441,6 +444,20 @@ export const StudentBathroomDetailModal: React.FC<StudentBathroomDetailModalProp
               >
                 <ChefHat className="w-3.5 h-3.5" />
                 <span>廚房</span>
+              </button>
+            )}
+            {onSwitchToLivingRoom && (
+              <button
+                type="button"
+                onClick={() => {
+                  soundManager.playClick();
+                  onSwitchToLivingRoom(student);
+                }}
+                className="bg-[#7c3aed] hover:bg-[#6d28d9] text-white border border-[#c084fc] px-2.5 py-1 text-xs font-pixel font-bold rounded flex items-center gap-1 cursor-pointer active:scale-95 shadow-xs"
+                title="切換參觀該同學的專屬歡樂客廳"
+              >
+                <Tv className="w-3.5 h-3.5" />
+                <span>客廳</span>
               </button>
             )}
             <button

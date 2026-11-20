@@ -15,6 +15,7 @@ interface StudentsViewProps {
   onOpenRoomDetail?: (student: Student) => void;
   onOpenKitchenDetail?: (student: Student) => void;
   onOpenBathroomDetail?: (student: Student) => void;
+  onOpenLivingRoomDetail?: (student: Student) => void;
 }
 
 export const StudentsView: React.FC<StudentsViewProps> = ({
@@ -27,6 +28,7 @@ export const StudentsView: React.FC<StudentsViewProps> = ({
   onOpenRoomDetail,
   onOpenKitchenDetail,
   onOpenBathroomDetail,
+  onOpenLivingRoomDetail,
 }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [farmTierFilter, setFarmTierFilter] = useState<string>('all');
@@ -237,6 +239,7 @@ export const StudentsView: React.FC<StudentsViewProps> = ({
               onOpenRoomDetail={onOpenRoomDetail}
               onOpenKitchenDetail={onOpenKitchenDetail}
               onOpenBathroomDetail={onOpenBathroomDetail}
+              onOpenLivingRoomDetail={onOpenLivingRoomDetail}
             />
           ))}
         </div>

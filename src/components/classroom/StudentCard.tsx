@@ -18,6 +18,7 @@ interface StudentCardProps {
   onOpenRoomDetail?: (student: Student) => void;
   onOpenKitchenDetail?: (student: Student) => void;
   onOpenBathroomDetail?: (student: Student) => void;
+  onOpenLivingRoomDetail?: (student: Student) => void;
 }
 
 export const StudentCard: React.FC<StudentCardProps> = ({
@@ -30,6 +31,7 @@ export const StudentCard: React.FC<StudentCardProps> = ({
   onOpenRoomDetail,
   onOpenKitchenDetail,
   onOpenBathroomDetail,
+  onOpenLivingRoomDetail,
 }) => {
 
   // Determine mini farm animal sprite based on points
@@ -376,6 +378,21 @@ export const StudentCard: React.FC<StudentCardProps> = ({
               title="走進該同學的專屬夢幻洗手間（每50分升級浴室與浴具！）"
             >
               <span>🛁</span>
+            </button>
+          )}
+
+          {onOpenLivingRoomDetail && (
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                soundManager.playCorrect();
+                onOpenLivingRoomDetail(student);
+              }}
+              className="bg-[#7c3aed] hover:bg-[#6d28d9] border-2 border-[#4c1d95] py-1.5 px-1 text-xs font-bold rounded-lg flex items-center justify-center cursor-pointer shadow-md active:scale-95 transition-all text-white shrink-0"
+              title="走進該同學的專屬歡樂客廳（看電視、玩遊戲、吃喝玩樂！）"
+            >
+              <span>🛋️</span>
             </button>
           )}
         </div>
