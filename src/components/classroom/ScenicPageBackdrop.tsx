@@ -22,10 +22,16 @@ export const ScenicPageBackdrop: React.FC<ScenicPageBackdropProps> = ({
   const isGold = theme.id === 'golden_palace' || theme.id === 'golden';
   const isOcean = theme.id === 'ocean_sunset' || theme.id === 'ocean';
   const isGalaxy = theme.id === 'galaxy_starlight' || theme.id === 'galaxy';
+  const isPolar = theme.id === 'polar_penguins_bears';
+  const isVolcano = theme.id === 'volcano_lava_island';
+  const isBlizzard = theme.id === 'blizzard_snow_mountain';
+  const isCandy = theme.id === 'candy_drink_paradise';
+  const isUnderwater = theme.id === 'underwater_ocean_world';
+  const isJunkFood = theme.id === 'junk_food_paradise';
+  const isDino = theme.id === 'dino_jungle_world';
 
   // Time of Day States for 晨昏變換
   const isDawn = timeOfDay === 'dawn';
-  const isDay = timeOfDay === 'day';
   const isSunset = timeOfDay === 'sunset';
   const isNight = timeOfDay === 'night';
 
@@ -43,12 +49,27 @@ export const ScenicPageBackdrop: React.FC<ScenicPageBackdropProps> = ({
       <img
         src={bgImage}
         alt="Stardew Valley Farm Panorama"
+        referrerPolicy="no-referrer"
         className={`absolute inset-0 w-full h-full object-cover object-center transition-all duration-1000 select-none pointer-events-none ${timeFilterClass}`}
       />
 
       {/* 2. THEMATIC SEASONAL/BIOME TINT OVERLAY */}
       {isWinter ? (
         <div className="absolute inset-0 bg-sky-900/10 mix-blend-color-dodge transition-opacity duration-1000" />
+      ) : isPolar ? (
+        <div className="absolute inset-0 bg-cyan-900/15 mix-blend-screen transition-opacity duration-1000" />
+      ) : isVolcano ? (
+        <div className="absolute inset-0 bg-gradient-to-t from-orange-700/35 via-red-900/15 to-black/25 mix-blend-overlay transition-opacity duration-1000" />
+      ) : isBlizzard ? (
+        <div className="absolute inset-0 bg-slate-900/25 mix-blend-hard-light transition-opacity duration-1000" />
+      ) : isCandy ? (
+        <div className="absolute inset-0 bg-pink-500/10 mix-blend-screen transition-opacity duration-1000" />
+      ) : isUnderwater ? (
+        <div className="absolute inset-0 bg-cyan-950/25 mix-blend-overlay transition-opacity duration-1000" />
+      ) : isJunkFood ? (
+        <div className="absolute inset-0 bg-amber-600/10 mix-blend-overlay transition-opacity duration-1000" />
+      ) : isDino ? (
+        <div className="absolute inset-0 bg-emerald-950/15 mix-blend-overlay transition-opacity duration-1000" />
       ) : isAutumn ? (
         <div className="absolute inset-0 bg-amber-950/15 mix-blend-overlay transition-opacity duration-1000" />
       ) : isWoods ? (
@@ -110,13 +131,10 @@ export const ScenicPageBackdrop: React.FC<ScenicPageBackdropProps> = ({
         </div>
       )}
 
-      {/* 3. DYNAMIC SPECIAL EFFECTS LAYER: GALAXY (星空漫步 - 閃爍星光與極光束) */}
+      {/* 3. DYNAMIC SPECIAL EFFECTS LAYER: GALAXY */}
       {isGalaxy && (
         <div className="absolute inset-0 pointer-events-none overflow-hidden">
-          {/* Central Prismatic Beam Pulse */}
           <div className="absolute top-0 left-1/2 -translate-x-1/2 w-48 h-full bg-gradient-to-b from-cyan-400/25 via-fuchsia-500/15 to-transparent blur-md animate-pulse" />
-
-          {/* Twinkling Pixel Stars Clusters */}
           <div className="absolute top-12 left-16 text-cyan-200 text-lg animate-twinkle">✦</div>
           <div className="absolute top-24 left-1/3 text-fuchsia-200 text-sm animate-twinkle-delayed">✧</div>
           <div className="absolute top-8 right-24 text-amber-200 text-xl animate-twinkle">★</div>
@@ -125,52 +143,36 @@ export const ScenicPageBackdrop: React.FC<ScenicPageBackdropProps> = ({
           <div className="absolute top-48 left-1/4 text-emerald-200 text-sm animate-twinkle-delayed">✦</div>
           <div className="absolute top-16 left-2/3 text-pink-200 text-lg animate-twinkle">✧</div>
           <div className="absolute top-52 right-16 text-cyan-300 text-xs animate-twinkle-delayed">★</div>
-
-          {/* Floating Prismatic Star Dust */}
           <div className="absolute bottom-32 left-1/4 text-purple-300/80 text-sm animate-floating-drift">✨</div>
           <div className="absolute bottom-44 right-1/3 text-cyan-300/80 text-base animate-floating-drift" style={{ animationDelay: '-2s' }}>✨</div>
         </div>
       )}
 
-      {/* 4. DYNAMIC SPECIAL EFFECTS LAYER: OCEAN (海濱夕陽 - 水波湧動與夕陽水面金光) */}
+      {/* 4. DYNAMIC SPECIAL EFFECTS LAYER: OCEAN */}
       {isOcean && (
         <div className="absolute inset-0 pointer-events-none overflow-hidden">
-          {/* Sunset Horizon Radiance */}
           <div className="absolute top-16 left-0 right-1/2 h-48 bg-gradient-to-r from-amber-500/20 via-rose-500/15 to-transparent blur-xl" />
-
-          {/* Ocean Water Undulating Wave Layers */}
           <div className="absolute bottom-12 inset-x-0 h-36 opacity-30 animate-ocean-wave">
             <svg className="w-full h-full" preserveAspectRatio="none" viewBox="0 0 1000 100">
-              <path
-                d="M 0 50 Q 250 20 500 50 T 1000 50 L 1000 100 L 0 100 Z"
-                fill="#38bdf8"
-              />
+              <path d="M 0 50 Q 250 20 500 50 T 1000 50 L 1000 100 L 0 100 Z" fill="#38bdf8" />
             </svg>
           </div>
           <div className="absolute bottom-4 inset-x-0 h-32 opacity-25 animate-ocean-wave" style={{ animationDelay: '-1.8s' }}>
             <svg className="w-full h-full" preserveAspectRatio="none" viewBox="0 0 1000 100">
-              <path
-                d="M 0 40 Q 250 70 500 40 T 1000 40 L 1000 100 L 0 100 Z"
-                fill="#0284c7"
-              />
+              <path d="M 0 40 Q 250 70 500 40 T 1000 40 L 1000 100 L 0 100 Z" fill="#0284c7" />
             </svg>
           </div>
-
-          {/* Water Sunset Gleam Sparkles */}
           <div className="absolute bottom-28 left-1/3 text-amber-300 text-sm animate-water-gleam">✧</div>
           <div className="absolute bottom-20 left-1/2 text-orange-200 text-xs animate-water-gleam" style={{ animationDelay: '-1.2s' }}>✦</div>
           <div className="absolute bottom-16 left-2/5 text-amber-200 text-base animate-water-gleam" style={{ animationDelay: '-0.7s' }}>✧</div>
         </div>
       )}
 
-      {/* 5. DYNAMIC SPECIAL EFFECTS LAYER: IRIDIUM (紫金秘境 - 紫水晶脈衝微光與微粒) */}
+      {/* 5. DYNAMIC SPECIAL EFFECTS LAYER: IRIDIUM */}
       {isIridium && (
         <div className="absolute inset-0 pointer-events-none overflow-hidden">
-          {/* Radioactive Amethyst Crystal Pulse Glow */}
           <div className="absolute top-1/4 left-12 w-48 h-48 rounded-full bg-purple-600/20 blur-2xl animate-crystal-pulse" />
           <div className="absolute top-1/3 right-16 w-56 h-56 rounded-full bg-fuchsia-600/20 blur-2xl animate-crystal-pulse" style={{ animationDelay: '-1.6s' }} />
-
-          {/* Floating Radioactive Crystal Dust */}
           <div className="absolute top-28 left-20 text-purple-300 text-base animate-floating-drift">🔮</div>
           <div className="absolute top-44 right-28 text-fuchsia-300 text-sm animate-floating-drift" style={{ animationDelay: '-2.2s' }}>✨</div>
           <div className="absolute bottom-36 left-1/3 text-purple-400 text-xs animate-twinkle">✦</div>
@@ -178,13 +180,10 @@ export const ScenicPageBackdrop: React.FC<ScenicPageBackdropProps> = ({
         </div>
       )}
 
-      {/* 6. DYNAMIC SPECIAL EFFECTS LAYER: GOLDEN PALACE (皇家金輝 - 殿堂浮光與金屑) */}
+      {/* 6. DYNAMIC SPECIAL EFFECTS LAYER: GOLDEN PALACE */}
       {isGold && (
         <div className="absolute inset-0 pointer-events-none overflow-hidden">
-          {/* Chandelier & Trophy Radiant Gleam */}
           <div className="absolute top-10 left-1/2 -translate-x-1/2 w-80 h-64 bg-amber-300/20 blur-2xl animate-gold-gleam" />
-
-          {/* Floating Royal Gold Sparkles & Specks */}
           <div className="absolute top-20 left-1/4 text-amber-300 text-lg animate-floating-drift">✨</div>
           <div className="absolute top-32 right-1/4 text-yellow-200 text-base animate-floating-drift" style={{ animationDelay: '-1.8s' }}>👑</div>
           <div className="absolute bottom-40 left-1/3 text-amber-400 text-sm animate-twinkle">✦</div>
@@ -193,8 +192,113 @@ export const ScenicPageBackdrop: React.FC<ScenicPageBackdropProps> = ({
         </div>
       )}
 
+      {/* 6.1 POLAR PENGUINS & BEARS: Arctic Ice Sparkle & Aurora Tint */}
+      {isPolar && (
+        <div className="absolute inset-0 pointer-events-none overflow-hidden">
+          <div className="absolute -top-8 left-1/4 w-[60%] h-40 rounded-full bg-gradient-to-r from-cyan-300/20 via-emerald-300/20 to-sky-300/20 blur-3xl animate-aurora-wave" />
+          <div className="absolute top-16 left-16 text-cyan-100 text-sm animate-twinkle">❄</div>
+          <div className="absolute top-32 right-24 text-sky-200 text-base animate-twinkle-delayed">✦</div>
+          <div className="absolute bottom-32 left-1/5 text-cyan-200 text-xs animate-floating-drift">❅</div>
+        </div>
+      )}
+
+      {/* 6.2 VOLCANO LAVA ISLAND: Glowing Magma Heat Haze & Rising Glowing Embers */}
+      {isVolcano && (
+        <div className="absolute inset-0 pointer-events-none overflow-hidden">
+          <div className="absolute bottom-0 inset-x-0 h-56 bg-gradient-to-t from-orange-600/35 via-red-600/15 to-transparent blur-xl animate-pulse" />
+          {Array.from({ length: 18 }).map((_, i) => (
+            <div
+              key={`volcano-ember-${i}`}
+              className="absolute rounded-full bg-amber-300 shadow-[0_0_10px_#fb923c] animate-ember-rise"
+              style={{
+                left: `${(i * 5.7 + 4) % 94}%`,
+                bottom: '-12px',
+                width: `${4 + (i % 3) * 2}px`,
+                height: `${4 + (i % 3) * 2}px`,
+                animationDuration: `${4.2 + (i % 4) * 1.1}s`,
+                animationDelay: `${(i * 0.45) % 4}s`,
+              }}
+            />
+          ))}
+        </div>
+      )}
+
+      {/* 6.3 BLIZZARD SNOW MOUNTAIN: Intense Diagonal Driving Snow Streaks */}
+      {isBlizzard && (
+        <div className="absolute inset-0 pointer-events-none overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-b from-slate-800/30 via-sky-200/10 to-slate-900/35" />
+          {Array.from({ length: 28 }).map((_, i) => (
+            <div
+              key={`blizzard-streak-${i}`}
+              className="absolute bg-gradient-to-b from-transparent via-white to-sky-100 rounded-full animate-blizzard-streak"
+              style={{
+                left: `${(i * 4.3 + 2) % 108}%`,
+                top: '-16vh',
+                width: i % 3 === 0 ? '3px' : '2px',
+                height: `${28 + (i % 4) * 16}px`,
+                animationDuration: `${1.1 + (i % 5) * 0.25}s`,
+                animationDelay: `${(i * 0.14) % 1.4}s`,
+              }}
+            />
+          ))}
+        </div>
+      )}
+
+      {/* 6.4 CANDY & DRINKS PARADISE: Pastel Sugar Sparkles */}
+      {isCandy && (
+        <div className="absolute inset-0 pointer-events-none overflow-hidden">
+          <div className="absolute top-12 left-1/4 w-72 h-40 rounded-full bg-pink-300/20 blur-3xl animate-pulse" />
+          <div className="absolute top-20 left-20 text-pink-200 text-sm animate-twinkle">✨</div>
+          <div className="absolute top-36 right-28 text-amber-200 text-base animate-twinkle-delayed">✧</div>
+          <div className="absolute bottom-36 left-1/3 text-rose-200 text-sm animate-floating-drift">🍬</div>
+        </div>
+      )}
+
+      {/* 6.5 UNDERWATER OCEAN WORLD: Swaying Sunbeams & Rising Pixel Bubbles */}
+      {isUnderwater && (
+        <div className="absolute inset-0 pointer-events-none overflow-hidden">
+          <div className="absolute -top-10 left-1/5 w-44 h-[75vh] bg-gradient-to-b from-cyan-200/30 via-teal-200/10 to-transparent blur-xl animate-sunbeam-sway" />
+          <div
+            className="absolute -top-10 right-1/4 w-52 h-[70vh] bg-gradient-to-b from-sky-200/25 via-cyan-300/10 to-transparent blur-xl animate-sunbeam-sway"
+            style={{ animationDelay: '-3.5s' }}
+          />
+          {Array.from({ length: 16 }).map((_, i) => (
+            <div
+              key={`ocean-bubble-${i}`}
+              className="absolute rounded-full border-2 border-cyan-100/75 bg-cyan-200/25 animate-bubble-rise"
+              style={{
+                left: `${(i * 6.5 + 3) % 94}%`,
+                bottom: '-18px',
+                width: `${8 + (i % 4) * 5}px`,
+                height: `${8 + (i % 4) * 5}px`,
+                animationDuration: `${5 + (i % 4) * 1.4}s`,
+                animationDelay: `${(i * 0.52) % 5}s`,
+              }}
+            />
+          ))}
+        </div>
+      )}
+
+      {/* 6.6 JUNK FOOD PARADISE: Warm Golden Diner Radiance */}
+      {isJunkFood && (
+        <div className="absolute inset-0 pointer-events-none overflow-hidden">
+          <div className="absolute top-12 left-1/3 w-72 h-52 rounded-full bg-amber-300/20 blur-3xl animate-gold-gleam" />
+          <div className="absolute top-24 left-16 text-amber-200 text-sm animate-twinkle">✦</div>
+          <div className="absolute top-40 right-24 text-rose-200 text-sm animate-twinkle-delayed">✧</div>
+        </div>
+      )}
+
+      {/* 6.7 DINO JUNGLE WORLD: Emerald Canopy Sunbeams & Golden Amber Spores */}
+      {isDino && (
+        <div className="absolute inset-0 pointer-events-none overflow-hidden">
+          <div className="absolute -top-10 left-1/4 w-48 h-[65vh] bg-gradient-to-b from-lime-200/20 via-emerald-200/10 to-transparent blur-xl animate-sunbeam-sway" />
+          <div className="absolute top-28 left-24 text-amber-200 text-xs animate-floating-drift">✨</div>
+          <div className="absolute bottom-36 right-28 text-lime-200 text-xs animate-twinkle-delayed">✧</div>
+        </div>
+      )}
+
       {/* 7. CLASSIC DRIFTING PIXEL CLOUDS FOR DAYTIME THEMES */}
-      {!isIridium && !isGold && !isGalaxy && (
+      {!isIridium && !isGold && !isGalaxy && !isUnderwater && !isVolcano && (
         <div className="absolute top-0 inset-x-0 h-40 overflow-hidden opacity-30 pointer-events-none">
           <div className="absolute top-6 left-12 w-48 h-12 bg-white/70 rounded-full blur-[1px] animate-cloud-slow" />
           <div
@@ -204,7 +308,7 @@ export const ScenicPageBackdrop: React.FC<ScenicPageBackdropProps> = ({
         </div>
       )}
 
-      {/* 8. SOFT READABILITY GRADIENT OVERLAY (Ensures foreground cards and text stand out with 100% clarity) */}
+      {/* 8. SOFT READABILITY GRADIENT OVERLAY */}
       <div className="absolute inset-0 bg-gradient-to-b from-black/25 via-transparent to-black/35 pointer-events-none" />
       <div className="absolute inset-0 bg-radial from-transparent via-transparent to-black/30 pointer-events-none" />
     </div>

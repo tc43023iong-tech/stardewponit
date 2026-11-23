@@ -96,7 +96,8 @@ export const StudentCard: React.FC<StudentCardProps> = ({
         {/* Real Pixel Art Wallpaper */}
         <img
           src={cardBgImage}
-          alt="Student Card Backdrop"
+          alt={customBg?.name || 'Student Card Backdrop'}
+          referrerPolicy="no-referrer"
           className="w-full h-full object-cover object-center group-hover:scale-108 transition-transform duration-700 select-none filter brightness-95"
         />
 
@@ -175,6 +176,76 @@ export const StudentCard: React.FC<StudentCardProps> = ({
           <div className="absolute inset-0 pointer-events-none overflow-hidden">
             <div className="absolute top-3 right-6 text-sky-100 text-xs animate-twinkle">✧</div>
             <div className="absolute top-8 left-6 text-amber-100 text-xs animate-floating-drift">☁</div>
+          </div>
+        )}
+
+        {student.cardBackground === 'polar_arctic_friends' && (
+          <div className="absolute inset-0 pointer-events-none overflow-hidden">
+            <div className="absolute top-2 left-4 text-cyan-100 text-xs animate-twinkle">❄</div>
+            <div className="absolute top-7 right-6 text-emerald-200 text-xs animate-twinkle-delayed">✦</div>
+          </div>
+        )}
+
+        {student.cardBackground === 'volcano_lava_isle' && (
+          <div className="absolute inset-0 pointer-events-none overflow-hidden">
+            <div className="absolute bottom-0 inset-x-0 h-12 bg-gradient-to-t from-orange-500/30 to-transparent animate-pulse" />
+            <div className="absolute top-5 right-6 text-amber-300 text-xs animate-twinkle">✨</div>
+          </div>
+        )}
+
+        {student.cardBackground === 'blizzard_snow_peak' && (
+          <div className="absolute inset-0 pointer-events-none overflow-hidden">
+            <div className="absolute top-3 left-5 text-white text-xs animate-twinkle">❅</div>
+            <div className="absolute top-8 right-6 text-sky-100 text-xs animate-twinkle-delayed">❄</div>
+          </div>
+        )}
+
+        {student.cardBackground === 'candy_boba_world' && (
+          <div className="absolute inset-0 pointer-events-none overflow-hidden">
+            <div className="absolute top-3 right-5 text-pink-200 text-xs animate-floating-drift">🍭</div>
+            <div className="absolute top-9 left-6 text-yellow-100 text-xs animate-twinkle">✦</div>
+          </div>
+        )}
+
+        {student.cardBackground === 'deep_sea_creatures' && (
+          <div className="absolute inset-0 pointer-events-none overflow-hidden">
+            <div className="absolute top-4 left-5 text-cyan-200 text-xs animate-floating-drift">🫧</div>
+            <div className="absolute bottom-6 right-5 text-teal-200 text-xs animate-twinkle">✦</div>
+          </div>
+        )}
+
+        {student.cardBackground === 'junk_food_carnival' && (
+          <div className="absolute inset-0 pointer-events-none overflow-hidden">
+            <div className="absolute top-3 left-6 text-amber-200 text-xs animate-twinkle">★</div>
+            <div className="absolute top-7 right-6 text-rose-200 text-xs animate-floating-drift">✨</div>
+          </div>
+        )}
+
+        {student.cardBackground === 'dino_amber_valley' && (
+          <div className="absolute inset-0 pointer-events-none overflow-hidden">
+            <div className="absolute top-4 right-6 text-lime-200 text-xs animate-twinkle">✦</div>
+            <div className="absolute bottom-6 left-6 text-amber-200 text-xs animate-floating-drift">✨</div>
+          </div>
+        )}
+
+        {student.cardBackground === 'enchanted_owl_library' && (
+          <div className="absolute inset-0 pointer-events-none overflow-hidden">
+            <div className="absolute top-3 left-5 text-amber-200 text-xs animate-floating-drift">✨</div>
+            <div className="absolute top-8 right-6 text-yellow-200 text-xs animate-twinkle-delayed">✧</div>
+          </div>
+        )}
+
+        {student.cardBackground === 'retro_pixel_arcade' && (
+          <div className="absolute inset-0 pointer-events-none overflow-hidden">
+            <div className="absolute top-2 left-4 text-cyan-300 text-xs animate-twinkle">★</div>
+            <div className="absolute top-6 right-5 text-fuchsia-300 text-xs animate-twinkle-delayed">✦</div>
+          </div>
+        )}
+
+        {student.cardBackground === 'space_crystal_observatory' && (
+          <div className="absolute inset-0 pointer-events-none overflow-hidden">
+            <div className="absolute top-3 left-6 text-cyan-200 text-xs animate-twinkle">✦</div>
+            <div className="absolute top-7 right-5 text-pink-200 text-xs animate-twinkle-delayed">★</div>
           </div>
         )}
 

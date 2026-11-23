@@ -656,6 +656,90 @@
   animation: auroraWaveAlt 18s ease-in-out infinite;
 }
 
+@keyframes blizzardStreak {
+  0% {
+    transform: translate3d(25vw, -12vh, 0) rotate(28deg) scale(0.95);
+    opacity: 0;
+  }
+  12% {
+    opacity: 0.92;
+  }
+  85% {
+    opacity: 0.85;
+  }
+  100% {
+    transform: translate3d(-45vw, 108vh, 0) rotate(28deg) scale(1.05);
+    opacity: 0;
+  }
+}
+
+@keyframes emberRise {
+  0% {
+    transform: translate3d(0px, 0px, 0) scale(0.65);
+    opacity: 0;
+  }
+  18% {
+    opacity: 0.95;
+  }
+  60% {
+    transform: translate3d(18px, -48vh, 0) scale(1.1);
+    opacity: 0.8;
+  }
+  100% {
+    transform: translate3d(-14px, -96vh, 0) scale(0.4);
+    opacity: 0;
+  }
+}
+
+@keyframes bubbleRise {
+  0% {
+    transform: translate3d(0px, 0px, 0) scale(0.75);
+    opacity: 0;
+  }
+  15% {
+    opacity: 0.85;
+  }
+  50% {
+    transform: translate3d(12px, -46vh, 0) scale(1.05);
+    opacity: 0.78;
+  }
+  100% {
+    transform: translate3d(-10px, -98vh, 0) scale(1.15);
+    opacity: 0;
+  }
+}
+
+@keyframes sunbeamSway {
+  0%, 100% {
+    transform: skewX(-12deg) translateX(-10px);
+    opacity: 0.28;
+  }
+  50% {
+    transform: skewX(-6deg) translateX(18px);
+    opacity: 0.48;
+  }
+}
+
+.animate-blizzard-streak {
+  will-change: transform, opacity;
+  animation: blizzardStreak linear infinite;
+}
+
+.animate-ember-rise {
+  will-change: transform, opacity;
+  animation: emberRise ease-out infinite;
+}
+
+.animate-bubble-rise {
+  will-change: transform, opacity;
+  animation: bubbleRise linear infinite;
+}
+
+.animate-sunbeam-sway {
+  will-change: transform, opacity;
+  animation: sunbeamSway 7s ease-in-out infinite;
+}
+
 /* Refined Minimal Scrollbar */
 * {
   scrollbar-width: thin;

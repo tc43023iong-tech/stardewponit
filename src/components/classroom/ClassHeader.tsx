@@ -376,24 +376,6 @@ export const ClassHeader: React.FC<ClassHeaderProps> = ({
             </button>
           )}
 
-          {/* Paradise Mode Button "😆" Placed immediately to the right of Music button as requested */}
-          {onToggleParadise && (
-            <button
-              onClick={() => {
-                soundManager.playClick();
-                onToggleParadise();
-              }}
-              className={`p-1.5 text-xs border cursor-pointer rounded transition-all active:scale-90 flex items-center justify-center ${
-                isParadiseOpen || activeTab === 'paradise'
-                  ? 'bg-gradient-to-r from-amber-400 to-yellow-300 border-[#8b5a2b] text-[#4a2800] ring-2 ring-yellow-400 font-bold scale-105 shadow-md animate-pulse'
-                  : 'bg-[#5a3818] hover:bg-[#6b421d] border-[#8b5a2b] text-yellow-300 hover:scale-105 shadow-xs'
-              }`}
-              title="開啟/關閉星露谷像素夥伴樂園 (Paradise Mode) 😆 全班每個孩子的夥伴都在樂園裡自己生活"
-            >
-              <span className="text-base leading-none select-none">😆</span>
-            </button>
-          )}
-
           {/* Return to Pokemon Main View Button */}
           {onSwitchToPokemon && (
             <button

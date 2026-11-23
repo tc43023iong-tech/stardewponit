@@ -14,10 +14,23 @@ interface AmbientEffectsProps {
 
 function resolveCurrentSeason(season?: AmbientSeason, themeId?: string): AmbientSeason {
   if (season) return season;
-  if (themeId === 'spring_farm') return 'spring';
-  if (themeId === 'summer_sunflower') return 'summer';
-  if (themeId === 'autumn_amber') return 'autumn';
-  if (themeId === 'winter_frost') return 'winter';
+  if (themeId === 'spring_farm' || themeId === 'candy_drink_paradise') return 'spring';
+  if (
+    themeId === 'summer_sunflower' ||
+    themeId === 'underwater_ocean_world' ||
+    themeId === 'junk_food_paradise' ||
+    themeId === 'dino_jungle_world'
+  ) {
+    return 'summer';
+  }
+  if (themeId === 'autumn_amber' || themeId === 'volcano_lava_island') return 'autumn';
+  if (
+    themeId === 'winter_frost' ||
+    themeId === 'polar_penguins_bears' ||
+    themeId === 'blizzard_snow_mountain'
+  ) {
+    return 'winter';
+  }
 
   const month = new Date().getMonth() + 1;
   if (month >= 3 && month <= 5) return 'spring';

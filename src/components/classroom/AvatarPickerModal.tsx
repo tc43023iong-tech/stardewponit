@@ -106,6 +106,21 @@ export const AvatarPickerModal: React.FC<AvatarPickerModalProps> = ({
   // Filter groups for background options
   const latest10PixelAssets = STUDENT_CARD_BACKGROUND_OPTIONS.filter((o) =>
     [
+      'polar_arctic_friends',
+      'volcano_lava_isle',
+      'blizzard_snow_peak',
+      'candy_boba_world',
+      'deep_sea_creatures',
+      'junk_food_carnival',
+      'dino_amber_valley',
+      'enchanted_owl_library',
+      'retro_pixel_arcade',
+      'space_crystal_observatory',
+    ].includes(o.id)
+  );
+
+  const fantasy10PixelAssets = STUDENT_CARD_BACKGROUND_OPTIONS.filter((o) =>
+    [
       'sakura_shrine',
       'aurora_glacier',
       'witch_swamp',
@@ -307,13 +322,13 @@ export const AvatarPickerModal: React.FC<AvatarPickerModalProps> = ({
 
               {/* Right Column: Background options grouped nicely */}
               <div className="flex-1 space-y-4 min-w-0">
-                {/* GROUP 1: LATEST 10 BRAND NEW STARDEW VALLEY PIXEL ASSETS */}
+                {/* GROUP 1: LATEST 10 BRAND NEW CREATIVE PIXEL CARD ASSETS */}
                 <div className="bg-[#fef3c7] p-3 rounded-xl border-2 border-[#ca8a04] shadow-xs">
                   <div className="flex items-center justify-between mb-2 flex-wrap gap-1">
                     <div className="flex items-center gap-1.5">
                       <span className="text-base">✨</span>
                       <h4 className="font-pixel text-xs text-[#854d0e] font-black">
-                        【全新新增 {latest10PixelAssets.length} 款星露谷風像素背景素材】
+                        【全新創意新增 {latest10PixelAssets.length} 款夢幻卡片背景素材】
                       </h4>
                     </div>
                     <span className="text-[10px] font-bold text-amber-800 bg-amber-200/80 px-2 py-0.5 rounded">
@@ -323,6 +338,16 @@ export const AvatarPickerModal: React.FC<AvatarPickerModalProps> = ({
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-2.5">
                     {latest10PixelAssets.map((bgOpt) => renderBackgroundCard(bgOpt, true))}
+                  </div>
+                </div>
+
+                {/* GROUP 1B: ⛩️ 幻想風景像素系列 */}
+                <div>
+                  <h4 className="font-pixel text-[11px] text-[#5a3818] font-bold mb-1.5 flex items-center gap-1">
+                    <span>⛩️ 幻想風景與星光樂園系列 ({fantasy10PixelAssets.length} 款)</span>
+                  </h4>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-2.5">
+                    {fantasy10PixelAssets.map((bgOpt) => renderBackgroundCard(bgOpt, false))}
                   </div>
                 </div>
 

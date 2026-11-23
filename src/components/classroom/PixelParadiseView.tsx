@@ -35,6 +35,13 @@ import tropicalBg from '../../assets/images/paradise_wide_tropical_1794831908752
 import skycastleBg from '../../assets/images/paradise_wide_skycastle_1794831909789.jpg';
 import englishbookBg from '../../assets/images/paradise_wide_englishbook_1794919908315.jpg';
 import pinyinBg from '../../assets/images/paradise_wide_pinyin_1794919908584.jpg';
+import polarBg from '../../assets/images/theme_polar_arctic_1795428667683.jpg';
+import volcanoBg from '../../assets/images/theme_volcano_lava_1795428666672.jpg';
+import blizzardBg from '../../assets/images/theme_blizzard_mountain_1795428666505.jpg';
+import candyBg from '../../assets/images/theme_candy_drinks_1795428666849.jpg';
+import underwaterBg from '../../assets/images/theme_underwater_ocean_1795428666589.jpg';
+import junkfoodBg from '../../assets/images/theme_junk_food_1795428746765.jpg';
+import dinoBg from '../../assets/images/theme_dino_jungle_1795428666405.jpg';
 
 import { PointsFeedbackModal, PointsFeedbackData } from './PointsFeedbackModal';
 
@@ -50,7 +57,14 @@ export type ParadiseSeason =
   | 'tropical'
   | 'skycastle'
   | 'englishbook'
-  | 'pinyin';
+  | 'pinyin'
+  | 'polar'
+  | 'volcano'
+  | 'blizzard'
+  | 'candy'
+  | 'underwater'
+  | 'junkfood'
+  | 'dino';
 export type ParadiseTimeOfDay = 'day' | 'dawn' | 'sunset' | 'night';
 
 // World expansion multiplier & native 16:9 panoramic aspect ratio
@@ -78,22 +92,129 @@ function resolveStardewCompanion(student: Student, index: number): string {
   return defaultItem;
 }
 
-// Helper: keep land animals out of the southeast lake water (x > 65 && y > 69), while allowing lakeside pier access
-function sanitizeLandPoint(x: number, y: number): { x: number; y: number } {
+const CLASSIC_LAKE_SEASONS = new Set<ParadiseSeason>(['spring', 'summer', 'autumn', 'winter']);
+
+// 9 spatial world regions (3x3 grid) so companions visit genuinely varied areas instead of bouncing in one spot
+const PARADISE_MAP_ZONES = [
+  { id: 0, minX: 6, maxX: 31, minY: 13, maxY: 34 },  // NW
+  { id: 1, minX: 35, maxX: 63, minY: 13, maxY: 34 }, // N-Mid
+  { id: 2, minX: 67, maxX: 93, minY: 13, maxY: 36 }, // NE
+  { id: 3, minX: 6, maxX: 31, minY: 38, maxY: 62 },  // W-Mid
+  { id: 4, minX: 35, maxX: 63, minY: 38, maxY: 62 }, // Center
+  { id: 5, minX: 67, maxX: 93, minY: 39, maxY: 62 }, // E-Mid
+  { id: 6, minX: 6, maxX: 32, minY: 66, maxY: 89 },  // SW
+  { id: 7, minX: 36, maxX: 61, minY: 66, maxY: 89 }, // S-Mid
+  { id: 8, minX: 67, maxX: 93, minY: 67, maxY: 89 }, // SE
+];
+
+// Keep land companions out of the southeast lake basin ONLY on classic valley maps (never clamp them on open themed maps)
+function sanitizeLandPoint(x: number, y: number, avoidSeLake = false): { x: number; y: number } {
   const cx = Math.max(4, Math.min(95, x));
-  const cy = Math.max(10, Math.min(91, y));
-  // Allow walking near/onto the wooden lakeside piers
+  const cy = Math.max(11, Math.min(90, y));
+  if (!avoidSeLake) {
+    return { x: cx, y: cy };
+  }
   if (cx >= 65 && cx <= 88 && cy >= 64 && cy <= 71) {
     return { x: cx, y: cy };
   }
-  // Gently steer around the southeast lake basin (x > 65 && y > 69)
   if (cx > 65 && cy > 69) {
     if (cx - 65 < cy - 69) {
-      return { x: 60, y: cy };
+      return { x: 61, y: cy };
     }
     return { x: cx, y: 63 };
   }
   return { x: cx, y: cy };
+}
+
+function getZoneIndexForPoint(x: number, y: number): number {
+  const col = x < 34 ? 0 : x < 66 ? 1 : 2;
+  const row = y < 37 ? 0 : y < 65 ? 1 : 2;
+  return row * 3 + col;
+}
+
+function pickRandomZonePoint(
+  recentZones: number[] = [],
+  currentX = 50,
+  currentY = 50,
+  avoidSeLake = false
+): { x: number; y: number; zoneId: number } {
+  const currentZone = getZoneIndexForPoint(currentX, currentY);
+  const blocked = new Set<number>([currentZone, ...recentZones.slice(-3)]);
+  if (avoidSeLake) {
+    blocked.add(8);
+  }
+  let candidates = PARADISE_MAP_ZONES.filter((z) => !blocked.has(z.id));
+  if (candidates.length === 0) {
+    candidates = PARADISE_MAP_ZONES.filter((z) => z.id !== currentZone && (!avoidSeLake || z.id !== 8));
+  }
+  if (candidates.length === 0) {
+    candidates = PARADISE_MAP_ZONES;
+  }
+  const chosen = candidates[Math.floor(Math.random() * candidates.length)];
+  const rawX = chosen.minX + Math.random() * (chosen.maxX - chosen.minX);
+  const rawY = chosen.minY + Math.random() * (chosen.maxY - chosen.minY);
+  const pt = sanitizeLandPoint(rawX, rawY, avoidSeLake);
+  return { x: pt.x, y: pt.y, zoneId: chosen.id };
+}
+
+// Builds an irregular, non-linear multi-waypoint route across varied regions of the map
+function buildIrregularRoute(
+  startX: number,
+  startY: number,
+  recentZones: number[] = [],
+  avoidSeLake = false,
+  isSprint = false,
+  isAquatic = false,
+  isUnderwaterWorld = false
+): { waypoints: Array<{ x: number; y: number }>; nextRecentZones: number[] } {
+  if (isAquatic && !isUnderwaterWorld && !isSprint) {
+    // Classic aquatic pets can roam widely between lakeside shore, piers, and pond
+    const pt =
+      Math.random() < 0.35
+        ? { x: 52 + Math.random() * 14, y: 63 + Math.random() * 18 }
+        : { x: 67 + Math.random() * 26, y: 69 + Math.random() * 21 };
+    const curveMid = {
+      x: Math.max(46, Math.min(94, (startX + pt.x) / 2 + (Math.random() * 14 - 7))),
+      y: Math.max(60, Math.min(91, (startY + pt.y) / 2 + (Math.random() * 12 - 6))),
+    };
+    return { waypoints: [curveMid, pt], nextRecentZones: recentZones };
+  }
+
+  const legCount = isSprint ? 3 : Math.random() < 0.65 ? 2 : 1;
+  const waypoints: Array<{ x: number; y: number }> = [];
+  const nextRecent = [...recentZones];
+  let cursorX = startX;
+  let cursorY = startY;
+
+  for (let i = 0; i < legCount; i++) {
+    const picked = pickRandomZonePoint(nextRecent, cursorX, cursorY, avoidSeLake);
+    // Insert an off-axis curved detour point so path bends unpredictably instead of linear A<->B movement
+    const dx = picked.x - cursorX;
+    const dy = picked.y - cursorY;
+    const dist = Math.hypot(dx, dy) || 1;
+    const perpX = -dy / dist;
+    const perpY = dx / dist;
+    const curveSign = Math.random() < 0.5 ? 1 : -1;
+    const bendOffset = (10 + Math.random() * 16) * curveSign;
+    const tMid = 0.35 + Math.random() * 0.3;
+    const midPt = sanitizeLandPoint(
+      cursorX + dx * tMid + perpX * bendOffset,
+      cursorY + dy * tMid + perpY * bendOffset,
+      avoidSeLake
+    );
+    if (dist > 22) {
+      waypoints.push(midPt);
+    }
+    waypoints.push({ x: picked.x, y: picked.y });
+    nextRecent.push(picked.zoneId);
+    cursorX = picked.x;
+    cursorY = picked.y;
+  }
+
+  return {
+    waypoints,
+    nextRecentZones: nextRecent.slice(-4),
+  };
 }
 
 interface CompanionState {
@@ -106,6 +227,9 @@ interface CompanionState {
   y: number; // percentage 0 - 100
   targetX: number;
   targetY: number;
+  waypoints?: Array<{ x: number; y: number }>;
+  recentZones?: number[];
+  curveSign?: number;
   facing: 'left' | 'right';
   action: 'idle' | 'walking' | 'swimming' | 'resting' | 'perched' | 'celebrating' | 'running';
   speed: number;
@@ -197,6 +321,41 @@ const SEASON_INNER_OS: Record<ParadiseSeason, string[]> = {
     '（歡迎來到普通話拼音世界～b p m f 排排站！🏮）',
     '（走過一聲二聲三聲四聲彩虹橋去蓮花池看鯉魚🌈）',
     '（唸對聲調的話，小紅燈籠好像會變得更亮喔✨）',
+  ],
+  polar: [
+    '（南極小企鵝剛剛滑倒滾進雪堆裡，太可愛了吧🐧）',
+    '（北極熊寶寶毛茸茸的，好想過去抱一下🐻‍❄️）',
+    '（極光閃閃發亮，冰雪世界一點都不覺得冷呢❄️）',
+  ],
+  volcano: [
+    '（哇！岩漿瀑布好壯觀，鞋底都要暖呼呼起來了🌋）',
+    '（火山島的黑曜石亮晶晶的，好像隱藏很多寶石💎）',
+    '（小心炙熱的岩漿泡泡，一起去橋上吹海風吧🔥）',
+  ],
+  blizzard: [
+    '（哇啊啊～雪山的暴風雪好猛烈，抓緊帽子別被吹走啦🌨️）',
+    '（遠處雪山木屋有暖呼呼的燈火，大家快過去取暖🏔️）',
+    '（在暴風雪裡大冒險，感覺自己變成超帥的登山家❄️）',
+  ],
+  candy: [
+    '（巧克力河散發香甜的可可味道，好想偷喝一口🍫）',
+    '（那邊有巨無霸珍珠奶茶噴泉和草莓甜甜圈耶🧋）',
+    '（棉花糖雲朵軟綿綿的，真想在棒棒糖樹下野餐🍭）',
+  ],
+  underwater: [
+    '（咕嚕咕嚕～海龜先生和小章魚從我頭頂游過去了🐢）',
+    '（粉紅色的大水母在深海裡發光，好像夢幻燈籠🪼）',
+    '（發現閃亮亮的海底寶藏箱！魚群也跟著一起跳舞呢🐠）',
+  ],
+  junkfood: [
+    '（起司漢堡蓋成的大房子也太香了吧！好想咬一口🍔）',
+    '（那座披薩摩天輪跟金黃脆薯塔簡直是天堂🍕）',
+    '（配上一大杯冰涼可樂跟糖霜甜甜圈，幸福指數爆表🍟）',
+  ],
+  dino: [
+    '（哇！長頸腕龍在吃樹葉，原來恐龍這麼溫柔呀🦕）',
+    '（小三角龍搖尾巴好可愛，叢林裡還有發光金琥珀✨）',
+    '（穿過瀑布木橋去看看霸王龍大哥有沒有在睡午覺🦖）',
   ],
 };
 
@@ -389,112 +548,51 @@ export const PixelParadiseView: React.FC<PixelParadiseViewProps> = ({
     setPanOffset((prev) => clampPan(prev.x, prev.y, Math.max(minZoom, zoomLevel)));
   }, [viewportSize, minZoom, zoomLevel, clampPan]);
 
-  // Determine if a student's companion is aquatic
-  const checkIsAquatic = (student: Student, stardewAvatar: string, idx: number): boolean => {
-    if (student.rollNo === 21) return true;
+  // Only genuine aquatic sprites are marked aquatic (removed idx % 9 trap so everyone freely explores)
+  const checkIsAquatic = (student: Student, stardewAvatar: string): boolean => {
     if (stardewAvatar === 'sdv_duck' || stardewAvatar === 'sdv_turtle') return true;
-    return idx % 9 === 7;
+    return student.rollNo === 21 && stardewAvatar.includes('duck');
   };
 
   // Distribute companions broadly across the entire expanded world
-  const getInitialCoordinates = (rollNo: number, idx: number, isAquatic: boolean) => {
-    if (rollNo === 21) return { x: 80, y: 80, action: 'swimming' as const };
-
-    if (isAquatic) {
+  const getInitialCoordinates = (idx: number, isAquatic: boolean, avoidLake: boolean) => {
+    if (isAquatic && avoidLake) {
       return {
-        x: 70 + ((idx * 17) % 23),
-        y: 72 + ((idx * 13) % 19),
+        x: 68 + ((idx * 17) % 23),
+        y: 71 + ((idx * 13) % 18),
         action: 'swimming' as const,
       };
     }
 
-    // Spread students organically across wide open meadows, plazas, orchards, and paths
-    const broadSpots = [
-      { minX: 6, maxX: 28, minY: 14, maxY: 36 },  // NW Farmhouse & gardens
-      { minX: 34, maxX: 62, minY: 14, maxY: 36 }, // North Windmill/Barn/Mill/Tower grove
-      { minX: 68, maxX: 93, minY: 14, maxY: 44 }, // NE Orchard & fields
-      { minX: 6, maxX: 32, minY: 46, maxY: 88 },  // West/SW Wildflower meadows
-      { minX: 36, maxX: 62, minY: 40, maxY: 66 }, // Central Fountain Plaza
-      { minX: 36, maxX: 61, minY: 68, maxY: 89 }, // South trails & stream banks
-      { minX: 68, maxX: 93, minY: 46, maxY: 63 }, // East meadow ridge above lake
-    ];
-    const z = broadSpots[idx % broadSpots.length];
+    const availableZones = avoidLake
+      ? PARADISE_MAP_ZONES.filter((z) => z.id !== 8)
+      : PARADISE_MAP_ZONES;
+    const z = availableZones[idx % availableZones.length];
     const pt = sanitizeLandPoint(
       z.minX + Math.random() * (z.maxX - z.minX),
-      z.minY + Math.random() * (z.maxY - z.minY)
+      z.minY + Math.random() * (z.maxY - z.minY),
+      avoidLake
     );
     return {
       x: pt.x,
       y: pt.y,
+      zoneId: z.id,
       action: 'walking' as const,
     };
   };
 
-  // Pick truly free, wide-ranging irregular destinations across the entire world
-  const getRandomDestination = (
-    isAquatic: boolean,
-    currentX: number,
-    currentY: number,
-    isSprint = false
-  ): { x: number; y: number } => {
-    if (isAquatic) {
-      // 18% chance for ducks/turtles to briefly waddle up onto the sandy shoreline
-      if (!isSprint && Math.random() < 0.18) {
-        return {
-          x: 56 + Math.random() * 10,
-          y: 66 + Math.random() * 12,
-        };
-      }
-      if (isSprint) {
-        const destX = currentX > 81 ? 70 + Math.random() * 9 : 84 + Math.random() * 10;
-        const destY = currentY > 81 ? 72 + Math.random() * 7 : 83 + Math.random() * 9;
-        return { x: destX, y: destY };
-      }
-      return {
-        x: 69 + Math.random() * 24,
-        y: 72 + Math.random() * 20,
-      };
-    }
-
-    if (isSprint) {
-      // Sprint dramatically far across the entire world (minimum 38% distance!)
-      for (let tries = 0; tries < 8; tries++) {
-        const pt = sanitizeLandPoint(5 + Math.random() * 90, 11 + Math.random() * 80);
-        if (Math.hypot(pt.x - currentX, pt.y - currentY) > 38) {
-          return pt;
-        }
-      }
-      return sanitizeLandPoint(currentX > 50 ? 12 + Math.random() * 20 : 68 + Math.random() * 22, 16 + Math.random() * 64);
-    }
-
-    // Irregular free-roam across the entire map:
-    // 82% chance to pick a completely unconstrained random spot anywhere on the map (>22% away)
-    // 18% chance to meander nearby
-    const roll = Math.random();
-    if (roll < 0.82) {
-      for (let tries = 0; tries < 6; tries++) {
-        const pt = sanitizeLandPoint(5 + Math.random() * 90, 11 + Math.random() * 80);
-        if (Math.hypot(pt.x - currentX, pt.y - currentY) > 22) {
-          return pt;
-        }
-      }
-      return sanitizeLandPoint(5 + Math.random() * 90, 11 + Math.random() * 80);
-    }
-
-    return sanitizeLandPoint(
-      currentX + (Math.random() * 34 - 17),
-      currentY + (Math.random() * 28 - 14)
-    );
-  };
-
   // State of all active student companions in the paradise
   const [companions, setCompanions] = useState<CompanionState[]>(() => {
+    const avoidLake = CLASSIC_LAKE_SEASONS.has(season);
+    const isUnderwater = season === 'underwater';
     return students.map((s, idx) => {
       const stardewAvatar = resolveStardewCompanion(s, idx);
-      const isAquatic = checkIsAquatic(s, stardewAvatar, idx);
-      const init = getInitialCoordinates(s.rollNo, idx, isAquatic);
+      const isAquatic = checkIsAquatic(s, stardewAvatar);
+      const init = getInitialCoordinates(idx, isAquatic, avoidLake);
       const growthBonus = Math.min(0.55, Math.max(0, s.points * 0.005));
-      const firstDest = getRandomDestination(isAquatic, init.x, init.y, false);
+      const initRecent = init.zoneId !== undefined ? [init.zoneId] : [];
+      const route = buildIrregularRoute(init.x, init.y, initRecent, avoidLake, false, isAquatic, isUnderwater);
+      const firstDest = route.waypoints[0] || { x: init.x, y: init.y };
 
       return {
         id: s.id,
@@ -506,12 +604,15 @@ export const PixelParadiseView: React.FC<PixelParadiseViewProps> = ({
         y: init.y,
         targetX: firstDest.x,
         targetY: firstDest.y,
+        waypoints: route.waypoints.slice(1),
+        recentZones: route.nextRecentZones,
+        curveSign: Math.random() < 0.5 ? 1 : -1,
         facing: firstDest.x < init.x ? 'left' : 'right',
-        action: isAquatic ? 'swimming' : 'walking',
-        speed: 0.11 + Math.random() * 0.07,
+        action: isAquatic || isUnderwater ? 'swimming' : 'walking',
+        speed: 0.1 + Math.random() * 0.09,
         swayPhase: Math.random() * Math.PI * 2,
-        swaySpeed: 0.05 + Math.random() * 0.04,
-        wanderTimer: Math.floor(Math.random() * 70) + 35,
+        swaySpeed: 0.05 + Math.random() * 0.05,
+        wanderTimer: Math.floor(Math.random() * 60) + 30,
         isAquatic,
         growthBonus,
       };
@@ -520,43 +621,30 @@ export const PixelParadiseView: React.FC<PixelParadiseViewProps> = ({
 
   // Sync companions when students prop changes
   useEffect(() => {
+    const avoidLake = CLASSIC_LAKE_SEASONS.has(seasonRef.current);
+    const isUnderwater = seasonRef.current === 'underwater';
     setCompanions((prev) =>
       students.map((s, idx) => {
         const existing = prev.find((p) => p.studentId === s.id);
         const stardewAvatar = resolveStardewCompanion(s, idx);
-        const isAquatic = checkIsAquatic(s, stardewAvatar, idx);
+        const isAquatic = checkIsAquatic(s, stardewAvatar);
         const growthBonus = Math.min(0.55, Math.max(0, s.points * 0.005));
 
         if (existing) {
-          let nextX = existing.x;
-          let nextY = existing.y;
-          let nextAction = existing.action;
-
-          if (!isAquatic && existing.action === 'swimming') {
-            nextX = 48;
-            nextY = 66;
-            nextAction = 'walking';
-          } else if (isAquatic && existing.action !== 'swimming' && existing.action !== 'running') {
-            nextX = 76;
-            nextY = 80;
-            nextAction = 'swimming';
-          }
-
           return {
             ...existing,
             name: s.name,
             rollNo: s.rollNo,
             stardewAvatar,
             isAquatic,
-            x: nextX,
-            y: nextY,
-            action: nextAction,
             growthBonus,
           };
         }
 
-        const init = getInitialCoordinates(s.rollNo, idx, isAquatic);
-        const dest = getRandomDestination(isAquatic, init.x, init.y, false);
+        const init = getInitialCoordinates(idx, isAquatic, avoidLake);
+        const initRecent = init.zoneId !== undefined ? [init.zoneId] : [];
+        const route = buildIrregularRoute(init.x, init.y, initRecent, avoidLake, false, isAquatic, isUnderwater);
+        const dest = route.waypoints[0] || { x: init.x, y: init.y };
         return {
           id: s.id,
           studentId: s.id,
@@ -567,12 +655,15 @@ export const PixelParadiseView: React.FC<PixelParadiseViewProps> = ({
           y: init.y,
           targetX: dest.x,
           targetY: dest.y,
+          waypoints: route.waypoints.slice(1),
+          recentZones: route.nextRecentZones,
+          curveSign: Math.random() < 0.5 ? 1 : -1,
           facing: dest.x < init.x ? 'left' : 'right',
-          action: isAquatic ? 'swimming' : 'walking',
-          speed: 0.11 + Math.random() * 0.07,
+          action: isAquatic || isUnderwater ? 'swimming' : 'walking',
+          speed: 0.1 + Math.random() * 0.09,
           swayPhase: Math.random() * Math.PI * 2,
-          swaySpeed: 0.05 + Math.random() * 0.04,
-          wanderTimer: Math.floor(Math.random() * 65) + 30,
+          swaySpeed: 0.05 + Math.random() * 0.05,
+          wanderTimer: Math.floor(Math.random() * 60) + 30,
           isAquatic,
           growthBonus,
         };
@@ -580,22 +671,33 @@ export const PixelParadiseView: React.FC<PixelParadiseViewProps> = ({
     );
   }, [students]);
 
-  // Click Companion to Sprint across the expansive paradise + open Spotlight Dock
+  // Click Companion to Irregularly Wander / Sprint Across Different Map Regions + open Spotlight Dock
   const handleCompanionClick = (comp: CompanionState, e: React.MouseEvent) => {
     e.stopPropagation();
     soundManager.playPop();
 
-    const sprintTarget = getRandomDestination(comp.isAquatic, comp.x, comp.y, true);
-    const facing = sprintTarget.x < comp.x ? 'left' : 'right';
+    const avoidLake = CLASSIC_LAKE_SEASONS.has(seasonRef.current);
+    const isUnderwater = seasonRef.current === 'underwater';
+    const route = buildIrregularRoute(
+      comp.x,
+      comp.y,
+      comp.recentZones || [getZoneIndexForPoint(comp.x, comp.y)],
+      avoidLake,
+      true,
+      comp.isAquatic,
+      isUnderwater
+    );
+    const firstWaypoint = route.waypoints[0] || { x: comp.x, y: comp.y };
+    const facing = firstWaypoint.x < comp.x ? 'left' : 'right';
     const runBubble = [
-      '💨 溜了溜了~',
-      '🏃 衝啊！',
-      '⚡ 好快！',
-      '🐾 奔跑中~',
-      '😆 哈哈！',
-      '✨ 飛奔！',
-      '💨 追不到我~',
-      '💖 嘻嘻！',
+      '💨 換個地方探險~',
+      '🏃 到處逛逛囉！',
+      '⚡ 自由飛奔！',
+      '🐾 無拘無束跑起來~',
+      '😆 哈哈追不到！',
+      '✨ 衝去對面看看！',
+      '🗺️ 全圖大冒險~',
+      '💖 超開心！',
     ][Math.floor(Math.random() * 8)];
 
     setCompanions((prev) =>
@@ -604,15 +706,19 @@ export const PixelParadiseView: React.FC<PixelParadiseViewProps> = ({
           return {
             ...c,
             action: 'running',
-            targetX: sprintTarget.x,
-            targetY: sprintTarget.y,
+            targetX: firstWaypoint.x,
+            targetY: firstWaypoint.y,
+            waypoints: route.waypoints.slice(1),
+            recentZones: route.nextRecentZones,
+            curveSign: Math.random() < 0.5 ? 1 : -1,
             facing,
-            speed: 0.68,
-            runUntil: Date.now() + 4200,
+            speed: 0.44 + Math.random() * 0.24,
+            wanderTimer: 220, // Protect full irregular multi-leg sprint from being cut short prematurely
+            runUntil: Date.now() + 7200,
             pauseUntil: undefined,
             speechBubble: runBubble,
             speechType: 'action',
-            speechExpiresAt: Date.now() + 3500,
+            speechExpiresAt: Date.now() + 3400,
           };
         }
         return c;
@@ -626,10 +732,13 @@ export const PixelParadiseView: React.FC<PixelParadiseViewProps> = ({
     }
   };
 
-  // Silky-smooth 50ms Autonomous Curved-Path Roaming Engine
+  // Silky-smooth 50ms Autonomous Multi-Zone Irregular Curved Roaming Engine
   useEffect(() => {
     const moveInterval = setInterval(() => {
       const now = Date.now();
+      const activeSeason = seasonRef.current;
+      const avoidLake = CLASSIC_LAKE_SEASONS.has(activeSeason);
+      const isUnderwaterWorld = activeSeason === 'underwater';
 
       setCompanions((prev) =>
         prev.map((c) => {
@@ -639,6 +748,9 @@ export const PixelParadiseView: React.FC<PixelParadiseViewProps> = ({
           let speed = c.speed || 0.13;
           let targetX = c.targetX;
           let targetY = c.targetY;
+          let waypoints = c.waypoints || [];
+          let recentZones = c.recentZones || [];
+          let curveSign = c.curveSign ?? 1;
           let wanderTimer = (c.wanderTimer ?? 35) - 1;
           let speechBubble = c.speechBubble;
           let speechType = c.speechType;
@@ -658,10 +770,10 @@ export const PixelParadiseView: React.FC<PixelParadiseViewProps> = ({
             pauseUntil = undefined;
           }
 
-          // Check if running sprint finished
+          // Check if running sprint finished -> seamlessly transition to fresh normal explore
           if (action === 'running' && c.runUntil && now > c.runUntil) {
-            action = c.isAquatic ? 'swimming' : 'walking';
-            speed = 0.13;
+            action = c.isAquatic || isUnderwaterWorld ? 'swimming' : 'walking';
+            speed = 0.11 + Math.random() * 0.08;
             speechBubble = undefined;
             speechType = undefined;
             speechExpiresAt = undefined;
@@ -671,7 +783,7 @@ export const PixelParadiseView: React.FC<PixelParadiseViewProps> = ({
           if (pauseUntil && now < pauseUntil && action !== 'running') {
             return {
               ...c,
-              action: c.isAquatic ? 'swimming' : 'idle',
+              action: c.isAquatic || isUnderwaterWorld ? 'swimming' : 'idle',
               swayPhase,
               speechBubble,
               speechType,
@@ -680,31 +792,41 @@ export const PixelParadiseView: React.FC<PixelParadiseViewProps> = ({
             };
           }
 
-          // Pick a new organic destination across the world when timer expires
+          // Pick a brand new irregular multi-waypoint route across a different map zone when timer expires
           if (wanderTimer <= 0 && action !== 'running') {
-            // 76% gentle strolling exploration, 24% cozy pause
-            if (Math.random() < 0.76) {
-              wanderTimer = Math.floor(Math.random() * 110) + 65; // 3.2s - 8.7s stroll window
-              const nextDest = getRandomDestination(c.isAquatic, c.x, c.y, false);
-              targetX = nextDest.x;
-              targetY = nextDest.y;
-              action = c.isAquatic ? 'swimming' : 'walking';
-              speed = 0.10 + Math.random() * 0.08;
+            if (Math.random() < 0.84) {
+              wanderTimer = Math.floor(Math.random() * 95) + 45;
+              const route = buildIrregularRoute(
+                c.x,
+                c.y,
+                recentZones,
+                avoidLake,
+                false,
+                c.isAquatic,
+                isUnderwaterWorld
+              );
+              targetX = route.waypoints[0]?.x ?? c.x;
+              targetY = route.waypoints[0]?.y ?? c.y;
+              waypoints = route.waypoints.slice(1);
+              recentZones = route.nextRecentZones;
+              curveSign = Math.random() < 0.5 ? 1 : -1;
+              action = c.isAquatic || isUnderwaterWorld ? 'swimming' : 'walking';
+              speed = 0.09 + Math.random() * 0.11;
 
-              if (!speechBubble && Math.random() < 0.1) {
+              if (!speechBubble && Math.random() < 0.08) {
                 speechBubble = ['🌾', '✨', '🐾', '🌸', '🎵', '🍀', '🍎', '💖', '🦋'][
                   Math.floor(Math.random() * 9)
                 ];
                 speechType = 'action';
-                speechExpiresAt = now + 2600;
+                speechExpiresAt = now + 2400;
               }
             } else {
-              wanderTimer = Math.floor(Math.random() * 38) + 28; // Cozy 1.4s - 3.3s rest
-              action = c.isAquatic ? 'swimming' : 'idle';
-              if (!speechBubble && Math.random() < 0.22) {
+              wanderTimer = Math.floor(Math.random() * 28) + 18;
+              action = c.isAquatic || isUnderwaterWorld ? 'swimming' : 'idle';
+              if (!speechBubble && Math.random() < 0.18) {
                 speechBubble = '💤';
                 speechType = 'action';
-                speechExpiresAt = now + 2200;
+                speechExpiresAt = now + 2000;
               }
             }
           }
@@ -713,25 +835,26 @@ export const PixelParadiseView: React.FC<PixelParadiseViewProps> = ({
           const dy = targetY - c.y;
           const dist = Math.hypot(dx, dy);
 
-          if (dist > 0.5 && (action === 'walking' || action === 'swimming' || action === 'running')) {
+          if (dist > 0.9 && (action === 'walking' || action === 'swimming' || action === 'running')) {
             const step = Math.min(dist, speed);
             const dirX = dx / dist;
             const dirY = dy / dist;
 
-            // Add subtle perpendicular curve sway so strolls weave naturally without jitter
-            const swayAmp = action === 'running' ? 0.03 : 0.06;
-            const sway = Math.sin(swayPhase) * swayAmp;
+            // Organic unpredictable curved drift so movement never locks onto rigid linear corridors
+            const swayAmp = action === 'running' ? 0.09 : 0.07;
+            const sway =
+              (Math.sin(swayPhase) * 0.65 + Math.cos(swayPhase * 0.43) * 0.35) * swayAmp * curveSign;
             const perpX = -dirY;
             const perpY = dirX;
 
             let nextX = c.x + dirX * step + perpX * sway;
             let nextY = c.y + dirY * step + perpY * sway;
 
-            if (c.isAquatic) {
+            if (c.isAquatic && !isUnderwaterWorld && action !== 'running') {
               nextX = Math.max(46, Math.min(95, nextX));
-              nextY = Math.max(67, Math.min(93, nextY));
+              nextY = Math.max(58, Math.min(92, nextY));
             } else {
-              const safe = sanitizeLandPoint(nextX, nextY);
+              const safe = sanitizeLandPoint(nextX, nextY, avoidLake);
               nextX = safe.x;
               nextY = safe.y;
             }
@@ -744,6 +867,9 @@ export const PixelParadiseView: React.FC<PixelParadiseViewProps> = ({
               y: nextY,
               targetX,
               targetY,
+              waypoints,
+              recentZones,
+              curveSign,
               facing,
               action,
               speed,
@@ -755,19 +881,44 @@ export const PixelParadiseView: React.FC<PixelParadiseViewProps> = ({
               pauseUntil,
             };
           } else {
-            // Arrived smoothly -> trigger next roam quickly so no one gets stuck
-            const nextWait = Math.min(wanderTimer, Math.floor(Math.random() * 24) + 12);
+            // Reached current waypoint -> immediately advance to next queued waypoint in irregular route!
+            if (waypoints.length > 0 && (action === 'running' || action === 'walking' || action === 'swimming')) {
+              const [nextPt, ...restPts] = waypoints;
+              const nextSpeed =
+                action === 'running' ? 0.40 + Math.random() * 0.25 : 0.09 + Math.random() * 0.11;
+              return {
+                ...c,
+                targetX: nextPt.x,
+                targetY: nextPt.y,
+                waypoints: restPts,
+                recentZones,
+                curveSign: Math.random() < 0.5 ? 1 : -1,
+                facing: nextPt.x < c.x ? 'left' : 'right',
+                speed: nextSpeed,
+                swayPhase,
+                wanderTimer,
+                speechBubble,
+                speechType,
+                speechExpiresAt,
+                pauseUntil,
+              };
+            }
+
+            // Finished full route -> trigger next random zone roam quickly without lingering in place
+            const nextWait = Math.min(wanderTimer, Math.floor(Math.random() * 20) + 8);
             let finalAction = action;
             if (action === 'running') {
-              finalAction = c.isAquatic ? 'swimming' : 'idle';
-              speed = 0.13;
+              finalAction = c.isAquatic || isUnderwaterWorld ? 'swimming' : 'idle';
+              speed = 0.12;
             } else if (action === 'walking') {
-              finalAction = c.isAquatic ? 'swimming' : 'idle';
+              finalAction = isUnderwaterWorld ? 'swimming' : 'idle';
             }
 
             return {
               ...c,
               action: finalAction,
+              waypoints: [],
+              recentZones,
               speed,
               swayPhase,
               wanderTimer: nextWait,
@@ -1115,6 +1266,20 @@ export const PixelParadiseView: React.FC<PixelParadiseViewProps> = ({
         return englishbookBg;
       case 'pinyin':
         return pinyinBg;
+      case 'polar':
+        return polarBg;
+      case 'volcano':
+        return volcanoBg;
+      case 'blizzard':
+        return blizzardBg;
+      case 'candy':
+        return candyBg;
+      case 'underwater':
+        return underwaterBg;
+      case 'junkfood':
+        return junkfoodBg;
+      case 'dino':
+        return dinoBg;
       case 'autumn':
       default:
         return autumnBg;
@@ -1141,6 +1306,20 @@ export const PixelParadiseView: React.FC<PixelParadiseViewProps> = ({
         return '📖';
       case 'pinyin':
         return '🏮';
+      case 'polar':
+        return '🐧';
+      case 'volcano':
+        return '🔥';
+      case 'blizzard':
+        return '❄️';
+      case 'candy':
+        return '🍭';
+      case 'underwater':
+        return '🫧';
+      case 'junkfood':
+        return '🍟';
+      case 'dino':
+        return '🦕';
       case 'autumn':
       default:
         return '🍂';
@@ -1366,6 +1545,90 @@ export const PixelParadiseView: React.FC<PixelParadiseViewProps> = ({
             >
               🏮 拼音世界
             </button>
+            <button
+              onClick={() => {
+                soundManager.playClick();
+                setSeason('polar');
+              }}
+              className={`px-2 py-1 text-xs font-bold rounded-lg transition-all cursor-pointer whitespace-nowrap shrink-0 ${
+                season === 'polar' ? 'bg-[#0891B2] text-white shadow-xs ring-1 ring-cyan-300' : 'text-stone-300 hover:text-white'
+              }`}
+              title="切換至南極企鵝與北極熊 (🐧 極地浮冰與北極熊王國)"
+            >
+              🐧 企鵝北極熊
+            </button>
+            <button
+              onClick={() => {
+                soundManager.playClick();
+                setSeason('volcano');
+              }}
+              className={`px-2 py-1 text-xs font-bold rounded-lg transition-all cursor-pointer whitespace-nowrap shrink-0 ${
+                season === 'volcano' ? 'bg-[#EA580C] text-white shadow-xs ring-1 ring-orange-300' : 'text-stone-300 hover:text-white'
+              }`}
+              title="切換至熾熱岩漿火山島 (🌋 滾燙岩漿瀑布與黑曜石島)"
+            >
+              🌋 火山岩漿島
+            </button>
+            <button
+              onClick={() => {
+                soundManager.playClick();
+                setSeason('blizzard');
+              }}
+              className={`px-2 py-1 text-xs font-bold rounded-lg transition-all cursor-pointer whitespace-nowrap shrink-0 ${
+                season === 'blizzard' ? 'bg-[#475569] text-white shadow-xs ring-1 ring-sky-200' : 'text-stone-300 hover:text-white'
+              }`}
+              title="切換至雪山猛烈暴風雪 (🌨️ 呼嘯狂風雪峰與溫暖木屋)"
+            >
+              🌨️ 雪山暴風雪
+            </button>
+            <button
+              onClick={() => {
+                soundManager.playClick();
+                setSeason('candy');
+              }}
+              className={`px-2 py-1 text-xs font-bold rounded-lg transition-all cursor-pointer whitespace-nowrap shrink-0 ${
+                season === 'candy' ? 'bg-[#DB2777] text-white shadow-xs ring-1 ring-pink-200' : 'text-stone-300 hover:text-white'
+              }`}
+              title="切換至糖果飲料樂園 (🍭 棒棒糖樹、巧克力河與珍奶噴泉)"
+            >
+              🍭 糖果飲料
+            </button>
+            <button
+              onClick={() => {
+                soundManager.playClick();
+                setSeason('underwater');
+              }}
+              className={`px-2 py-1 text-xs font-bold rounded-lg transition-all cursor-pointer whitespace-nowrap shrink-0 ${
+                season === 'underwater' ? 'bg-[#0D9488] text-white shadow-xs ring-1 ring-teal-200' : 'text-stone-300 hover:text-white'
+              }`}
+              title="切換至繽紛海底世界 (🐠 海龜、水母、章魚與珊瑚礁海洋生物)"
+            >
+              🐠 海底世界
+            </button>
+            <button
+              onClick={() => {
+                soundManager.playClick();
+                setSeason('junkfood');
+              }}
+              className={`px-2 py-1 text-xs font-bold rounded-lg transition-all cursor-pointer whitespace-nowrap shrink-0 ${
+                season === 'junkfood' ? 'bg-[#D97706] text-white shadow-xs ring-1 ring-yellow-200' : 'text-stone-300 hover:text-white'
+              }`}
+              title="切換至歡樂垃圾食物樂園 (🍔 漢堡屋、薯條塔、披薩與可樂)"
+            >
+              🍔 美食樂園
+            </button>
+            <button
+              onClick={() => {
+                soundManager.playClick();
+                setSeason('dino');
+              }}
+              className={`px-2 py-1 text-xs font-bold rounded-lg transition-all cursor-pointer whitespace-nowrap shrink-0 ${
+                season === 'dino' ? 'bg-[#16A34A] text-white shadow-xs ring-1 ring-lime-200' : 'text-stone-300 hover:text-white'
+              }`}
+              title="切換至史前恐龍奇幻谷 (🦖 腕龍、三角龍與琥珀叢林)"
+            >
+              🦖 恐龍島
+            </button>
           </div>
 
           {/* Time of Day Lighting Toggle */}
@@ -1552,6 +1815,154 @@ export const PixelParadiseView: React.FC<PixelParadiseViewProps> = ({
         </div>
       </div>
 
+      {/* 1.5 TOP COMPANION SPOTLIGHT & QUICK ACTION DOCK (Visible high on classroom projector!) */}
+      {focusedCompanion && focusedStudent && (
+        <div className="z-30 bg-[#FFFDF9]/95 backdrop-blur-md px-4 py-2 border-b-2 border-[#8B5A2B] flex flex-wrap items-center justify-between gap-2.5 shadow-lg shrink-0 animate-in slide-in-from-top-2 duration-200">
+          {/* Student Info */}
+          <div className="flex items-center gap-3">
+            <div
+              onClick={() => {
+                if (onChangeAvatar && focusedStudent) {
+                  soundManager.playClick();
+                  onChangeAvatar(focusedStudent);
+                }
+              }}
+              className="w-11 h-11 bg-[#faeed1] rounded-2xl border-2 border-[#8D6E63] hover:border-amber-500 hover:ring-2 hover:ring-amber-400 p-1 flex items-center justify-center shadow-xs cursor-pointer transition-all group shrink-0"
+              title="點擊更換此學生在星露谷名冊的頭像 🎨"
+            >
+              <AvatarRenderer
+                avatar={focusedCompanion.stardewAvatar}
+                name={focusedCompanion.name}
+                size={36}
+                bare={true}
+              />
+            </div>
+            <div>
+              <div className="flex items-center flex-wrap gap-1.5">
+                <span className="font-mono text-xs px-2 py-0.5 rounded-md bg-[#E8F8F0] text-[#2E7D32] border border-[#81C784] font-black">
+                  #{focusedStudent.rollNo}
+                </span>
+                <h4 className="text-base font-black text-[#5D4037]">{focusedStudent.name}</h4>
+                <span className="text-xs bg-amber-100 text-amber-900 border border-amber-300 px-2 py-0.5 rounded-full font-bold">
+                  🪙 {focusedStudent.points} 分
+                </span>
+                {/* Follow & Zoom Toggle */}
+                <button
+                  onClick={() => {
+                    soundManager.playClick();
+                    const nextFollow = !isFollowingCamera;
+                    setIsFollowingCamera(nextFollow);
+                    if (nextFollow) {
+                      focusOnCoordinates(focusedCompanion.x, focusedCompanion.y, 1.6);
+                    }
+                  }}
+                  className={`px-2 py-0.5 rounded-lg text-xs font-bold flex items-center gap-1 cursor-pointer border transition-colors ${
+                    isFollowingCamera
+                      ? 'bg-sky-600 text-white border-sky-700'
+                      : 'bg-sky-100 hover:bg-sky-200 text-sky-800 border-sky-300'
+                  }`}
+                  title="開啟或關閉鏡頭自動跟隨放大"
+                >
+                  <Crosshair className="w-3 h-3" />
+                  <span>{isFollowingCamera ? '跟隨中' : '放大特寫'}</span>
+                </button>
+                {/* Pet Button */}
+                <button
+                  onClick={(e) => handlePetCompanion(focusedCompanion.id, e)}
+                  className="px-2 py-0.5 bg-rose-100 hover:bg-rose-200 text-rose-700 border border-rose-300 rounded-lg text-xs font-bold flex items-center gap-1 cursor-pointer transition-colors"
+                  title="撫摸夥伴"
+                >
+                  <Heart className="w-3 h-3 fill-rose-500 text-rose-500" />
+                  <span>摸摸</span>
+                </button>
+                {/* Change Avatar Button */}
+                {onChangeAvatar && (
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      soundManager.playClick();
+                      onChangeAvatar(focusedStudent);
+                    }}
+                    className="px-2 py-0.5 bg-amber-100 hover:bg-amber-200 text-amber-900 border border-amber-300 rounded-lg text-xs font-bold flex items-center gap-1 cursor-pointer transition-colors"
+                    title="在星露谷頭像庫中為此學生挑選專屬夥伴"
+                  >
+                    <span>🎨 更換夥伴</span>
+                  </button>
+                )}
+              </div>
+              <p className="text-[11px] text-stone-500 font-bold mt-0.5 flex items-center flex-wrap gap-1.5">
+                <span>
+                  {focusedCompanion.action === 'swimming'
+                    ? '🏊 正在水裡暢游'
+                    : focusedCompanion.action === 'running'
+                    ? '💨 正在全圖歡樂探險！'
+                    : focusedCompanion.action === 'resting'
+                    ? '🏖️ 在水岸邊曬太陽'
+                    : '🐾 正在樂園自由探險'}
+                </span>
+                <span>·</span>
+                <span className="text-[#2E7D32]">體型成長 +{Math.round(focusedCompanion.growthBonus * 100)}%</span>
+                {focusedCompanion.speechBubble && (
+                  <>
+                    <span>·</span>
+                    <span className="text-amber-800 bg-amber-100/80 px-1.5 py-0.5 rounded-md border border-amber-200">
+                      {focusedCompanion.speechType === 'os' ? '💭' : '💬'} {focusedCompanion.speechBubble}
+                    </span>
+                  </>
+                )}
+              </p>
+            </div>
+          </div>
+
+          {/* 3 Positive + 3 Negative Quick Point Controls */}
+          <div className="flex items-center flex-wrap gap-1.5">
+            {/* 3 Positive Items */}
+            {[
+              { delta: 1, label: '+1 小鼓勵', reason: '小鼓勵 (+1)', icon: '🌱' },
+              { delta: 2, label: '+2 積極參與', reason: '積極參與 (+2)', icon: '🙋‍♂️' },
+              { delta: 5, label: '+5 尊重老師', reason: '尊重容老師 (+5)', icon: '👩‍🏫' },
+            ].map((btn) => (
+              <button
+                key={`pos-${btn.delta}`}
+                onClick={() => handleAwardPoints(btn.delta, btn.reason)}
+                className="px-2.5 py-1 bg-gradient-to-r from-emerald-600 to-green-500 hover:from-emerald-500 hover:to-green-400 text-white font-black text-xs rounded-xl shadow-xs active:scale-95 transition-all flex items-center gap-1 cursor-pointer"
+                title={`為 ${focusedStudent.name} ${btn.label}`}
+              >
+                <span>{btn.icon}</span>
+                <span>{btn.label}</span>
+              </button>
+            ))}
+
+            {/* 3 Negative Items */}
+            {[
+              { delta: -1, label: '-1 溫馨提示', reason: '溫馨提示 (-1)', icon: '⚠️' },
+              { delta: -2, label: '-2 小懲大戒', reason: '小懲大戒 (-2)', icon: '🔨' },
+              { delta: -5, label: '-5 過於吵鬧', reason: '過於吵鬧 (-5)', icon: '📢' },
+            ].map((btn) => (
+              <button
+                key={`neg-${btn.delta}`}
+                onClick={() => handleAwardPoints(btn.delta, btn.reason)}
+                className="px-2.5 py-1 bg-gradient-to-r from-rose-500 to-red-500 hover:from-rose-400 hover:to-red-400 text-white font-black text-xs rounded-xl shadow-xs active:scale-95 transition-all flex items-center gap-1 cursor-pointer"
+                title={`為 ${focusedStudent.name} ${btn.label}`}
+              >
+                <span>{btn.icon}</span>
+                <span>{btn.label}</span>
+              </button>
+            ))}
+
+            <button
+              onClick={() => {
+                setIsFollowingCamera(false);
+                setFocusedCompanionId(null);
+              }}
+              className="px-2.5 py-1 bg-stone-200 hover:bg-stone-300 text-stone-700 font-black text-xs rounded-xl cursor-pointer"
+            >
+              關閉
+            </button>
+          </div>
+        </div>
+      )}
+
       {/* 2. EXPANSIVE PANNABLE LIVING PIXEL PARADISE CANVAS (145% x 145% World Map) */}
       <div
         ref={viewportRef}
@@ -1619,24 +2030,80 @@ export const PixelParadiseView: React.FC<PixelParadiseViewProps> = ({
             </div>
           )}
 
-          {/* D. FLOATING WEATHER PARTICLES */}
-          <div className="absolute inset-0 pointer-events-none overflow-hidden z-10">
-            {Array.from({ length: 22 }).map((_, i) => (
-              <div
-                key={i}
-                className="absolute text-base select-none"
-                style={{
-                  left: `${(i * 14 + 3) % 96}%`,
-                  top: '-30px',
-                  animation: `floating-weather 7.5s linear infinite`,
-                  animationDelay: `${(i * 0.38) % 6}s`,
-                  opacity: 0.88,
-                }}
-              >
-                {seasonEmoji}
-              </div>
-            ))}
-          </div>
+          {/* D. THEMATIC WEATHER & ATMOSPHERE PARTICLES */}
+          {season === 'blizzard' ? (
+            <div className="absolute inset-0 pointer-events-none overflow-hidden z-10">
+              <div className="absolute inset-0 bg-slate-900/15" />
+              {Array.from({ length: 42 }).map((_, i) => (
+                <div
+                  key={`paradise-blizzard-${i}`}
+                  className="absolute bg-gradient-to-b from-transparent via-white to-sky-100 rounded-full animate-blizzard-streak"
+                  style={{
+                    left: `${(i * 3.1 + 1) % 112}%`,
+                    top: '-12%',
+                    width: i % 3 === 0 ? '3px' : '2px',
+                    height: `${32 + (i % 4) * 18}px`,
+                    animationDuration: `${0.9 + (i % 5) * 0.22}s`,
+                    animationDelay: `${(i * 0.11) % 1.2}s`,
+                  }}
+                />
+              ))}
+            </div>
+          ) : season === 'volcano' ? (
+            <div className="absolute inset-0 pointer-events-none overflow-hidden z-10">
+              <div className="absolute bottom-0 inset-x-0 h-44 bg-gradient-to-t from-orange-600/25 to-transparent" />
+              {Array.from({ length: 28 }).map((_, i) => (
+                <div
+                  key={`paradise-ember-${i}`}
+                  className="absolute rounded-full bg-amber-300 shadow-[0_0_8px_#fb923c] animate-ember-rise"
+                  style={{
+                    left: `${(i * 3.7 + 2) % 96}%`,
+                    bottom: '-10px',
+                    width: `${4 + (i % 3) * 2}px`,
+                    height: `${4 + (i % 3) * 2}px`,
+                    animationDuration: `${3.6 + (i % 4) * 0.9}s`,
+                    animationDelay: `${(i * 0.35) % 3.5}s`,
+                  }}
+                />
+              ))}
+            </div>
+          ) : season === 'underwater' ? (
+            <div className="absolute inset-0 pointer-events-none overflow-hidden z-10">
+              <div className="absolute -top-6 left-1/4 w-56 h-[80%] bg-gradient-to-b from-cyan-200/25 via-teal-200/10 to-transparent blur-xl animate-sunbeam-sway" />
+              {Array.from({ length: 24 }).map((_, i) => (
+                <div
+                  key={`paradise-bubble-${i}`}
+                  className="absolute rounded-full border-2 border-cyan-100/75 bg-cyan-200/25 animate-bubble-rise"
+                  style={{
+                    left: `${(i * 4.3 + 2) % 96}%`,
+                    bottom: '-14px',
+                    width: `${8 + (i % 4) * 5}px`,
+                    height: `${8 + (i % 4) * 5}px`,
+                    animationDuration: `${4.5 + (i % 4) * 1.2}s`,
+                    animationDelay: `${(i * 0.4) % 4.5}s`,
+                  }}
+                />
+              ))}
+            </div>
+          ) : (
+            <div className="absolute inset-0 pointer-events-none overflow-hidden z-10">
+              {Array.from({ length: 22 }).map((_, i) => (
+                <div
+                  key={i}
+                  className="absolute text-base select-none"
+                  style={{
+                    left: `${(i * 14 + 3) % 96}%`,
+                    top: '-30px',
+                    animation: `floating-weather 7.5s linear infinite`,
+                    animationDelay: `${(i * 0.38) % 6}s`,
+                    opacity: 0.88,
+                  }}
+                >
+                  {seasonEmoji}
+                </div>
+              ))}
+            </div>
+          )}
 
           {/* E. STUDENT LIVING COMPANIONS (Silky-smooth unrestricted world roaming) */}
           {companions.map((comp) => {
@@ -1676,11 +2143,15 @@ export const PixelParadiseView: React.FC<PixelParadiseViewProps> = ({
                   </div>
                 )}
 
-                {/* B. Floating celebration +N or heart explosion */}
+                {/* B. Floating celebration +N / -N */}
                 {comp.floatingText && (
                   <div
                     key={comp.floatingText.key}
-                    className="absolute -top-14 left-1/2 -translate-x-1/2 font-black text-xl animate-bounce pointer-events-none z-50 px-2.5 py-0.5 rounded-full shadow-lg border bg-gradient-to-r from-emerald-500 to-green-600 text-white border-white flex items-center gap-1"
+                    className={`absolute -top-14 left-1/2 -translate-x-1/2 font-black text-xl animate-bounce pointer-events-none z-50 px-2.5 py-0.5 rounded-full shadow-lg border text-white border-white flex items-center gap-1 bg-gradient-to-r ${
+                      comp.floatingText.isPositive
+                        ? 'from-emerald-500 to-green-600'
+                        : 'from-rose-500 to-red-600'
+                    }`}
                   >
                     <span>{comp.floatingText.text}</span>
                   </div>
@@ -1782,146 +2253,6 @@ export const PixelParadiseView: React.FC<PixelParadiseViewProps> = ({
           })}
         </div>
       </div>
-
-      {/* 3. BOTTOM COMPANION SPOTLIGHT & QUICK ACTION DOCK */}
-      {focusedCompanion && focusedStudent && (
-        <div className="z-30 bg-[#FFFDF9]/95 backdrop-blur-md px-4 py-2.5 border-t-2 border-[#D7CCC8] flex flex-wrap items-center justify-between gap-3 shadow-xl shrink-0 animate-in slide-in-from-bottom-2 duration-200">
-          {/* Student Info */}
-          <div className="flex items-center gap-3">
-            <div
-              onClick={() => {
-                if (onChangeAvatar && focusedStudent) {
-                  soundManager.playClick();
-                  onChangeAvatar(focusedStudent);
-                }
-              }}
-              className="w-12 h-12 bg-[#faeed1] rounded-2xl border-2 border-[#8D6E63] hover:border-amber-500 hover:ring-2 hover:ring-amber-400 p-1 flex items-center justify-center shadow-xs cursor-pointer transition-all group"
-              title="點擊更換此學生在星露谷名冊的頭像 🎨"
-            >
-              <AvatarRenderer
-                avatar={focusedCompanion.stardewAvatar}
-                name={focusedCompanion.name}
-                size={40}
-                bare={true}
-              />
-            </div>
-            <div>
-              <div className="flex items-center flex-wrap gap-2">
-                <span className="font-mono text-xs px-2 py-0.5 rounded-md bg-[#E8F8F0] text-[#2E7D32] border border-[#81C784] font-black">
-                  #{focusedStudent.rollNo}
-                </span>
-                <h4 className="text-base font-black text-[#5D4037]">{focusedStudent.name}</h4>
-                <span className="text-xs bg-amber-100 text-amber-900 border border-amber-300 px-2 py-0.2 rounded-full font-bold">
-                  🪙 {focusedStudent.points} 分
-                </span>
-                {/* Follow & Zoom Toggle */}
-                <button
-                  onClick={() => {
-                    soundManager.playClick();
-                    const nextFollow = !isFollowingCamera;
-                    setIsFollowingCamera(nextFollow);
-                    if (nextFollow) {
-                      focusOnCoordinates(focusedCompanion.x, focusedCompanion.y, 1.6);
-                    }
-                  }}
-                  className={`px-2 py-0.5 rounded-lg text-xs font-bold flex items-center gap-1 cursor-pointer border transition-colors ${
-                    isFollowingCamera
-                      ? 'bg-sky-600 text-white border-sky-700'
-                      : 'bg-sky-100 hover:bg-sky-200 text-sky-800 border-sky-300'
-                  }`}
-                  title="開啟或關閉鏡頭自動跟隨放大"
-                >
-                  <Crosshair className="w-3 h-3" />
-                  <span>{isFollowingCamera ? '跟隨中' : '放大特寫'}</span>
-                </button>
-                {/* Pet Button */}
-                <button
-                  onClick={(e) => handlePetCompanion(focusedCompanion.id, e)}
-                  className="px-2 py-0.5 bg-rose-100 hover:bg-rose-200 text-rose-700 border border-rose-300 rounded-lg text-xs font-bold flex items-center gap-1 cursor-pointer transition-colors"
-                  title="撫摸夥伴"
-                >
-                  <Heart className="w-3 h-3 fill-rose-500 text-rose-500" />
-                  <span>摸摸</span>
-                </button>
-                {/* Change Avatar Button */}
-                {onChangeAvatar && (
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      soundManager.playClick();
-                      onChangeAvatar(focusedStudent);
-                    }}
-                    className="px-2 py-0.5 bg-amber-100 hover:bg-amber-200 text-amber-900 border border-amber-300 rounded-lg text-xs font-bold flex items-center gap-1 cursor-pointer transition-colors"
-                    title="在星露谷頭像庫中為此學生挑選專屬夥伴"
-                  >
-                    <span>🎨 更換夥伴</span>
-                  </button>
-                )}
-              </div>
-              <p className="text-[11px] text-stone-500 font-bold mt-0.5 flex items-center flex-wrap gap-1.5">
-                <span>
-                  {focusedCompanion.action === 'swimming'
-                    ? '🏊 正在湖裡暢游'
-                    : focusedCompanion.action === 'running'
-                    ? '💨 正在草地歡樂飛奔！'
-                    : focusedCompanion.action === 'resting'
-                    ? '🏖️ 在水岸邊曬太陽'
-                    : '🐾 正在樂園自由探險'}
-                </span>
-                <span>·</span>
-                <span className="text-[#2E7D32]">體型成長 +{Math.round(focusedCompanion.growthBonus * 100)}%</span>
-                {focusedCompanion.speechBubble && (
-                  <>
-                    <span>·</span>
-                    <span className="text-amber-800 bg-amber-100/80 px-1.5 py-0.5 rounded-md border border-amber-200">
-                      {focusedCompanion.speechType === 'os' ? '💭' : '💬'} {focusedCompanion.speechBubble}
-                    </span>
-                  </>
-                )}
-              </p>
-            </div>
-          </div>
-
-          {/* Quick Point Award Buttons ("叮一聲，夥伴就往前長一點") */}
-          <div className="flex items-center flex-wrap gap-1.5">
-            <span className="text-xs font-black text-[#8D6E63] mr-1 hidden sm:inline">⚡ 獎勵長大：</span>
-            {[
-              { delta: 1, label: '+1 小鼓勵', icon: '🌱' },
-              { delta: 2, label: '+2 積極參與', icon: '🙋‍♂️' },
-              { delta: 3, label: '+3 讚讚讚', icon: '👍' },
-              { delta: 5, label: '+5 尊重老師', icon: '❤️' },
-              { delta: 10, label: '+10 超棒', icon: '🏆' },
-            ].map((btn) => (
-              <button
-                key={btn.delta}
-                onClick={() => handleAwardPoints(btn.delta, btn.label)}
-                className="px-2.5 py-1 bg-gradient-to-r from-emerald-600 to-green-500 hover:from-emerald-500 hover:to-green-400 text-white font-black text-xs rounded-xl shadow-xs active:scale-95 transition-all flex items-center gap-1 cursor-pointer"
-              >
-                <span>{btn.icon}</span>
-                <span>{btn.label}</span>
-              </button>
-            ))}
-
-            <button
-              onClick={() => handleAwardPoints(-1, '溫馨提醒 (-1)')}
-              className="px-2 py-1 bg-rose-100 hover:bg-rose-200 text-rose-700 border border-rose-300 font-black text-xs rounded-xl transition-all cursor-pointer"
-              title="扣 1 分提醒"
-            >
-              -1 提醒
-            </button>
-
-            <button
-              onClick={() => {
-                setIsFollowingCamera(false);
-                setFocusedCompanionId(null);
-              }}
-              className="px-3 py-1 bg-stone-200 hover:bg-stone-300 text-stone-700 font-black text-xs rounded-xl cursor-pointer"
-            >
-              關閉
-            </button>
-          </div>
-        </div>
-      )}
 
       {/* 1.3s Full-Screen Feedback Modal */}
       {paradiseFeedback && (

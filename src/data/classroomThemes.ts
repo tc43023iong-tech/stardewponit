@@ -4,7 +4,24 @@ export interface PageTheme {
   icon: string;
   description: string;
   bgGradient: string;
-  patternType: 'grass' | 'sunflower' | 'autumn' | 'snow' | 'wood' | 'magic' | 'iridium' | 'gold' | 'ocean' | 'galaxy';
+  patternType:
+    | 'grass'
+    | 'sunflower'
+    | 'autumn'
+    | 'snow'
+    | 'wood'
+    | 'magic'
+    | 'iridium'
+    | 'gold'
+    | 'ocean'
+    | 'galaxy'
+    | 'polar'
+    | 'volcano'
+    | 'blizzard'
+    | 'candy'
+    | 'underwater'
+    | 'junkfood'
+    | 'dino';
   accentBorder: string;
   badgeBg: string;
 }
@@ -109,6 +126,76 @@ export const CLASSROOM_PAGE_THEMES: PageTheme[] = [
     patternType: 'galaxy',
     accentBorder: '#818cf8',
     badgeBg: 'bg-indigo-900/60 text-indigo-200 border-indigo-600',
+  },
+  {
+    id: 'polar_penguins_bears',
+    name: '🐧 南極企鵝與北極熊',
+    icon: '🐧',
+    description: '冰雪奇緣冰原！萌萌南極企鵝與蓬鬆北極熊漫步碧海浮冰，閃耀極地冰晶光芒。',
+    bgGradient: 'from-[#082f49] via-[#0284c7] to-[#0c4a6e]',
+    patternType: 'polar',
+    accentBorder: '#67e8f9',
+    badgeBg: 'bg-cyan-900/60 text-cyan-100 border-cyan-500',
+  },
+  {
+    id: 'volcano_lava_island',
+    name: '🌋 熾熱岩漿火山島',
+    icon: '🌋',
+    description: '滾燙岩漿噴發！火山口傾瀉火紅熔岩瀑布，黑曜石島嶼飄舞上升的炙熱火星。',
+    bgGradient: 'from-[#450a0a] via-[#7f1d1d] to-[#27100c]',
+    patternType: 'volcano',
+    accentBorder: '#f97316',
+    badgeBg: 'bg-red-950/75 text-orange-200 border-orange-500',
+  },
+  {
+    id: 'blizzard_snow_mountain',
+    name: '🌨️ 雪山猛烈暴風雪',
+    icon: '🌨️',
+    description: '壯麗高峰極寒暴風雪！斜掠呼嘯的冰雪狂風吹拂松嶺木屋與銀白冰峰。',
+    bgGradient: 'from-[#0f172a] via-[#1e3a5f] to-[#334155]',
+    patternType: 'blizzard',
+    accentBorder: '#bae6fd',
+    badgeBg: 'bg-slate-800/75 text-sky-100 border-sky-400',
+  },
+  {
+    id: 'candy_drink_paradise',
+    name: '🍭 糖果飲料夢幻樂園',
+    icon: '🍭',
+    description: '甜蜜破表童話天地！巨型棒棒糖樹、巧克力河、珍奶噴泉與泡泡汽水屋。',
+    bgGradient: 'from-[#831843] via-[#be185d] to-[#701a75]',
+    patternType: 'candy',
+    accentBorder: '#f9a8d4',
+    badgeBg: 'bg-pink-900/65 text-pink-100 border-pink-400',
+  },
+  {
+    id: 'underwater_ocean_world',
+    name: '🐠 繽紛海底海洋世界',
+    icon: '🐠',
+    description: '潛入湛藍深海仙境！海龜、水母、章魚、海馬與熱帶魚群共游珊瑚寶藏。',
+    bgGradient: 'from-[#042f2e] via-[#0369a1] to-[#1e3a8a]',
+    patternType: 'underwater',
+    accentBorder: '#2dd4bf',
+    badgeBg: 'bg-teal-900/65 text-teal-100 border-teal-400',
+  },
+  {
+    id: 'junk_food_paradise',
+    name: '🍔 歡樂漢堡薯條樂園',
+    icon: '🍔',
+    description: '超幸福速食嘉年華！起司漢堡屋、黃金薯條塔、披薩摩天輪與糖霜甜甜圈池！',
+    bgGradient: 'from-[#7c2d12] via-[#b45309] to-[#991b1b]',
+    patternType: 'junkfood',
+    accentBorder: '#fde047',
+    badgeBg: 'bg-amber-900/70 text-yellow-100 border-yellow-400',
+  },
+  {
+    id: 'dino_jungle_world',
+    name: '🦖 史前恐龍奇幻谷',
+    icon: '🦖',
+    description: '遠古冒險侏羅紀！長頸腕龍、三角龍與霸王龍漫步巨型蕨類與琥珀瀑布叢林。',
+    bgGradient: 'from-[#064e3b] via-[#14532d] to-[#1e293b]',
+    patternType: 'dino',
+    accentBorder: '#a3e635',
+    badgeBg: 'bg-lime-900/65 text-lime-100 border-lime-500',
   },
 ];
 
@@ -410,5 +497,115 @@ export const STUDENT_CARD_BACKGROUND_OPTIONS: CardBackgroundOption[] = [
     groundPattern: 'radial-gradient(#fcd34d 16%, transparent 17%)',
     borderColor: 'border-[#14b8a6]',
     cardParchmentTint: 'bg-[#f0fdfa]/95',
+  },
+  {
+    id: 'polar_arctic_friends',
+    name: '🐧 南極企鵝與北極熊王國',
+    icon: '🐧',
+    summary: '璀璨粉綠極光夜空下，南極企鵝列隊冰原與可愛北極熊一家快樂玩雪。',
+    skyGradient: 'linear-gradient(to bottom, #38bdf8 0%, #a5f3fc 50%, #e0f2fe 100%)',
+    groundBg: '#0284c7',
+    groundPattern: 'radial-gradient(#ffffff 16%, transparent 17%)',
+    borderColor: 'border-[#06b6d4]',
+    cardParchmentTint: 'bg-[#ecfeff]/95',
+  },
+  {
+    id: 'volcano_lava_isle',
+    name: '🌋 熔岩炎爆火山島',
+    icon: '🌋',
+    summary: '火紅炙熱岩漿奔流黑曜岩峽谷，閃耀橙光火花點亮暮色大海。',
+    skyGradient: 'linear-gradient(to bottom, #450a0a 0%, #dc2626 55%, #f97316 100%)',
+    groundBg: '#27100c',
+    groundPattern: 'radial-gradient(#f97316 16%, transparent 17%)',
+    borderColor: 'border-[#ea580c]',
+    cardParchmentTint: 'bg-[#fff7ed]/95',
+  },
+  {
+    id: 'blizzard_snow_peak',
+    name: '🌨️ 暴風雪銀嶺雪山',
+    icon: '🌨️',
+    summary: '巍峨冰雪山峰吹起猛烈暴風雪，溫暖松林木屋燈火守候勇敢探險家。',
+    skyGradient: 'linear-gradient(to bottom, #1e293b 0%, #64748b 50%, #e2e8f0 100%)',
+    groundBg: '#334155',
+    groundPattern: 'radial-gradient(#f8fafc 15%, transparent 16%)',
+    borderColor: 'border-[#64748b]',
+    cardParchmentTint: 'bg-[#f8fafc]/95',
+  },
+  {
+    id: 'candy_boba_world',
+    name: '🧋 糖果珍珠奶茶樂園',
+    icon: '🍭',
+    summary: '夢幻棉花糖雲朵、彩虹棒棒糖、草莓甜甜圈與冰涼珍珠奶茶汽水噴泉！',
+    skyGradient: 'linear-gradient(to bottom, #38bdf8 0%, #f9a8d4 55%, #fde047 100%)',
+    groundBg: '#ec4899',
+    groundPattern: 'radial-gradient(#fef08a 16%, transparent 17%)',
+    borderColor: 'border-[#ec4899]',
+    cardParchmentTint: 'bg-[#fdf2f8]/95',
+  },
+  {
+    id: 'deep_sea_creatures',
+    name: '🐙 奇幻海底生物世界',
+    icon: '🐠',
+    summary: '小海龜、章魚、水母、海馬與熱帶魚群穿梭閃亮珍珠貝與珊瑚森林。',
+    skyGradient: 'linear-gradient(to bottom, #0ea5e9 0%, #0369a1 55%, #1e3a8a 100%)',
+    groundBg: '#0c4a6e',
+    groundPattern: 'radial-gradient(#2dd4bf 16%, transparent 17%)',
+    borderColor: 'border-[#0284c7]',
+    cardParchmentTint: 'bg-[#f0f9ff]/95',
+  },
+  {
+    id: 'junk_food_carnival',
+    name: '🍔 漢堡薯條速食嘉年華',
+    icon: '🍟',
+    summary: '巨無霸起司漢堡屋、金黃脆薯、臘腸披薩與甜甜圈碳酸汽水歡樂慶典！',
+    skyGradient: 'linear-gradient(to bottom, #38bdf8 0%, #fde047 55%, #fb923c 100%)',
+    groundBg: '#b45309',
+    groundPattern: 'radial-gradient(#fde047 16%, transparent 17%)',
+    borderColor: 'border-[#f59e0b]',
+    cardParchmentTint: 'bg-[#fffbeb]/95',
+  },
+  {
+    id: 'dino_amber_valley',
+    name: '🦖 史前恐龍琥珀叢林',
+    icon: '🦖',
+    summary: '溫馴腕龍與可愛小三角龍漫步蕨類溪谷，閃亮金黃琥珀照映飛瀑水霧。',
+    skyGradient: 'linear-gradient(to bottom, #86efac 0%, #16a34a 55%, #fbbf24 100%)',
+    groundBg: '#14532d',
+    groundPattern: 'radial-gradient(#a3e635 16%, transparent 17%)',
+    borderColor: 'border-[#22c55e]',
+    cardParchmentTint: 'bg-[#f0fdf4]/95',
+  },
+  {
+    id: 'enchanted_owl_library',
+    name: '🦉 魔法樹洞貓頭鷹圖書館',
+    icon: '📚',
+    summary: '奇幻古橡樹精靈書屋！漂浮魔法繪本、溫暖提燈與雪白貓頭鷹守護書海。',
+    skyGradient: 'linear-gradient(to bottom, #312e81 0%, #78350f 55%, #fbbf24 100%)',
+    groundBg: '#451a03',
+    groundPattern: 'radial-gradient(#fcd34d 14%, transparent 15%)',
+    borderColor: 'border-[#b45309]',
+    cardParchmentTint: 'bg-[#fffbeb]/95',
+  },
+  {
+    id: 'retro_pixel_arcade',
+    name: '🕹️ 星夜像素復古電玩街',
+    icon: '🕹️',
+    summary: '星空露台霓虹電玩街！七彩夾娃娃機、懷舊遊戲機台與暖燈夜市氛圍。',
+    skyGradient: 'linear-gradient(to bottom, #0f172a 0%, #4c1d95 55%, #ec4899 100%)',
+    groundBg: '#1e1b4b',
+    groundPattern: 'radial-gradient(#22d3ee 15%, transparent 16%)',
+    borderColor: 'border-[#a855f7]',
+    cardParchmentTint: 'bg-[#faf5ff]/95',
+  },
+  {
+    id: 'space_crystal_observatory',
+    name: '🚀 宇宙水晶星際天文台',
+    icon: '🚀',
+    summary: '漂浮星際玻璃圓頂與黃金望遠鏡，仰望粉彩土星環、流星與絢麗星雲！',
+    skyGradient: 'linear-gradient(to bottom, #020617 0%, #312e81 55%, #f472b6 100%)',
+    groundBg: '#0f172a',
+    groundPattern: 'radial-gradient(#c084fc 15%, transparent 16%)',
+    borderColor: 'border-[#6366f1]',
+    cardParchmentTint: 'bg-[#eef2ff]/95',
   },
 ];
