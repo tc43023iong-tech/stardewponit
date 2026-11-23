@@ -132,10 +132,6 @@ const CLOUD_THEMES = new Set<ParadiseSeason>([
   'skycastle',
   'englishbook',
   'pinyin',
-  'polar',
-  'candy',
-  'junkfood',
-  'dino',
 ]);
 
 export const ParadiseAnimatedBackdrop: React.FC<ParadiseAnimatedBackdropProps> = ({
@@ -576,257 +572,45 @@ export const ParadiseAnimatedBackdrop: React.FC<ParadiseAnimatedBackdropProps> =
         </>
       )}
 
-      {/* POLAR ARCTIC: Northern Aurora Ribbons, Ice Flurries & Glacial Glints */}
+      {/* POLAR ARCTIC: Soft Northern Aurora Ribbons complementing polar video */}
       {season === 'polar' && (
-        <>
-          <div
-            className="absolute -top-8 left-[8%] w-[84%] h-40 rounded-full blur-3xl animate-aurora-wave"
-            style={{
-              background:
-                'linear-gradient(100deg, transparent 8%, rgba(34, 211, 238, 0.3) 32%, rgba(52, 211, 153, 0.28) 55%, rgba(167, 139, 250, 0.25) 78%, transparent 94%)',
-            }}
-          />
-          {Array.from({ length: 26 }).map((_, i) => (
-            <div
-              key={`polar-snow-${i}`}
-              className="absolute bg-cyan-50/90 shadow-[0_0_5px_#a5f3fc] animate-winter-snow"
-              style={{
-                left: `${(i * 3.9 + 2) % 97}%`,
-                top: '-16px',
-                width: `${i % 3 === 0 ? 5 : 3}px`,
-                height: `${i % 3 === 0 ? 5 : 3}px`,
-                animationDuration: `${8 + (i % 4) * 1.6}s`,
-                animationDelay: `${(i * 0.4) % 6}s`,
-              }}
-            />
-          ))}
-          {Array.from({ length: 14 }).map((_, i) => (
-            <div
-              key={`polar-glint-${i}`}
-              className="absolute text-cyan-100 text-xs animate-twinkle"
-              style={{
-                left: `${(i * 7.1 + 3) % 94}%`,
-                top: `${34 + ((i * 11) % 58)}%`,
-                animationDelay: `${(i * 0.38) % 3}s`,
-              }}
-            >
-              ✦
-            </div>
-          ))}
-        </>
+        <div
+          className="absolute -top-8 left-[8%] w-[84%] h-36 rounded-full blur-3xl animate-aurora-wave"
+          style={{
+            background:
+              'linear-gradient(100deg, transparent 8%, rgba(34, 211, 238, 0.24) 32%, rgba(52, 211, 153, 0.22) 55%, rgba(167, 139, 250, 0.2) 78%, transparent 94%)',
+          }}
+        />
       )}
 
-      {/* VOLCANO LAVA ISLAND: Pulsing Magma Glow, Rising Glowing Embers & Ash Mist */}
+      {/* VOLCANO LAVA ISLAND: Subtle ambient volcanic heat aura complementing lava video */}
       {season === 'volcano' && (
-        <>
-          <div className="absolute bottom-0 inset-x-0 h-56 bg-gradient-to-t from-orange-600/35 via-red-600/15 to-transparent blur-xl animate-paradise-lava-pulse" />
-          <div
-            className="absolute top-[22%] inset-x-0 h-32 bg-gradient-to-r from-transparent via-stone-400/20 to-transparent blur-2xl animate-paradise-mist"
-            style={{ animationDuration: '14s' }}
-          />
-          {Array.from({ length: 34 }).map((_, i) => (
-            <div
-              key={`volcano-ember-${i}`}
-              className="absolute rounded-full bg-amber-300 shadow-[0_0_10px_#fb923c] animate-ember-rise"
-              style={{
-                left: `${(i * 3.1 + 2) % 97}%`,
-                bottom: '-12px',
-                width: `${3 + (i % 3) * 2}px`,
-                height: `${3 + (i % 3) * 2}px`,
-                animationDuration: `${3.2 + (i % 5) * 0.85}s`,
-                animationDelay: `${(i * 0.28) % 3.5}s`,
-              }}
-            />
-          ))}
-        </>
+        <div className="absolute bottom-0 inset-x-0 h-48 bg-gradient-to-t from-orange-600/24 via-red-600/10 to-transparent blur-xl animate-paradise-lava-pulse" />
       )}
 
-      {/* BLIZZARD SNOW MOUNTAIN: Intense Diagonal Snow Streaks & Sweeping Gust Mist */}
+      {/* BLIZZARD SNOW MOUNTAIN: Ambient cold storm vignette complementing blizzard video */}
       {season === 'blizzard' && (
-        <>
-          <div className="absolute inset-0 bg-slate-900/18" />
-          <div
-            className="absolute top-[16%] inset-x-0 h-44 bg-gradient-to-r from-transparent via-white/30 to-transparent blur-2xl animate-paradise-mist"
-            style={{ animationDuration: '5.5s' }}
-          />
-          <div
-            className="absolute bottom-[18%] inset-x-0 h-40 bg-gradient-to-r from-transparent via-sky-100/25 to-transparent blur-2xl animate-paradise-mist"
-            style={{ animationDuration: '4.4s', animationDelay: '-2.2s' }}
-          />
-          {Array.from({ length: 48 }).map((_, i) => (
-            <div
-              key={`blizzard-streak-${i}`}
-              className="absolute bg-gradient-to-b from-transparent via-white to-sky-100 rounded-full animate-blizzard-streak"
-              style={{
-                left: `${(i * 2.5 + 1) % 112}%`,
-                top: '-14%',
-                width: i % 3 === 0 ? '3px' : '2px',
-                height: `${30 + (i % 4) * 18}px`,
-                animationDuration: `${0.85 + (i % 5) * 0.2}s`,
-                animationDelay: `${(i * 0.09) % 1.2}s`,
-              }}
-            />
-          ))}
-        </>
+        <div className="absolute inset-0 bg-slate-900/10" />
       )}
 
-      {/* CANDY & DRINKS PARADISE: Fizzing Soda Bubbles, Pastel Star Sparkles */}
+      {/* CANDY & DRINKS PARADISE: Subtle pastel atmosphere */}
       {season === 'candy' && (
-        <>
-          {Array.from({ length: 22 }).map((_, i) => (
-            <div
-              key={`candy-bubble-${i}`}
-              className="absolute rounded-full border-2 border-pink-100/80 bg-pink-200/35 animate-bubble-rise"
-              style={{
-                left: `${(i * 4.5 + 3) % 94}%`,
-                bottom: '-14px',
-                width: `${8 + (i % 4) * 5}px`,
-                height: `${8 + (i % 4) * 5}px`,
-                animationDuration: `${4.8 + (i % 4) * 1.2}s`,
-                animationDelay: `${(i * 0.35) % 4.5}s`,
-              }}
-            />
-          ))}
-          {Array.from({ length: 16 }).map((_, i) => (
-            <div
-              key={`candy-sparkle-${i}`}
-              className="absolute animate-twinkle"
-              style={{
-                left: `${(i * 6.3 + 4) % 94}%`,
-                top: `${12 + ((i * 13) % 74)}%`,
-                color: i % 3 === 0 ? '#fbcfe8' : i % 3 === 1 ? '#fde68a' : '#a5f3fc',
-                fontSize: `${11 + (i % 3) * 3}px`,
-                animationDelay: `${(i * 0.32) % 3}s`,
-              }}
-            >
-              {i % 2 === 0 ? '✦' : '✧'}
-            </div>
-          ))}
-        </>
+        <div className="absolute inset-x-0 top-0 h-28 bg-gradient-to-b from-pink-200/12 to-transparent pointer-events-none" />
       )}
 
-      {/* UNDERWATER OCEAN WORLD: Caustic Waves, Sunbeams, Air Bubbles & Swimming Fish Schools */}
+      {/* UNDERWATER OCEAN WORLD: Gentle caustic light depth shimmer complementing ocean video */}
       {season === 'underwater' && (
-        <>
-          <div
-            className="absolute inset-0 bg-gradient-to-tr from-cyan-400/15 via-teal-200/10 to-sky-300/15 animate-paradise-caustic"
-          />
-          <div className="absolute -top-6 left-1/4 w-56 h-[82%] bg-gradient-to-b from-cyan-200/28 via-teal-200/12 to-transparent blur-xl animate-sunbeam-sway" />
-          <div
-            className="absolute -top-6 right-1/4 w-48 h-[76%] bg-gradient-to-b from-sky-200/24 via-cyan-300/10 to-transparent blur-xl animate-sunbeam-sway"
-            style={{ animationDelay: '-3.2s' }}
-          />
-          {/* Ambient Pixel Fish Schools */}
-          <div
-            className="absolute top-[22%] left-0 w-full animate-paradise-fish"
-            style={{ animationDuration: '24s' }}
-          >
-            <div className="flex items-center gap-3">
-              <PixelFish bodyColor="#fb923c" finColor="#fed7aa" size={24} />
-              <PixelFish bodyColor="#fb923c" finColor="#fdba74" size={18} />
-            </div>
-          </div>
-          <div
-            className="absolute top-[56%] left-0 w-full animate-paradise-fish-reverse"
-            style={{ animationDuration: '28s', animationDelay: '-9s' }}
-          >
-            <div className="flex items-center gap-2">
-              <PixelFish bodyColor="#f472b6" finColor="#fbcfe8" size={22} />
-              <PixelFish bodyColor="#38bdf8" finColor="#bae6fd" size={18} />
-            </div>
-          </div>
-          <div
-            className="absolute top-[38%] left-0 w-full animate-paradise-fish"
-            style={{ animationDuration: '32s', animationDelay: '-16s' }}
-          >
-            <PixelFish bodyColor="#facc15" finColor="#fef08a" size={20} />
-          </div>
-          {Array.from({ length: 28 }).map((_, i) => (
-            <div
-              key={`paradise-bubble-${i}`}
-              className="absolute rounded-full border-2 border-cyan-100/75 bg-cyan-200/25 animate-bubble-rise"
-              style={{
-                left: `${(i * 3.7 + 2) % 96}%`,
-                bottom: '-14px',
-                width: `${7 + (i % 4) * 5}px`,
-                height: `${7 + (i % 4) * 5}px`,
-                animationDuration: `${4.2 + (i % 4) * 1.2}s`,
-                animationDelay: `${(i * 0.35) % 4.5}s`,
-              }}
-            />
-          ))}
-        </>
+        <div className="absolute inset-0 bg-gradient-to-tr from-cyan-400/10 via-teal-200/6 to-sky-300/10 animate-paradise-caustic" />
       )}
 
-      {/* JUNK FOOD PARADISE: Cola Soda Fizz Bubbles, Warm Grill Steam & Golden Glints */}
+      {/* JUNK FOOD PARADISE: Subtle golden carnival glow */}
       {season === 'junkfood' && (
-        <>
-          {Array.from({ length: 18 }).map((_, i) => (
-            <div
-              key={`jf-bubble-${i}`}
-              className="absolute rounded-full border-2 border-amber-100/75 bg-amber-300/25 animate-bubble-rise"
-              style={{
-                left: `${(i * 5.6 + 3) % 94}%`,
-                bottom: '-14px',
-                width: `${7 + (i % 3) * 4}px`,
-                height: `${7 + (i % 3) * 4}px`,
-                animationDuration: `${4.5 + (i % 4) * 1.1}s`,
-                animationDelay: `${(i * 0.42) % 4}s`,
-              }}
-            />
-          ))}
-          {Array.from({ length: 14 }).map((_, i) => (
-            <div
-              key={`jf-twinkle-${i}`}
-              className="absolute text-amber-200 animate-twinkle"
-              style={{
-                left: `${(i * 7.1 + 4) % 94}%`,
-                top: `${16 + ((i * 13) % 68)}%`,
-                fontSize: `${11 + (i % 3) * 3}px`,
-                animationDelay: `${(i * 0.38) % 3}s`,
-              }}
-            >
-              ✦
-            </div>
-          ))}
-        </>
+        <div className="absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-amber-200/10 to-transparent pointer-events-none" />
       )}
 
-      {/* DINO JUNGLE WORLD: Canopy Sunbeams, Rising Amber Spores, Waterfall Mist & Gliding Pterodactyls */}
+      {/* DINO JUNGLE WORLD: Subtle warm canopy sunbeam & mist complementing dino video */}
       {season === 'dino' && (
-        <>
-          <div className="absolute -top-8 left-[22%] w-52 h-[78%] bg-gradient-to-b from-lime-200/24 via-emerald-200/10 to-transparent blur-xl animate-sunbeam-sway" />
-          <div
-            className="absolute bottom-[12%] inset-x-0 h-32 bg-gradient-to-r from-transparent via-emerald-100/20 to-transparent blur-2xl animate-paradise-mist"
-            style={{ animationDuration: '15s' }}
-          />
-          <div
-            className="absolute top-[10%] left-0 w-full animate-paradise-soar"
-            style={{ animationDuration: '25s' }}
-          >
-            <PixelPterodactyl size={34} />
-          </div>
-          <div
-            className="absolute top-[18%] left-0 w-full animate-paradise-soar"
-            style={{ animationDuration: '33s', animationDelay: '-14s' }}
-          >
-            <PixelPterodactyl size={26} />
-          </div>
-          {Array.from({ length: 20 }).map((_, i) => (
-            <div
-              key={`dino-spore-${i}`}
-              className="absolute rounded-full bg-amber-200/85 shadow-[0_0_8px_#fbbf24] animate-paradise-spark-rise"
-              style={{
-                left: `${(i * 5 + 3) % 94}%`,
-                top: `${32 + ((i * 12) % 58)}%`,
-                width: `${4 + (i % 3) * 2}px`,
-                height: `${4 + (i % 3) * 2}px`,
-                animationDuration: `${5.5 + (i % 4) * 1.4}s`,
-                animationDelay: `${(i * 0.45) % 5}s`,
-              }}
-            />
-          ))}
-        </>
+        <div className="absolute -top-8 left-[22%] w-52 h-[78%] bg-gradient-to-b from-lime-200/18 via-emerald-200/8 to-transparent blur-xl animate-sunbeam-sway" />
       )}
 
       {/* PARIS EIFFEL TOWER (Complementary subtle rose petals over the 4s looping video) */}

@@ -98,6 +98,17 @@ function resolveStardewCompanion(student: Student, index: number): string {
 
 const CLASSIC_LAKE_SEASONS = new Set<ParadiseSeason>(['spring', 'summer', 'autumn', 'winter']);
 
+const PARADISE_LOOP_VIDEOS: Partial<Record<ParadiseSeason, string>> = {
+  polar: '/assets/videos/paradise_polar_arctic.mp4',
+  volcano: '/assets/videos/paradise_volcano_lava.mp4',
+  blizzard: '/assets/videos/paradise_blizzard_mountain.mp4',
+  candy: '/assets/videos/paradise_candy_drinks.mp4',
+  underwater: '/assets/videos/paradise_underwater_ocean.mp4',
+  junkfood: '/assets/videos/paradise_junk_food.mp4',
+  dino: '/assets/videos/paradise_dino_jungle.mp4',
+  paris: '/assets/videos/paradise_paris_eiffel.mp4',
+};
+
 // 9 spatial world regions (3x3 grid) so companions visit genuinely varied areas instead of bouncing in one spot
 const PARADISE_MAP_ZONES = [
   { id: 0, minX: 6, maxX: 31, minY: 13, maxY: 34 },  // NW
@@ -111,9 +122,43 @@ const PARADISE_MAP_ZONES = [
   { id: 8, minX: 67, maxX: 93, minY: 67, maxY: 89 }, // SE
 ];
 
-// Keep land companions out of the southeast lake basin ONLY on classic valley maps (never clamp them on open themed maps)
-function sanitizeLandPoint(x: number, y: number, avoidSeLake = false): { x: number; y: number } {
+// Walkable lower ground zones specifically for Paris Eiffel Tower scene (Champ de Mars, Cafe plaza, bridge & lower-left garden; never in the upper sky)
+const PARIS_GROUND_ZONES = [
+  { id: 0, minX: 7, maxX: 37, minY: 62, maxY: 83 },  // West promenade & Le Cafe de Mars terrace
+  { id: 1, minX: 40, maxX: 73, minY: 49, maxY: 63 }, // Upper Champ de Mars lawn beneath the Eiffel Tower
+  { id: 2, minX: 38, maxX: 60, minY: 63, maxY: 79 }, // Central flowerbed park pathways
+  { id: 3, minX: 62, maxX: 91, minY: 57, maxY: 74 }, // East fountain courtyard
+  { id: 4, minX: 16, maxX: 82, minY: 75, maxY: 84 }, // South riverside promenade & bridge approach
+  { id: 5, minX: 6, maxX: 31, minY: 81, maxY: 94 },  // Southwest garden park
+];
+
+// Keep land companions within walkable ground (respecting SE lake on classic maps & sky/Seine bounds on Paris Eiffel Tower map)
+function sanitizeLandPoint(
+  x: number,
+  y: number,
+  avoidSeLake = false,
+  isParis = false
+): { x: number; y: number } {
   const cx = Math.max(4, Math.min(95, x));
+  if (isParis) {
+    let cy = Math.max(49, Math.min(94, y));
+    // Stone bridge crossing over Seine canal is walkable
+    if (cx >= 72 && cx <= 83 && cy >= 78 && cy <= 93) {
+      return { x: cx, y: cy };
+    }
+    // Southwest garden courtyard is walkable
+    if (cx <= 32) {
+      return { x: cx, y: cy };
+    }
+    // Keep land companions on the riverside promenade above the Seine River canal
+    if (cx > 83 && cy > 80) {
+      cy = 79.5;
+    } else if (cy > 84.5) {
+      cy = 84;
+    }
+    return { x: cx, y: cy };
+  }
+
   const cy = Math.max(11, Math.min(90, y));
   if (!avoidSeLake) {
     return { x: cx, y: cy };
@@ -130,7 +175,15 @@ function sanitizeLandPoint(x: number, y: number, avoidSeLake = false): { x: numb
   return { x: cx, y: cy };
 }
 
-function getZoneIndexForPoint(x: number, y: number): number {
+function getZoneIndexForPoint(x: number, y: number, isParis = false): number {
+  if (isParis) {
+    if (x < 33 && y >= 81) return 5;
+    if (x < 38) return 0;
+    if (y < 63 && x <= 73) return 1;
+    if (x >= 62 && y < 74) return 3;
+    if (y >= 75) return 4;
+    return 2;
+  }
   const col = x < 34 ? 0 : x < 66 ? 1 : 2;
   const row = y < 37 ? 0 : y < 65 ? 1 : 2;
   return row * 3 + col;
@@ -140,28 +193,30 @@ function pickRandomZonePoint(
   recentZones: number[] = [],
   currentX = 50,
   currentY = 50,
-  avoidSeLake = false
+  avoidSeLake = false,
+  isParis = false
 ): { x: number; y: number; zoneId: number } {
-  const currentZone = getZoneIndexForPoint(currentX, currentY);
+  const zones = isParis ? PARIS_GROUND_ZONES : PARADISE_MAP_ZONES;
+  const currentZone = getZoneIndexForPoint(currentX, currentY, isParis);
   const blocked = new Set<number>([currentZone, ...recentZones.slice(-3)]);
-  if (avoidSeLake) {
+  if (avoidSeLake && !isParis) {
     blocked.add(8);
   }
-  let candidates = PARADISE_MAP_ZONES.filter((z) => !blocked.has(z.id));
+  let candidates = zones.filter((z) => !blocked.has(z.id));
   if (candidates.length === 0) {
-    candidates = PARADISE_MAP_ZONES.filter((z) => z.id !== currentZone && (!avoidSeLake || z.id !== 8));
+    candidates = zones.filter((z) => z.id !== currentZone && (isParis || !avoidSeLake || z.id !== 8));
   }
   if (candidates.length === 0) {
-    candidates = PARADISE_MAP_ZONES;
+    candidates = zones;
   }
   const chosen = candidates[Math.floor(Math.random() * candidates.length)];
   const rawX = chosen.minX + Math.random() * (chosen.maxX - chosen.minX);
   const rawY = chosen.minY + Math.random() * (chosen.maxY - chosen.minY);
-  const pt = sanitizeLandPoint(rawX, rawY, avoidSeLake);
+  const pt = sanitizeLandPoint(rawX, rawY, avoidSeLake, isParis);
   return { x: pt.x, y: pt.y, zoneId: chosen.id };
 }
 
-// Builds an irregular, non-linear multi-waypoint route across varied regions of the map
+// Builds an irregular, non-linear multi-waypoint route across varied walkable regions of the map
 function buildIrregularRoute(
   startX: number,
   startY: number,
@@ -169,9 +224,20 @@ function buildIrregularRoute(
   avoidSeLake = false,
   isSprint = false,
   isAquatic = false,
-  isUnderwaterWorld = false
+  isUnderwaterWorld = false,
+  isParis = false
 ): { waypoints: Array<{ x: number; y: number }>; nextRecentZones: number[] } {
-  if (isAquatic && !isUnderwaterWorld && !isSprint) {
+  if (isAquatic && isParis && !isSprint) {
+    // Ducks & turtles can paddle playfully along the Seine river canal at the bottom
+    const pt = { x: 37 + Math.random() * 31, y: 88 + Math.random() * 7 };
+    const curveMid = {
+      x: Math.max(36, Math.min(69, (startX + pt.x) / 2 + (Math.random() * 10 - 5))),
+      y: Math.max(87, Math.min(95, (startY + pt.y) / 2 + (Math.random() * 4 - 2))),
+    };
+    return { waypoints: [curveMid, pt], nextRecentZones: recentZones };
+  }
+
+  if (isAquatic && !isUnderwaterWorld && !isParis && !isSprint) {
     // Classic aquatic pets can roam widely between lakeside shore, piers, and pond
     const pt =
       Math.random() < 0.35
@@ -191,7 +257,7 @@ function buildIrregularRoute(
   let cursorY = startY;
 
   for (let i = 0; i < legCount; i++) {
-    const picked = pickRandomZonePoint(nextRecent, cursorX, cursorY, avoidSeLake);
+    const picked = pickRandomZonePoint(nextRecent, cursorX, cursorY, avoidSeLake, isParis);
     // Insert an off-axis curved detour point so path bends unpredictably instead of linear A<->B movement
     const dx = picked.x - cursorX;
     const dy = picked.y - cursorY;
@@ -199,12 +265,13 @@ function buildIrregularRoute(
     const perpX = -dy / dist;
     const perpY = dx / dist;
     const curveSign = Math.random() < 0.5 ? 1 : -1;
-    const bendOffset = (10 + Math.random() * 16) * curveSign;
+    const bendOffset = (isParis ? 6 + Math.random() * 10 : 10 + Math.random() * 16) * curveSign;
     const tMid = 0.35 + Math.random() * 0.3;
     const midPt = sanitizeLandPoint(
       cursorX + dx * tMid + perpX * bendOffset,
       cursorY + dy * tMid + perpY * bendOffset,
-      avoidSeLake
+      avoidSeLake,
+      isParis
     );
     if (dist > 22) {
       waypoints.push(midPt);
@@ -492,6 +559,73 @@ export const PixelParadiseView: React.FC<PixelParadiseViewProps> = ({
   const showStoriesRef = useRef<boolean>(showStories);
   useEffect(() => {
     seasonRef.current = season;
+    const avoidLake = CLASSIC_LAKE_SEASONS.has(season);
+    const isUnderwater = season === 'underwater';
+    const isParis = season === 'paris';
+
+    setCompanions((prev) =>
+      prev.map((c, idx) => {
+        let nextX = c.x;
+        let nextY = c.y;
+        let nextAction = c.action;
+
+        if (isParis) {
+          if (c.isAquatic) {
+            const inSeine = c.x >= 36 && c.x <= 69 && c.y >= 87 && c.y <= 95;
+            if (!inSeine) {
+              const init = getInitialCoordinates(idx, true, false, true);
+              nextX = init.x;
+              nextY = init.y;
+            }
+            nextAction = 'swimming';
+          } else {
+            const inUpperSkyOrTower = c.y < 49;
+            const inSeineWater =
+              (c.x > 32 && c.y > 84.5 && !(c.x >= 72 && c.x <= 83)) || (c.x > 83 && c.y > 80);
+            if (inUpperSkyOrTower || inSeineWater) {
+              const init = getInitialCoordinates(idx, false, false, true);
+              nextX = init.x;
+              nextY = init.y;
+            }
+            if (nextAction === 'swimming') {
+              nextAction = 'walking';
+            }
+          }
+        } else if (isUnderwater) {
+          nextAction = 'swimming';
+        } else if (!c.isAquatic && nextAction === 'swimming') {
+          nextAction = 'walking';
+        }
+
+        const safeRecent = isParis
+          ? [getZoneIndexForPoint(nextX, nextY, true)]
+          : c.recentZones || [getZoneIndexForPoint(nextX, nextY, false)];
+
+        const route = buildIrregularRoute(
+          nextX,
+          nextY,
+          safeRecent,
+          avoidLake,
+          false,
+          c.isAquatic,
+          isUnderwater,
+          isParis
+        );
+        const dest = route.waypoints[0] || { x: nextX, y: nextY };
+
+        return {
+          ...c,
+          x: nextX,
+          y: nextY,
+          action: nextAction === 'celebrating' ? 'celebrating' : nextAction,
+          targetX: dest.x,
+          targetY: dest.y,
+          waypoints: route.waypoints.slice(1),
+          recentZones: route.nextRecentZones,
+          facing: dest.x < nextX ? 'left' : 'right',
+        };
+      })
+    );
   }, [season]);
   useEffect(() => {
     timeOfDayRef.current = timeOfDay;
@@ -565,8 +699,21 @@ export const PixelParadiseView: React.FC<PixelParadiseViewProps> = ({
     return student.rollNo === 21 && stardewAvatar.includes('duck');
   };
 
-  // Distribute companions broadly across the entire expanded world
-  const getInitialCoordinates = (idx: number, isAquatic: boolean, avoidLake: boolean) => {
+  // Distribute companions across walkable regions of the active scene
+  const getInitialCoordinates = (
+    idx: number,
+    isAquatic: boolean,
+    avoidLake: boolean,
+    isParis = false
+  ) => {
+    if (isAquatic && isParis) {
+      return {
+        x: 38 + ((idx * 13) % 28),
+        y: 89 + ((idx * 3) % 6),
+        action: 'swimming' as const,
+      };
+    }
+
     if (isAquatic && avoidLake) {
       return {
         x: 68 + ((idx * 17) % 23),
@@ -575,14 +722,15 @@ export const PixelParadiseView: React.FC<PixelParadiseViewProps> = ({
       };
     }
 
-    const availableZones = avoidLake
-      ? PARADISE_MAP_ZONES.filter((z) => z.id !== 8)
-      : PARADISE_MAP_ZONES;
+    const zones = isParis ? PARIS_GROUND_ZONES : PARADISE_MAP_ZONES;
+    const availableZones =
+      !isParis && avoidLake ? zones.filter((z) => z.id !== 8) : zones;
     const z = availableZones[idx % availableZones.length];
     const pt = sanitizeLandPoint(
       z.minX + Math.random() * (z.maxX - z.minX),
       z.minY + Math.random() * (z.maxY - z.minY),
-      avoidLake
+      avoidLake,
+      isParis
     );
     return {
       x: pt.x,
@@ -596,13 +744,23 @@ export const PixelParadiseView: React.FC<PixelParadiseViewProps> = ({
   const [companions, setCompanions] = useState<CompanionState[]>(() => {
     const avoidLake = CLASSIC_LAKE_SEASONS.has(season);
     const isUnderwater = season === 'underwater';
+    const isParis = season === 'paris';
     return students.map((s, idx) => {
       const stardewAvatar = resolveStardewCompanion(s, idx);
       const isAquatic = checkIsAquatic(s, stardewAvatar);
-      const init = getInitialCoordinates(idx, isAquatic, avoidLake);
+      const init = getInitialCoordinates(idx, isAquatic, avoidLake, isParis);
       const growthBonus = Math.min(0.55, Math.max(0, s.points * 0.005));
       const initRecent = init.zoneId !== undefined ? [init.zoneId] : [];
-      const route = buildIrregularRoute(init.x, init.y, initRecent, avoidLake, false, isAquatic, isUnderwater);
+      const route = buildIrregularRoute(
+        init.x,
+        init.y,
+        initRecent,
+        avoidLake,
+        false,
+        isAquatic,
+        isUnderwater,
+        isParis
+      );
       const firstDest = route.waypoints[0] || { x: init.x, y: init.y };
 
       return {
@@ -634,6 +792,7 @@ export const PixelParadiseView: React.FC<PixelParadiseViewProps> = ({
   useEffect(() => {
     const avoidLake = CLASSIC_LAKE_SEASONS.has(seasonRef.current);
     const isUnderwater = seasonRef.current === 'underwater';
+    const isParis = seasonRef.current === 'paris';
     setCompanions((prev) =>
       students.map((s, idx) => {
         const existing = prev.find((p) => p.studentId === s.id);
@@ -652,9 +811,18 @@ export const PixelParadiseView: React.FC<PixelParadiseViewProps> = ({
           };
         }
 
-        const init = getInitialCoordinates(idx, isAquatic, avoidLake);
+        const init = getInitialCoordinates(idx, isAquatic, avoidLake, isParis);
         const initRecent = init.zoneId !== undefined ? [init.zoneId] : [];
-        const route = buildIrregularRoute(init.x, init.y, initRecent, avoidLake, false, isAquatic, isUnderwater);
+        const route = buildIrregularRoute(
+          init.x,
+          init.y,
+          initRecent,
+          avoidLake,
+          false,
+          isAquatic,
+          isUnderwater,
+          isParis
+        );
         const dest = route.waypoints[0] || { x: init.x, y: init.y };
         return {
           id: s.id,
@@ -689,14 +857,16 @@ export const PixelParadiseView: React.FC<PixelParadiseViewProps> = ({
 
     const avoidLake = CLASSIC_LAKE_SEASONS.has(seasonRef.current);
     const isUnderwater = seasonRef.current === 'underwater';
+    const isParis = seasonRef.current === 'paris';
     const route = buildIrregularRoute(
       comp.x,
       comp.y,
-      comp.recentZones || [getZoneIndexForPoint(comp.x, comp.y)],
+      comp.recentZones || [getZoneIndexForPoint(comp.x, comp.y, isParis)],
       avoidLake,
       true,
       comp.isAquatic,
-      isUnderwater
+      isUnderwater,
+      isParis
     );
     const firstWaypoint = route.waypoints[0] || { x: comp.x, y: comp.y };
     const facing = firstWaypoint.x < comp.x ? 'left' : 'right';
@@ -750,6 +920,7 @@ export const PixelParadiseView: React.FC<PixelParadiseViewProps> = ({
       const activeSeason = seasonRef.current;
       const avoidLake = CLASSIC_LAKE_SEASONS.has(activeSeason);
       const isUnderwaterWorld = activeSeason === 'underwater';
+      const isParis = activeSeason === 'paris';
 
       setCompanions((prev) =>
         prev.map((c) => {
@@ -814,7 +985,8 @@ export const PixelParadiseView: React.FC<PixelParadiseViewProps> = ({
                 avoidLake,
                 false,
                 c.isAquatic,
-                isUnderwaterWorld
+                isUnderwaterWorld,
+                isParis
               );
               targetX = route.waypoints[0]?.x ?? c.x;
               targetY = route.waypoints[0]?.y ?? c.y;
@@ -861,11 +1033,14 @@ export const PixelParadiseView: React.FC<PixelParadiseViewProps> = ({
             let nextX = c.x + dirX * step + perpX * sway;
             let nextY = c.y + dirY * step + perpY * sway;
 
-            if (c.isAquatic && !isUnderwaterWorld && action !== 'running') {
+            if (c.isAquatic && isParis && action !== 'running') {
+              nextX = Math.max(36, Math.min(69, nextX));
+              nextY = Math.max(87, Math.min(95, nextY));
+            } else if (c.isAquatic && !isUnderwaterWorld && !isParis && action !== 'running') {
               nextX = Math.max(46, Math.min(95, nextX));
               nextY = Math.max(58, Math.min(92, nextY));
             } else {
-              const safe = sanitizeLandPoint(nextX, nextY, avoidLake);
+              const safe = sanitizeLandPoint(nextX, nextY, avoidLake, isParis);
               nextX = safe.x;
               nextY = safe.y;
             }
@@ -1523,84 +1698,91 @@ export const PixelParadiseView: React.FC<PixelParadiseViewProps> = ({
                 soundManager.playClick();
                 setSeason('polar');
               }}
-              className={`px-2 py-1 text-xs font-bold rounded-lg transition-all cursor-pointer whitespace-nowrap shrink-0 ${
+              className={`px-2 py-1 text-xs font-bold rounded-lg transition-all cursor-pointer whitespace-nowrap shrink-0 flex items-center gap-1 ${
                 season === 'polar' ? 'bg-[#0891B2] text-white shadow-xs ring-1 ring-cyan-300' : 'text-stone-300 hover:text-white'
               }`}
-              title="切換至南極企鵝與北極熊 (🐧 極地浮冰與北極熊王國)"
+              title="切換至南極企鵝與北極熊 (🐧 4秒無縫動態循環背景視頻)"
             >
-              🐧 企鵝北極熊
+              <span>🐧 企鵝北極熊</span>
+              <span className="text-[9px] opacity-85">🎬</span>
             </button>
             <button
               onClick={() => {
                 soundManager.playClick();
                 setSeason('volcano');
               }}
-              className={`px-2 py-1 text-xs font-bold rounded-lg transition-all cursor-pointer whitespace-nowrap shrink-0 ${
+              className={`px-2 py-1 text-xs font-bold rounded-lg transition-all cursor-pointer whitespace-nowrap shrink-0 flex items-center gap-1 ${
                 season === 'volcano' ? 'bg-[#EA580C] text-white shadow-xs ring-1 ring-orange-300' : 'text-stone-300 hover:text-white'
               }`}
-              title="切換至熾熱岩漿火山島 (🌋 滾燙岩漿瀑布與黑曜石島)"
+              title="切換至熾熱岩漿火山島 (🌋 4秒無縫動態循環背景視頻)"
             >
-              🌋 火山岩漿島
+              <span>🌋 火山岩漿島</span>
+              <span className="text-[9px] opacity-85">🎬</span>
             </button>
             <button
               onClick={() => {
                 soundManager.playClick();
                 setSeason('blizzard');
               }}
-              className={`px-2 py-1 text-xs font-bold rounded-lg transition-all cursor-pointer whitespace-nowrap shrink-0 ${
+              className={`px-2 py-1 text-xs font-bold rounded-lg transition-all cursor-pointer whitespace-nowrap shrink-0 flex items-center gap-1 ${
                 season === 'blizzard' ? 'bg-[#475569] text-white shadow-xs ring-1 ring-sky-200' : 'text-stone-300 hover:text-white'
               }`}
-              title="切換至雪山猛烈暴風雪 (🌨️ 呼嘯狂風雪峰與溫暖木屋)"
+              title="切換至雪山猛烈暴風雪 (🌨️ 4秒無縫動態循環背景視頻)"
             >
-              🌨️ 雪山暴風雪
+              <span>🌨️ 雪山暴風雪</span>
+              <span className="text-[9px] opacity-85">🎬</span>
             </button>
             <button
               onClick={() => {
                 soundManager.playClick();
                 setSeason('candy');
               }}
-              className={`px-2 py-1 text-xs font-bold rounded-lg transition-all cursor-pointer whitespace-nowrap shrink-0 ${
+              className={`px-2 py-1 text-xs font-bold rounded-lg transition-all cursor-pointer whitespace-nowrap shrink-0 flex items-center gap-1 ${
                 season === 'candy' ? 'bg-[#DB2777] text-white shadow-xs ring-1 ring-pink-200' : 'text-stone-300 hover:text-white'
               }`}
-              title="切換至糖果飲料樂園 (🍭 棒棒糖樹、巧克力河與珍奶噴泉)"
+              title="切換至糖果飲料樂園 (🍭 4秒無縫動態循環背景視頻)"
             >
-              🍭 糖果飲料
+              <span>🍭 糖果飲料</span>
+              <span className="text-[9px] opacity-85">🎬</span>
             </button>
             <button
               onClick={() => {
                 soundManager.playClick();
                 setSeason('underwater');
               }}
-              className={`px-2 py-1 text-xs font-bold rounded-lg transition-all cursor-pointer whitespace-nowrap shrink-0 ${
+              className={`px-2 py-1 text-xs font-bold rounded-lg transition-all cursor-pointer whitespace-nowrap shrink-0 flex items-center gap-1 ${
                 season === 'underwater' ? 'bg-[#0D9488] text-white shadow-xs ring-1 ring-teal-200' : 'text-stone-300 hover:text-white'
               }`}
-              title="切換至繽紛海底世界 (🐠 海龜、水母、章魚與珊瑚礁海洋生物)"
+              title="切換至繽紛海底世界 (🐠 4秒無縫動態循環背景視頻)"
             >
-              🐠 海底世界
+              <span>🐠 海底世界</span>
+              <span className="text-[9px] opacity-85">🎬</span>
             </button>
             <button
               onClick={() => {
                 soundManager.playClick();
                 setSeason('junkfood');
               }}
-              className={`px-2 py-1 text-xs font-bold rounded-lg transition-all cursor-pointer whitespace-nowrap shrink-0 ${
+              className={`px-2 py-1 text-xs font-bold rounded-lg transition-all cursor-pointer whitespace-nowrap shrink-0 flex items-center gap-1 ${
                 season === 'junkfood' ? 'bg-[#D97706] text-white shadow-xs ring-1 ring-yellow-200' : 'text-stone-300 hover:text-white'
               }`}
-              title="切換至歡樂垃圾食物樂園 (🍔 漢堡屋、薯條塔、披薩與可樂)"
+              title="切換至歡樂漢堡薯條樂園 (🍔 4秒無縫動態循環背景視頻)"
             >
-              🍔 美食樂園
+              <span>🍔 美食樂園</span>
+              <span className="text-[9px] opacity-85">🎬</span>
             </button>
             <button
               onClick={() => {
                 soundManager.playClick();
                 setSeason('dino');
               }}
-              className={`px-2 py-1 text-xs font-bold rounded-lg transition-all cursor-pointer whitespace-nowrap shrink-0 ${
+              className={`px-2 py-1 text-xs font-bold rounded-lg transition-all cursor-pointer whitespace-nowrap shrink-0 flex items-center gap-1 ${
                 season === 'dino' ? 'bg-[#16A34A] text-white shadow-xs ring-1 ring-lime-200' : 'text-stone-300 hover:text-white'
               }`}
-              title="切換至史前恐龍奇幻谷 (🦖 腕龍、三角龍與琥珀叢林)"
+              title="切換至史前恐龍奇幻谷 (🦖 4秒無縫動態循環背景視頻)"
             >
-              🦖 恐龍島
+              <span>🦖 恐龍島</span>
+              <span className="text-[9px] opacity-85">🎬</span>
             </button>
             <button
               onClick={() => {
@@ -2004,11 +2186,11 @@ export const PixelParadiseView: React.FC<PixelParadiseViewProps> = ({
               imageRendering: 'pixelated',
             }}
           />
-          {season === 'paris' && showBackdropFx && (
+          {PARADISE_LOOP_VIDEOS[season] && showBackdropFx && (
             <video
-              key="paris-loop-video"
-              src="/assets/videos/paradise_paris_eiffel.mp4"
-              poster={parisBg}
+              key={`${season}-loop-video`}
+              src={PARADISE_LOOP_VIDEOS[season]}
+              poster={currentSeasonBg}
               autoPlay
               loop
               muted
