@@ -829,7 +829,30 @@ export const ParadiseAnimatedBackdrop: React.FC<ParadiseAnimatedBackdropProps> =
         </>
       )}
 
-      {/* 5. UNIVERSAL TIME-OF-DAY LIVING SKY OVERLAYS (Works across ALL 17 maps!) */}
+      {/* PARIS EIFFEL TOWER (Complementary subtle rose petals over the 4s looping video) */}
+      {season === 'paris' && (
+        <>
+          {Array.from({ length: 14 }).map((_, i) => (
+            <div
+              key={`paris-petal-${i}`}
+              className="absolute animate-petal-sway"
+              style={{
+                left: `${(i * 7.2 + 3) % 95}%`,
+                top: '-20px',
+                animationDuration: `${8.5 + (i % 4) * 1.8}s`,
+                animationDelay: `${(i * 0.65) % 7}s`,
+              }}
+            >
+              <PixelPetalSvg
+                color={i % 2 === 0 ? '#fda4af' : '#fbcfe8'}
+                size={9 + (i % 2) * 3}
+              />
+            </div>
+          ))}
+        </>
+      )}
+
+      {/* 5. UNIVERSAL TIME-OF-DAY LIVING SKY OVERLAYS (Works across ALL maps!) */}
       {isDawn && (
         <div className="absolute inset-0 overflow-hidden">
           <div className="absolute top-[18%] left-[12%] w-72 h-72 rounded-full bg-gradient-to-r from-amber-200/22 via-rose-200/15 to-transparent blur-3xl animate-pulse" />

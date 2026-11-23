@@ -1449,6 +1449,90 @@ html.stardew-mode::-webkit-scrollbar-corner,
   animation: paradiseCausticSweep 6.5s ease-in-out infinite;
 }
 
+@keyframes paradiseCloudTraverse {
+  0% {
+    transform: translate3d(-18%, 0px, 0);
+    opacity: 0;
+  }
+  8% {
+    opacity: 0.92;
+  }
+  92% {
+    opacity: 0.92;
+  }
+  100% {
+    transform: translate3d(112%, 0px, 0);
+    opacity: 0;
+  }
+}
+
+@keyframes paradiseWaterFlow {
+  0% {
+    transform: translate3d(0%, 0px, 0);
+  }
+  100% {
+    transform: translate3d(-50%, 0px, 0);
+  }
+}
+
+@keyframes paradiseWaterFlowReverse {
+  0% {
+    transform: translate3d(-50%, 2px, 0);
+  }
+  100% {
+    transform: translate3d(0%, -2px, 0);
+  }
+}
+
+@keyframes paradiseStarTwinkleAlt {
+  0%, 100% {
+    opacity: 0.2;
+    transform: scale(0.75);
+  }
+  45% {
+    opacity: 1;
+    transform: scale(1.25);
+  }
+  70% {
+    opacity: 0.45;
+    transform: scale(0.95);
+  }
+}
+
+@keyframes paradiseAmbientShimmer {
+  0%, 100% {
+    opacity: 0.14;
+  }
+  50% {
+    opacity: 0.28;
+  }
+}
+
+.animate-paradise-cloud {
+  will-change: transform, opacity;
+  animation: paradiseCloudTraverse linear infinite;
+}
+
+.animate-paradise-water-flow {
+  will-change: transform;
+  animation: paradiseWaterFlow linear infinite;
+}
+
+.animate-paradise-water-flow-reverse {
+  will-change: transform;
+  animation: paradiseWaterFlowReverse linear infinite;
+}
+
+.animate-paradise-star-alt {
+  will-change: transform, opacity;
+  animation: paradiseStarTwinkleAlt ease-in-out infinite;
+}
+
+.animate-paradise-ambient-shimmer {
+  will-change: opacity;
+  animation: paradiseAmbientShimmer 5.5s ease-in-out infinite;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .animate-upgrade-particle,
   .animate-upgrade-ring,
@@ -1475,6 +1559,11 @@ html.stardew-mode::-webkit-scrollbar-corner,
   .animate-paradise-spark-rise,
   .animate-paradise-lava-pulse,
   .animate-paradise-caustic,
+  .animate-paradise-cloud,
+  .animate-paradise-water-flow,
+  .animate-paradise-water-flow-reverse,
+  .animate-paradise-star-alt,
+  .animate-paradise-ambient-shimmer,
   .animate-cloud-slow,
   .animate-cloud-med,
   .animate-aurora-wave,

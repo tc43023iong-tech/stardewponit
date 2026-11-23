@@ -44,6 +44,7 @@ import candyBg from '../../assets/images/theme_candy_drinks_1795428666849.jpg';
 import underwaterBg from '../../assets/images/theme_underwater_ocean_1795428666589.jpg';
 import junkfoodBg from '../../assets/images/theme_junk_food_1795428746765.jpg';
 import dinoBg from '../../assets/images/theme_dino_jungle_1795428666405.jpg';
+import parisBg from '../../assets/images/paradise_paris_eiffel_1795430843298.jpg';
 
 import { PointsFeedbackModal, PointsFeedbackData } from './PointsFeedbackModal';
 
@@ -66,7 +67,8 @@ export type ParadiseSeason =
   | 'candy'
   | 'underwater'
   | 'junkfood'
-  | 'dino';
+  | 'dino'
+  | 'paris';
 export type ParadiseTimeOfDay = 'day' | 'dawn' | 'sunset' | 'night';
 
 // World expansion multiplier & native 16:9 panoramic aspect ratio
@@ -358,6 +360,11 @@ const SEASON_INNER_OS: Record<ParadiseSeason, string[]> = {
     '（哇！長頸腕龍在吃樹葉，原來恐龍這麼溫柔呀🦕）',
     '（小三角龍搖尾巴好可愛，叢林裡還有發光金琥珀✨）',
     '（穿過瀑布木橋去看看霸王龍大哥有沒有在睡午覺🦖）',
+  ],
+  paris: [
+    '（站在巴黎鐵塔下的草地上散步，夕陽把天空染成粉金色好浪漫呀🗼✨）',
+    '（快看！巴黎鐵塔頂端的光束在轉動，整座鐵塔都在閃閃發亮🌟）',
+    '（塞納河畔的微風好舒服，真想去旁邊的咖啡館喝一杯熱可可☕）',
   ],
 };
 
@@ -1284,6 +1291,8 @@ export const PixelParadiseView: React.FC<PixelParadiseViewProps> = ({
         return junkfoodBg;
       case 'dino':
         return dinoBg;
+      case 'paris':
+        return parisBg;
       case 'autumn':
       default:
         return autumnBg;
@@ -1592,6 +1601,21 @@ export const PixelParadiseView: React.FC<PixelParadiseViewProps> = ({
               title="切換至史前恐龍奇幻谷 (🦖 腕龍、三角龍與琥珀叢林)"
             >
               🦖 恐龍島
+            </button>
+            <button
+              onClick={() => {
+                soundManager.playClick();
+                setSeason('paris');
+              }}
+              className={`px-2 py-1 text-xs font-bold rounded-lg transition-all cursor-pointer whitespace-nowrap shrink-0 flex items-center gap-1 ${
+                season === 'paris'
+                  ? 'bg-gradient-to-r from-rose-600 to-amber-600 text-white shadow-xs ring-1 ring-amber-200'
+                  : 'text-amber-200 hover:text-white bg-rose-950/40'
+              }`}
+              title="切換至巴黎鐵塔動態循環視頻場景 (🗼 4秒無縫循環背景視頻)"
+            >
+              <span>🗼 巴黎鐵塔</span>
+              <span className="text-[9px] px-1 py-0.2 rounded bg-black/30 text-amber-200 font-black">🎬 視頻</span>
             </button>
           </div>
 
@@ -1970,7 +1994,7 @@ export const PixelParadiseView: React.FC<PixelParadiseViewProps> = ({
             transform: `translate3d(${panOffset.x}px, ${panOffset.y}px, 0) scale(${zoomLevel})`,
           }}
         >
-          {/* A. 100% PURE 16-BIT RETRO PIXEL ART MAP BACKGROUND */}
+          {/* A. 100% PURE 16-BIT RETRO PIXEL ART MAP BACKGROUND (Supports Seamless Looping Video & Crisp Pixel Art) */}
           <img
             src={currentSeasonBg}
             alt="Pixel Paradise Map"
@@ -1980,6 +2004,18 @@ export const PixelParadiseView: React.FC<PixelParadiseViewProps> = ({
               imageRendering: 'pixelated',
             }}
           />
+          {season === 'paris' && showBackdropFx && (
+            <video
+              key="paris-loop-video"
+              src="/assets/videos/paradise_paris_eiffel.mp4"
+              poster={parisBg}
+              autoPlay
+              loop
+              muted
+              playsInline
+              className="w-full h-full object-fill select-none pointer-events-none absolute inset-0"
+            />
+          )}
 
           {/* Subtle Pixel Grid Texture */}
           <div
