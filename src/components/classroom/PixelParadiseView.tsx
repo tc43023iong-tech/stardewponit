@@ -104,8 +104,6 @@ const PARADISE_LOOP_VIDEOS: Partial<Record<ParadiseSeason, string>> = {
   blizzard: '/assets/videos/paradise_blizzard_mountain.mp4',
   candy: '/assets/videos/paradise_candy_drinks.mp4',
   underwater: '/assets/videos/paradise_underwater_ocean.mp4',
-  junkfood: '/assets/videos/paradise_junk_food.mp4',
-  dino: '/assets/videos/paradise_dino_jungle.mp4',
   paris: '/assets/videos/paradise_paris_eiffel.mp4',
 };
 
@@ -1763,26 +1761,24 @@ export const PixelParadiseView: React.FC<PixelParadiseViewProps> = ({
                 soundManager.playClick();
                 setSeason('junkfood');
               }}
-              className={`px-2 py-1 text-xs font-bold rounded-lg transition-all cursor-pointer whitespace-nowrap shrink-0 flex items-center gap-1 ${
+              className={`px-2 py-1 text-xs font-bold rounded-lg transition-all cursor-pointer whitespace-nowrap shrink-0 ${
                 season === 'junkfood' ? 'bg-[#D97706] text-white shadow-xs ring-1 ring-yellow-200' : 'text-stone-300 hover:text-white'
               }`}
-              title="切換至歡樂漢堡薯條樂園 (🍔 4秒無縫動態循環背景視頻)"
+              title="切換至歡樂垃圾食物樂園 (🍔 漢堡屋、薯條塔、披薩與動態氣泡特效)"
             >
-              <span>🍔 美食樂園</span>
-              <span className="text-[9px] opacity-85">🎬</span>
+              🍔 美食樂園
             </button>
             <button
               onClick={() => {
                 soundManager.playClick();
                 setSeason('dino');
               }}
-              className={`px-2 py-1 text-xs font-bold rounded-lg transition-all cursor-pointer whitespace-nowrap shrink-0 flex items-center gap-1 ${
+              className={`px-2 py-1 text-xs font-bold rounded-lg transition-all cursor-pointer whitespace-nowrap shrink-0 ${
                 season === 'dino' ? 'bg-[#16A34A] text-white shadow-xs ring-1 ring-lime-200' : 'text-stone-300 hover:text-white'
               }`}
-              title="切換至史前恐龍奇幻谷 (🦖 4秒無縫動態循環背景視頻)"
+              title="切換至史前恐龍奇幻谷 (🦖 腕龍、三角龍、琥珀光點與翼龍動畫)"
             >
-              <span>🦖 恐龍島</span>
-              <span className="text-[9px] opacity-85">🎬</span>
+              🦖 恐龍島
             </button>
             <button
               onClick={() => {

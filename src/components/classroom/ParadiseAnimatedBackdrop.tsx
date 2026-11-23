@@ -132,6 +132,8 @@ const CLOUD_THEMES = new Set<ParadiseSeason>([
   'skycastle',
   'englishbook',
   'pinyin',
+  'junkfood',
+  'dino',
 ]);
 
 export const ParadiseAnimatedBackdrop: React.FC<ParadiseAnimatedBackdropProps> = ({
@@ -603,14 +605,113 @@ export const ParadiseAnimatedBackdrop: React.FC<ParadiseAnimatedBackdropProps> =
         <div className="absolute inset-0 bg-gradient-to-tr from-cyan-400/10 via-teal-200/6 to-sky-300/10 animate-paradise-caustic" />
       )}
 
-      {/* JUNK FOOD PARADISE: Subtle golden carnival glow */}
+      {/* JUNK FOOD PARADISE: Cola Soda Fizz Bubbles, Warm Grill Steam, Coaster Twinkles & Pond Gleams */}
       {season === 'junkfood' && (
-        <div className="absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-amber-200/10 to-transparent pointer-events-none" />
+        <>
+          {Array.from({ length: 20 }).map((_, i) => (
+            <div
+              key={`jf-bubble-${i}`}
+              className="absolute rounded-full border-2 border-amber-100/80 bg-amber-300/30 animate-bubble-rise"
+              style={{
+                left: `${(i * 4.9 + 3) % 94}%`,
+                bottom: '-14px',
+                width: `${7 + (i % 3) * 4}px`,
+                height: `${7 + (i % 3) * 4}px`,
+                animationDuration: `${4.2 + (i % 4) * 1.1}s`,
+                animationDelay: `${(i * 0.38) % 4}s`,
+              }}
+            />
+          ))}
+          {/* Burger houses & fry towers gentle rising steam puffs */}
+          {[14, 22, 30, 38, 61].map((leftPct, idx) => (
+            <div
+              key={`jf-steam-${idx}`}
+              className="absolute w-7 h-7 rounded-full bg-white/30 blur-md animate-paradise-spark-rise"
+              style={{
+                left: `${leftPct}%`,
+                top: `${14 + (idx % 2) * 8}%`,
+                animationDuration: `${4.5 + (idx % 3) * 1.1}s`,
+                animationDelay: `${idx * 0.7}s`,
+              }}
+            />
+          ))}
+          {/* Pond water gleams */}
+          {Array.from({ length: 8 }).map((_, i) => (
+            <div
+              key={`jf-gleam-${i}`}
+              className="absolute h-[3px] bg-cyan-100/75 rounded-full animate-water-gleam"
+              style={{
+                left: `${(i * 9.5 + 8) % 88}%`,
+                bottom: `${8 + (i % 4) * 5}%`,
+                width: `${16 + (i % 3) * 8}px`,
+                animationDelay: `${i * 0.45}s`,
+              }}
+            />
+          ))}
+          {Array.from({ length: 16 }).map((_, i) => (
+            <div
+              key={`jf-twinkle-${i}`}
+              className="absolute text-amber-200 animate-twinkle"
+              style={{
+                left: `${(i * 6.3 + 4) % 94}%`,
+                top: `${14 + ((i * 12) % 70)}%`,
+                fontSize: `${11 + (i % 3) * 3}px`,
+                animationDelay: `${(i * 0.35) % 3}s`,
+              }}
+            >
+              ✦
+            </div>
+          ))}
+        </>
       )}
 
-      {/* DINO JUNGLE WORLD: Subtle warm canopy sunbeam & mist complementing dino video */}
+      {/* DINO JUNGLE WORLD: Canopy Sunbeams, Rising Amber Spores, Waterfall Mist, River Gleams & Gliding Pterodactyls */}
       {season === 'dino' && (
-        <div className="absolute -top-8 left-[22%] w-52 h-[78%] bg-gradient-to-b from-lime-200/18 via-emerald-200/8 to-transparent blur-xl animate-sunbeam-sway" />
+        <>
+          <div className="absolute -top-8 left-[22%] w-52 h-[78%] bg-gradient-to-b from-lime-200/24 via-emerald-200/10 to-transparent blur-xl animate-sunbeam-sway" />
+          <div
+            className="absolute bottom-[12%] inset-x-0 h-32 bg-gradient-to-r from-transparent via-emerald-100/20 to-transparent blur-2xl animate-paradise-mist"
+            style={{ animationDuration: '15s' }}
+          />
+          <div
+            className="absolute top-[10%] left-0 w-full animate-paradise-soar"
+            style={{ animationDuration: '25s' }}
+          >
+            <PixelPterodactyl size={34} />
+          </div>
+          <div
+            className="absolute top-[18%] left-0 w-full animate-paradise-soar"
+            style={{ animationDuration: '33s', animationDelay: '-14s' }}
+          >
+            <PixelPterodactyl size={26} />
+          </div>
+          {Array.from({ length: 8 }).map((_, i) => (
+            <div
+              key={`dino-river-gleam-${i}`}
+              className="absolute h-[3px] bg-sky-100/80 rounded-full animate-water-gleam"
+              style={{
+                left: `${56 + (i % 4) * 9}%`,
+                top: `${56 + (i % 3) * 12}%`,
+                width: `${16 + (i % 3) * 9}px`,
+                animationDelay: `${i * 0.5}s`,
+              }}
+            />
+          ))}
+          {Array.from({ length: 22 }).map((_, i) => (
+            <div
+              key={`dino-spore-${i}`}
+              className="absolute rounded-full bg-amber-200/85 shadow-[0_0_8px_#fbbf24] animate-paradise-spark-rise"
+              style={{
+                left: `${(i * 4.7 + 3) % 94}%`,
+                top: `${30 + ((i * 11) % 60)}%`,
+                width: `${4 + (i % 3) * 2}px`,
+                height: `${4 + (i % 3) * 2}px`,
+                animationDuration: `${5.2 + (i % 4) * 1.4}s`,
+                animationDelay: `${(i * 0.42) % 5}s`,
+              }}
+            />
+          ))}
+        </>
       )}
 
       {/* PARIS EIFFEL TOWER (Complementary subtle rose petals over the 4s looping video) */}
