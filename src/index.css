@@ -1232,6 +1232,223 @@ html.stardew-mode::-webkit-scrollbar-corner,
   animation: batFlyUp 1.5s ease-out forwards;
 }
 
+/* Pixel Paradise Living World Animations (Compositor-only transform & opacity) */
+@keyframes paradiseShootingStar {
+  0% {
+    transform: translate3d(0, 0, 0) rotate(-28deg) scaleX(0.4);
+    opacity: 0;
+  }
+  8% {
+    opacity: 1;
+    transform: translate3d(-45px, 24px, 0) rotate(-28deg) scaleX(1.1);
+  }
+  30% {
+    opacity: 0.9;
+    transform: translate3d(-240px, 128px, 0) rotate(-28deg) scaleX(1);
+  }
+  42%, 100% {
+    opacity: 0;
+    transform: translate3d(-320px, 170px, 0) rotate(-28deg) scaleX(0.3);
+  }
+}
+
+@keyframes paradiseButterfly {
+  0% {
+    transform: translate3d(0px, 0px, 0) scale(1);
+  }
+  20% {
+    transform: translate3d(48px, -26px, 0) scale(1.06);
+  }
+  45% {
+    transform: translate3d(96px, 14px, 0) scale(0.95);
+  }
+  70% {
+    transform: translate3d(42px, 32px, 0) scale(1.04);
+  }
+  100% {
+    transform: translate3d(0px, 0px, 0) scale(1);
+  }
+}
+
+@keyframes paradiseWingFlap {
+  0%, 100% {
+    transform: scaleX(1);
+  }
+  50% {
+    transform: scaleX(0.35);
+  }
+}
+
+@keyframes paradiseFishGlide {
+  0% {
+    transform: translate3d(-14%, 0px, 0);
+    opacity: 0;
+  }
+  8% {
+    opacity: 0.72;
+  }
+  50% {
+    transform: translate3d(52%, -14px, 0);
+    opacity: 0.78;
+  }
+  92% {
+    opacity: 0.72;
+  }
+  100% {
+    transform: translate3d(114%, 6px, 0);
+    opacity: 0;
+  }
+}
+
+@keyframes paradiseFishGlideReverse {
+  0% {
+    transform: translate3d(114%, 0px, 0) scaleX(-1);
+    opacity: 0;
+  }
+  8% {
+    opacity: 0.68;
+  }
+  50% {
+    transform: translate3d(48%, 12px, 0) scaleX(-1);
+    opacity: 0.75;
+  }
+  92% {
+    opacity: 0.68;
+  }
+  100% {
+    transform: translate3d(-14%, -8px, 0) scaleX(-1);
+    opacity: 0;
+  }
+}
+
+@keyframes paradiseSkySoar {
+  0% {
+    transform: translate3d(-12%, 12px, 0);
+    opacity: 0;
+  }
+  10% {
+    opacity: 0.75;
+  }
+  50% {
+    transform: translate3d(50%, -18px, 0);
+    opacity: 0.85;
+  }
+  90% {
+    opacity: 0.75;
+  }
+  100% {
+    transform: translate3d(112%, 8px, 0);
+    opacity: 0;
+  }
+}
+
+@keyframes paradiseGustMist {
+  0% {
+    transform: translate3d(-30%, 0px, 0) skewX(-16deg);
+    opacity: 0;
+  }
+  25% {
+    opacity: 0.36;
+  }
+  75% {
+    opacity: 0.3;
+  }
+  100% {
+    transform: translate3d(40%, 18px, 0) skewX(-16deg);
+    opacity: 0;
+  }
+}
+
+@keyframes paradiseSparkRise {
+  0% {
+    transform: translate3d(0px, 12px, 0) scale(0.65) rotate(-6deg);
+    opacity: 0;
+  }
+  18% {
+    opacity: 0.92;
+  }
+  65% {
+    transform: translate3d(16px, -68px, 0) scale(1.08) rotate(6deg);
+    opacity: 0.78;
+  }
+  100% {
+    transform: translate3d(-12px, -130px, 0) scale(0.75) rotate(-4deg);
+    opacity: 0;
+  }
+}
+
+@keyframes paradiseLavaPulse {
+  0%, 100% {
+    opacity: 0.34;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.68;
+    transform: scale(1.04);
+  }
+}
+
+@keyframes paradiseCausticSweep {
+  0%, 100% {
+    transform: translate3d(-4%, -2%, 0) scale(1.02);
+    opacity: 0.22;
+  }
+  50% {
+    transform: translate3d(4%, 2%, 0) scale(1.06);
+    opacity: 0.38;
+  }
+}
+
+.animate-paradise-shooting-star {
+  will-change: transform, opacity;
+  animation: paradiseShootingStar 7.5s ease-out infinite;
+}
+
+.animate-paradise-butterfly {
+  will-change: transform;
+  animation: paradiseButterfly 11s ease-in-out infinite;
+}
+
+.animate-paradise-wing {
+  transform-origin: center center;
+  animation: paradiseWingFlap 0.28s ease-in-out infinite;
+}
+
+.animate-paradise-fish {
+  will-change: transform, opacity;
+  animation: paradiseFishGlide linear infinite;
+}
+
+.animate-paradise-fish-reverse {
+  will-change: transform, opacity;
+  animation: paradiseFishGlideReverse linear infinite;
+}
+
+.animate-paradise-soar {
+  will-change: transform, opacity;
+  animation: paradiseSkySoar linear infinite;
+}
+
+.animate-paradise-mist {
+  will-change: transform, opacity;
+  animation: paradiseGustMist ease-in-out infinite;
+}
+
+.animate-paradise-spark-rise {
+  will-change: transform, opacity;
+  animation: paradiseSparkRise ease-out infinite;
+}
+
+.animate-paradise-lava-pulse {
+  will-change: transform, opacity;
+  animation: paradiseLavaPulse 3.6s ease-in-out infinite;
+}
+
+.animate-paradise-caustic {
+  will-change: transform, opacity;
+  animation: paradiseCausticSweep 6.5s ease-in-out infinite;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .animate-upgrade-particle,
   .animate-upgrade-ring,
@@ -1247,7 +1464,29 @@ html.stardew-mode::-webkit-scrollbar-corner,
   .animate-fish-shadow,
   .animate-pickaxe-swing,
   .animate-rock-shake,
-  .animate-bat-fly {
+  .animate-bat-fly,
+  .animate-paradise-shooting-star,
+  .animate-paradise-butterfly,
+  .animate-paradise-wing,
+  .animate-paradise-fish,
+  .animate-paradise-fish-reverse,
+  .animate-paradise-soar,
+  .animate-paradise-mist,
+  .animate-paradise-spark-rise,
+  .animate-paradise-lava-pulse,
+  .animate-paradise-caustic,
+  .animate-cloud-slow,
+  .animate-cloud-med,
+  .animate-aurora-wave,
+  .animate-aurora-wave-alt,
+  .animate-blizzard-streak,
+  .animate-ember-rise,
+  .animate-bubble-rise,
+  .animate-sunbeam-sway,
+  .animate-petal-sway,
+  .animate-winter-snow,
+  .animate-firefly-float,
+  .animate-firefly-blink {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
   }

@@ -22,7 +22,9 @@ import {
   Moon,
   Crosshair,
   MessageCircle,
+  Sparkles,
 } from 'lucide-react';
+import { ParadiseAnimatedBackdrop } from './ParadiseAnimatedBackdrop';
 
 // Wide panoramic 16-bit retro pixel art game world maps (Stardew Valley style, 16:9 expansive scenery)
 import autumnBg from '../../assets/images/paradise_wide_autumn_1794664724856.jpg';
@@ -476,6 +478,8 @@ export const PixelParadiseView: React.FC<PixelParadiseViewProps> = ({
 
   // Random inner thoughts (OS) & mini-stories toggle
   const [showStories, setShowStories] = useState<boolean>(true);
+  // Living world background animation effects toggle (enabled by default)
+  const [showBackdropFx, setShowBackdropFx] = useState<boolean>(true);
   const seasonRef = useRef<ParadiseSeason>(season);
   const timeOfDayRef = useRef<ParadiseTimeOfDay>(timeOfDay);
   const showStoriesRef = useRef<boolean>(showStories);
@@ -1286,46 +1290,6 @@ export const PixelParadiseView: React.FC<PixelParadiseViewProps> = ({
     }
   }, [season]);
 
-  const seasonEmoji = useMemo(() => {
-    switch (season) {
-      case 'spring':
-        return '🌸';
-      case 'summer':
-        return '☀️';
-      case 'winter':
-        return '❄️';
-      case 'sakura':
-        return '🌸';
-      case 'starlight':
-        return '✨';
-      case 'tropical':
-        return '🌺';
-      case 'skycastle':
-        return '☁️';
-      case 'englishbook':
-        return '📖';
-      case 'pinyin':
-        return '🏮';
-      case 'polar':
-        return '🐧';
-      case 'volcano':
-        return '🔥';
-      case 'blizzard':
-        return '❄️';
-      case 'candy':
-        return '🍭';
-      case 'underwater':
-        return '🫧';
-      case 'junkfood':
-        return '🍟';
-      case 'dino':
-        return '🦕';
-      case 'autumn':
-      default:
-        return '🍂';
-    }
-  }, [season]);
-
   const lightingFilter = useMemo(() => {
     switch (timeOfDay) {
       case 'dawn':
@@ -1731,6 +1695,23 @@ export const PixelParadiseView: React.FC<PixelParadiseViewProps> = ({
             <span className="hidden sm:inline">💭 劇情</span>
           </button>
 
+          {/* Toggle Living World Background Animations */}
+          <button
+            onClick={() => {
+              soundManager.playClick();
+              setShowBackdropFx((prev) => !prev);
+            }}
+            className={`px-2.5 py-1 text-xs font-bold rounded-xl border flex items-center gap-1.5 transition-all cursor-pointer whitespace-nowrap shrink-0 ${
+              showBackdropFx
+                ? 'bg-teal-700 border-teal-400 text-white shadow-xs'
+                : 'bg-[#5A3818] border-[#8B5A2B] text-stone-300'
+            }`}
+            title="開啟/關閉樂園動態背景動畫特效 (雲朵、極光、飛鳥、魚群、花瓣與天氣光影)"
+          >
+            <Sparkles className="w-3.5 h-3.5" />
+            <span className="hidden sm:inline">背景動畫</span>
+          </button>
+
           {/* Zoom & Overview controls */}
           <div className="flex items-center bg-[#1b0f04] p-0.5 rounded-xl border border-[#7a481c]">
             <button
@@ -2013,97 +1994,12 @@ export const PixelParadiseView: React.FC<PixelParadiseViewProps> = ({
           {/* B. TIME OF DAY LIGHTING OVERLAY */}
           <div className={`absolute inset-0 ${lightingFilter}`} />
 
-          {/* Night Time Fireflies inside expanded world */}
-          {timeOfDay === 'night' && (
-            <div className="absolute inset-0 pointer-events-none overflow-hidden z-10">
-              {Array.from({ length: 28 }).map((_, i) => (
-                <div
-                  key={i}
-                  className="absolute w-2.5 h-2.5 rounded-full bg-amber-300 shadow-[0_0_12px_#FDE047] animate-pulse"
-                  style={{
-                    left: `${(i * 13.7 + 4) % 94}%`,
-                    top: `${(i * 19.3 + 7) % 88}%`,
-                    animationDuration: `${1.8 + (i % 4) * 0.7}s`,
-                  }}
-                />
-              ))}
-            </div>
-          )}
-
-          {/* D. THEMATIC WEATHER & ATMOSPHERE PARTICLES */}
-          {season === 'blizzard' ? (
-            <div className="absolute inset-0 pointer-events-none overflow-hidden z-10">
-              <div className="absolute inset-0 bg-slate-900/15" />
-              {Array.from({ length: 42 }).map((_, i) => (
-                <div
-                  key={`paradise-blizzard-${i}`}
-                  className="absolute bg-gradient-to-b from-transparent via-white to-sky-100 rounded-full animate-blizzard-streak"
-                  style={{
-                    left: `${(i * 3.1 + 1) % 112}%`,
-                    top: '-12%',
-                    width: i % 3 === 0 ? '3px' : '2px',
-                    height: `${32 + (i % 4) * 18}px`,
-                    animationDuration: `${0.9 + (i % 5) * 0.22}s`,
-                    animationDelay: `${(i * 0.11) % 1.2}s`,
-                  }}
-                />
-              ))}
-            </div>
-          ) : season === 'volcano' ? (
-            <div className="absolute inset-0 pointer-events-none overflow-hidden z-10">
-              <div className="absolute bottom-0 inset-x-0 h-44 bg-gradient-to-t from-orange-600/25 to-transparent" />
-              {Array.from({ length: 28 }).map((_, i) => (
-                <div
-                  key={`paradise-ember-${i}`}
-                  className="absolute rounded-full bg-amber-300 shadow-[0_0_8px_#fb923c] animate-ember-rise"
-                  style={{
-                    left: `${(i * 3.7 + 2) % 96}%`,
-                    bottom: '-10px',
-                    width: `${4 + (i % 3) * 2}px`,
-                    height: `${4 + (i % 3) * 2}px`,
-                    animationDuration: `${3.6 + (i % 4) * 0.9}s`,
-                    animationDelay: `${(i * 0.35) % 3.5}s`,
-                  }}
-                />
-              ))}
-            </div>
-          ) : season === 'underwater' ? (
-            <div className="absolute inset-0 pointer-events-none overflow-hidden z-10">
-              <div className="absolute -top-6 left-1/4 w-56 h-[80%] bg-gradient-to-b from-cyan-200/25 via-teal-200/10 to-transparent blur-xl animate-sunbeam-sway" />
-              {Array.from({ length: 24 }).map((_, i) => (
-                <div
-                  key={`paradise-bubble-${i}`}
-                  className="absolute rounded-full border-2 border-cyan-100/75 bg-cyan-200/25 animate-bubble-rise"
-                  style={{
-                    left: `${(i * 4.3 + 2) % 96}%`,
-                    bottom: '-14px',
-                    width: `${8 + (i % 4) * 5}px`,
-                    height: `${8 + (i % 4) * 5}px`,
-                    animationDuration: `${4.5 + (i % 4) * 1.2}s`,
-                    animationDelay: `${(i * 0.4) % 4.5}s`,
-                  }}
-                />
-              ))}
-            </div>
-          ) : (
-            <div className="absolute inset-0 pointer-events-none overflow-hidden z-10">
-              {Array.from({ length: 22 }).map((_, i) => (
-                <div
-                  key={i}
-                  className="absolute text-base select-none"
-                  style={{
-                    left: `${(i * 14 + 3) % 96}%`,
-                    top: '-30px',
-                    animation: `floating-weather 7.5s linear infinite`,
-                    animationDelay: `${(i * 0.38) % 6}s`,
-                    opacity: 0.88,
-                  }}
-                >
-                  {seasonEmoji}
-                </div>
-              ))}
-            </div>
-          )}
+          {/* C & D. MULTI-LAYERED LIVING 16-BIT WORLD ANIMATION BACKDROP (Clouds, Aurora, Stars, Wildlife, Weather & Light) */}
+          <ParadiseAnimatedBackdrop
+            season={season}
+            timeOfDay={timeOfDay}
+            enabled={showBackdropFx}
+          />
 
           {/* E. STUDENT LIVING COMPANIONS (Silky-smooth unrestricted world roaming) */}
           {companions.map((comp) => {
@@ -2264,12 +2160,6 @@ export const PixelParadiseView: React.FC<PixelParadiseViewProps> = ({
 
       {/* Animation keyframes */}
       <style>{`
-        @keyframes floating-weather {
-          0% { transform: translate(0, 0) rotate(0deg); opacity: 0; }
-          10% { opacity: 0.95; }
-          90% { opacity: 0.95; }
-          100% { transform: translate(160px, 920px) rotate(360deg); opacity: 0; }
-        }
         @keyframes pet-breathe {
           0%, 100% { transform: translateY(0); }
           50% { transform: translateY(-2.5px); }
