@@ -14,7 +14,6 @@ import {
   X,
   Volume2,
   VolumeX,
-  Search,
   Heart,
   Sunrise,
   Sun,
@@ -45,6 +44,8 @@ import underwaterBg from '../../assets/images/theme_underwater_ocean_17954286665
 import junkfoodBg from '../../assets/images/theme_junk_food_1795428746765.jpg';
 import dinoBg from '../../assets/images/theme_dino_jungle_1795428666405.jpg';
 import parisBg from '../../assets/images/paradise_paris_eiffel_1795430843298.jpg';
+import crocodileBg from '../../assets/images/theme_crocodile_amazon_1795522929200.jpg';
+import sharkBg from '../../assets/images/theme_shark_attack_1795522929053.jpg';
 
 import { PointsFeedbackModal, PointsFeedbackData } from './PointsFeedbackModal';
 
@@ -68,7 +69,9 @@ export type ParadiseSeason =
   | 'underwater'
   | 'junkfood'
   | 'dino'
-  | 'paris';
+  | 'paris'
+  | 'crocodile'
+  | 'shark';
 export type ParadiseTimeOfDay = 'day' | 'dawn' | 'sunset' | 'night';
 
 // World expansion multiplier & native 16:9 panoramic aspect ratio
@@ -105,6 +108,8 @@ const PARADISE_LOOP_VIDEOS: Partial<Record<ParadiseSeason, string>> = {
   candy: '/assets/videos/paradise_candy_drinks.mp4',
   underwater: '/assets/videos/paradise_underwater_ocean.mp4',
   paris: '/assets/videos/paradise_paris_eiffel.mp4',
+  crocodile: '/assets/videos/paradise_crocodile_amazon.mp4',
+  shark: '/assets/videos/paradise_shark_attack.mp4',
 };
 
 // 9 spatial world regions (3x3 grid) so companions visit genuinely varied areas instead of bouncing in one spot
@@ -130,15 +135,25 @@ const PARIS_GROUND_ZONES = [
   { id: 5, minX: 6, maxX: 31, minY: 81, maxY: 94 },  // Southwest garden park
 ];
 
-// Keep land companions within walkable ground (respecting SE lake on classic maps & sky/Seine bounds on Paris Eiffel Tower map)
+// Walkable safe shoreline, lighthouse headland, boardwalk, beach village & wooden pier for Shark Attack bay scene
+const SHARK_BEACH_ZONES = [
+  { id: 0, minX: 14, maxX: 35, minY: 12, maxY: 26 }, // Lighthouse cliff & west boardwalk
+  { id: 1, minX: 35, maxX: 60, minY: 11, maxY: 26 }, // Main wooden boardwalk & snack stand
+  { id: 2, minX: 40, maxX: 72, minY: 22, maxY: 33 }, // North crescent sandy beach
+  { id: 3, minX: 72, maxX: 94, minY: 12, maxY: 42 }, // Northeast beach village & lifeguard tower
+  { id: 4, minX: 76, maxX: 94, minY: 42, maxY: 69 }, // East shoreline & wooden boat pier
+  { id: 5, minX: 80, maxX: 94, minY: 69, maxY: 92 }, // Southeast palm beach & cottages
+];
+
+// Keep land companions within walkable ground across scene-specific terrain bounds
 function sanitizeLandPoint(
   x: number,
   y: number,
   avoidSeLake = false,
-  isParis = false
+  activeSeason: ParadiseSeason = 'autumn'
 ): { x: number; y: number } {
   const cx = Math.max(4, Math.min(95, x));
-  if (isParis) {
+  if (activeSeason === 'paris') {
     let cy = Math.max(49, Math.min(94, y));
     // Stone bridge crossing over Seine canal is walkable
     if (cx >= 72 && cx <= 83 && cy >= 78 && cy <= 93) {
@@ -157,6 +172,25 @@ function sanitizeLandPoint(
     return { x: cx, y: cy };
   }
 
+  if (activeSeason === 'shark') {
+    const cy = Math.max(10, Math.min(93, y));
+    // Lighthouse cliff & northern wooden boardwalk
+    if (cy <= 27) {
+      return { x: Math.max(13, cx), y: cy };
+    }
+    // North crescent beach
+    if (cy <= 34 && cx >= 36) {
+      return { x: cx, y: cy };
+    }
+    // East wooden pier extending into the bay
+    if (cy >= 59 && cy <= 71 && cx >= 73) {
+      return { x: cx, y: cy };
+    }
+    // East village, lifeguard tower & southeast palm shoreline
+    const minEastX = cy < 58 ? 72 : cy < 76 ? 78 : 74;
+    return { x: Math.max(minEastX, cx), y: cy };
+  }
+
   const cy = Math.max(11, Math.min(90, y));
   if (!avoidSeLake) {
     return { x: cx, y: cy };
@@ -173,14 +207,26 @@ function sanitizeLandPoint(
   return { x: cx, y: cy };
 }
 
-function getZoneIndexForPoint(x: number, y: number, isParis = false): number {
-  if (isParis) {
+function getZoneIndexForPoint(
+  x: number,
+  y: number,
+  activeSeason: ParadiseSeason = 'autumn'
+): number {
+  if (activeSeason === 'paris') {
     if (x < 33 && y >= 81) return 5;
     if (x < 38) return 0;
     if (y < 63 && x <= 73) return 1;
     if (x >= 62 && y < 74) return 3;
     if (y >= 75) return 4;
     return 2;
+  }
+  if (activeSeason === 'shark') {
+    if (y <= 26 && x < 35) return 0;
+    if (y <= 26 && x < 65) return 1;
+    if (y <= 35 && x < 73) return 2;
+    if (y < 43) return 3;
+    if (y < 70) return 4;
+    return 5;
   }
   const col = x < 34 ? 0 : x < 66 ? 1 : 2;
   const row = y < 37 ? 0 : y < 65 ? 1 : 2;
@@ -192,17 +238,26 @@ function pickRandomZonePoint(
   currentX = 50,
   currentY = 50,
   avoidSeLake = false,
-  isParis = false
+  activeSeason: ParadiseSeason = 'autumn'
 ): { x: number; y: number; zoneId: number } {
-  const zones = isParis ? PARIS_GROUND_ZONES : PARADISE_MAP_ZONES;
-  const currentZone = getZoneIndexForPoint(currentX, currentY, isParis);
+  const zones =
+    activeSeason === 'paris'
+      ? PARIS_GROUND_ZONES
+      : activeSeason === 'shark'
+      ? SHARK_BEACH_ZONES
+      : PARADISE_MAP_ZONES;
+  const currentZone = getZoneIndexForPoint(currentX, currentY, activeSeason);
   const blocked = new Set<number>([currentZone, ...recentZones.slice(-3)]);
-  if (avoidSeLake && !isParis) {
+  if (avoidSeLake && activeSeason !== 'paris' && activeSeason !== 'shark') {
     blocked.add(8);
   }
   let candidates = zones.filter((z) => !blocked.has(z.id));
   if (candidates.length === 0) {
-    candidates = zones.filter((z) => z.id !== currentZone && (isParis || !avoidSeLake || z.id !== 8));
+    candidates = zones.filter(
+      (z) =>
+        z.id !== currentZone &&
+        (activeSeason === 'paris' || activeSeason === 'shark' || !avoidSeLake || z.id !== 8)
+    );
   }
   if (candidates.length === 0) {
     candidates = zones;
@@ -210,7 +265,7 @@ function pickRandomZonePoint(
   const chosen = candidates[Math.floor(Math.random() * candidates.length)];
   const rawX = chosen.minX + Math.random() * (chosen.maxX - chosen.minX);
   const rawY = chosen.minY + Math.random() * (chosen.maxY - chosen.minY);
-  const pt = sanitizeLandPoint(rawX, rawY, avoidSeLake, isParis);
+  const pt = sanitizeLandPoint(rawX, rawY, avoidSeLake, activeSeason);
   return { x: pt.x, y: pt.y, zoneId: chosen.id };
 }
 
@@ -223,8 +278,12 @@ function buildIrregularRoute(
   isSprint = false,
   isAquatic = false,
   isUnderwaterWorld = false,
-  isParis = false
+  activeSeason: ParadiseSeason = 'autumn'
 ): { waypoints: Array<{ x: number; y: number }>; nextRecentZones: number[] } {
+  const isParis = activeSeason === 'paris';
+  const isShark = activeSeason === 'shark';
+  const isCrocodile = activeSeason === 'crocodile';
+
   if (isAquatic && isParis && !isSprint) {
     // Ducks & turtles can paddle playfully along the Seine river canal at the bottom
     const pt = { x: 37 + Math.random() * 31, y: 88 + Math.random() * 7 };
@@ -235,7 +294,31 @@ function buildIrregularRoute(
     return { waypoints: [curveMid, pt], nextRecentZones: recentZones };
   }
 
-  if (isAquatic && !isUnderwaterWorld && !isParis && !isSprint) {
+  if (isAquatic && isShark && !isSprint) {
+    // Ducks & turtles paddle across the open turquoise cove waters
+    const pt = { x: 18 + Math.random() * 52, y: 38 + Math.random() * 48 };
+    const curveMid = {
+      x: Math.max(14, Math.min(72, (startX + pt.x) / 2 + (Math.random() * 14 - 7))),
+      y: Math.max(36, Math.min(88, (startY + pt.y) / 2 + (Math.random() * 12 - 6))),
+    };
+    return { waypoints: [curveMid, pt], nextRecentZones: recentZones };
+  }
+
+  if (isAquatic && isCrocodile && !isSprint) {
+    // Aquatic pets paddle along the diagonal Amazon river channel
+    const t = 0.15 + Math.random() * 0.72;
+    const pt = {
+      x: Math.max(10, Math.min(86, 12 + t * 70 + (Math.random() * 10 - 5))),
+      y: Math.max(16, Math.min(88, 16 + t * 68 + (Math.random() * 8 - 4))),
+    };
+    const curveMid = {
+      x: Math.max(10, Math.min(86, (startX + pt.x) / 2 + (Math.random() * 8 - 4))),
+      y: Math.max(16, Math.min(88, (startY + pt.y) / 2 + (Math.random() * 8 - 4))),
+    };
+    return { waypoints: [curveMid, pt], nextRecentZones: recentZones };
+  }
+
+  if (isAquatic && !isUnderwaterWorld && !isParis && !isShark && !isCrocodile && !isSprint) {
     // Classic aquatic pets can roam widely between lakeside shore, piers, and pond
     const pt =
       Math.random() < 0.35
@@ -255,7 +338,7 @@ function buildIrregularRoute(
   let cursorY = startY;
 
   for (let i = 0; i < legCount; i++) {
-    const picked = pickRandomZonePoint(nextRecent, cursorX, cursorY, avoidSeLake, isParis);
+    const picked = pickRandomZonePoint(nextRecent, cursorX, cursorY, avoidSeLake, activeSeason);
     // Insert an off-axis curved detour point so path bends unpredictably instead of linear A<->B movement
     const dx = picked.x - cursorX;
     const dy = picked.y - cursorY;
@@ -263,13 +346,13 @@ function buildIrregularRoute(
     const perpX = -dy / dist;
     const perpY = dx / dist;
     const curveSign = Math.random() < 0.5 ? 1 : -1;
-    const bendOffset = (isParis ? 6 + Math.random() * 10 : 10 + Math.random() * 16) * curveSign;
+    const bendOffset = (isParis || isShark ? 6 + Math.random() * 10 : 10 + Math.random() * 16) * curveSign;
     const tMid = 0.35 + Math.random() * 0.3;
     const midPt = sanitizeLandPoint(
       cursorX + dx * tMid + perpX * bendOffset,
       cursorY + dy * tMid + perpY * bendOffset,
       avoidSeLake,
-      isParis
+      activeSeason
     );
     if (dist > 22) {
       waypoints.push(midPt);
@@ -431,6 +514,16 @@ const SEASON_INNER_OS: Record<ParadiseSeason, string[]> = {
     '（快看！巴黎鐵塔頂端的光束在轉動，整座鐵塔都在閃閃發亮🌟）',
     '（塞納河畔的微風好舒服，真想去旁邊的咖啡館喝一杯熱可可☕）',
   ],
+  crocodile: [
+    '（亞馬遜河裡有好多大鱷魚在曬太陽，我們走吊橋過去看看吧🐊）',
+    '（雙重瀑布的水花好涼爽！樹頂還有金剛鸚鵡在唱歌喔🦜）',
+    '（沿著金色沙岸散步，前面就是叢林高腳木屋啦🌿）',
+  ],
+  shark: [
+    '（海面上出現大白鯊的背鰭了！大家先在燈塔步道和沙灘觀戰🦈）',
+    '（救生員旗幟飄起來了，從木頭碼頭上看海灣風景超刺激🌊）',
+    '（椰子樹下的沙灘好安全，海風吹過來涼涼的喔🏝️）',
+  ],
 };
 
 const NIGHT_INNER_OS: string[] = [
@@ -475,7 +568,6 @@ interface PixelParadiseViewProps {
 
 export const PixelParadiseView: React.FC<PixelParadiseViewProps> = ({
   students,
-  className,
   onApplyPoints,
   onChangeAvatar,
   onClose,
@@ -535,10 +627,6 @@ export const PixelParadiseView: React.FC<PixelParadiseViewProps> = ({
   const [focusedCompanionId, setFocusedCompanionId] = useState<string | null>(null);
   const [isFollowingCamera, setIsFollowingCamera] = useState<boolean>(false);
 
-  // Student finder search query
-  const [studentSearch, setStudentSearch] = useState<string>('');
-  const [isSearchOpen, setIsSearchOpen] = useState<boolean>(false);
-
   // Fullscreen container state
   const [isFullscreen, setIsFullscreen] = useState<boolean>(false);
 
@@ -560,6 +648,7 @@ export const PixelParadiseView: React.FC<PixelParadiseViewProps> = ({
     const avoidLake = CLASSIC_LAKE_SEASONS.has(season);
     const isUnderwater = season === 'underwater';
     const isParis = season === 'paris';
+    const isShark = season === 'shark';
 
     setCompanions((prev) =>
       prev.map((c, idx) => {
@@ -571,7 +660,7 @@ export const PixelParadiseView: React.FC<PixelParadiseViewProps> = ({
           if (c.isAquatic) {
             const inSeine = c.x >= 36 && c.x <= 69 && c.y >= 87 && c.y <= 95;
             if (!inSeine) {
-              const init = getInitialCoordinates(idx, true, false, true);
+              const init = getInitialCoordinates(idx, true, false, 'paris');
               nextX = init.x;
               nextY = init.y;
             }
@@ -581,7 +670,27 @@ export const PixelParadiseView: React.FC<PixelParadiseViewProps> = ({
             const inSeineWater =
               (c.x > 32 && c.y > 84.5 && !(c.x >= 72 && c.x <= 83)) || (c.x > 83 && c.y > 80);
             if (inUpperSkyOrTower || inSeineWater) {
-              const init = getInitialCoordinates(idx, false, false, true);
+              const init = getInitialCoordinates(idx, false, false, 'paris');
+              nextX = init.x;
+              nextY = init.y;
+            }
+            if (nextAction === 'swimming') {
+              nextAction = 'walking';
+            }
+          }
+        } else if (isShark) {
+          if (c.isAquatic) {
+            const inBay = c.x >= 14 && c.x <= 72 && c.y >= 36 && c.y <= 88;
+            if (!inBay) {
+              const init = getInitialCoordinates(idx, true, false, 'shark');
+              nextX = init.x;
+              nextY = init.y;
+            }
+            nextAction = 'swimming';
+          } else {
+            const safe = sanitizeLandPoint(c.x, c.y, false, 'shark');
+            if (Math.abs(safe.x - c.x) > 3 || Math.abs(safe.y - c.y) > 3) {
+              const init = getInitialCoordinates(idx, false, false, 'shark');
               nextX = init.x;
               nextY = init.y;
             }
@@ -595,9 +704,10 @@ export const PixelParadiseView: React.FC<PixelParadiseViewProps> = ({
           nextAction = 'walking';
         }
 
-        const safeRecent = isParis
-          ? [getZoneIndexForPoint(nextX, nextY, true)]
-          : c.recentZones || [getZoneIndexForPoint(nextX, nextY, false)];
+        const safeRecent =
+          isParis || isShark
+            ? [getZoneIndexForPoint(nextX, nextY, season)]
+            : c.recentZones || [getZoneIndexForPoint(nextX, nextY, season)];
 
         const route = buildIrregularRoute(
           nextX,
@@ -607,7 +717,7 @@ export const PixelParadiseView: React.FC<PixelParadiseViewProps> = ({
           false,
           c.isAquatic,
           isUnderwater,
-          isParis
+          season
         );
         const dest = route.waypoints[0] || { x: nextX, y: nextY };
 
@@ -702,12 +812,29 @@ export const PixelParadiseView: React.FC<PixelParadiseViewProps> = ({
     idx: number,
     isAquatic: boolean,
     avoidLake: boolean,
-    isParis = false
+    activeSeason: ParadiseSeason = 'autumn'
   ) => {
-    if (isAquatic && isParis) {
+    if (isAquatic && activeSeason === 'paris') {
       return {
         x: 38 + ((idx * 13) % 28),
         y: 89 + ((idx * 3) % 6),
+        action: 'swimming' as const,
+      };
+    }
+
+    if (isAquatic && activeSeason === 'shark') {
+      return {
+        x: 20 + ((idx * 17) % 48),
+        y: 40 + ((idx * 13) % 42),
+        action: 'swimming' as const,
+      };
+    }
+
+    if (isAquatic && activeSeason === 'crocodile') {
+      const t = 0.2 + ((idx * 0.19) % 0.65);
+      return {
+        x: 12 + t * 70,
+        y: 16 + t * 68,
         action: 'swimming' as const,
       };
     }
@@ -720,15 +847,22 @@ export const PixelParadiseView: React.FC<PixelParadiseViewProps> = ({
       };
     }
 
-    const zones = isParis ? PARIS_GROUND_ZONES : PARADISE_MAP_ZONES;
+    const zones =
+      activeSeason === 'paris'
+        ? PARIS_GROUND_ZONES
+        : activeSeason === 'shark'
+        ? SHARK_BEACH_ZONES
+        : PARADISE_MAP_ZONES;
     const availableZones =
-      !isParis && avoidLake ? zones.filter((z) => z.id !== 8) : zones;
+      activeSeason !== 'paris' && activeSeason !== 'shark' && avoidLake
+        ? zones.filter((z) => z.id !== 8)
+        : zones;
     const z = availableZones[idx % availableZones.length];
     const pt = sanitizeLandPoint(
       z.minX + Math.random() * (z.maxX - z.minX),
       z.minY + Math.random() * (z.maxY - z.minY),
       avoidLake,
-      isParis
+      activeSeason
     );
     return {
       x: pt.x,
@@ -742,11 +876,10 @@ export const PixelParadiseView: React.FC<PixelParadiseViewProps> = ({
   const [companions, setCompanions] = useState<CompanionState[]>(() => {
     const avoidLake = CLASSIC_LAKE_SEASONS.has(season);
     const isUnderwater = season === 'underwater';
-    const isParis = season === 'paris';
     return students.map((s, idx) => {
       const stardewAvatar = resolveStardewCompanion(s, idx);
       const isAquatic = checkIsAquatic(s, stardewAvatar);
-      const init = getInitialCoordinates(idx, isAquatic, avoidLake, isParis);
+      const init = getInitialCoordinates(idx, isAquatic, avoidLake, season);
       const growthBonus = Math.min(0.55, Math.max(0, s.points * 0.005));
       const initRecent = init.zoneId !== undefined ? [init.zoneId] : [];
       const route = buildIrregularRoute(
@@ -757,7 +890,7 @@ export const PixelParadiseView: React.FC<PixelParadiseViewProps> = ({
         false,
         isAquatic,
         isUnderwater,
-        isParis
+        season
       );
       const firstDest = route.waypoints[0] || { x: init.x, y: init.y };
 
@@ -788,9 +921,9 @@ export const PixelParadiseView: React.FC<PixelParadiseViewProps> = ({
 
   // Sync companions when students prop changes
   useEffect(() => {
-    const avoidLake = CLASSIC_LAKE_SEASONS.has(seasonRef.current);
-    const isUnderwater = seasonRef.current === 'underwater';
-    const isParis = seasonRef.current === 'paris';
+    const activeSeason = seasonRef.current;
+    const avoidLake = CLASSIC_LAKE_SEASONS.has(activeSeason);
+    const isUnderwater = activeSeason === 'underwater';
     setCompanions((prev) =>
       students.map((s, idx) => {
         const existing = prev.find((p) => p.studentId === s.id);
@@ -809,7 +942,7 @@ export const PixelParadiseView: React.FC<PixelParadiseViewProps> = ({
           };
         }
 
-        const init = getInitialCoordinates(idx, isAquatic, avoidLake, isParis);
+        const init = getInitialCoordinates(idx, isAquatic, avoidLake, activeSeason);
         const initRecent = init.zoneId !== undefined ? [init.zoneId] : [];
         const route = buildIrregularRoute(
           init.x,
@@ -819,7 +952,7 @@ export const PixelParadiseView: React.FC<PixelParadiseViewProps> = ({
           false,
           isAquatic,
           isUnderwater,
-          isParis
+          activeSeason
         );
         const dest = route.waypoints[0] || { x: init.x, y: init.y };
         return {
@@ -853,18 +986,18 @@ export const PixelParadiseView: React.FC<PixelParadiseViewProps> = ({
     e.stopPropagation();
     soundManager.playPop();
 
-    const avoidLake = CLASSIC_LAKE_SEASONS.has(seasonRef.current);
-    const isUnderwater = seasonRef.current === 'underwater';
-    const isParis = seasonRef.current === 'paris';
+    const activeSeason = seasonRef.current;
+    const avoidLake = CLASSIC_LAKE_SEASONS.has(activeSeason);
+    const isUnderwater = activeSeason === 'underwater';
     const route = buildIrregularRoute(
       comp.x,
       comp.y,
-      comp.recentZones || [getZoneIndexForPoint(comp.x, comp.y, isParis)],
+      comp.recentZones || [getZoneIndexForPoint(comp.x, comp.y, activeSeason)],
       avoidLake,
       true,
       comp.isAquatic,
       isUnderwater,
-      isParis
+      activeSeason
     );
     const firstWaypoint = route.waypoints[0] || { x: comp.x, y: comp.y };
     const facing = firstWaypoint.x < comp.x ? 'left' : 'right';
@@ -919,6 +1052,8 @@ export const PixelParadiseView: React.FC<PixelParadiseViewProps> = ({
       const avoidLake = CLASSIC_LAKE_SEASONS.has(activeSeason);
       const isUnderwaterWorld = activeSeason === 'underwater';
       const isParis = activeSeason === 'paris';
+      const isShark = activeSeason === 'shark';
+      const isCrocodile = activeSeason === 'crocodile';
 
       setCompanions((prev) =>
         prev.map((c) => {
@@ -984,7 +1119,7 @@ export const PixelParadiseView: React.FC<PixelParadiseViewProps> = ({
                 false,
                 c.isAquatic,
                 isUnderwaterWorld,
-                isParis
+                activeSeason
               );
               targetX = route.waypoints[0]?.x ?? c.x;
               targetY = route.waypoints[0]?.y ?? c.y;
@@ -1034,11 +1169,17 @@ export const PixelParadiseView: React.FC<PixelParadiseViewProps> = ({
             if (c.isAquatic && isParis && action !== 'running') {
               nextX = Math.max(36, Math.min(69, nextX));
               nextY = Math.max(87, Math.min(95, nextY));
-            } else if (c.isAquatic && !isUnderwaterWorld && !isParis && action !== 'running') {
+            } else if (c.isAquatic && isShark && action !== 'running') {
+              nextX = Math.max(14, Math.min(72, nextX));
+              nextY = Math.max(36, Math.min(88, nextY));
+            } else if (c.isAquatic && isCrocodile && action !== 'running') {
+              nextX = Math.max(8, Math.min(88, nextX));
+              nextY = Math.max(14, Math.min(90, nextY));
+            } else if (c.isAquatic && !isUnderwaterWorld && !isParis && !isShark && !isCrocodile && action !== 'running') {
               nextX = Math.max(46, Math.min(95, nextX));
               nextY = Math.max(58, Math.min(92, nextY));
             } else {
-              const safe = sanitizeLandPoint(nextX, nextY, avoidLake, isParis);
+              const safe = sanitizeLandPoint(nextX, nextY, avoidLake, activeSeason);
               nextX = safe.x;
               nextY = safe.y;
             }
@@ -1414,21 +1555,6 @@ export const PixelParadiseView: React.FC<PixelParadiseViewProps> = ({
     );
   };
 
-  // Jump camera directly to student companion ("孩子一眼找到自己那隻")
-  const handleFindStudent = (studentId: string) => {
-    setFocusedCompanionId(studentId);
-    setIsFollowingCamera(true);
-    const comp = companions.find((c) => c.studentId === studentId);
-    if (comp) {
-      focusOnCoordinates(comp.x, comp.y, 1.55);
-    }
-    const targetStudent = students.find((s) => s.id === studentId);
-    if (targetStudent) {
-      setScoringStudent(targetStudent);
-    }
-    setIsSearchOpen(false);
-  };
-
   // Select appropriate 16-bit pixel art map image by scene/season
   const currentSeasonBg = useMemo(() => {
     switch (season) {
@@ -1466,6 +1592,10 @@ export const PixelParadiseView: React.FC<PixelParadiseViewProps> = ({
         return dinoBg;
       case 'paris':
         return parisBg;
+      case 'crocodile':
+        return crocodileBg;
+      case 'shark':
+        return sharkBg;
       case 'autumn':
       default:
         return autumnBg;
@@ -1489,86 +1619,15 @@ export const PixelParadiseView: React.FC<PixelParadiseViewProps> = ({
   const focusedCompanion = companions.find((c) => c.id === focusedCompanionId);
   const focusedStudent = students.find((s) => s.id === focusedCompanionId);
 
-  const filteredStudents = students.filter(
-    (s) =>
-      s.name.toLowerCase().includes(studentSearch.toLowerCase()) ||
-      String(s.rollNo).includes(studentSearch)
-  );
-
   return (
     <div
       ref={containerRef}
       className="relative w-full h-[calc(100vh-112px)] min-h-[680px] bg-[#1a2d12] rounded-2xl overflow-hidden shadow-2xl border-4 border-[#5A3818] select-none flex flex-col font-sans"
     >
       {/* 1. TOP PARADISE CONTROL BAR (Teacher Tools) */}
-      <div className="z-30 bg-[#2b1807]/95 backdrop-blur-md px-4 py-2 border-b-2 border-[#160c04] flex flex-wrap items-center justify-between gap-2 text-[#FFEBB3] shadow-md shrink-0">
-        <div className="flex items-center gap-2.5">
-          <span className="text-xl animate-bounce">😆</span>
-          <div className="flex flex-col">
-            <span className="font-pixel text-xs sm:text-sm text-[#FFEBB3] tracking-wide flex items-center gap-2">
-              <span>{className}</span>
-              <span className="text-[10px] bg-[#533010] px-2 py-0.5 rounded text-amber-200 border border-[#7a481c]">
-                {students.length} 位星露谷夥伴
-              </span>
-            </span>
-          </div>
-        </div>
-
+      <div className="z-30 bg-[#2b1807]/95 backdrop-blur-md px-4 py-2 border-b-2 border-[#160c04] flex flex-wrap items-center justify-start gap-2 text-[#FFEBB3] shadow-md shrink-0">
         {/* Action Controls */}
-        <div className="flex items-center flex-wrap gap-1.5 sm:gap-2">
-          {/* Quick Companion Finder Dropdown ("孩子一眼找到自己那隻") */}
-          <div className="relative">
-            <button
-              onClick={() => setIsSearchOpen(!isSearchOpen)}
-              className="px-2.5 py-1 text-xs font-bold rounded-xl border border-[#8B5A2B] bg-[#1b0f04] hover:bg-[#3d1f08] text-[#FFEBB3] flex items-center gap-1.5 cursor-pointer shadow-xs"
-              title="快速搜尋並放大定位學生夥伴"
-            >
-              <Search className="w-3.5 h-3.5 text-amber-300" />
-              <span className="hidden md:inline">尋找夥伴</span>
-            </button>
-
-            {isSearchOpen && (
-              <div className="absolute top-full mt-2 left-0 w-64 max-h-72 bg-[#FFFDF9] text-stone-800 rounded-2xl shadow-2xl border-2 border-[#8B5A2B] z-50 overflow-hidden flex flex-col animate-in fade-in zoom-in-95 duration-150">
-                <div className="p-2 border-b border-stone-200 bg-amber-50">
-                  <input
-                    type="text"
-                    value={studentSearch}
-                    onChange={(e) => setStudentSearch(e.target.value)}
-                    placeholder="輸入學生姓名或座號..."
-                    className="w-full px-2.5 py-1 text-xs rounded-lg border border-stone-300 bg-white focus:outline-none focus:ring-2 focus:ring-amber-500 font-bold"
-                    autoFocus
-                  />
-                </div>
-                <div className="overflow-y-auto flex-1 divide-y divide-stone-100 p-1">
-                  {filteredStudents.length > 0 ? (
-                    filteredStudents.map((s) => {
-                      const comp = companions.find((c) => c.studentId === s.id);
-                      return (
-                        <button
-                          key={s.id}
-                          onClick={() => handleFindStudent(s.id)}
-                          className="w-full px-2 py-1.5 text-left text-xs hover:bg-amber-100/80 rounded-lg flex items-center justify-between cursor-pointer transition-colors"
-                        >
-                          <div className="flex items-center gap-2">
-                            <span className="font-mono text-[10px] font-black px-1.5 py-0.5 rounded bg-amber-200 text-amber-900">
-                              #{s.rollNo}
-                            </span>
-                            <span className="font-bold">{s.name}</span>
-                          </div>
-                          <span className="text-[10px] text-stone-500 font-medium">
-                            {comp?.action === 'swimming' ? '🏊 水中' : '🐾 陸地'} · 🪙 {s.points}
-                          </span>
-                        </button>
-                      );
-                    })
-                  ) : (
-                    <div className="p-3 text-center text-xs text-stone-400">找不到學生</div>
-                  )}
-                </div>
-              </div>
-            )}
-          </div>
-
+        <div className="flex items-center flex-wrap gap-1.5 sm:gap-2 w-full">
           {/* Scene & Season Background Selector (10 rich panoramic maps) */}
           <div className="flex items-center bg-[#1b0f04] p-1 rounded-xl border border-[#7a481c] flex-wrap gap-0.5">
             <button
@@ -1794,6 +1853,36 @@ export const PixelParadiseView: React.FC<PixelParadiseViewProps> = ({
             >
               <span>🗼 巴黎鐵塔</span>
               <span className="text-[9px] px-1 py-0.2 rounded bg-black/30 text-amber-200 font-black">🎬 視頻</span>
+            </button>
+            <button
+              onClick={() => {
+                soundManager.playClick();
+                setSeason('crocodile');
+              }}
+              className={`px-2 py-1 text-xs font-bold rounded-lg transition-all cursor-pointer whitespace-nowrap shrink-0 flex items-center gap-1 ${
+                season === 'crocodile'
+                  ? 'bg-[#15803D] text-white shadow-xs ring-1 ring-emerald-300'
+                  : 'text-stone-300 hover:text-white'
+              }`}
+              title="切換至鱷魚亞馬遜 (🐊 動態循環背景視頻 · 雨林河道與瀑布)"
+            >
+              <span>🐊 鱷魚亞馬遜</span>
+              <span className="text-[9px] opacity-85">🎬</span>
+            </button>
+            <button
+              onClick={() => {
+                soundManager.playClick();
+                setSeason('shark');
+              }}
+              className={`px-2 py-1 text-xs font-bold rounded-lg transition-all cursor-pointer whitespace-nowrap shrink-0 flex items-center gap-1 ${
+                season === 'shark'
+                  ? 'bg-[#0284C7] text-white shadow-xs ring-1 ring-sky-200'
+                  : 'text-stone-300 hover:text-white'
+              }`}
+              title="切換至鯊魚襲擊 (🦈 動態循環背景視頻 · 燈塔海灣與鯊魚浪花)"
+            >
+              <span>🦈 鯊魚襲擊</span>
+              <span className="text-[9px] opacity-85">🎬</span>
             </button>
           </div>
 
@@ -2157,9 +2246,6 @@ export const PixelParadiseView: React.FC<PixelParadiseViewProps> = ({
         className={`relative flex-1 w-full h-full overflow-hidden bg-[#334e1c] touch-none ${
           isDragging ? 'cursor-grabbing' : 'cursor-grab'
         }`}
-        onClick={() => {
-          if (isSearchOpen) setIsSearchOpen(false);
-        }}
       >
         {/* Expanded Pan & Zoom World Layer (True 16:9 panoramic pixel world) */}
         <div

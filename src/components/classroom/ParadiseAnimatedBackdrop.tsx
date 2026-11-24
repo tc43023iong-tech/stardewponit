@@ -134,6 +134,7 @@ const CLOUD_THEMES = new Set<ParadiseSeason>([
   'pinyin',
   'junkfood',
   'dino',
+  'shark',
 ]);
 
 export const ParadiseAnimatedBackdrop: React.FC<ParadiseAnimatedBackdropProps> = ({
@@ -733,6 +734,70 @@ export const ParadiseAnimatedBackdrop: React.FC<ParadiseAnimatedBackdropProps> =
                 size={9 + (i % 2) * 3}
               />
             </div>
+          ))}
+        </>
+      )}
+
+      {/* CROCODILE AMAZON: Tropical rainforest sunbeams, river mist & glowing fireflies over the looping video */}
+      {season === 'crocodile' && (
+        <>
+          <div
+            className="absolute bottom-[10%] inset-x-0 h-28 bg-gradient-to-r from-transparent via-emerald-100/18 to-transparent blur-2xl animate-paradise-mist"
+            style={{ animationDuration: '16s' }}
+          />
+          {Array.from({ length: 10 }).map((_, i) => (
+            <div
+              key={`croc-river-gleam-${i}`}
+              className="absolute h-[3px] bg-teal-100/70 rounded-full animate-water-gleam"
+              style={{
+                left: `${12 + i * 7.4}%`,
+                top: `${24 + i * 6.5}%`,
+                width: `${16 + (i % 3) * 8}px`,
+                animationDelay: `${i * 0.45}s`,
+              }}
+            />
+          ))}
+          {Array.from({ length: 14 }).map((_, i) => (
+            <div
+              key={`croc-firefly-${i}`}
+              className="absolute w-2 h-2 rounded-full bg-lime-200/80 shadow-[0_0_8px_#a3e635] animate-firefly-float"
+              style={{
+                left: `${(i * 7.1 + 4) % 93}%`,
+                top: `${16 + ((i * 13) % 70)}%`,
+                animationDuration: `${6 + (i % 4) * 1.6}s`,
+                animationDelay: `${(i * 0.5) % 4}s`,
+              }}
+            />
+          ))}
+        </>
+      )}
+
+      {/* SHARK ATTACK BAY: Soaring coastal seagulls & shimmering bay water gleams over the looping video */}
+      {season === 'shark' && (
+        <>
+          <div
+            className="absolute top-[7%] left-0 w-full animate-paradise-soar"
+            style={{ animationDuration: '23s' }}
+          >
+            <PixelBirdSilhouette color="#f8fafc" size={22} />
+          </div>
+          <div
+            className="absolute top-[13%] left-0 w-full animate-paradise-soar"
+            style={{ animationDuration: '30s', animationDelay: '-12s' }}
+          >
+            <PixelBirdSilhouette color="#e2e8f0" size={18} />
+          </div>
+          {Array.from({ length: 12 }).map((_, i) => (
+            <div
+              key={`shark-gleam-${i}`}
+              className="absolute h-[3px] bg-cyan-100/75 rounded-full animate-water-gleam"
+              style={{
+                left: `${8 + (i % 6) * 10}%`,
+                top: `${42 + Math.floor(i / 6) * 26 + (i % 3) * 5}%`,
+                width: `${18 + (i % 3) * 10}px`,
+                animationDelay: `${i * 0.42}s`,
+              }}
+            />
           ))}
         </>
       )}
