@@ -110,7 +110,7 @@ export const PointsFeedbackModal: React.FC<PointsFeedbackModalProps> = ({
                 <span className="text-xs sm:text-sm font-pixel font-bold text-stone-500 block">
                   #{primaryStudent.rollNo} 學號
                 </span>
-                <h3 className="font-black text-2xl sm:text-3xl text-[#3d240d] leading-tight tracking-tight">
+                <h3 className="font-black text-3xl sm:text-4xl text-[#3d240d] leading-tight tracking-tight">
                   {primaryStudent.name}
                 </h3>
               </div>
@@ -124,7 +124,7 @@ export const PointsFeedbackModal: React.FC<PointsFeedbackModalProps> = ({
                   </div>
                 ))}
               </div>
-              <span className="font-black text-lg sm:text-xl text-[#3d240d]">
+              <span className="font-black text-xl sm:text-2xl text-[#3d240d]">
                 {students[0]?.name} 等共 {students.length} 位同學
               </span>
             </div>

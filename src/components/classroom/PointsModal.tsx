@@ -128,7 +128,7 @@ export const PointsModal: React.FC<PointsModalProps> = ({
               <ScrollText className="w-5 h-5 text-[#ffd700] shrink-0" />
               <h3 className="font-pixel text-sm sm:text-base text-[#ffd700] flex items-center gap-2 flex-wrap">
                 <span>小黑板歷史紀錄 & 成長軌跡</span>
-                <span className="font-sans text-xl sm:text-2xl font-black text-[#fed7aa]">
+                <span className="font-sans text-2xl sm:text-3xl font-black text-[#fed7aa]">
                   - 【{primaryStudent.name}】
                 </span>
                 <span className="text-xs bg-[#3b1f0b] text-[#ffd700] px-2 py-0.5 rounded border border-[#8b5a2b]">
@@ -409,7 +409,7 @@ export const PointsModal: React.FC<PointsModalProps> = ({
 
             <div className="min-w-0">
               <div className="flex items-center gap-2 flex-wrap">
-                <h3 className="font-black text-2xl sm:text-3xl text-[#ffd700] tracking-wide drop-shadow-sm leading-tight">
+                <h3 className="font-black text-3xl sm:text-4xl text-[#ffd700] tracking-wide drop-shadow-sm leading-tight">
                   {isBatch ? `批次評分 (${students.length}人)` : primaryStudent?.name}
                 </h3>
                 {!isBatch && primaryStudent && (
@@ -441,7 +441,7 @@ export const PointsModal: React.FC<PointsModalProps> = ({
                   </span>
                 </div>
               ) : (
-                <div className="text-xs sm:text-sm font-bold text-[#fed7aa] mt-1">
+                <div className="text-sm sm:text-base font-bold text-[#fed7aa] mt-1">
                   {students.slice(0, 6).map((s) => s.name).join('、')}
                   {students.length > 6 ? ` 等 ${students.length} 人` : ''}
                 </div>

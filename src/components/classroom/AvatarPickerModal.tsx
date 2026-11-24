@@ -224,10 +224,16 @@ export const AvatarPickerModal: React.FC<AvatarPickerModalProps> = ({
           <div className="flex items-center gap-2">
             <Sparkles className="w-5 h-5 text-[#ffd700]" />
             <div>
-              <h3 className="font-pixel text-xs sm:text-sm text-[#ffd700]">
-                客製化學生風格：{student.name} (#{student.rollNo})
+              <h3 className="font-pixel text-sm sm:text-base text-[#ffebb3] flex items-center gap-2 flex-wrap">
+                <span>客製化學生風格：</span>
+                <span className="font-sans text-2xl sm:text-3xl font-black text-[#ffd700] tracking-wide drop-shadow-sm">
+                  {student.name}
+                </span>
+                <span className="font-mono text-xs sm:text-sm font-black bg-[#3b1f0b] text-[#fed7aa] px-2 py-0.5 rounded border border-[#8b5a2b]">
+                  #{student.rollNo}
+                </span>
               </h3>
-              <p className="text-[10px] text-[#fed7aa]">
+              <p className="text-[10px] text-[#fed7aa] mt-0.5">
                 提供 {STARDEW_AVATARS.length} 款星露谷伙伴頭像與 {STUDENT_CARD_BACKGROUND_OPTIONS.length} 種像素卡片背景素材，點選即可即時套用與預覽！
               </p>
             </div>

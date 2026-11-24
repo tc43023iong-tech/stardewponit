@@ -327,7 +327,7 @@ export const StudentCard: React.FC<StudentCardProps> = ({
       <div className="relative z-10 p-2.5 bg-[#faeed1] border-t-3 border-[#6b421d] shadow-[0_-3px_10px_rgba(0,0,0,0.25)] flex flex-col justify-between gap-1.5">
         {/* Student Name Row */}
         <div className="flex items-center justify-between gap-2">
-          <h4 className="font-extrabold text-sm sm:text-base text-[#3d240d] truncate">
+          <h4 className="font-black text-lg sm:text-xl text-[#3d240d] truncate leading-snug">
             {student.name}
           </h4>
         </div>

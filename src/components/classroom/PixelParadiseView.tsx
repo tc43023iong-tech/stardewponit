@@ -2114,7 +2114,7 @@ export const PixelParadiseView: React.FC<PixelParadiseViewProps> = ({
                 <span className="font-mono text-xs px-2 py-0.5 rounded-md bg-[#E8F8F0] text-[#2E7D32] border border-[#81C784] font-black">
                   #{focusedStudent.rollNo}
                 </span>
-                <h4 className="text-base font-black text-[#5D4037]">{focusedStudent.name}</h4>
+                <h4 className="text-xl sm:text-2xl font-black text-[#5D4037] leading-tight">{focusedStudent.name}</h4>
                 <span className="text-xs bg-amber-100 text-amber-900 border border-amber-300 px-2 py-0.5 rounded-full font-bold">
                   🪙 {focusedStudent.points} 分
                 </span>
